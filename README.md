@@ -71,7 +71,7 @@ ROI images and labels, list TXT files and static segmentation JSON files should 
 <a id="trained_models_"></a>
 # Trained Models
 Trained models can be downloaded from [here](https://drive.google.com/drive/folders/1AHD7I8qHtg9hXqwfEgpNKw0QAG3j_2ae)    
-- both early-stage and late-stage trained models are available here    
+- both early-stage and late-stage trained models are included    
 - the zip file for any model should be extracted in its source directory while maintaining the folder structure inside the zip file    
     + for example, the models for IDOL should be extracted inside [    ipsc_video_segmentation/ipsc_vnext](ipsc_video_segmentation/ipsc_vnext)    
     + this would extract the ```.pth``` checkpoint files into a subfolder named ```log/idol-ipsc-ext_reorg_roi_g2_16_53``` and ```log/idol-ipsc-ext_reorg_roi_g2_54_126``` for the early and late-stage models respectively   
