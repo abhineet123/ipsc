@@ -3,6 +3,7 @@
 This repository contains the code for the paper: [Towards Early Prediction of Human iPSC Reprogramming Success](https://arxiv.org/abs/2305.14575)
 
 # Code
+## Models
 The 8 models reported in the paper are located as follows:    
 - classification    
     + **XGB**: [ipsc_data_processing/eval_cls.py](ipsc_data_processing/eval_cls.py)    
@@ -16,22 +17,31 @@ The 8 models reported in the paper are located as follows:
     + **SEQ**: [ipsc_video_segmentation/ipsc_vnext](ipsc_video_segmentation/ipsc_vnext)    
     + **VITA**: [ipsc_video_segmentation/ipsc_vita](ipsc_video_segmentation/ipsc_vita)    
 
-The Swin transformer semantic segmentation model not reported in the paper is available in [ipsc_static_segmentation/swin_semantic](ipsc_static_segmentation/swin_semantic)
+The Swin transformer semantic segmentation model not reported in the paper is available in [ipsc_static_segmentation/swin_semantic](ipsc_static_segmentation/swin_semantic).
 
-# Commands
+## Annotation
+-  labeling tool used for stages 1 and 2 of the annotation process can be run using [ipsc_labelling_tool/labelImg.py](ipsc_labelling_tool/labelImg.py)
+-  retrospective labelling for stage 3 can be run using [ipsc_labelling_tool/propagate_by_tracking.py](ipsc_labelling_tool/propagate_by_tracking.py).
+
+## Data processing and Evaluation
+- scripts for converting annotations between various formats like XML, CSV and JSON are available in [ipsc_data_processing/](ipsc_data_processing/) 
+- classifiers can be evaluated using [ipsc_data_processing/eval_cls.py](ipsc_data_processing/eval_cls.py) 
+- detectors can be evaluated using [ipsc_data_processing/eval_det.py](ipsc_data_processing/eval_det.py) 
+
+# Setup and Commands
 Each of the above folders contains a subfolder named ```cmd``` containing markdown files with hierarchically organized list of commands to reproduce any of the results reported in the paper.
 - for example, the commands for **SWD** are in [swin_det.md](ipsc_static_segmentation/swin_detection/cmd/swin_det.md) and [swin_det_setup.md](ipsc_static_segmentation/swin_detection/cmd/swin_det_setup.md) in [ipsc_static_segmentation/swin_detection/cmd](ipsc_static_segmentation/swin_detection/cmd) while those for **IDOL** and **SEQ** are in [swin_det.md](ipsc_static_segmentation/swin_detection/cmd/swin_det.md) and [swin_det_setup.md](ipsc_static_segmentation/swin_detection/cmd/swin_det_setup.md) in [ipsc_static_segmentation/swin_detection/cmd](ipsc_static_segmentation/swin_detection/cmd)
 - some of the contents of these files might not be easy to understand at present but I am working to make these more user-friendly
 - if the commands needed to reproduce any results in the paper or to run any of the models on a new dataset are not clear, please create an [issue](https://github.com/abhineet123/ipsc_prediction/issues) or contact [me](http://webdocs.cs.ualberta.ca/~asingh1/)
 
 # Data
-Data can be downloaded from here:  
-  
+Images and annotations can be downloaded from here:  
+
 - [ROI images and labels](https://drive.google.com/file/d/18NCCFAVKFlB7DCfa8Cpo92Sd4v7U6FB7)    
 - [Raw 714 MP images](https://drive.google.com/file/d/1WmtyCWeeryxlWP6W8vcF0WmlfSdUroAg)
 - [List TXT files](https://drive.google.com/file/d/1a0gVn63TbX2nUWhQJdXvOMzWA2H1Abe1)
 - [Static segmentation JSON files](https://drive.google.com/file/d/17bXxZ9Z7Yydt4m2NnXYxS80c6gfUtWyh)
-- [Video segmentation JSON files](https://drive.google.com/file/d/17bXxZ9Z7Yydt4m2NnXYxS80c6gfUtWyh)
+- [Video segmentation JSON files](https://drive.google.com/file/d/1ne2225Rdz0Y75wonmfMlzxv_rhfeRSuu)
 
 ROI images and labels, list TXT files and static segmentation JSON files should be extracted to ```/data/ipsc/well3/all_frames_roi/``` while video segmentation JSON files should be extracted to ```/data/ipsc/well3/all_frames_roi/ytvis19/```
 
