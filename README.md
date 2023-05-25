@@ -21,7 +21,7 @@ The Swin transformer semantic segmentation model not reported in the paper is av
 
 ## Annotation
 -  labeling tool used for stages 1 and 2 of the annotation process can be run using [ipsc_labelling_tool/labelImg.py](ipsc_labelling_tool/labelImg.py)
--  retrospective labelling for stage 3 can be run using [ipsc_labelling_tool/propagate_by_tracking.py](ipsc_labelling_tool/propagate_by_tracking.py).
+-  retrospective labelling for stage 3 can be run using [ipsc_labelling_tool/propagate_by_tracking.py](ipsc_labelling_tool/propagate_by_tracking.py)
 
 ## Data processing and Evaluation
 - scripts for converting annotations between various formats like XML, CSV and JSON are available in [ipsc_data_processing/](ipsc_data_processing/) 
