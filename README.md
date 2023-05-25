@@ -27,6 +27,7 @@ The Swin transformer semantic segmentation model not reported in the paper is av
 - scripts for converting annotations between various formats like XML, CSV and JSON are available in [ipsc_data_processing/](ipsc_data_processing/) 
 - classifiers can be evaluated using [ipsc_data_processing/eval_cls.py](ipsc_data_processing/eval_cls.py) 
 - detectors can be evaluated using [ipsc_data_processing/eval_det.py](ipsc_data_processing/eval_det.py) 
+    + this is also the script used for generating the detection failure visualization videos
 
 # Setup and Commands
 Each of the above folders contains a subfolder named ```cmd``` containing markdown files with hierarchically organized list of commands to reproduce any of the results reported in the paper.
