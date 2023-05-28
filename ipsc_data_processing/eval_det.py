@@ -34,9 +34,11 @@ from tabulate import tabulate
 from collections import OrderedDict
 import itertools
 
+import pycocotools.mask as mask_util
+
 from eval_utils import mask_str_to_img, perform_global_association, draw_text_in_image, get_max_iou_obj, \
     compute_thresh_rec_prec, voc_ap, get_intersection, binary_cls_metrics, file_lines_to_list, \
-    arr_to_csv, draw_objs, norm_auc, resize_ar, sortKey, linux_path, add_suffix, ImageSequenceWriter
+    arr_to_csv, draw_objs, norm_auc, resize_ar_tf_api, sortKey, linux_path, add_suffix, ImageSequenceWriter, mask_rle_to_pts
 
 import paramparse
 
@@ -183,7 +185,7 @@ class Params:
 
 def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
     temp_vis = np.concatenate((src_img,) * mult, axis=1)
-    temp_vis_res = resize_ar(temp_vis, save_w, save_h - bottom_border, crop=1)
+    temp_vis_res = resize_ar_tf_api(temp_vis, save_w, save_h - bottom_border, crop=1)
     temp_vis_h, temp_vis_w = temp_vis_res.shape[:2]
 
     vis_h, vis_w = temp_vis_h, int(temp_vis_w / mult)
@@ -196,8 +198,8 @@ def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
 
 def draw_and_concat(src_img, frame_det_data, frame_gt_data, class_name_to_col, vis_alpha, vis_w, vis_h,
                     vert_stack, check_det):
-    dets_vis_img = resize_ar(src_img, vis_w, vis_h, crop=1)
-    gt_vis_img = resize_ar(src_img, vis_w, vis_h, crop=1)
+    dets_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1)
+    gt_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1)
 
     dets_vis_img = draw_objs(dets_vis_img, frame_det_data, vis_alpha, class_name_to_col, check_bb=check_det,
                              thickness=1)
@@ -210,7 +212,8 @@ def draw_and_concat(src_img, frame_det_data, frame_gt_data, class_name_to_col, v
 
 def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_root_dir, class_name_to_col,
              img_start_id=-1, img_end_id=-1,
-             _gt_data_dict=None, raw_det_data_dict=None, eval_result_dict=None, fps_to_gt=1, json_out_dir=None):
+             _gt_data_dict=None, raw_det_data_dict=None, eval_result_dict=None,
+             fps_to_gt=1, json_out_dir=None):
     """
 
     :param Params params:
@@ -1036,7 +1039,21 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
     """main processing"""
     seq_name_to_csv_rows = {}
+    file_id_to_img_info = {}
+    json_dict = {
+        "images": [],
+        "type": "instances",
+        "annotations": [],
+        "categories": []
+    }
+
+    # bnd_id = 1
+
     for gt_class_idx, gt_class in enumerate(gt_classes):
+        category_info = {'supercategory': 'none', 'id': gt_class_idx, 'name': gt_class}
+
+        json_dict['categories'].append(category_info)
+
         enable_vis = show_vis or (save_vis and gt_class in save_classes)
 
         n_class_dets = 0
@@ -1286,14 +1303,14 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             video_out_dict["all"] = all_video_out
 
                         if vis_video:
-                            all_out_img = resize_ar(all_out_img, video_w, video_h, add_border=2)
+                            all_out_img = resize_ar_tf_api(all_out_img, video_w, video_h, add_border=2)
 
                         # cv2.imshow('all_out_img', all_out_img)
                         # cv2.waitKey(0)
 
                         all_video_out.write(all_out_img)
 
-                        # cat_img_vis = resize_ar(cat_img_vis, save_w, save_h)
+                        # cat_img_vis = resize_ar_tf_api(cat_img_vis, save_w, save_h)
 
                     if isinstance(img, list):
                         assert isinstance(cls_cat, list), "cls_cat must be a list"
@@ -1319,10 +1336,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             assert _text_img is None, "_img is None but _text_img isn't"
                             continue
 
-                        # img = resize_ar(img, save_w, save_h)
+                        # img = resize_ar_tf_api(img, save_w, save_h)
                         out_img = np.concatenate((cat_img_vis, _img), axis=0 if vert_stack else 1)
 
-                        # out_img = resize_ar(out_img, save_w, save_h)
+                        # out_img = resize_ar_tf_api(out_img, save_w, save_h)
                         out_img = np.concatenate((out_img, _text_img), axis=0)
 
                         # cv2.imshow('text_img', text_img)
@@ -1357,7 +1374,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 video_out_dict[_cls_cat] = video_out
 
                             if vis_video:
-                                out_img = resize_ar(out_img, video_w, video_h, add_border=2)
+                                out_img = resize_ar_tf_api(out_img, video_w, video_h, add_border=2)
 
                             video_out.write(out_img)
                             cat_to_vis_count[_cls_cat] += 1
@@ -1459,7 +1476,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         if src_img is None:
                             raise IOError(f'Image could not be read: {img_full_path}')
 
-                    img, resize_factor, _, _ = resize_ar(src_img, vis_w, vis_h, crop=1, return_factors=1)
+                    img, resize_factor, _, _ = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
 
                     if vert_stack:
                         text_img_w = img.shape[1]
@@ -1711,7 +1728,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         fp_sum = 0
 
                 if enable_vis:
-                    img, resize_factor, _, _ = resize_ar(src_img, vis_w, vis_h, crop=1, return_factors=1)
+                    img, resize_factor, _, _ = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
 
                     color = 'hot_pink'
                     if cls_cat == "tp":
@@ -1884,57 +1901,91 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     """add GT of all classes at once"""
                     assert seq_name not in seq_name_to_csv_rows, f"duplicate seq_name found: {seq_name}"
                     seq_name_to_csv_rows[seq_name] = []
-                    file_id_to_img_info = {}
-
                     gt_csv_rows = []
+
                     """GT is class-agnostic so should be added to the CSV only once"""
-                    for _file_id, _frame_gt_data in tqdm(
+                    for _gt_file_id, _frame_gt_data in tqdm(
                             seq_gt_data_dict.items(),
                             desc="fps_to_gt: seq_gt_data_dict",
                             ncols=100):
-                        rel_path = os.path.relpath(_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep, '/')
-                        img_id = os.path.basename(_file_id)
-                        img_info = {
-                            'file_name': rel_path,
-                            'height': _frame_gt_datum["height"],
-                            'width': _frame_gt_datum["width"],
-                            'id': seq_name + '/' + img_id
-                        }
-                        file_id_to_img_info[_file_id] = img_info
+
+                        if not _frame_gt_data:
+                            continue
+
+                        _frame_height = _frame_gt_data[0]["height"]
+                        _frame_width = _frame_gt_data[0]["width"]
+                        _frame_area = _frame_height * _frame_width
+
+                        try:
+                            _ = file_id_to_img_info[_gt_file_id]
+                        except KeyError:
+                            rel_path = os.path.relpath(_gt_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep, '/')
+                            img_info = {
+                                'file_name': rel_path,
+                                'height': _frame_height,
+                                'width': _frame_width,
+                                'id': seq_name + '/' + os.path.basename(_gt_file_id)
+                            }
+                            file_id_to_img_info[_gt_file_id] = img_info
+                            json_dict['images'].append(img_info)
+                        else:
+                            raise AssertionError(f'_file_id: {_gt_file_id} found multiple times in GT')
 
                         for _frame_gt_datum in _frame_gt_data:
-                            xmin, ymin, xmax, ymax = _frame_gt_datum["bbox"]
+                            gt_xmin, gt_ymin, gt_xmax, gt_ymax = _frame_gt_datum["bbox"]
 
-                            row = {
-                                "filename": _file_id,
-                                "class": _frame_gt_datum["class"],
-                                "xmin": xmin,
-                                "xmax": xmax,
-                                "ymin": ymin,
-                                "ymax": ymax,
-                                "target_id": _frame_gt_datum["target_id"],
-                                "width": _frame_gt_datum["width"],
-                                "height": _frame_gt_datum["height"],
+                            assert _frame_gt_datum["width"] == _frame_width, "_frame_width mismatch"
+                            assert _frame_gt_datum["height"] == _frame_height, "_frame_height mismatch"
+
+                            _gt_class = _frame_gt_datum["class"]
+                            _gt_target_id = _frame_gt_datum["target_id"]
+                            _gt_csv_row = {
+                                "filename": _gt_file_id,
+                                "class": _gt_class,
+                                "xmin": gt_xmin,
+                                "xmax": gt_xmax,
+                                "ymin": gt_ymin,
+                                "ymax": gt_ymax,
+                                "target_id": _gt_target_id,
+                                "width": _frame_width,
+                                "height": _frame_height,
                             }
-                            file_id_to_img_info = {
-                                'file_name': rel_path,
-                                'height': height,
-                                'width': width,
-                                'id': seq_name + '/' + img_id
+
+                            gt_o_width = gt_xmax - gt_xmin
+                            gt_o_height = gt_ymax - gt_ymin
+
+                            _gt_class_id = gt_classes.index(_gt_class)
+
+                            _gt_json_ann = {
+                                'image_id': img_info['id'],
+                                'id': _gt_target_id,
+                                'area': gt_o_width * gt_o_height,
+                                'iscrowd': 0,
+                                'bbox': [gt_xmin, gt_ymin, gt_o_width, gt_o_height],
+                                'label': _gt_class,
+                                'category_id': _gt_class_id,
+                                'ignore': 0,
                             }
 
                             if enable_mask:
                                 mask_rle = _frame_gt_datum["mask"]
                                 mask_h, mask_w = mask_rle['size']
                                 mask_counts = mask_rle['counts']
-                                row.update(
-                                    {
+                                _gt_csv_row.update({
                                         "mask_h": mask_h,
                                         "mask_w": mask_w,
                                         "mask_counts": mask_counts,
-                                    }
-                                )
-                            gt_csv_rows.append(row)
+                                    })
+                                mask_pts, bbox, is_multi = mask_rle_to_pts(mask_rle)
+                                mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
+                                _gt_json_ann.update({
+                                    'segmentation': [mask_pts_flat, ],
+                                    'mask_pts': mask_pts,
+                                })
+
+                            # bnd_id += 1
+                            gt_csv_rows.append(_gt_csv_row)
+                            json_dict['annotations'].append(_gt_json_ann)
 
                     n_gt_objs = len(gt_csv_rows)
                     print(f'\nfps_to_gt: n_gt_objs: {n_gt_objs}')
@@ -1949,34 +2000,77 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                 det_csv_rows = []
                 for _det in tqdm(fp_nex_whole_dets, desc="fps_to_gt: fp_nex_whole_dets", ncols=100):
-                    xmin, ymin, xmax, ymax = _det["bbox"]
+                    _det_xmin, _det_ymin, _det_xmax, _det_ymax = _det["bbox"]
                     _det_class = _det["class"]
 
                     assert _det_class == gt_class, \
                         f"unexpected det_class {_det_class} while processing detections for {gt_class}"
-                    row = {
-                        "filename": _det["file_id"],
+
+                    _det_file_id = _det["file_id"]
+                    _det_frame_height = _det["height"]
+                    _det_frame_width = _det["width"]
+                    _det_target_id = _det["target_id"]
+                    try:
+                        img_info = file_id_to_img_info[_det_file_id]
+                    except KeyError:
+                        rel_path = os.path.relpath(_det_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep, '/')
+                        img_info = {
+                            'file_name': rel_path,
+                            'height': _det_frame_height,
+                            'width': _det_frame_width,
+                            'id': seq_name + '/' + os.path.basename(_det_file_id)
+                        }
+                        file_id_to_img_info[_det_file_id] = img_info
+                        json_dict['images'].append(img_info)
+
+                    assert _det_frame_height == img_info['height'], "_det_frame_height mismatch"
+                    assert _det_frame_width == img_info['width'], "_det_frame_width mismatch"
+
+                    _det_csv_row = {
+                        "filename": _det_file_id,
                         "class": f"FP-{_det_class}",
-                        "xmin": xmin,
-                        "xmax": xmax,
-                        "ymin": ymin,
-                        "ymax": ymax,
-                        "target_id": _det["target_id"],
-                        "width": _det["width"],
-                        "height": _det["height"],
+                        "xmin": _det_xmin,
+                        "xmax": _det_xmax,
+                        "ymin": _det_ymin,
+                        "ymax": _det_ymax,
+                        "target_id": _det_target_id,
+                        "width": _det_frame_width,
+                        "height": _det_frame_height,
                     }
+                    _det_o_width = _det_xmax - _det_xmin
+                    _det_o_height = _det_ymax - _det_ymin
+
+                    _det_class_id = gt_classes.index(_det_class)
+                    _det_json_ann = {
+                        'image_id': img_info['id'],
+                        'id': _det_target_id,
+                        'area': _det_o_width * _det_o_height,
+                        'bbox': [_det_xmin, _det_ymin, _det_o_width, _det_o_height],
+                        'label': _det_class,
+                        'category_id': _det_class_id,
+                        'iscrowd': 0,
+                        'ignore': 0,
+                    }
+
                     if enable_mask:
                         mask_rle = _det["mask"]
                         mask_h, mask_w = mask_rle['size']
                         mask_counts = mask_rle['counts']
-                        row.update(
-                            {
+                        _det_csv_row.update({
                                 "mask_h": mask_h,
                                 "mask_w": mask_w,
                                 "mask_counts": mask_counts,
-                            }
-                        )
-                    det_csv_rows.append(row)
+                            })
+                        mask_pts, bbox, is_multi = mask_rle_to_pts(mask_rle)
+                        mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
+                        _det_json_ann.update({
+                            'segmentation': [mask_pts_flat, ],
+                            'mask_pts': mask_pts,
+                        })
+
+                    det_csv_rows.append(_det_csv_row)
+                    json_dict['annotations'].append(_det_json_ann)
+
                 n_det_objs = len(det_csv_rows)
                 print(f'fps_to_gt: n_det_objs: {n_det_objs}\n')
                 det_csv_rows.sort(key=lambda x: x['filename'])
@@ -2792,13 +2886,6 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 out_file.write(out_text)
 
         if fps_to_gt:
-            output_json_dict = {
-                "images": [],
-                "type": "instances",
-                "annotations": [],
-                "categories": []
-            }
-
             for seq_name, out_csv_rows in seq_name_to_csv_rows.items():
                 if not out_csv_rows:
                     continue
@@ -2813,6 +2900,12 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                 df = pd.DataFrame(out_csv_rows, columns=csv_columns)
                 df.to_csv(csv_out_path, index=False)
+
+            json_out_path = os.path.join(out_root_dir, 'gt_with_fp_nex_whole.json')
+
+            with open(json_out_path, 'w') as f:
+                json_dict_str = json.dumps(json_dict, indent=4)
+                f.write(json_dict_str)
 
         # remove the tmp_files directory
         # if delete_tmp_files:
@@ -2889,6 +2982,8 @@ def run(params, *argv):
     save_suffix = params.save_suffix
     if nms_thresh > 0:
         save_suffix = f'{save_suffix}-nms_{int(nms_thresh * 100):02d}'
+
+    out_dir_name = None
 
     if save_suffix:
         if params.iw:

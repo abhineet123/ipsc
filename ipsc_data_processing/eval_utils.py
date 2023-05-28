@@ -246,6 +246,89 @@ def drawBox(image, xmin, ymin, xmax, ymax, box_color=(0, 255, 0), label=None, fo
                     font_size, box_color, 1, cv2.LINE_AA)
 
 
+def resize_ar_tf_api(src_img, width=0, height=0, return_factors=0, add_border=1, crop=0):
+    src_height, src_width, n_channels = src_img.shape
+
+    src_aspect_ratio = float(src_width) / float(src_height)
+
+    if width <= 0 and height <= 0:
+        raise AssertionError(
+            'Both width and height cannot be 0 when resize_factor is 0 too')
+    elif height <= 0:
+        height = int(width / src_aspect_ratio)
+    elif width <= 0:
+        width = int(height * src_aspect_ratio)
+
+    aspect_ratio = float(width) / float(height)
+
+    if add_border == 2:
+        assert src_height <= height and src_width <= width, \
+            f"border only mode :: source size {src_width} x {src_height} > target size {width} x {height}"
+
+        dst_img = np.zeros((height, width, n_channels), dtype=np.uint8)
+        start_row = int((height - src_height) / 2.0)
+        start_col = int((width - src_width) / 2.0)
+        end_row = start_row + src_height
+        end_col = start_col + src_width
+        dst_img[start_row:end_row, start_col:end_col, :] = src_img
+        if return_factors:
+            return dst_img, 1, start_row, start_col
+        else:
+            return dst_img
+
+    if add_border:
+        if src_aspect_ratio == aspect_ratio:
+            dst_width = src_width
+            dst_height = src_height
+            start_row = start_col = 0
+        elif src_aspect_ratio > aspect_ratio:
+            dst_width = src_width
+            dst_height = int(src_width / aspect_ratio)
+            start_row = int((dst_height - src_height) / 2.0)
+            start_col = 0
+        else:
+            dst_height = src_height
+            dst_width = int(src_height * aspect_ratio)
+            start_col = int((dst_width - src_width) / 2.0)
+            start_row = 0
+
+        end_row = start_row + src_height
+        end_col = start_col + src_width
+        dst_img = np.zeros((dst_height, dst_width, n_channels), dtype=np.uint8)
+        dst_img[start_row:end_row, start_col:end_col, :] = src_img
+        dst_img = cv2.resize(dst_img, (width, height))
+
+        resize_factor = float(height) / float(dst_height)
+
+        if crop:
+            start_col_res = int(start_col * resize_factor)
+            start_row_res = int(start_row * resize_factor)
+            end_row_res = int(end_row * resize_factor)
+            end_col_res = int(end_col * resize_factor)
+            dst_img = dst_img[start_row_res:end_row_res, start_col_res:end_col_res, :]
+
+            start_col = start_row = 0
+
+        if return_factors:
+            return dst_img, resize_factor, start_row, start_col
+        else:
+            return dst_img
+    else:
+        if src_aspect_ratio < aspect_ratio:
+            dst_width = width
+            dst_height = int(dst_width / src_aspect_ratio)
+        else:
+            dst_height = height
+            dst_width = int(dst_height * src_aspect_ratio)
+        dst_img = cv2.resize(src_img, (dst_width, dst_height))
+        start_row = start_col = 0
+        if return_factors:
+            resize_factor = float(src_height) / float(dst_height)
+            return dst_img, resize_factor, start_row, start_col
+        else:
+            return dst_img
+
+
 def resize_ar(src_img, width=0, height=0, return_factors=False,
               placement_type=0, only_border=0, only_shrink=0):
     src_height, src_width = src_img.shape[:2]
@@ -1573,7 +1656,7 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
 
                 bb = (xmin, ymin, xmax, ymax)
 
-                mask_pts, mask_bb, is_multi = contour_pts_from_mask(mask_orig)
+                mask_pts, mask_bb, is_multi = mask_img_to_pts(mask_orig)
 
                 mask_xmin, mask_ymin, w, h = mask_bb
                 mask_xmax, mask_ymax = mask_xmin + w, mask_ymin + h
@@ -1761,48 +1844,6 @@ def get_iou(bb_det, bb_gt, xywh=False):
     return ov
 
 
-def binary_mask_to_rle_coco(binary_mask):
-    binary_mask_fortran = np.asfortranarray(binary_mask, dtype="uint8")
-    rle = mask_util.encode(binary_mask_fortran)
-    rle["counts"] = rle["counts"].decode("utf-8")
-
-    return rle
-
-
-def contour_pts_to_mask(contour_pts, patch_img, col=(255, 255, 255)):
-    # np.savetxt('contourPtsToMask_mask_pts.txt', contour_pts, fmt='%.6f')
-
-    mask_img = np.zeros_like(patch_img, dtype=np.uint8)
-    # if not isinstance(contour_pts, list):
-    #     raise SystemError('contour_pts must be a list rather than {}'.format(type(contour_pts)))
-    if len(contour_pts) > 0:
-        mask_img = cv2.fillPoly(mask_img, np.array([contour_pts, ], dtype=np.int32), col)
-    blended_img = np.array(Image.blend(Image.fromarray(patch_img), Image.fromarray(mask_img), 0.5))
-
-    return mask_img, blended_img
-
-
-def contour_pts_from_mask(mask_img):
-    mask_img_gs = mask_img
-
-    contour_pts, _ = cv2.findContours(mask_img_gs, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
-    is_multi = False
-
-    if not contour_pts:
-        return [], [], is_multi
-
-    if len(contour_pts) > 1:
-        is_multi = True
-        contour_pts = max(contour_pts, key=cv2.contourArea)
-    else:
-        contour_pts = contour_pts[0]
-        is_multi = False
-
-    x, y, w, h = cv2.boundingRect(contour_pts)
-
-    return contour_pts, (x, y, w, h), is_multi
-
-
 #
 # def contour_pts_from_mask(mask_img, allow_multi=1):
 #     # print('Getting contour pts from mask...')
@@ -1856,6 +1897,50 @@ def contour_pts_from_mask(mask_img):
 #         return mask_pts
 #
 
+
+def mask_img_to_rle_coco(binary_mask):
+    binary_mask_fortran = np.asfortranarray(binary_mask, dtype="uint8")
+    rle = mask_util.encode(binary_mask_fortran)
+    rle["counts"] = rle["counts"].decode("utf-8")
+
+    return rle
+
+
+def mask_img_to_pts(mask_img):
+    mask_img_gs = mask_img
+
+    contour_pts, _ = cv2.findContours(mask_img_gs, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
+    is_multi = False
+
+    if not contour_pts:
+        return [], [], is_multi
+
+    if len(contour_pts) > 1:
+        is_multi = True
+        contour_pts = max(contour_pts, key=cv2.contourArea)
+    else:
+        contour_pts = contour_pts[0]
+        is_multi = False
+
+    x, y, w, h = cv2.boundingRect(contour_pts)
+
+    return contour_pts, (x, y, w, h), is_multi
+
+
+def mask_rle_to_img(rle):
+    mask_img = mask_util.decode(rle).squeeze()
+    mask_img = np.ascontiguousarray(mask_img, dtype=np.uint8)
+
+    return mask_img
+
+
+def mask_rle_to_pts(rle):
+    mask_img = mask_rle_to_img(rle)
+
+    mask_pts, bbox, is_multi = mask_img_to_pts(mask_img)
+    return mask_pts, bbox, is_multi
+
+
 def mask_pts_to_str(mask_pts):
     mask_str = ';'.join(f'{x},{y}' for x, y in mask_pts)
     return mask_str
@@ -1878,6 +1963,19 @@ def mask_str_to_pts(mask_str):
     return mask_pts
 
 
+def contour_pts_to_mask(contour_pts, patch_img, col=(255, 255, 255)):
+    # np.savetxt('contourPtsToMask_mask_pts.txt', contour_pts, fmt='%.6f')
+
+    mask_img = np.zeros_like(patch_img, dtype=np.uint8)
+    # if not isinstance(contour_pts, list):
+    #     raise SystemError('contour_pts must be a list rather than {}'.format(type(contour_pts)))
+    if len(contour_pts) > 0:
+        mask_img = cv2.fillPoly(mask_img, np.array([contour_pts, ], dtype=np.int32), col)
+    blended_img = np.array(Image.blend(Image.fromarray(patch_img), Image.fromarray(mask_img), 0.5))
+
+    return mask_img, blended_img
+
+
 def mask_pts_to_img(mask_pts, img_h, img_w, to_rle):
     mask_img = np.zeros((img_h, img_w), dtype=np.uint8)
     mask_img = cv2.fillPoly(mask_img, np.array([mask_pts, ], dtype=np.int32), 1)
@@ -1890,7 +1988,7 @@ def mask_pts_to_img(mask_pts, img_h, img_w, to_rle):
     bin_mask_img = mask_img.astype(bool)
 
     if to_rle:
-        mask_rle = binary_mask_to_rle_coco(bin_mask_img)
+        mask_rle = mask_img_to_rle_coco(bin_mask_img)
         return mask_rle
 
     return bin_mask_img

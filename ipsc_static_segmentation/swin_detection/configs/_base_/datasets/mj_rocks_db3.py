@@ -54,6 +54,13 @@ data = dict(
         pipeline=test_pipeline
     ),
 
+    sept5_2k_100=dict(
+        type=dataset_type,
+        ann_file=data_root + 'september_5_2020_2K_100-large_huge.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline,
+        samples_per_gpu=3,
+    ),
     september_5_2020=dict(
         type=dataset_type,
         ann_file=data_root + 'september_5_2020-large_huge.json',

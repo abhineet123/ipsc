@@ -30,7 +30,7 @@ from datetime import datetime
 
 sys.path.append('..')
 
-from eval_utils import get_mask_rle_iou, get_iou, contour_pts_from_mask, mask_pts_to_img, \
+from eval_utils import get_mask_rle_iou, get_iou, mask_img_to_pts, mask_pts_to_img, \
     col_bgr, resize_ar, add_suffix, drawBox, linux_path
 
 from pycocotools.coco import COCO
@@ -339,7 +339,7 @@ def ytvis_to_coco(ytvis_gt, ytvis_preds,
                 invalid_mask = 0
                 xmin = None
 
-                mask_pts, mask_bb, is_multi = contour_pts_from_mask(mask_orig)
+                mask_pts, mask_bb, is_multi = mask_img_to_pts(mask_orig)
 
                 if len(mask_pts) < 4:
                     invalid_mask = 1

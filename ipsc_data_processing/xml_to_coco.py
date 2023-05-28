@@ -288,7 +288,6 @@ def save_boxes_coco(annotation_paths: List[str],
             all_pix_vals_mean.append(pix_vals_mean)
             all_pix_vals_std.append(pix_vals_std)
 
-        img_id = img_info['id']
         output_json_dict['images'].append(img_info)
 
         objs = ann_root.findall('object')
@@ -303,7 +302,7 @@ def save_boxes_coco(annotation_paths: List[str],
 
             ann.update(
                 {
-                    'image_id': img_id,
+                    'image_id': img_info['id'],
                     'id': bnd_id
                 }
             )
@@ -361,8 +360,8 @@ def save_boxes_coco(annotation_paths: List[str],
         print(f'pix_vals_std: {pix_vals_std}')
 
     with open(output_json, 'w') as f:
-        output_json = json.dumps(output_json_dict, indent=4)
-        f.write(output_json)
+        output_json_str = json.dumps(output_json_dict, indent=4)
+        f.write(output_json_str)
 
 
 def main():

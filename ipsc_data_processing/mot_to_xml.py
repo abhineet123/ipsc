@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 from eval_utils import ImageSequenceWriter as ImageWriter
 from pascal_voc_io import PascalVocWriter
-from eval_utils import contour_pts_to_mask, contour_pts_from_mask, sortKey, resize_ar, \
+from eval_utils import contour_pts_to_mask, mask_img_to_pts, sortKey, resize_ar, \
     drawBox, show_labels, clamp, linux_path
 
 
@@ -554,7 +554,7 @@ def main():
                             # cv2.imshow('seg_mask', seg_mask)
                             # cv2.waitKey(0)
 
-                            seg_pts, _, _ = contour_pts_from_mask(seg_mask)
+                            seg_pts, _, _ = mask_img_to_pts(seg_mask)
 
                             if extrapolate_seg:
                                 if obj_id not in obj_ids_to_seg_pts:
