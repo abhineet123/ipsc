@@ -20,6 +20,8 @@
         - [large_huge       @ part6/db3](#large_huge___part6_db_3_)
     - [september_5_2020       @ db3](#september_5_2020___db_3_)
         - [large_huge       @ september_5_2020/db3](#large_huge___september_5_2020_db3_)
+    - [september_5_2020_2K_100       @ db3](#september_5_2020_2k_100___db_3_)
+        - [large_huge       @ september_5_2020_2K_100/db3](#large_huge___september_5_2020_2k_100_db_3_)
     - [db3_2_to_17_except_6       @ db3](#db3_2_to_17_except_6___db_3_)
         - [large_huge       @ db3_2_to_17_except_6/db3](#large_huge___db3_2_to_17_except_6_db3_)
     - [db3_2_to_17_except_6_no_rocks       @ db3](#db3_2_to_17_except_6_no_rocks___db_3_)
@@ -103,6 +105,12 @@ python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=septemb
 
 __no_annotations__
 python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=september_5_2020 class_names_path=lists/classes/predefined_classes_rock.txt output_json=september_5_2020-large_huge.json val_ratio=0 min_val=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 no_annotations=1
+
+<a id="september_5_2020_2k_100___db_3_"></a>
+## september_5_2020_2K_100       @ db3-->xml_to_coco_mj
+<a id="large_huge___september_5_2020_2k_100_db_3_"></a>
+### large_huge       @ september_5_2020_2K_100/db3-->xml_to_coco_mj
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=september_5_2020_2K_100 class_names_path=lists/classes/predefined_classes_rock.txt output_json=september_5_2020_2K_100-large_huge.json val_ratio=0 min_val=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=1
 
 <a id="db3_2_to_17_except_6___db_3_"></a>
 ## db3_2_to_17_except_6       @ db3-->xml_to_coco_mj

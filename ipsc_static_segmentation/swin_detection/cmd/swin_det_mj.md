@@ -66,7 +66,7 @@ python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py che
 
 <a id="on_sept5_2k_100___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-sept5_2k_100       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
-python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=september_5_2020 write_masks=1 write_xml=0 
+python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=sept5_2k_100 write_masks=0 write_xml=0 
 
 <a id="on_part1___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-part1       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj

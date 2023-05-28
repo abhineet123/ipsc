@@ -50,6 +50,7 @@ class Params:
         self.sources_to_include = []
         self.val_ratio = 0
         self.no_annotations = 0
+        self.write_empty = 0
         self.allow_missing_images = 0
         self.remove_mj_dir_suffix = 0
         self.get_img_stats = 1
@@ -153,32 +154,29 @@ def get_coco_annotation_from_obj(obj, label2id, enable_mask, ignore_invalid_labe
     return ann
 
 
-def save_boxes_coco(annotation_paths: List[str],
-                    label2id: Dict[str, int],
-                    output_json: str,
-                    extract_num_from_imgid: int,
-                    enable_mask: int,
-                    allow_missing_images: int,
-                    ignore_invalid_label: int,
-                    remove_mj_dir_suffix: int,
-                    get_img_stats: int,
-                    write_masks: int,
-                    list_path: str,
-                    mask_dir_name: str,
-                    palette_flat: list,
-                    only_list: int,
+def save_boxes_coco(annotation_paths,
+                    output_json_dict,
+                    label2id,
+                    output_json,
+                    extract_num_from_imgid,
+                    enable_mask,
+                    allow_missing_images,
+                    ignore_invalid_label,
+                    remove_mj_dir_suffix,
+                    get_img_stats,
+                    write_masks,
+                    list_path,
+                    mask_dir_name,
+                    palette_flat,
+                    only_list,
                     excluded_images=None
                     ):
-    output_json_dict = {
-        "images": [],
-        "type": "instances",
-        "annotations": [],
-        "categories": []
-    }
     bnd_id = 1  # START_BOUNDING_BOX_ID, TODO input as args ?
     pbar = tqdm(annotation_paths)
 
     out_root_dir = os.path.dirname(output_json)
+
+    img_id_to_info = {img_info['id']: img_info for img_info in output_json_dict['images']}
 
     img_path_to_stats = {}
     if get_img_stats:
@@ -288,7 +286,12 @@ def save_boxes_coco(annotation_paths: List[str],
             all_pix_vals_mean.append(pix_vals_mean)
             all_pix_vals_std.append(pix_vals_std)
 
-        output_json_dict['images'].append(img_info)
+        try:
+            img_info_existing = img_id_to_info[img_info['id']]
+        except KeyError:
+            output_json_dict['images'].append(img_info)
+        else:
+            assert img_info_existing == img_info, "img_info mismatch"
 
         objs = ann_root.findall('object')
 
@@ -382,6 +385,7 @@ def main():
     output_json = params.output_json
     extract_num_from_imgid = params.extract_num_from_imgid
     no_annotations = params.no_annotations
+    write_empty = params.write_empty
     excluded_images_list = params.excluded_images_list
     n_seq = params.n_seq
 
@@ -459,14 +463,20 @@ def main():
     class_dict = {x.strip(): i for (i, x) in enumerate(class_names)}
 
     if no_annotations:
+        print('writing json for all images without annotations')
 
-        print('creating json without annotations')
-        output_json_dict = {
-            "images": [],
-            "type": "instances",
-            "annotations": [],
-            "categories": []
-        }
+    if write_empty:
+        print('including images without annotations in the json')
+        assert val_ratio == 0, "validation set with empty images is meaningless"
+
+    output_json_dict = {
+        "images": [],
+        "type": "instances",
+        "annotations": [],
+        "categories": []
+    }
+
+    if no_annotations or write_empty:
         for seq_id, seq_path in enumerate(seq_paths):
             img_files = glob.glob(os.path.join(seq_path, '**/*.jpg'), recursive=True)
 
@@ -487,6 +497,7 @@ def main():
                 random.shuffle(img_files)
 
             seq_name = os.path.basename(seq_path)
+            seq_root_dir = os.path.dirname(seq_path)
 
             print(f'\n sequence {seq_id + 1} / {n_seq}: {seq_name}\n')
 
@@ -495,25 +506,29 @@ def main():
                 width, height = imagesize.get(img_file)
                 filename = os.path.basename(img_file)
                 img_id = os.path.splitext(filename)[0]
+
+                rel_path = os.path.relpath(img_file, seq_root_dir).rstrip('.' + os.sep).replace(os.sep, '/')
+                # rel_path = seq_name + '/' + filename
                 image_info = {
-                    'file_name': seq_name + '/' + filename,
+                    'file_name': rel_path,
                     'height': height,
                     'width': width,
                     'id': seq_name + '/' + img_id
                 }
                 output_json_dict['images'].append(image_info)
 
-        for label, label_id in class_dict.items():
-            category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
-            output_json_dict['categories'].append(category_info)
+        if no_annotations:
+            for label, label_id in class_dict.items():
+                category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
+                output_json_dict['categories'].append(category_info)
 
-        json_path = os.path.join(output_json_dir, output_json_fname)
+            json_path = os.path.join(output_json_dir, output_json_fname)
 
-        print('saving output json to: {}'.format(json_path))
-        with open(json_path, 'w') as f:
-            output_json_data = json.dumps(output_json_dict, indent=4)
-            f.write(output_json_data)
-        return
+            print('saving output json to: {}'.format(json_path))
+            with open(json_path, 'w') as f:
+                output_json_data = json.dumps(output_json_dict, indent=4)
+                f.write(output_json_data)
+            return
 
     dir_name = params.dir_name
     if params.dir_suffix:
@@ -571,7 +586,6 @@ def main():
 
         assert n_files > 0, 'No xml files found in {}'.format(xml_path)
 
-
         n_val_files = max(int(n_files * val_ratio), min_val)
 
         n_train_files = n_files - n_val_files
@@ -603,7 +617,9 @@ def main():
         else:
             print(f'\nsaving JSON annotations for {n_val_xml} validation files to: {val_json_path}\n')
 
-        save_boxes_coco(val_xml, class_dict, val_json_path,
+        save_boxes_coco(val_xml,
+                        output_json_dict,
+                        class_dict, val_json_path,
                         extract_num_from_imgid, enable_mask,
                         excluded_images=all_excluded_images,
                         ignore_invalid_label=params.ignore_invalid_label,
@@ -628,7 +644,9 @@ def main():
         else:
             print(f'\nsaving JSON annotations for {n_train_xml} train files to: {train_json_path}\n')
 
-        save_boxes_coco(train_xml, class_dict, train_json_path,
+        save_boxes_coco(train_xml,
+                        output_json_dict,
+                        class_dict, train_json_path,
                         extract_num_from_imgid, enable_mask,
                         excluded_images=all_excluded_images,
                         allow_missing_images=params.allow_missing_images,
