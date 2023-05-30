@@ -65,6 +65,15 @@ class Params:
         self.only_list = 0
 
 
+def save_json(json_dict, json_path):
+    n_json_imgs = len(json_dict['images'])
+    n_json_objs = len(json_dict['annotations'])
+    print(f'saving output json with {n_json_imgs} images and {n_json_objs} objects to: {json_path}')
+    with open(json_path, 'w') as f:
+        output_json_data = json.dumps(json_dict, indent=4)
+        f.write(output_json_data)
+
+
 def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
     rel_path = annotation_root.findtext('path')
     if rel_path is None:
@@ -362,9 +371,7 @@ def save_boxes_coco(annotation_paths,
         print(f'pix_vals_mean: {pix_vals_mean}')
         print(f'pix_vals_std: {pix_vals_std}')
 
-    with open(output_json, 'w') as f:
-        output_json_str = json.dumps(output_json_dict, indent=4)
-        f.write(output_json_str)
+    save_json(output_json_dict, output_json)
 
 
 def main():
@@ -523,11 +530,7 @@ def main():
                 output_json_dict['categories'].append(category_info)
 
             json_path = os.path.join(output_json_dir, output_json_fname)
-
-            print('saving output json to: {}'.format(json_path))
-            with open(json_path, 'w') as f:
-                output_json_data = json.dumps(output_json_dict, indent=4)
-                f.write(output_json_data)
+            save_json(output_json_dict, json_path)
             return
 
     dir_name = params.dir_name

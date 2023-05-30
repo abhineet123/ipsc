@@ -1980,7 +1980,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
                                 _gt_json_ann.update({
                                     'segmentation': [mask_pts_flat, ],
-                                    'mask_pts': mask_pts,
+                                    # 'mask_pts': mask_pts,
                                 })
 
                             # bnd_id += 1
@@ -2065,7 +2065,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
                         _det_json_ann.update({
                             'segmentation': [mask_pts_flat, ],
-                            'mask_pts': mask_pts,
+                            # 'mask_pts': mask_pts,
                         })
 
                     det_csv_rows.append(_det_csv_row)
@@ -2903,6 +2903,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
             json_out_path = os.path.join(out_root_dir, 'gt_with_fp_nex_whole.json')
 
+            n_json_imgs = len(json_dict['images'])
+            n_json_objs = len(json_dict['annotations'])
+            print(f'saving fps_to_gt json with {n_json_imgs} images and {n_json_objs} objects to: {json_out_path}')
+
             with open(json_out_path, 'w') as f:
                 json_dict_str = json.dumps(json_dict, indent=4)
                 f.write(json_dict_str)
@@ -3263,15 +3267,19 @@ def run(params, *argv):
                 img_end_id=img_end_id,
                 fps_to_gt=params.fps_to_gt,
             )
-            eval_0 = eval_dict[gt_classes[0]]
-            eval_1 = eval_dict[gt_classes[1]]
-
-            for metric in max_tp_metrics:
-                del eval_0[metric]
-                del eval_1[metric]
+            for gt_class in gt_classes:
+                eval_ = eval_dict[gt_class]
+                for metric in max_tp_metrics:
+                    try:
+                        del eval_[metric]
+                    except KeyError:
+                        pass
 
             for metric in roc_auc_metrics:
-                del eval_dict[metric]
+                try:
+                    del eval_dict[metric]
+                except KeyError:
+                    pass
 
             eval_dict_path = linux_path(out_root_dir, 'eval_dict.json')
             print(f'saving eval_dict to {eval_dict_path}')

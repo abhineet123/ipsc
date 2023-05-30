@@ -108,6 +108,8 @@ python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=septemb
 
 <a id="september_5_2020_2k_100___db_3_"></a>
 ## september_5_2020_2K_100       @ db3-->xml_to_coco_mj
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=september_5_2020_2K_100 class_names_path=lists/classes/predefined_classes_rock.txt output_json=september_5_2020_2K_100.json val_ratio=0 min_val=0 allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=1
+
 <a id="large_huge___september_5_2020_2k_100_db_3_"></a>
 ### large_huge       @ september_5_2020_2K_100/db3-->xml_to_coco_mj
 python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=september_5_2020_2K_100 class_names_path=lists/classes/predefined_classes_rock.txt output_json=september_5_2020_2K_100-large_huge.json val_ratio=0 min_val=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=1

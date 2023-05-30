@@ -6,6 +6,7 @@
         - [on-db4       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_db4___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-db4_rockmaps       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_db4_rockmaps___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-september_5_2020       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_september_5_2020___single_gpu_db3_2_to_17_except_6_large_huge_)
+        - [on-train       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_train___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-sept5_2k_100       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_sept5_2k_100___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-part1       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_part1___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-part6       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_part6___single_gpu_db3_2_to_17_except_6_large_huge_)
@@ -63,6 +64,10 @@ CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/db3_2_to_17_exc
 <a id="on_september_5_2020___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-september_5_2020       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=september_5_2020 write_masks=1 write_xml=0 
+
+<a id="on_train___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
+### on-train       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
+python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=db3_2_to_17_except_6_large_huge_train write_masks=0 write_xml=0 
 
 <a id="on_sept5_2k_100___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-sept5_2k_100       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj

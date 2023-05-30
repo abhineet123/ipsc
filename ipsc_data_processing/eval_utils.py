@@ -1924,6 +1924,8 @@ def mask_img_to_pts(mask_img):
 
     x, y, w, h = cv2.boundingRect(contour_pts)
 
+    contour_pts = list(contour_pts.squeeze())
+
     return contour_pts, (x, y, w, h), is_multi
 
 

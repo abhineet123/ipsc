@@ -54,6 +54,13 @@ data = dict(
         pipeline=test_pipeline
     ),
 
+    db3_2_to_17_except_6_large_huge_train=dict(
+        type=dataset_type,
+        ann_file=data_root + 'db3_2_to_17_except_6-large_huge-train.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline,
+        samples_per_gpu=3,
+    ),
     sept5_2k_100=dict(
         type=dataset_type,
         ann_file=data_root + 'september_5_2020_2K_100-large_huge.json',
@@ -89,8 +96,6 @@ data = dict(
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
-
-
     db4=dict(
         type=dataset_type,
         ann_file=data_root_db4 + 'db4.json',
