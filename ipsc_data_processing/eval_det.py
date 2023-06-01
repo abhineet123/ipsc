@@ -146,6 +146,7 @@ class Params:
 
         self.show_text = 1
         self.gt_csv_name = 'annotations.csv'
+        self.gt_csv_suffix = ''
         self.a = False
         self.p = False
         self.detection_names = []
@@ -3029,6 +3030,9 @@ def run(params, *argv):
 
     print(f'img_path_list: {img_path_list}')
 
+    if params.gt_csv_suffix:
+        params.gt_csv_name = add_suffix(params.gt_csv_name, params.gt_csv_suffix)
+
     if not gt_paths:
         gt_path_list = [linux_path(img_path, params.gt_csv_name) for img_path in img_path_list]
     elif gt_paths.endswith('.csv'):
@@ -3156,6 +3160,27 @@ def run(params, *argv):
             'FPR_DUP',
             'FPR_NEX',
         ]
+
+        if params.check_seq_name:
+            img_seq_names = [os.path.basename(x) for x in _img_path_list]
+            img_temp = sorted(enumerate(img_seq_names), key=lambda x: x[1])
+            img_seq_names_idx, img_seq_names = zip(*img_temp)
+
+            gt_seq_names = [os.path.basename(_gt_path) for _gt_path in gt_path_list]
+            if len(gt_seq_names) > 0 and gt_seq_names[0].endswith('.csv'):
+                gt_seq_names = [os.path.basename(os.path.dirname(_gt_path)) for _gt_path in gt_path_list]
+
+            det_seq_names = [os.path.splitext(os.path.basename(x))[0] for x in det_path_list]
+
+            gt_seq_names_idx, gt_seq_names = zip(*sorted(enumerate(gt_seq_names), key=lambda x: x[1]))
+            det_seq_names_idx, det_seq_names = zip(*sorted(enumerate(det_seq_names), key=lambda x: x[1]))
+
+            assert img_seq_names == gt_seq_names, "mismatch between img_seq_names and gt_seq_names"
+            assert img_seq_names == det_seq_names, "mismatch between img_seq_names and det_seq_names"
+
+            _img_path_list = [_img_path_list[i] for i in img_seq_names_idx]
+            gt_path_list = [gt_path_list[i] for i in gt_seq_names_idx]
+            det_path_list = [det_path_list[i] for i in det_seq_names_idx]
 
         if params.iw:
             eval_dicts = {}
