@@ -1,3 +1,5 @@
+dataset_type = 'MojowRocks'
+
 data_root_db4 = '/data/mojow_rock/rock_dataset4/'
 data_root_db4_rockmaps = '/data/mojow_rock/rock_dataset4/rockmaps/'
 data_root = '/data/mojow_rock/rock_dataset3/'
@@ -29,78 +31,74 @@ test_pipeline = [
         ])
 ]
 data = dict(
-
     samples_per_gpu=1,
     workers_per_gpu=0,
-
-    # train=dict(
-    #     type=dataset_type,
-    #     img_prefix=data_root,
-    #     pipeline=train_pipeline),
-    # val=dict(
-    #     type=dataset_type,
-    #     img_prefix=data_root,
-    #     pipeline=test_pipeline),
+    train=dict(
+        type=dataset_type,
+        img_prefix=data_root,
+        pipeline=train_pipeline),
+    val=dict(
+        type=dataset_type,
+        img_prefix=data_root,
+        pipeline=test_pipeline),
 
     part1=dict(
-        type='MojowRocks',
+        type=dataset_type,
         ann_file=data_root + 'part1-large_huge.json',
         img_prefix=data_root,
         pipeline=test_pipeline
     ),
-
-
     part6=dict(
-        type='MojowRocks',
+        type=dataset_type,
         ann_file=data_root + 'part6-large_huge.json',
         img_prefix=data_root,
         pipeline=test_pipeline
     ),
 
     db3_2_to_17_except_6_large_huge_train=dict(
-        type='MojowRocksSyn',
+        type=dataset_type,
         ann_file=data_root + 'db3_2_to_17_except_6-large_huge-train.json',
         img_prefix=data_root,
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
     sept5_2k_100=dict(
-        type='MojowRocks',
+        type=dataset_type,
         ann_file=data_root + 'september_5_2020_2K_100-large_huge.json',
         img_prefix=data_root,
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
     september_5_2020=dict(
-        type='MojowRocks',
+        type=dataset_type,
         ann_file=data_root + 'september_5_2020-large_huge.json',
         img_prefix=data_root,
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
     part14_on_part4_on_part5_on_september_5_2020=dict(
-        type='MojowRocksSyn',
+        type=dataset_type,
         ann_file=data_root + 'part14_on_part4_on_part5_on_september_5_2020-large_huge.json',
         img_prefix=data_root,
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
     part4_on_part5_on_september_5_2020=dict(
-        type='MojowRocksSyn',
+        type=dataset_type,
         ann_file=data_root + 'part4_on_part5_on_september_5_2020-large_huge.json',
         img_prefix=data_root,
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
     part5_on_september_5_2020=dict(
-        type='MojowRocksSyn',
+        type=dataset_type,
         ann_file=data_root + 'part5_on_september_5_2020-large_huge.json',
         img_prefix=data_root,
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
     db4=dict(
-        type='MojowRocks',
+        type=dataset_type,
         ann_file=data_root_db4 + 'db4.json',
         img_prefix=data_root_db4,
         pipeline=test_pipeline,
@@ -108,7 +106,7 @@ data = dict(
     ),
 
     db4_rockmaps=dict(
-        type='MojowRocks',
+        type=dataset_type,
         ann_file=data_root_db4_rockmaps + 'db4-rockmaps.json',
         img_prefix=data_root_db4_rockmaps,
         pipeline=test_pipeline,
@@ -116,7 +114,7 @@ data = dict(
     ),
 
     db4_rockmaps_syn=dict(
-        type='MojowRocksSyn',
+        type=dataset_type,
         ann_file=data_root_db4 + 'db4-rockmaps_syn.json',
         img_prefix=data_root_db4,
         pipeline=test_pipeline,

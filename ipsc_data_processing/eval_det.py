@@ -38,7 +38,8 @@ import pycocotools.mask as mask_util
 
 from eval_utils import mask_str_to_img, perform_global_association, draw_text_in_image, get_max_iou_obj, \
     compute_thresh_rec_prec, voc_ap, get_intersection, binary_cls_metrics, file_lines_to_list, \
-    arr_to_csv, draw_objs, norm_auc, resize_ar_tf_api, sortKey, linux_path, add_suffix, ImageSequenceWriter, mask_rle_to_pts
+    arr_to_csv, draw_objs, norm_auc, resize_ar_tf_api, sortKey, linux_path, add_suffix, ImageSequenceWriter, \
+    mask_rle_to_pts
 
 import paramparse
 
@@ -1049,11 +1050,18 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
     }
 
     # bnd_id = 1
+    n_all_gt_objs = n_all_fp_nex_whole_dets = 0
+
+    json_category_name_to_id = {}
 
     for gt_class_idx, gt_class in enumerate(gt_classes):
         category_info = {'supercategory': 'none', 'id': gt_class_idx, 'name': gt_class}
-
         json_dict['categories'].append(category_info)
+        json_category_name_to_id[gt_class] = gt_class_idx
+
+        category_info = {'supercategory': 'none', 'id': gt_class_idx + n_classes, 'name': f'FP-{gt_class}'}
+        json_dict['categories'].append(category_info)
+        json_category_name_to_id[f'FP-{gt_class}'] = gt_class_idx + n_classes
 
         enable_vis = show_vis or (save_vis and gt_class in save_classes)
 
@@ -1920,7 +1928,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         try:
                             _ = file_id_to_img_info[_gt_file_id]
                         except KeyError:
-                            rel_path = os.path.relpath(_gt_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep, '/')
+                            rel_path = os.path.relpath(_gt_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep,
+                                                                                                               '/')
                             img_info = {
                                 'file_name': rel_path,
                                 'height': _frame_height,
@@ -1955,7 +1964,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             gt_o_width = gt_xmax - gt_xmin
                             gt_o_height = gt_ymax - gt_ymin
 
-                            _gt_class_id = gt_classes.index(_gt_class)
+                            _gt_class_id = json_category_name_to_id[_gt_class]
 
                             _gt_json_ann = {
                                 'image_id': img_info['id'],
@@ -1973,10 +1982,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 mask_h, mask_w = mask_rle['size']
                                 mask_counts = mask_rle['counts']
                                 _gt_csv_row.update({
-                                        "mask_h": mask_h,
-                                        "mask_w": mask_w,
-                                        "mask_counts": mask_counts,
-                                    })
+                                    "mask_h": mask_h,
+                                    "mask_w": mask_w,
+                                    "mask_counts": mask_counts,
+                                })
                                 mask_pts, bbox, is_multi = mask_rle_to_pts(mask_rle)
                                 mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
                                 _gt_json_ann.update({
@@ -1989,7 +1998,9 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             json_dict['annotations'].append(_gt_json_ann)
 
                     n_gt_objs = len(gt_csv_rows)
-                    print(f'\nfps_to_gt: n_gt_objs: {n_gt_objs}')
+                    print(f'\nfps_to_gt::{seq_name} n_gt_objs: {n_gt_objs}')
+
+                    n_all_gt_objs += n_gt_objs
 
                     gt_csv_rows.sort(key=lambda x: x['filename'])
 
@@ -1997,7 +2008,9 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                 fp_nex_whole_dets = [seq_class_det_data[i] for i in range(n_seq_class_dets) if fp_nex_whole[i]]
                 n_fp_nex_whole_dets = len(fp_nex_whole_dets)
-                print(f'\n{gt_class} :: n_fp_nex_whole_dets : {n_fp_nex_whole_dets}')
+                n_all_fp_nex_whole_dets += n_fp_nex_whole_dets
+
+                print(f'\n{gt_class}:{seq_name} :: n_fp_nex_whole_dets : {n_fp_nex_whole_dets}')
 
                 det_csv_rows = []
                 for _det in tqdm(fp_nex_whole_dets, desc="fps_to_gt: fp_nex_whole_dets", ncols=100):
@@ -2041,7 +2054,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     _det_o_width = _det_xmax - _det_xmin
                     _det_o_height = _det_ymax - _det_ymin
 
-                    _det_class_id = gt_classes.index(_det_class)
+                    _det_class_id = json_category_name_to_id[f"FP-{_det_class}"]
+
                     _det_json_ann = {
                         'image_id': img_info['id'],
                         'id': _det_target_id,
@@ -2058,10 +2072,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         mask_h, mask_w = mask_rle['size']
                         mask_counts = mask_rle['counts']
                         _det_csv_row.update({
-                                "mask_h": mask_h,
-                                "mask_w": mask_w,
-                                "mask_counts": mask_counts,
-                            })
+                            "mask_h": mask_h,
+                            "mask_w": mask_w,
+                            "mask_counts": mask_counts,
+                        })
                         mask_pts, bbox, is_multi = mask_rle_to_pts(mask_rle)
                         mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
                         _det_json_ann.update({
@@ -2887,6 +2901,9 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 out_file.write(out_text)
 
         if fps_to_gt:
+            print(f'\nfps_to_gt: n_all_gt_objs: {n_all_gt_objs}')
+            print(f'\nn_all_fp_nex_whole_dets : {n_all_fp_nex_whole_dets}')
+
             for seq_name, out_csv_rows in seq_name_to_csv_rows.items():
                 if not out_csv_rows:
                     continue

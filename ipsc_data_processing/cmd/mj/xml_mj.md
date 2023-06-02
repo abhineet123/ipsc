@@ -4,6 +4,8 @@
     - [ipsc-5_class       @ csv_to_yolov5](#ipsc_5_class___csv_to_yolov_5_)
     - [ext_reorg_roi       @ csv_to_yolov5](#ext_reorg_roi___csv_to_yolov_5_)
 - [xml_to_csv](#xml_to_cs_v_)
+    - [db3_2_to_17_except_6       @ xml_to_csv](#db3_2_to_17_except_6___xml_to_csv_)
+        - [large_huge       @ db3_2_to_17_except_6/xml_to_csv](#large_huge___db3_2_to_17_except_6_xml_to_cs_v_)
     - [sept5       @ xml_to_csv](#sept5___xml_to_csv_)
         - [large_huge       @ sept5/xml_to_csv](#large_huge___sept5_xml_to_csv_)
     - [db4       @ xml_to_csv](#db4___xml_to_csv_)
@@ -56,6 +58,12 @@ python csv_to_yolov5.py root_dir=/data/ipsc/well3/images class_names_path=lists/
 
 <a id="xml_to_cs_v_"></a>
 # xml_to_csv
+<a id="db3_2_to_17_except_6___xml_to_csv_"></a>
+## db3_2_to_17_except_6       @ xml_to_csv-->xml_mj
+<a id="large_huge___db3_2_to_17_except_6_xml_to_cs_v_"></a>
+### large_huge       @ db3_2_to_17_except_6/xml_to_csv-->xml_mj
+python3 xml_to_csv.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6.txt enable_mask=1 csv_name=annotations.csv xml_suffix=large_huge recursive=0
+
 <a id="sept5___xml_to_csv_"></a>
 ## sept5       @ xml_to_csv-->xml_mj
 <a id="large_huge___sept5_xml_to_csv_"></a>

@@ -1,5 +1,7 @@
 <!-- MarkdownTOC -->
 
+- [db3_2_to_17_except_6-large_huge-fps_to_gt       @ multi_gpu/](#db3_2_to_17_except_6_large_huge_fps_to_gt___multi_gpu_)
+    - [multi_gpu       @ db3_2_to_17_except_6-large_huge-fps_to_gt](#multi_gpu___db3_2_to_17_except_6_large_huge_fps_to_g_t_)
 - [db3_2_to_17_except_6-large_huge       @ multi_gpu/](#db3_2_to_17_except_6_large_huge___multi_gpu_)
     - [multi_gpu       @ db3_2_to_17_except_6-large_huge](#multi_gpu___db3_2_to_17_except_6_large_hug_e_)
     - [single_gpu       @ db3_2_to_17_except_6-large_huge](#single_gpu___db3_2_to_17_except_6_large_hug_e_)
@@ -38,6 +40,12 @@
         - [on-db4_rockmaps       @ db3_2_to_17_except_6_no_rocks-large_huge/](#on_db4_rockmaps___db3_2_to_17_except_6_no_rocks_large_huge__)
 
 <!-- /MarkdownTOC -->
+
+<a id="db3_2_to_17_except_6_large_huge_fps_to_gt___multi_gpu_"></a>
+# db3_2_to_17_except_6-large_huge-fps_to_gt       @ multi_gpu/-->swin_det_mj
+<a id="multi_gpu___db3_2_to_17_except_6_large_huge_fps_to_g_t_"></a>
+## multi_gpu       @ db3_2_to_17_except_6-large_huge-fps_to_gt-->swin_det_mj
+tools/dist_train.sh configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py 2  --init file:///tmp/db3_2_to_17_except_6-large_huge-fps_to_gt-009 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=2
 
 <a id="db3_2_to_17_except_6_large_huge___multi_gpu_"></a>
 # db3_2_to_17_except_6-large_huge       @ multi_gpu/-->swin_det_mj
