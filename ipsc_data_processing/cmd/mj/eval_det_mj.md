@@ -2,8 +2,8 @@
 
 - [swi-db4](#swi_db4_)
 - [swi-db3_2_to_17_except_6-large_huge](#swi_db3_2_to_17_except_6_large_huge_)
-    - [train       @ swi-db3_2_to_17_except_6-large_huge](#train___swi_db3_2_to_17_except_6_large_hug_e_)
-    - [sept5_2k_100       @ swi-db3_2_to_17_except_6-large_huge](#sept5_2k_100___swi_db3_2_to_17_except_6_large_hug_e_)
+    - [on-train       @ swi-db3_2_to_17_except_6-large_huge](#on_train___swi_db3_2_to_17_except_6_large_hug_e_)
+    - [on-sept5_2k_100       @ swi-db3_2_to_17_except_6-large_huge](#on_sept5_2k_100___swi_db3_2_to_17_except_6_large_hug_e_)
 - [swi-db3_sept5_syn3-large_huge](#swi_db3_sept5_syn3_large_huge_)
     - [sept5       @ swi-db3_sept5_syn3-large_huge](#sept5___swi_db3_sept5_syn3_large_hug_e_)
     - [sept5_syn       @ swi-db3_sept5_syn3-large_huge](#sept5_syn___swi_db3_sept5_syn3_large_hug_e_)
@@ -17,12 +17,12 @@ python3 eval_det.py cfg=mj:db4 img_paths=lists/db4.txt det_paths=log/swi/db3_2_t
 
 <a id="swi_db3_2_to_17_except_6_large_huge_"></a>
 # swi-db3_2_to_17_except_6-large_huge 
-<a id="train___swi_db3_2_to_17_except_6_large_hug_e_"></a>
-## train       @ swi-db3_2_to_17_except_6-large_huge-->eval_det_mj
-python3 eval_det.py cfg=mj:db3:vis img_paths=lists/db3_2_to_17_except_6.txt det_paths=log/swi/db3_2_to_17_except_6-large_huge/db3_2_to_17_except_6_large_huge_train/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-on_train vid_fmt=mp4v,5,jpg check_seq_name=1 combine_dets=0 fps_to_gt=1 gt_csv_suffix=large_huge
+<a id="on_train___swi_db3_2_to_17_except_6_large_hug_e_"></a>
+## on-train       @ swi-db3_2_to_17_except_6-large_huge-->eval_det_mj
+python3 eval_det.py cfg=mj:db3 img_paths=lists/db3_2_to_17_except_6.txt det_paths=log/swi/db3_2_to_17_except_6-large_huge/db3_2_to_17_except_6_large_huge_train/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-on_train check_seq_name=1 combine_dets=0 fps_to_gt=1 gt_csv_suffix=large_huge
 
-<a id="sept5_2k_100___swi_db3_2_to_17_except_6_large_hug_e_"></a>
-## sept5_2k_100       @ swi-db3_2_to_17_except_6-large_huge-->eval_det_mj
+<a id="on_sept5_2k_100___swi_db3_2_to_17_except_6_large_hug_e_"></a>
+## on-sept5_2k_100       @ swi-db3_2_to_17_except_6-large_huge-->eval_det_mj
 python3 eval_det.py cfg=mj:db3:vis img_paths=september_5_2020_2K_100 det_paths=log/swi/db3_2_to_17_except_6-large_huge/sept5_2k_100/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-on_sept5_2k_100 vid_fmt=mp4v,5,jpg check_seq_name=0 combine_dets=0 fps_to_gt=1
 
 <a id="swi_db3_sept5_syn3_large_huge_"></a>

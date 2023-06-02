@@ -2061,7 +2061,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         'id': _det_target_id,
                         'area': _det_o_width * _det_o_height,
                         'bbox': [_det_xmin, _det_ymin, _det_o_width, _det_o_height],
-                        'label': _det_class,
+                        'label': f"FP-{_det_class}",
                         'category_id': _det_class_id,
                         'iscrowd': 0,
                         'ignore': 0,
