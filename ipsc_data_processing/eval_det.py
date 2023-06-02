@@ -106,7 +106,7 @@ class Params:
 
         self.no_animation = False
         self.no_plot = False
-        self.gt_pkl_dir = 'log/pkl'
+        self.gt_pkl_dir = ''
         self.det_pkl_dir = ''
         self.load_gt = 1
         self.gt_pkl = ''
