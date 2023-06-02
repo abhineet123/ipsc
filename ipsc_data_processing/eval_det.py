@@ -106,7 +106,7 @@ class Params:
 
         self.no_animation = False
         self.no_plot = False
-        self.gt_pkl_dir = ''
+        self.gt_pkl_dir = 'log/pkl'
         self.det_pkl_dir = ''
         self.load_gt = 1
         self.gt_pkl = ''
@@ -330,6 +330,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         # if not os.path.exists(pkl_files_path):
         #     os.makedirs(pkl_files_path)
 
+        out_root_name = os.path.basename(out_root_dir)
+
         plots_out_dir = linux_path(out_root_dir, 'plots')
         if draw_plot:
             print('Saving plots to: {}'.format(plots_out_dir))
@@ -348,7 +350,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
         gt_pkl = params.gt_pkl
         if not gt_pkl:
-            gt_pkl = "gt_data_dict.pkl"
+            gt_pkl = f"{out_root_name}.pkl"
 
         gt_pkl = linux_path(gt_pkl_dir, gt_pkl)
 
