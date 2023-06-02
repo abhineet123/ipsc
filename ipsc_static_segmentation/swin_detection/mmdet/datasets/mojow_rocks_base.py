@@ -96,8 +96,9 @@ class MojowRocksBase(CustomDataset):
             data_infos.append(info)
             ann_ids = self.coco.get_ann_ids(img_ids=[i])
             total_ann_ids.extend(ann_ids)
-        assert len(set(total_ann_ids)) == len(
-            total_ann_ids), f"Annotation ids in '{ann_file}' are not unique!"
+
+        unique_ann_ids = set(total_ann_ids)
+        assert len(unique_ann_ids) == len(total_ann_ids), f"Annotation ids in '{ann_file}' are not unique!"
         return data_infos
 
     def get_ann_info(self, idx):

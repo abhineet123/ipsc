@@ -1049,7 +1049,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         "categories": []
     }
 
-    # bnd_id = 1
+    bnd_id = 1
     n_all_gt_objs = n_all_fp_nex_whole_dets = 0
 
     json_category_name_to_id = {}
@@ -1968,7 +1968,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                             _gt_json_ann = {
                                 'image_id': img_info['id'],
-                                'id': _gt_target_id,
+                                'id': bnd_id,
                                 'area': gt_o_width * gt_o_height,
                                 'iscrowd': 0,
                                 'bbox': [gt_xmin, gt_ymin, gt_o_width, gt_o_height],
@@ -1976,6 +1976,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 'category_id': _gt_class_id,
                                 'ignore': 0,
                             }
+                            bnd_id +=1
 
                             if enable_mask:
                                 mask_rle = _frame_gt_datum["mask"]
@@ -1993,7 +1994,6 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                     # 'mask_pts': mask_pts,
                                 })
 
-                            # bnd_id += 1
                             gt_csv_rows.append(_gt_csv_row)
                             json_dict['annotations'].append(_gt_json_ann)
 
@@ -2058,7 +2058,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                     _det_json_ann = {
                         'image_id': img_info['id'],
-                        'id': _det_target_id,
+                        'id': bnd_id,
                         'area': _det_o_width * _det_o_height,
                         'bbox': [_det_xmin, _det_ymin, _det_o_width, _det_o_height],
                         'label': f"FP-{_det_class}",
@@ -2066,6 +2066,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         'iscrowd': 0,
                         'ignore': 0,
                     }
+                    bnd_id += 1
 
                     if enable_mask:
                         mask_rle = _det["mask"]
