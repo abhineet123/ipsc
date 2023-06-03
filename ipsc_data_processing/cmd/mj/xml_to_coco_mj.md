@@ -124,33 +124,33 @@ python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_t
 
 <a id="large_huge___db3_2_to_17_except_6_db3_"></a>
 ### large_huge       @ db3_2_to_17_except_6/db3-->xml_to_coco_mj
-python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6-large_huge.json val_ratio=0.3 dir_suffix=large_huge allow_missing_images=1 remove_mj_dir_suffix=0 get_img_stats=0
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6-large_huge.json val_ratio=0.3 dir_suffix=large_huge allow_missing_images=1 remove_mj_dir_suffix=0 get_img_stats=0
 
 <a id="db3_2_to_17_except_6_sept5_2k_100___db_3_"></a>
 ## db3_2_to_17_except_6_sept5_2k_100       @ db3-->xml_to_coco_mj
 <a id="large_huge___db3_2_to_17_except_6_sept5_2k_100_db_3_"></a>
 ### large_huge       @ db3_2_to_17_except_6_sept5_2k_100/db3-->xml_to_coco_mj
-python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6_sept5_2k_100.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_sept5_2k_100-large_huge.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_sept5_2k_100.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_sept5_2k_100-large_huge.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=1
 
 <a id="db3_2_to_17_except_6_no_rocks___db_3_"></a>
 ## db3_2_to_17_except_6_no_rocks       @ db3-->xml_to_coco_mj
-python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6_no_rocks.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_no_rocks.json val_ratio=0 allow_missing_images=1 remove_mj_dir_suffix=0 get_img_stats=1
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_no_rocks.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_no_rocks.json val_ratio=0 allow_missing_images=1 remove_mj_dir_suffix=0 get_img_stats=1
 pix_vals_mean: [143.90739512604202, 137.85737889429524, 138.77791972367567]
 pix_vals_std: [39.216714984858854, 43.18105474265608, 43.806309282665055]
 
 <a id="large_huge___db3_2_to_17_except_6_no_rocks_db_3_"></a>
 ### large_huge       @ db3_2_to_17_except_6_no_rocks/db3-->xml_to_coco_mj
-python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6_no_rocks.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_no_rocks-large_huge.json val_ratio=0 dir_suffix=large_huge allow_missing_images=1 remove_mj_dir_suffix=0 get_img_stats=1
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_no_rocks.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_no_rocks-large_huge.json val_ratio=0 dir_suffix=large_huge allow_missing_images=1 remove_mj_dir_suffix=0 get_img_stats=1
 pix_vals_mean: [143.90739512604202, 137.85737889429524, 138.77791972367567]
 pix_vals_std: [39.216714984858854, 43.18105474265608, 43.806309282665055]
 
 <a id="db3_2_to_17_except_6_with_syn___db_3_"></a>
 ## db3_2_to_17_except_6_with_syn       @ db3-->xml_to_coco_mj
-python xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6_with_syn.txt class_names_path=lists/classes/predefined_classes_rock_syn.txt output_json=db3_2_to_17_except_6_with_syn.json val_ratio=0 allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
+python xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_with_syn.txt class_names_path=lists/classes/predefined_classes_rock_syn.txt output_json=db3_2_to_17_except_6_with_syn.json val_ratio=0 allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
 
 <a id="large_huge___db3_2_to_17_except_6_with_syn_db_3_"></a>
 ### large_huge       @ db3_2_to_17_except_6_with_syn/db3-->xml_to_coco_mj
-python xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6_with_syn.txt class_names_path=lists/classes/predefined_classes_rock_syn.txt output_json=db3_2_to_17_except_6_with_syn-large_huge.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
+python xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_with_syn.txt class_names_path=lists/classes/predefined_classes_rock_syn.txt output_json=db3_2_to_17_except_6_with_syn-large_huge.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
 
 <a id="part5_on_september_5_2020___db_3_"></a>
 ## part5_on_september_5_2020       @ db3-->xml_to_coco_mj

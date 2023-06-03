@@ -64,6 +64,14 @@ data = dict(
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
+    db3_2_to_17_except_6_sept5_2k_100_large_huge=dict(
+        type='MojowRocksSyn',
+        ann_file=data_root + 'db3_2_to_17_except_6_sept5_2k_100-large_huge.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline,
+        samples_per_gpu=3,
+    ),
+
     sept5_2k_100=dict(
         type='MojowRocks',
         ann_file=data_root + 'september_5_2020_2K_100-large_huge.json',
