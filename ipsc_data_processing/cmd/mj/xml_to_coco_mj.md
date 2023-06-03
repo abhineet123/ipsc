@@ -24,6 +24,8 @@
         - [large_huge       @ september_5_2020_2K_100/db3](#large_huge___september_5_2020_2k_100_db_3_)
     - [db3_2_to_17_except_6       @ db3](#db3_2_to_17_except_6___db_3_)
         - [large_huge       @ db3_2_to_17_except_6/db3](#large_huge___db3_2_to_17_except_6_db3_)
+    - [db3_2_to_17_except_6_sept5_2k_100       @ db3](#db3_2_to_17_except_6_sept5_2k_100___db_3_)
+        - [large_huge       @ db3_2_to_17_except_6_sept5_2k_100/db3](#large_huge___db3_2_to_17_except_6_sept5_2k_100_db_3_)
     - [db3_2_to_17_except_6_no_rocks       @ db3](#db3_2_to_17_except_6_no_rocks___db_3_)
         - [large_huge       @ db3_2_to_17_except_6_no_rocks/db3](#large_huge___db3_2_to_17_except_6_no_rocks_db_3_)
     - [db3_2_to_17_except_6_with_syn       @ db3](#db3_2_to_17_except_6_with_syn___db_3_)
@@ -123,6 +125,12 @@ python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_t
 <a id="large_huge___db3_2_to_17_except_6_db3_"></a>
 ### large_huge       @ db3_2_to_17_except_6/db3-->xml_to_coco_mj
 python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6-large_huge.json val_ratio=0.3 dir_suffix=large_huge allow_missing_images=1 remove_mj_dir_suffix=0 get_img_stats=0
+
+<a id="db3_2_to_17_except_6_sept5_2k_100___db_3_"></a>
+## db3_2_to_17_except_6_sept5_2k_100       @ db3-->xml_to_coco_mj
+<a id="large_huge___db3_2_to_17_except_6_sept5_2k_100_db_3_"></a>
+### large_huge       @ db3_2_to_17_except_6_sept5_2k_100/db3-->xml_to_coco_mj
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=db3_2_to_17_except_6_sept5_2k_100.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_sept5_2k_100-large_huge.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
 
 <a id="db3_2_to_17_except_6_no_rocks___db_3_"></a>
 ## db3_2_to_17_except_6_no_rocks       @ db3-->xml_to_coco_mj

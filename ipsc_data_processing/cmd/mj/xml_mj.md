@@ -76,12 +76,11 @@ python3 xml_to_csv.py seq_paths=/data/mojow_rock/rock_dataset3/september_5_2020 
 ## sept5_2k_100       @ xml_to_csv-->xml_mj
 <a id="large_huge___sept5_2k_100_xml_to_cs_v_"></a>
 ### large_huge       @ sept5_2k_100/xml_to_csv-->xml_mj
-python3 xml_to_csv.py seq_paths=/data/mojow_rock/rock_dataset3/september_5_2020_2k_100 enable_mask=1 csv_name=annotations.csv xml_suffix=large_huge recursive=0
+python3 xml_to_csv.py seq_paths=/data/mojow_rock/rock_dataset3/september_5_2020_2K_100 enable_mask=1 csv_name=annotations.csv xml_suffix=large_huge recursive=0
 
 <a id="db4___xml_to_csv_"></a>
 ## db4       @ xml_to_csv-->xml_mj
 python3 xml_to_csv.py root_dir=/data/mojow_rock/rock_dataset4 seq_paths=db4.txt enable_mask=1 csv_name=annotations.csv
-
 
 <a id="rockmaps___db4_xml_to_csv_"></a>
 ### rockmaps       @ db4/xml_to_csv-->xml_mj
