@@ -26,7 +26,7 @@ class Params:
         self.cfg = ()
         self.batch_size = 1
         self.excluded_images_list = ''
-        self.class_names_path = 'lists/classes///predefined_classes_orig.txt'
+        self.class_names_path = ''
         self.codec = 'H264'
         self.csv_file_name = ''
         self.enable_mask = 2
@@ -389,6 +389,9 @@ def main():
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
     class_names_path = params.class_names_path
+    
+    assert class_names_path, "class_names_path must be provided"
+
     output_json = params.output_json
     extract_num_from_imgid = params.extract_num_from_imgid
     no_annotations = params.no_annotations
