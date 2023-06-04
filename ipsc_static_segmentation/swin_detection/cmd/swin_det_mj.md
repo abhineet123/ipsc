@@ -2,6 +2,7 @@
 
 - [db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt       @ multi_gpu/](#db3_2_to_17_except_6_sept5_2k_100_large_huge_fps_to_gt___multi_gpu_)
 - [db3_2_to_17_except_6-large_huge-fps_to_gt       @ multi_gpu/](#db3_2_to_17_except_6_large_huge_fps_to_gt___multi_gpu_)
+        - [on-train       @ db3_2_to_17_except_6-large_huge-fps_to_gt/](#on_train___db3_2_to_17_except_6_large_huge_fps_to_gt_)
 - [db3_2_to_17_except_6-large_huge       @ multi_gpu/](#db3_2_to_17_except_6_large_huge___multi_gpu_)
     - [multi_gpu       @ db3_2_to_17_except_6-large_huge](#multi_gpu___db3_2_to_17_except_6_large_hug_e_)
     - [single_gpu       @ db3_2_to_17_except_6-large_huge](#single_gpu___db3_2_to_17_except_6_large_hug_e_)
@@ -52,6 +53,11 @@ tools/dist_train.sh configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py 2 
 
 python -m tools.train configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py --no-validate --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=2
 
+<a id="on_train___db3_2_to_17_except_6_large_huge_fps_to_gt_"></a>
+### on-train       @ db3_2_to_17_except_6-large_huge-fps_to_gt/-->swin_det_mj
+python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge-fps_to_gt/latest.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
+
+
 <a id="db3_2_to_17_except_6_large_huge___multi_gpu_"></a>
 # db3_2_to_17_except_6-large_huge       @ multi_gpu/-->swin_det_mj
 <a id="multi_gpu___db3_2_to_17_except_6_large_hug_e_"></a>
@@ -80,11 +86,11 @@ python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py che
 
 <a id="on_train___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-train       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
-python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
+python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=db3_2_to_17_except_6_large_huge_train write_masks=0 write_xml=0 
 
 <a id="on_train_sept5_2k_100___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-train_sept5_2k_100       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
-python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=db3_2_to_17_except_6_large_huge_train write_masks=0 write_xml=0 
+python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
 
 <a id="on_sept5_2k_100___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-sept5_2k_100       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
