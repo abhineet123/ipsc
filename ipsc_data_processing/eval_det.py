@@ -26,7 +26,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from pprint import pformat, pprint
+from pprint import pformat
 from tqdm import tqdm
 
 from prettytable import PrettyTable
@@ -34,14 +34,10 @@ from tabulate import tabulate
 from collections import OrderedDict
 import itertools
 
-import pycocotools.mask as mask_util
-
 from eval_utils import mask_str_to_img, perform_global_association, draw_text_in_image, get_max_iou_obj, \
     compute_thresh_rec_prec, voc_ap, get_intersection, binary_cls_metrics, file_lines_to_list, \
     arr_to_csv, draw_objs, norm_auc, resize_ar_tf_api, sortKey, linux_path, add_suffix, ImageSequenceWriter, \
     mask_rle_to_pts
-
-import paramparse
 
 
 class Params:
@@ -178,7 +174,7 @@ class Params:
         self.vid_fmt = 'mp4v,2,mp4'
         self.check_det = 0
 
-        self.fps_to_gt = 1
+        self.fps_to_gt = 0
 
         self._sweep_params = [
             'nms_thresh',
@@ -2972,6 +2968,7 @@ def run(params, *argv):
     if params.labels_root:
         labels_path = linux_path(params.labels_root, labels_path)
 
+    assert labels_path, f"labels_path must be provided"
     assert os.path.isfile(labels_path), f"invalid labels_path: {labels_path}"
 
     gt_paths = params.gt_paths

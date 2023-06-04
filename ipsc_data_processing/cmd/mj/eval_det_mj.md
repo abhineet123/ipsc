@@ -1,6 +1,8 @@
 <!-- MarkdownTOC -->
 
 - [swi-db4](#swi_db4_)
+- [swi-db3_2_to_17_except_6-large_huge-fps_to_gt](#swi_db3_2_to_17_except_6_large_huge_fps_to_gt_)
+    - [on-train_sept5_2k_100       @ swi-db3_2_to_17_except_6-large_huge-fps_to_gt](#on_train_sept5_2k_100___swi_db3_2_to_17_except_6_large_huge_fps_to_g_t_)
 - [swi-db3_2_to_17_except_6-large_huge](#swi_db3_2_to_17_except_6_large_huge_)
     - [on-train       @ swi-db3_2_to_17_except_6-large_huge](#on_train___swi_db3_2_to_17_except_6_large_hug_e_)
     - [on-train_sept5_2k_100       @ swi-db3_2_to_17_except_6-large_huge](#on_train_sept5_2k_100___swi_db3_2_to_17_except_6_large_hug_e_)
@@ -15,6 +17,12 @@
 <a id="swi_db4_"></a>
 # swi-db4 
 python3 eval_det.py cfg=mj:db4 img_paths=lists/db4.txt det_paths=log/swi/db3_2_to_17_except_6-large_huge/db4/csv save_vis=1 show_vis=0  save_suffix==mj/swi-db4 vid_fmt=H264,2,mkv show_tp=0
+
+<a id="swi_db3_2_to_17_except_6_large_huge_fps_to_gt_"></a>
+# swi-db3_2_to_17_except_6-large_huge-fps_to_gt  
+<a id="on_train_sept5_2k_100___swi_db3_2_to_17_except_6_large_huge_fps_to_g_t_"></a>
+## on-train_sept5_2k_100       @ swi-db3_2_to_17_except_6-large_huge-fps_to_gt-->eval_det_mj
+python3 eval_det.py cfg=mj:db3 img_paths=lists/db3_2_to_17_except_6_sept5_2k_100.txt det_paths=log/swi/db3_2_to_17_except_6-large_huge-fps_to_gt/db3_2_to_17_except_6_sept5_2k_100_large_huge/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-fps-on_train_sept5_2k_100 check_seq_name=1 combine_dets=0 gt_csv_suffix=large_huge ignore_invalid_class=1
 
 <a id="swi_db3_2_to_17_except_6_large_huge_"></a>
 # swi-db3_2_to_17_except_6-large_huge 

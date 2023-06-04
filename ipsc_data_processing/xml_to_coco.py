@@ -389,7 +389,7 @@ def main():
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
     class_names_path = params.class_names_path
-    
+
     assert class_names_path, "class_names_path must be provided"
 
     output_json = params.output_json
