@@ -41,8 +41,28 @@ class MojowRocksBase(CustomDataset):
 
         self.coco = COCO(ann_file)
 
-        if len(self.coco.imgs) == 0:
+        """check if JKSON is missing any classes in this dataset and add them if so"""
+        coco_classes = [cat['name'] for cat in self.coco.cats.values()]
+        coco_class_ids = sorted([cat['id'] for cat in self.coco.cats.values()])
+        coco_class_ids_2 = sorted(list(self.coco.cats.keys()))
+        coco_super_cat = self.coco.cats[coco_class_ids[0]]['supercategory']
 
+        assert coco_class_ids == coco_class_ids_2, "coco_class_ids mismatch"
+
+        max_coco_class_id = max(coco_class_ids)
+
+        extra_classes = [cat for cat in self.CLASSES if cat not in coco_classes]
+        for _class_id, _class_name in extra_classes:
+            cat_id = _class_id + max_coco_class_id
+            cat_dict = {
+                'supercategory': coco_super_cat,
+                'id': cat_id,
+                'name': _class_name,
+            }
+            self.coco.cats[cat_id] = cat_dict
+            self.coco.dataset['categories'].append(cat_dict)
+
+        if len(self.coco.imgs) == 0:
             """test on unlabeled images"""
 
             # assert not self.coco.dataset.images, "mismatch between imgs and dataset.images"
