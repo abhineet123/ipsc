@@ -136,11 +136,11 @@ python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/d
 
 <a id="sample_10___large_huge_db3_2_to_17_except_6_sept5_2k_100_db3_"></a>
 #### sample-10       @ large_huge/db3_2_to_17_except_6_sept5_2k_100/db3-->xml_to_coco_mj
-python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_sept5_2k_100.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_sept5_2k_100-large_huge-sample-10.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=1 samples_per_seq=10
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_sept5_2k_100.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_sept5_2k_100-large_huge-sample-10.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=0 samples_per_seq=10 shuffle=1
 
 <a id="sample_0_1___large_huge_db3_2_to_17_except_6_sept5_2k_100_db3_"></a>
 #### sample-0.1       @ large_huge/db3_2_to_17_except_6_sept5_2k_100/db3-->xml_to_coco_mj
-python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_sept5_2k_100.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_sept5_2k_100-large_huge-sample-p1.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=1 samples_per_seq=0.1
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset3 seq_paths=lists/db3_2_to_17_except_6_sept5_2k_100.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db3_2_to_17_except_6_sept5_2k_100-large_huge-sample-p1.json val_ratio=0 dir_suffix=large_huge allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 write_empty=0 samples_per_seq=0.1 shuffle=1
 
 
 <a id="db3_2_to_17_except_6_no_rocks___db_3_"></a>
