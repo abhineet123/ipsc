@@ -34,8 +34,12 @@ class Params:
         self.fps = 20
         self.img_ext = 'png'
         self.load_path = ''
+
+        self.samples_per_seq = 0.0
+
         self.load_samples = []
         self.load_samples_root = ''
+
         self.map_folder = ''
         self.min_val = 0
         self.n_classes = 4
@@ -575,6 +579,18 @@ def main():
             random.shuffle(xml_files)
 
         n_files = len(xml_files)
+
+        if params.samples_per_seq > 0:
+            if params.samples_per_seq < 1.0:
+                """fractional"""
+                n_samples = int(n_files*params.samples_per_seq)
+            else:
+                n_samples = int(params.samples_per_seq)
+                n_samples = min(n_samples, n_files)
+
+            print(f'{seq_name}: n_samples: {n_samples} / {n_files}')
+            xml_files = xml_files[:n_samples]
+            n_files = len(xml_files)
 
         excluded_images = []
         if excluded_images_list:
