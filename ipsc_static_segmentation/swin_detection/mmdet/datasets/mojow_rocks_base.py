@@ -52,7 +52,7 @@ class MojowRocksBase(CustomDataset):
         max_coco_class_id = max(coco_class_ids)
 
         extra_classes = [cat for cat in self.CLASSES if cat not in coco_classes]
-        for _class_id, _class_name in extra_classes:
+        for _class_id, _class_name in enumerate(extra_classes):
             cat_id = _class_id + max_coco_class_id
             cat_dict = {
                 'supercategory': coco_super_cat,
