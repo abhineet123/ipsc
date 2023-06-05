@@ -178,4 +178,11 @@ data = dict(
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
+    part1=dict(
+        type='MojowRocksFPsToGT',
+        ann_file=data_root + 'part1-large_huge.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline
+    ),
+
 )
