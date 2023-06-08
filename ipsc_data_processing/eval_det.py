@@ -387,7 +387,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
             print('Generating GT data...')
 
         if gt_loaded:
-            for _seq_path, _seq_gt_data_dict in gt_data_dict:
+            for _seq_path, _seq_gt_data_dict in gt_data_dict.items():
                 for gt_class in gt_classes:
                     gt_class_data_dict[gt_class][_seq_path] = []
 
