@@ -389,7 +389,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
             for _seq_path, _seq_gt_data_dict in gt_data_dict.items():
                 if _seq_path == "counter_per_class":
                     continue
-                    
+
                 for gt_class in gt_classes:
                     gt_class_data_dict[gt_class][_seq_path] = []
 
@@ -469,6 +469,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
         if gt_loaded:
             gt_img_paths = sorted(list(gt_data_dict[seq_path].keys()))
+            gt_filenames = gt_img_paths[:]
+
             all_img_paths += gt_img_paths
 
         print(f'\n\nProcessing sequence {seq_idx + 1:d}/{n_seq:d}')
