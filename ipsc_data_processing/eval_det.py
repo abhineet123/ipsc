@@ -104,7 +104,7 @@ class Params:
         self.no_plot = False
         self.gt_pkl_dir = 'log/pkl'
         self.det_pkl_dir = ''
-        self.load_gt = 1
+        self.load_gt = 0
         self.gt_pkl = ''
         self.load_det = 0
         self.det_pkl = ''
@@ -367,7 +367,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         if _gt_data_dict is not None:
             gt_loaded = 1
             gt_data_dict = copy.deepcopy(_gt_data_dict)
-        elif params.load_gt and params.gt_pkl:
+        elif params.load_gt:
             """load GT data only if gt_pkl is explicitly provided"""
             if not os.path.exists(gt_pkl):
                 msg = f"gt_pkl does not exist: {gt_pkl}"
