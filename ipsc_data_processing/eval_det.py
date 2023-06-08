@@ -569,7 +569,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     if gt_class not in gt_classes:
                         msg = f'{seq_name}: {gt_filename} :: invalid gt_class: {gt_class}'
                         if ignore_invalid_class:
-                            print(msg)
+                            # print(msg)
                             continue
                         raise AssertionError(msg)
 
@@ -747,7 +747,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         if det_class not in gt_classes:
                             msg = f'{det_seq_name}: {det_filename} :: invalid det_class: {det_class}'
                             if ignore_invalid_class:
-                                print(msg)
+                                # print(msg)
                                 continue
                             raise AssertionError(msg)
 
