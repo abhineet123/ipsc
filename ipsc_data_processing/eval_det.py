@@ -385,9 +385,11 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
             gt_data_dict = {}
             gt_loaded = 0
             print('Generating GT data...')
-
         if gt_loaded:
             for _seq_path, _seq_gt_data_dict in gt_data_dict.items():
+                if _seq_path == "counter_per_class":
+                    continue
+                    
                 for gt_class in gt_classes:
                     gt_class_data_dict[gt_class][_seq_path] = []
 
@@ -2347,8 +2349,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         if gt_check:
             all_class_gt = []
             for k in gt_data_dict:
+
                 if k == 'counter_per_class':
                     continue
+
                 for m in gt_data_dict[k]:
                     all_class_gt += [obj for obj in gt_data_dict[k][m] if obj['class'] == gt_class]
 
