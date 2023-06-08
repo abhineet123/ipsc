@@ -391,8 +391,9 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 for gt_class in gt_classes:
                     gt_class_data_dict[gt_class][_seq_path] = []
 
-                for obj in _seq_gt_data_dict:
-                    gt_class_data_dict[obj['class']][_seq_path].append(obj)
+                for _img_path, _img_objs in _seq_gt_data_dict.items():
+                    for obj in _img_objs:
+                        gt_class_data_dict[obj['class']][_seq_path].append(obj)
 
         if raw_det_data_dict is not None:
             det_loaded = 1
