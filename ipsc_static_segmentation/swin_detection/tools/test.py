@@ -118,9 +118,10 @@ def main():
         os.environ['LOCAL_RANK'] = str(params.local_rank)
 
     checkpoint_dir = os.path.dirname(params.checkpoint)
+    checkpoint_name = os.path.splitext(os.path.basename(params.checkpoint))[0]
 
     if not params.out_dir:
-        params.out_dir = os.path.join(checkpoint_dir, params.test_name)
+        params.out_dir = os.path.join(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
 
     os.makedirs(params.out_dir, exist_ok=1)
 
