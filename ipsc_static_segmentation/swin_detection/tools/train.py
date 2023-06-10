@@ -28,6 +28,11 @@ def parse_args():
                         help='the dir to save logs and models')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
+        '--resume',
+        action='store_true',
+        help='resume from the latest checkpoint'
+    )
+    parser.add_argument(
         '--resume-from', help='the checkpoint file to resume from')
     parser.add_argument(
         '--no-validate',
@@ -116,6 +121,9 @@ def main():
                                 osp.splitext(osp.basename(args.config))[0])
     if args.resume_from is not None:
         cfg.resume_from = args.resume_from
+    elif args.resume:
+        cfg.resume_from = args.resume_from = osp.join(cfg.work_dir, "latest.pth")
+
     if args.gpu_ids is not None:
         cfg.gpu_ids = args.gpu_ids
     else:

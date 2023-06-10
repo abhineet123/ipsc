@@ -23,6 +23,8 @@
         - [large,huge       @ part14_on_part4_on_part5_on_september_5_2020/csv_to_xml](#large_huge___part14_on_part4_on_part5_on_september_5_2020_csv_to_xm_l_)
     - [db4_rockmaps_syn       @ csv_to_xml](#db4_rockmaps_syn___csv_to_xml_)
 - [cvat_to_xml](#cvat_to_xml_)
+    - [db5       @ cvat_to_xml](#db5___cvat_to_xm_l_)
+        - [part1       @ db5/cvat_to_xml](#part1___db5_cvat_to_xm_l_)
     - [db4       @ cvat_to_xml](#db4___cvat_to_xm_l_)
         - [rockmaps       @ db4/cvat_to_xml](#rockmaps___db4_cvat_to_xm_l_)
     - [db3       @ cvat_to_xml](#db3___cvat_to_xm_l_)
@@ -90,7 +92,7 @@ python3 xml_to_csv.py root_dir=/data/mojow_rock/rock_dataset4/rockmaps seq_paths
 # csv_to_xml
 <a id="db3_2_to_17_except_6_with_syn___csv_to_xml_"></a>
 ## db3_2_to_17_except_6_with_syn       @ csv_to_xml-->xml_mj
-python3 -m csv_to_xml csv_paths=db3_2_to_17_except_6_with_syn.txt root_dir=/data/mojow_rock/rock_dataset3  allow_missing_images=1
+python3 -m csv_to_xml csv_paths=db3_2_to_17_except_6_with_syn.txt root_dir=/data/mojow_rock/rock_dataset3 allow_missing_images=1
 
 <a id="large_huge___db3_2_to_17_except_6_with_syn_csv_to_xml_"></a>
 ### large,huge       @ db3_2_to_17_except_6_with_syn/csv_to_xml-->xml_mj
@@ -132,9 +134,16 @@ python3 -m csv_to_xml csv_paths=rockmaps/syn/part2_on_hub_cs210422102/annotation
 
 <a id="cvat_to_xml_"></a>
 # cvat_to_xml
+<a id="db5___cvat_to_xm_l_"></a>
+## db5       @ cvat_to_xml-->xml_mj
+<a id="part1___db5_cvat_to_xm_l_"></a>
+### part1       @ db5/cvat_to_xml-->xml_mj
+python3 -m cvat_to_xml input=part1 root_dir=/data/mojow_rock/rock_dataset5 allow_missing_images=0 move_images=0 vert_flip=0
+
 <a id="db4___cvat_to_xm_l_"></a>
 ## db4       @ cvat_to_xml-->xml_mj
 python3 -m cvat_to_xml input=db4.txt root_dir=/data/mojow_rock/rock_dataset4 allow_missing_images=0 move_images=0 vert_flip=1
+
 <a id="rockmaps___db4_cvat_to_xm_l_"></a>
 ### rockmaps       @ db4/cvat_to_xml-->xml_mj
 python3 -m cvat_to_xml input=db4.txt root_dir=/data/mojow_rock/rock_dataset4/rockmaps allow_missing_images=0 move_images=0 vert_flip=1 write_img=0 allow_missing_ann=1 write_empty=0

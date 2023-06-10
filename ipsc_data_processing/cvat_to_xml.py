@@ -69,7 +69,7 @@ class Params:
         self.allow_target_id = 1
         self.write_empty = 0
         self.allow_missing_ann = 0
-        self.name_from_title = True
+        self.name_from_title = 1
         self.img_dir_name = 'images'
         self.output = ''
         self.img_exts = ['.jpg', '.jpeg', '.png', '.bmp', '.tif']
