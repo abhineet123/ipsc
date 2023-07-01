@@ -54,8 +54,7 @@ python -m tools.train configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py 
 ### on-train_sept5_2k_100       @ db3_2_to_17_except_6-large_huge-fps_to_gt/-->swin_det_mj
 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge-fps_to_gt/epoch_176.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
 
-python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge-fps_to_gt/epoch_251.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
-
+python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge-fps_to_gt/epoch_446.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
 
 <a id="db3_2_to_17_except_6_sept5_2k_100_large_huge_fps_to_gt___multi_gpu_"></a>
 # db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt       @ multi_gpu/-->swin_det_mj
@@ -63,12 +62,11 @@ tools/dist_train.sh configs/swin/db3_2_to_17_except_6_sept5_2k_100-large_huge-fp
 
 <a id="on_train_sept5_2k_100___db3_2_to_17_except_6_sept5_2k_100_large_huge_fps_to_gt__"></a>
 ### on-train_sept5_2k_100       @ db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt/-->swin_det_mj
-python3 tools/test.py config=configs/swin/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt/epoch_56.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt/epoch_149.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
 
 <a id="on_part1___db3_2_to_17_except_6_sept5_2k_100_large_huge_fps_to_gt__"></a>
 ### on-part1       @ db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt/-->swin_det_mj
 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt/epoch_176.pth eval=bbox,segm test_name=part1 write_masks=0 write_xml=0 
-
 
 <a id="db3_2_to_17_except_6_large_huge___multi_gpu_"></a>
 # db3_2_to_17_except_6-large_huge       @ multi_gpu/-->swin_det_mj
