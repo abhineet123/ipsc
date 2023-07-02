@@ -87,10 +87,11 @@ python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_
 
 <a id="g2_16_53_no_validate___ext_reorg_ro_i_"></a>
 ## g2_16_53-no_validate       @ ext_reorg_roi-->swin_det
-python -m torch.distributed.launch --nproc_per_node=2 --master_port=$PORT \
-    $(dirname "$0")/train.py $CONFIG --launcher pytorch ${@:3}
-
 tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_2554.pth
+```
+python -m torch.distributed.launch --nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py --launcher pytorch --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_2554.pth
+```
+
 <a id="on_g2_0_15___g2_16_53_no_validate_ext_reorg_roi_"></a>
 ### on-g2_0_15       @ g2_16_53-no_validate/ext_reorg_roi-->swin_det
 python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=g2_0_15
