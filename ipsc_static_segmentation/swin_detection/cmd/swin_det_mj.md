@@ -46,7 +46,7 @@
 <!-- /MarkdownTOC -->
 <a id="db3_2_to_17_except_6_large_huge_fps_to_gt___multi_gpu_"></a>
 # db3_2_to_17_except_6-large_huge-fps_to_gt       @ multi_gpu/-->swin_det_mj
-tools/dist_train.sh configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py 2 --no-validate --init file:///tmp/db3_2_to_17_except_6-large_huge-fps_to_gt-009 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=2
+tools/dist_train.sh configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py 2 --no-validate --resume --init file:///tmp/db3_2_to_17_except_6-large_huge-fps_to_gt-009 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=3 data.workers_per_gpu=3
 
 python -m tools.train configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py --no-validate --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=2
 
