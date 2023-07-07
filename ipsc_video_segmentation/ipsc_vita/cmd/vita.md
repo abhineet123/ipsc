@@ -31,6 +31,7 @@
             - [model_0329999       @ on-g2_0_15/swin-coco/ipsc-ext_reorg_roi_g2_16_53](#model_0329999___on_g2_0_15_swin_coco_ipsc_ext_reorg_roi_g2_16_53_)
                 - [incremental       @ model_0329999/on-g2_0_15/swin-coco/ipsc-ext_reorg_roi_g2_16_53](#incremental___model_0329999_on_g2_0_15_swin_coco_ipsc_ext_reorg_roi_g2_16_53_)
 - [ipsc-ext_reorg_roi_g2_54_126](#ipsc_ext_reorg_roi_g2_54_12_6_)
+            - [on-Test_230606       @ ipsc-ext_reorg_roi_g2_54_126/](#on_test_230606___ipsc_ext_reorg_roi_g2_54_126__)
         - [on-g2_0_53       @ ipsc-ext_reorg_roi_g2_54_126/](#on_g2_0_53___ipsc_ext_reorg_roi_g2_54_126__)
             - [incremental       @ on-g2_0_53/ipsc-ext_reorg_roi_g2_54_126/](#incremental___on_g2_0_53_ipsc_ext_reorg_roi_g2_54_126_)
         - [on-g2_0_15       @ ipsc-ext_reorg_roi_g2_54_126/](#on_g2_0_15___ipsc_ext_reorg_roi_g2_54_126__)
@@ -197,6 +198,11 @@ CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vi
 sbatch cmd/vita-ipsc-ext_reorg_roi_g2_54_126_ytvis_swin.sh
 ```
 python train_net_vita.py --num-gpus 2 --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_54_126-vita_SWIN_bs8.yaml MODEL.WEIGHTS pretrained/vita_swin_coco.pth SOLVER.IMS_PER_BATCH 2
+
+<a id="on_test_230606___ipsc_ext_reorg_roi_g2_54_126__"></a>
+#### on-Test_230606       @ ipsc-ext_reorg_roi_g2_54_126/-->vita
+CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_54_126-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_54_126_swin/model_0194999.pth TEST_NAME ytvis-ipsc-Test_230606 OUT_SUFFIX Test_230606
+
 <a id="on_g2_0_53___ipsc_ext_reorg_roi_g2_54_126__"></a>
 ### on-g2_0_53       @ ipsc-ext_reorg_roi_g2_54_126/-->vita
 CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_54_126-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_54_126_swin/model_0194999.pth TEST_NAME ytvis-ipsc-ext_reorg_roi_g2_0_53
