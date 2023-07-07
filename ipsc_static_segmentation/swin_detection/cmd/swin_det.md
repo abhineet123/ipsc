@@ -23,6 +23,7 @@
         - [on-g2_0_15       @ g2_16_53-no_validate-rcnn/ext_reorg_roi](#on_g2_0_15___g2_16_53_no_validate_rcnn_ext_reorg_ro_i_)
     - [g2_54_126-no_validate-coco       @ ext_reorg_roi](#g2_54_126_no_validate_coco___ext_reorg_ro_i_)
     - [g2_54_126-no_validate       @ ext_reorg_roi](#g2_54_126_no_validate___ext_reorg_ro_i_)
+        - [on-Test_230606       @ g2_54_126-no_validate/ext_reorg_roi](#on_test_230606___g2_54_126_no_validate_ext_reorg_ro_i_)
         - [on-g2_0_53       @ g2_54_126-no_validate/ext_reorg_roi](#on_g2_0_53___g2_54_126_no_validate_ext_reorg_ro_i_)
         - [on-g2_0_15       @ g2_54_126-no_validate/ext_reorg_roi](#on_g2_0_15___g2_54_126_no_validate_ext_reorg_ro_i_)
         - [g2_54_126-no_validate-rcnn       @ g2_54_126-no_validate/ext_reorg_roi](#g2_54_126_no_validate_rcnn___g2_54_126_no_validate_ext_reorg_ro_i_)
@@ -96,7 +97,6 @@ python -m torch.distributed.launch --nproc_per_node=2 --master_port=29500 tools/
 <a id="on_g2_0_15___g2_16_53_no_validate_ext_reorg_roi_"></a>
 ### on-g2_0_15       @ g2_16_53-no_validate/ext_reorg_roi-->swin_det
 python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=g2_0_15
-
 <a id="on_test_230606___g2_16_53_no_validate_ext_reorg_roi_"></a>
 ### on-Test_230606       @ g2_16_53-no_validate/ext_reorg_roi-->swin_det
 python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=Test_230606
@@ -115,6 +115,9 @@ tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validat
 <a id="g2_54_126_no_validate___ext_reorg_ro_i_"></a>
 ## g2_54_126-no_validate       @ ext_reorg_roi-->swin_det
 tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/latest.pth
+<a id="on_test_230606___g2_54_126_no_validate_ext_reorg_ro_i_"></a>
+### on-Test_230606       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=Test_230606
 <a id="on_g2_0_53___g2_54_126_no_validate_ext_reorg_ro_i_"></a>
 ### on-g2_0_53       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
 python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=g2_0_53

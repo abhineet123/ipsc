@@ -33,6 +33,8 @@
         - [val       @ yl8/ext_reorg_roi_g2_16_53](#val___yl8_ext_reorg_roi_g2_16_53_)
         - [seq-val       @ yl8/ext_reorg_roi_g2_16_53](#seq_val___yl8_ext_reorg_roi_g2_16_53_)
     - [swi       @ ext_reorg_roi_g2_16_53](#swi___ext_reorg_roi_g2_16_53_)
+        - [Test_230606       @ swi/ext_reorg_roi_g2_16_53](#test_230606___swi_ext_reorg_roi_g2_16_53_)
+        - [g2_0_15       @ swi/ext_reorg_roi_g2_16_53](#g2_0_15___swi_ext_reorg_roi_g2_16_53_)
     - [swi-rcnn       @ ext_reorg_roi_g2_16_53](#swi_rcnn___ext_reorg_roi_g2_16_53_)
     - [cvnxt       @ ext_reorg_roi_g2_16_53](#cvnxt___ext_reorg_roi_g2_16_53_)
     - [idol       @ ext_reorg_roi_g2_16_53](#idol___ext_reorg_roi_g2_16_53_)
@@ -66,11 +68,15 @@
 - [ext_reorg_roi_g2_54_126       @ coco_to_xml](#ext_reorg_roi_g2_54_126___coco_to_xm_l_)
     - [yl8       @ ext_reorg_roi_g2_54_126](#yl8___ext_reorg_roi_g2_54_12_6_)
     - [swi       @ ext_reorg_roi_g2_54_126](#swi___ext_reorg_roi_g2_54_12_6_)
+        - [Test_230606       @ swi/ext_reorg_roi_g2_54_126](#test_230606___swi_ext_reorg_roi_g2_54_12_6_)
+        - [g2_0_53       @ swi/ext_reorg_roi_g2_54_126](#g2_0_53___swi_ext_reorg_roi_g2_54_12_6_)
         - [g2_0_15       @ swi/ext_reorg_roi_g2_54_126](#g2_0_15___swi_ext_reorg_roi_g2_54_12_6_)
-    - [cvnxt-large       @ ext_reorg_roi_g2_54_126](#cvnxt_large___ext_reorg_roi_g2_54_12_6_)
-        - [g2_0_15       @ cvnxt-large/ext_reorg_roi_g2_54_126](#g2_0_15___cvnxt_large_ext_reorg_roi_g2_54_12_6_)
-    - [cvnxt-base       @ ext_reorg_roi_g2_54_126](#cvnxt_base___ext_reorg_roi_g2_54_12_6_)
-        - [g2_0_15       @ cvnxt-base/ext_reorg_roi_g2_54_126](#g2_0_15___cvnxt_base_ext_reorg_roi_g2_54_126_)
+    - [cnx-large       @ ext_reorg_roi_g2_54_126](#cnx_large___ext_reorg_roi_g2_54_12_6_)
+        - [Test_230606       @ cnx-large/ext_reorg_roi_g2_54_126](#test_230606___cnx_large_ext_reorg_roi_g2_54_12_6_)
+        - [g2_0_53       @ cnx-large/ext_reorg_roi_g2_54_126](#g2_0_53___cnx_large_ext_reorg_roi_g2_54_12_6_)
+        - [g2_0_15       @ cnx-large/ext_reorg_roi_g2_54_126](#g2_0_15___cnx_large_ext_reorg_roi_g2_54_12_6_)
+    - [cnx-base       @ ext_reorg_roi_g2_54_126](#cnx_base___ext_reorg_roi_g2_54_12_6_)
+        - [g2_0_15       @ cnx-base/ext_reorg_roi_g2_54_126](#g2_0_15___cnx_base_ext_reorg_roi_g2_54_126_)
     - [idol       @ ext_reorg_roi_g2_54_126](#idol___ext_reorg_roi_g2_54_12_6_)
         - [g2_0_53       @ idol/ext_reorg_roi_g2_54_126](#g2_0_53___idol_ext_reorg_roi_g2_54_126_)
         - [g2_0_15       @ idol/ext_reorg_roi_g2_54_126](#g2_0_15___idol_ext_reorg_roi_g2_54_126_)
@@ -234,6 +240,12 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=yl8/ext_reo
 
 <a id="swi___ext_reorg_roi_g2_16_53_"></a>
 ## swi       @ ext_reorg_roi_g2_16_53-->coco_to_xml
+<a id="test_230606___swi_ext_reorg_roi_g2_16_53_"></a>
+### Test_230606       @ swi/ext_reorg_roi_g2_16_53-->coco_to_xml
+python3 coco_to_xml.py root_dir=/data/ipsc json=swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273_on_Test_230606/results.segm.json  gt_json=Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0 n_proc=1 save=1
+<a id="g2_0_15___swi_ext_reorg_roi_g2_16_53_"></a>
+<a id="g2_0_15___swi_ext_reorg_roi_g2_16_53_"></a>
+### g2_0_15       @ swi/ext_reorg_roi_g2_16_53-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/g2_0_15/results.segm.json  gt_json=ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=12
 
 <a id="swi_rcnn___ext_reorg_roi_g2_16_53_"></a>
@@ -372,23 +384,33 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=yl8/ext_reo
 
 <a id="swi___ext_reorg_roi_g2_54_12_6_"></a>
 ## swi       @ ext_reorg_roi_g2_54_126-->coco_to_xml
+<a id="test_230606___swi_ext_reorg_roi_g2_54_12_6_"></a>
+### Test_230606       @ swi/ext_reorg_roi_g2_54_126-->coco_to_xml
+python3 coco_to_xml.py root_dir=/data/ipsc json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058_on_Test_230606/results.segm.json  gt_json=Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0 n_proc=1 save=1
+<a id="g2_0_53___swi_ext_reorg_roi_g2_54_12_6_"></a>
+### g2_0_53       @ swi/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/g2_0_53/results.segm.json  gt_json=ext_reorg_roi_g2_0_53.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=12
 <a id="g2_0_15___swi_ext_reorg_roi_g2_54_12_6_"></a>
 ### g2_0_15       @ swi/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/g2_0_15/results.segm.json  gt_json=ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=2
 
-<a id="cvnxt_large___ext_reorg_roi_g2_54_12_6_"></a>
-## cvnxt-large       @ ext_reorg_roi_g2_54_126-->coco_to_xml
+<a id="cnx_large___ext_reorg_roi_g2_54_12_6_"></a>
+## cnx-large       @ ext_reorg_roi_g2_54_126-->coco_to_xml
+<a id="test_230606___cnx_large_ext_reorg_roi_g2_54_12_6_"></a>
+### Test_230606       @ cnx-large/ext_reorg_roi_g2_54_126-->coco_to_xml
+python3 coco_to_xml.py root_dir=/data/ipsc json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058_on_Test_230606/results.segm.json  gt_json=Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0 n_proc=1 save=1
+<a id="g2_0_53___cnx_large_ext_reorg_roi_g2_54_12_6_"></a>
+### g2_0_53       @ cnx-large/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k/g2_0_53/results.segm.json  gt_json=ext_reorg_roi_g2_0_53.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=1
-<a id="g2_0_15___cvnxt_large_ext_reorg_roi_g2_54_12_6_"></a>
-### g2_0_15       @ cvnxt-large/ext_reorg_roi_g2_54_126-->coco_to_xml
+<a id="g2_0_15___cnx_large_ext_reorg_roi_g2_54_12_6_"></a>
+### g2_0_15       @ cnx-large/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k/g2_0_15/results.segm.json  gt_json=ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=2
 
-<a id="cvnxt_base___ext_reorg_roi_g2_54_12_6_"></a>
-## cvnxt-base       @ ext_reorg_roi_g2_54_126-->coco_to_xml
+<a id="cnx_base___ext_reorg_roi_g2_54_12_6_"></a>
+## cnx-base       @ ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_base_in22k/g2_0_53/results.segm.json  gt_json=ext_reorg_roi_g2_0_53.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=2
-<a id="g2_0_15___cvnxt_base_ext_reorg_roi_g2_54_126_"></a>
-### g2_0_15       @ cvnxt-base/ext_reorg_roi_g2_54_126-->coco_to_xml
+<a id="g2_0_15___cnx_base_ext_reorg_roi_g2_54_126_"></a>
+### g2_0_15       @ cnx-base/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_base_in22k/g2_0_15/results.segm.json  gt_json=ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=2
 
 <a id="idol___ext_reorg_roi_g2_54_12_6_"></a>
