@@ -19,6 +19,7 @@
             - [probs       @ on-g2_0_15/ext_reorg_roi_g2_16_53/idol](#probs___on_g2_0_15_ext_reorg_roi_g2_16_53_idol_)
             - [incremental       @ on-g2_0_15/ext_reorg_roi_g2_16_53/idol](#incremental___on_g2_0_15_ext_reorg_roi_g2_16_53_idol__1)
                 - [g2_0_53       @ incremental/on-g2_0_15/ext_reorg_roi_g2_16_53/idol](#g2_0_53___incremental_on_g2_0_15_ext_reorg_roi_g2_16_53_idol_)
+                - [g2_0_53       @ incremental/on-g2_0_15/ext_reorg_roi_g2_16_53/idol](#g2_0_53___incremental_on_g2_0_15_ext_reorg_roi_g2_16_53_idol__1)
     - [ext_reorg_roi_g2_54_126       @ idol](#ext_reorg_roi_g2_54_126___idol_)
         - [on-g2_0_53       @ ext_reorg_roi_g2_54_126/idol](#on_g2_0_53___ext_reorg_roi_g2_54_126_idol_)
             - [incremental       @ on-g2_0_53/ext_reorg_roi_g2_54_126/idol](#incremental___on_g2_0_53_ext_reorg_roi_g2_54_126_ido_l_)
@@ -152,6 +153,10 @@ CUDA_VISIBLE_DEVICES=1 python3 projects/IDOL/train_net.py --config-file projects
 ##### g2_0_53       @ incremental/on-g2_0_15/ext_reorg_roi_g2_16_53/idol-->vnext
 CUDA_VISIBLE_DEVICES=1 python3 projects/IDOL/train_net.py --config-file projects/IDOL/configs/idol-ipsc-ext_reorg_roi_g2_16_53_ytvis_swinL.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/idol-ipsc-ext_reorg_roi_g2_16_53/model_0254999.pth USE_PROBS 1 TEST_NAME ytvis-ipsc-ext_reorg_roi_g2_0_53-incremental OUT_SUFFIX g2_0_53-incremental_probs
 
+<a id="g2_0_53___incremental_on_g2_0_15_ext_reorg_roi_g2_16_53_idol__1"></a>
+##### g2_0_53       @ incremental/on-g2_0_15/ext_reorg_roi_g2_16_53/idol-->vnext
+CUDA_VISIBLE_DEVICES=1 python3 projects/IDOL/train_net.py --config-file projects/IDOL/configs/idol-ipsc-ext_reorg_roi_g2_16_53_ytvis_swinL.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/idol-ipsc-ext_reorg_roi_g2_16_53/model_0254999.pth USE_PROBS 1 TEST_NAME ytvis-ipsc-Test_230606 OUT_SUFFIX Test_230606
+
 <a id="ext_reorg_roi_g2_54_126___idol_"></a>
 ## ext_reorg_roi_g2_54_126       @ idol-->vnext
 ```
@@ -220,7 +225,7 @@ mv inference_model_0596999_g2_0_15-incremental_probs-max_length-2 inference_mode
 ```
 <a id="on_test_230606___ext_reorg_roi_g2_54_126_idol_"></a>
 ### on-Test_230606       @ ext_reorg_roi_g2_54_126/idol-->vnext
-CUDA_VISIBLE_DEVICES=0 python3 projects/IDOL/train_net.py --config-file projects/IDOL/configs/idol-ipsc-ext_reorg_roi_g2_54_126_ytvis_swinL.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/idol-ipsc-ext_reorg_roi_g2_54_126/model_0596999.pth USE_PROBS 1 TEST_NAME ipsc-Test_230606 OUT_SUFFIX Test_230606
+CUDA_VISIBLE_DEVICES=0 python3 projects/IDOL/train_net.py --config-file projects/IDOL/configs/idol-ipsc-ext_reorg_roi_g2_54_126_ytvis_swinL.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/idol-ipsc-ext_reorg_roi_g2_54_126/model_0596999.pth USE_PROBS 1 TEST_NAME ytvis-ipsc-Test_230606 OUT_SUFFIX Test_230606
 
 <a id="seqformer___seqforme_r_"></a>
 # seqformer       @ seqformer-->vnext

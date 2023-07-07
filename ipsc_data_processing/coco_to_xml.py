@@ -610,6 +610,12 @@ def run(params, *argv):
         pred_json_path = linux_path(params.root_dir, pred_json_path)
         gt_json_path = linux_path(params.root_dir, gt_json_path)
 
+    pred_json_dir = os.path.dirname(pred_json_path)
+    print(os.listdir('/'))
+    print(os.listdir('/data'))
+    print(os.listdir('/data/ipsc'))
+    print(os.listdir(pred_json_dir))
+
     assert os.path.exists(pred_json_path), f"pred_json_path does not exist: {pred_json_path}"
     assert os.path.exists(gt_json_path), f"gt_json_path does not exist: {gt_json_path}"
 
@@ -807,51 +813,52 @@ def run(params, *argv):
             if params.enable_mask:
                 ann_img = ann_img.astype(np.float32)
 
-            anns = ann_df.loc[ann_df['image_id'] == gt_image_id]
+            if not ann_df.empty:
+                anns = ann_df.loc[ann_df['image_id'] == gt_image_id]
 
-            for ann_id, ann in anns.iterrows():
-                label = ann['label']
-                col = class_name_to_col[label]
-                ann_bbox = ann['bbox']
-                if params.enable_mask:
-                    ann_segm = ann['segmentation']
-                    if type(ann_segm) == list:
-                        if len(ann_segm) == 1:
-                            ann_segm = ann_segm[0]
+                for ann_id, ann in anns.iterrows():
+                    label = ann['label']
+                    col = class_name_to_col[label]
+                    ann_bbox = ann['bbox']
+                    if params.enable_mask:
+                        ann_segm = ann['segmentation']
+                        if type(ann_segm) == list:
+                            if len(ann_segm) == 1:
+                                ann_segm = ann_segm[0]
 
-                        n_pts = int(len(ann_segm) / 2)
-                        contour_pts = np.array(ann_segm).reshape((n_pts, 2))
-                        contour_pts2 = np.asarray([contour_pts, ], dtype=np.int32)
+                            n_pts = int(len(ann_segm) / 2)
+                            contour_pts = np.array(ann_segm).reshape((n_pts, 2))
+                            contour_pts2 = np.asarray([contour_pts, ], dtype=np.int32)
 
-                        ann_mask = np.zeros((h, w), dtype=np.uint8)
-                        ann_mask = cv2.fillPoly(ann_mask, contour_pts2, 255)
-                        ann_mask_binary = ann_mask > 0
+                            ann_mask = np.zeros((h, w), dtype=np.uint8)
+                            ann_mask = cv2.fillPoly(ann_mask, contour_pts2, 255)
+                            ann_mask_binary = ann_mask > 0
 
-                        mask_cv = contour_pts.reshape((-1, 1, 2)).astype(np.int32)
-                        cv2.drawContours(ann_img, mask_cv, -1, col_bgr[col], thickness=2)
+                            mask_cv = contour_pts.reshape((-1, 1, 2)).astype(np.int32)
+                            cv2.drawContours(ann_img, mask_cv, -1, col_bgr[col], thickness=2)
 
-                        # rle = mask_util.frPyObjects([ann_segm], h, w)
-                    else:
-                        if type(ann_segm['counts']) == list:
-                            rle = mask_util.frPyObjects([ann_segm], h, w)
+                            # rle = mask_util.frPyObjects([ann_segm], h, w)
                         else:
-                            rle = [ann_segm, ]
+                            if type(ann_segm['counts']) == list:
+                                rle = mask_util.frPyObjects([ann_segm], h, w)
+                            else:
+                                rle = [ann_segm, ]
 
-                        ann_mask_binary = mask_util.decode(rle).squeeze().astype(bool)
-                        # ann_mask = ann_mask_binary.astype(np.uint8)
+                            ann_mask_binary = mask_util.decode(rle).squeeze().astype(bool)
+                            # ann_mask = ann_mask_binary.astype(np.uint8)
 
-                    ann_mask_img = np.zeros_like(ann_img)
+                        ann_mask_img = np.zeros_like(ann_img)
 
-                    ann_mask_img[ann_mask_binary] = col_bgr[col]
+                        ann_mask_img[ann_mask_binary] = col_bgr[col]
 
-                    # ann_mask_vis = resize_ar(ann_mask_img, width=1280, height=720)
-                    # cv2.imshow('ann_mask', ann_mask_vis)
-                    # cv2.waitKey(0)
+                        # ann_mask_vis = resize_ar(ann_mask_img, width=1280, height=720)
+                        # cv2.imshow('ann_mask', ann_mask_vis)
+                        # cv2.waitKey(0)
 
-                    ann_img[ann_mask_binary] = (params.alpha * ann_img[ann_mask_binary] +
-                                                (1 - params.alpha) * ann_mask_img[ann_mask_binary])
-                else:
-                    drawBox(ann_img, np.asarray(ann_bbox), color=col, xywh=True)
+                        ann_img[ann_mask_binary] = (params.alpha * ann_img[ann_mask_binary] +
+                                                    (1 - params.alpha) * ann_mask_img[ann_mask_binary])
+                    else:
+                        drawBox(ann_img, np.asarray(ann_bbox), color=col, xywh=True)
 
             ann_img = ann_img.astype(np.uint8)
 
@@ -998,7 +1005,11 @@ def run(params, *argv):
 
         # print('here we are')
         if vis:
-            cat_img = np.concatenate((ann_img, pred_img), axis=1)
+            if ann_df.empty:
+                cat_img = pred_img
+            else:
+                cat_img = np.concatenate((ann_img, pred_img), axis=1)
+
             if params.save:
                 cv2.imwrite(out_vis_path, cat_img)
 

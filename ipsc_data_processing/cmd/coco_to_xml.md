@@ -68,6 +68,7 @@
     - [idol       @ ext_reorg_roi_g2_54_126](#idol___ext_reorg_roi_g2_54_12_6_)
         - [g2_0_53       @ idol/ext_reorg_roi_g2_54_126](#g2_0_53___idol_ext_reorg_roi_g2_54_126_)
         - [g2_0_15       @ idol/ext_reorg_roi_g2_54_126](#g2_0_15___idol_ext_reorg_roi_g2_54_126_)
+        - [Test_230606       @ idol/ext_reorg_roi_g2_54_126](#test_230606___idol_ext_reorg_roi_g2_54_126_)
     - [idol-inc       @ ext_reorg_roi_g2_54_126](#idol_inc___ext_reorg_roi_g2_54_12_6_)
         - [g2_0_53       @ idol-inc/ext_reorg_roi_g2_54_126](#g2_0_53___idol_inc_ext_reorg_roi_g2_54_126_)
         - [g2_0_15       @ idol-inc/ext_reorg_roi_g2_54_126](#g2_0_15___idol_inc_ext_reorg_roi_g2_54_126_)
@@ -393,6 +394,9 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vnx
 __-max_length-8-__
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vnxt/idol-ipsc-ext_reorg_roi_g2_54_126/inference_model_0596999_g2_0_15-max_length-8/json_results  gt_json=ipsc-ext_reorg_roi_g2_0_15-max_length-8.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 fix_category_id=1 save=0 nms_thresh=0:0.9:0.1 n_proc=1
 
+<a id="test_230606___idol_ext_reorg_roi_g2_54_126_"></a>
+### Test_230606       @ idol/ext_reorg_roi_g2_54_126-->coco_to_xml
+python3 coco_to_xml.py root_dir=/data/ipsc json=vnxt/idol-ipsc-ext_reorg_roi_g2_54_126/inference_model_0596999_Test_230606/json_results gt_json=ytvis19/ytvis_Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 fix_category_id=1 save=1 nms_thresh=0 n_proc=1
 
 <a id="idol_inc___ext_reorg_roi_g2_54_12_6_"></a>
 ## idol-inc       @ ext_reorg_roi_g2_54_126-->coco_to_xml
