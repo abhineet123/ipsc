@@ -500,31 +500,32 @@ def main():
         "annotations": [],
         "categories": []
     }
-    info = {
-        "version": "1.0",
-        "year": 2022,
-        "contributor": "asingh1",
-        "date_created": time_stamp
-    }
-    licenses = [
-        {
-            "url": "https://creativecommons.org/licenses/by/4.0/",
-            "id": 1,
-            "name": "Creative Commons Attribution 4.0 License"
-        }
-    ]
-
-    ytvis_json_dict = {
-        "info": info,
-        "licenses": licenses,
-        "videos": [],
-        "categories": [],
-        "annotations": [],
-    }
-    videos = []
-    annotations = []
 
     if no_annotations or write_empty:
+        from datetime import datetime
+        time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
+        info = {
+            "version": "1.0",
+            "year": 2022,
+            "contributor": "asingh1",
+            "date_created": time_stamp
+        }
+        licenses = [
+            {
+                "url": "https://creativecommons.org/licenses/by/4.0/",
+                "id": 1,
+                "name": "Creative Commons Attribution 4.0 License"
+            }
+        ]
+
+        ytvis_json_dict = {
+            "info": info,
+            "licenses": licenses,
+            "videos": [],
+            "categories": [],
+            "annotations": [],
+        }
+
         for seq_id, seq_path in enumerate(seq_paths):
             img_files = glob.glob(os.path.join(seq_path, '**/*.jpg'), recursive=True)
 
