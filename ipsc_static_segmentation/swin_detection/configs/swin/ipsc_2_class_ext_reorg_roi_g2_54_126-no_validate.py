@@ -203,7 +203,7 @@ data = dict(
         samples_per_gpu=1,
         type=dataset_type,
         ann_file=data_root_test + 'Test_230606.json',
-        img_prefix=data_root,
+        img_prefix=data_root_test,
         pipeline=test_pipeline),
 )
 
