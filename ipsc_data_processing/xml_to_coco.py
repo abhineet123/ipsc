@@ -508,8 +508,10 @@ def main():
             "version": "1.0",
             "year": 2022,
             "contributor": "asingh1",
-            "date_created": time_stamp
+            "date_created": time_stamp,
+            "description": f'ipsc-{os.path.basename(seq_paths[0])}',
         }
+
         licenses = [
             {
                 "url": "https://creativecommons.org/licenses/by/4.0/",
@@ -582,7 +584,9 @@ def main():
             for label, label_id in class_dict.items():
                 category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
                 output_json_dict['categories'].append(category_info)
-                ytvis_json_dict['categories'].append(category_info)
+
+                ytvis_category_info = {'supercategory': 'none', 'id': label_id+1, 'name': label}
+                ytvis_json_dict['categories'].append(ytvis_category_info)
 
             json_path = os.path.join(output_json_dir, output_json_fname)
             save_json(output_json_dict, json_path)
