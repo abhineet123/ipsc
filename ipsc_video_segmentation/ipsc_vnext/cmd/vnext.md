@@ -39,6 +39,7 @@
             - [on-g2_0_15       @ ext_reorg_roi_g2_16_53/seq](#on_g2_0_15___ext_reorg_roi_g2_16_53_seq_)
                 - [probs       @ on-g2_0_15/ext_reorg_roi_g2_16_53/seq](#probs___on_g2_0_15_ext_reorg_roi_g2_16_53_se_q_)
     - [ext_reorg_roi_g2_54_126       @ seq](#ext_reorg_roi_g2_54_126___se_q_)
+            - [on-Test_230606       @ ext_reorg_roi_g2_54_126/seq](#on_test_230606___ext_reorg_roi_g2_54_126_se_q_)
             - [on-g2_0_53       @ ext_reorg_roi_g2_54_126/seq](#on_g2_0_53___ext_reorg_roi_g2_54_126_se_q_)
                 - [incremental       @ on-g2_0_53/ext_reorg_roi_g2_54_126/seq](#incremental___on_g2_0_53_ext_reorg_roi_g2_54_126_seq_)
             - [on-g2_0_15       @ ext_reorg_roi_g2_54_126/seq](#on_g2_0_15___ext_reorg_roi_g2_54_126_se_q_)
@@ -305,6 +306,10 @@ CUDA_VISIBLE_DEVICES=0 python projects/SeqFormer/train_net.py --config-file proj
 sbatch cmd/seq-ipsc-ext_reorg_roi_g2_54_126_ytvis_swinL.sh
 ```
 python3 projects/SeqFormer/train_net.py --config-file projects/SeqFormer/configs/seqformer-ipsc-ext_reorg_roi_g2_54_126_ytvis_swinL.yaml --num-gpus 2 --resume
+
+<a id="on_test_230606___ext_reorg_roi_g2_54_126_se_q_"></a>
+#### on-Test_230606       @ ext_reorg_roi_g2_54_126/seq-->vnext
+CUDA_VISIBLE_DEVICES=0 python projects/SeqFormer/train_net.py --config-file projects/SeqFormer/configs/seqformer-ipsc-ext_reorg_roi_g2_54_126_ytvis_swinL.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/seqformer-ipsc-ext_reorg_roi_g2_54_126/model_0495999.pth TEST_NAME ytvis-ipsc-Test_230606 OUT_SUFFIX Test_230606
 
 <a id="on_g2_0_53___ext_reorg_roi_g2_54_126_se_q_"></a>
 #### on-g2_0_53       @ ext_reorg_roi_g2_54_126/seq-->vnext
