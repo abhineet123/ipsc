@@ -107,7 +107,7 @@ for test_set in (
         'Test_211208',):
     _PREDEFINED_SPLITS_YTVIS_2019.update(
         {
-            f"{test_set}": (
+            f"ipsc-{test_set}": (
                 "ipsc",
                 f"ipsc//ytvis_{test_set}.json"
             ),
