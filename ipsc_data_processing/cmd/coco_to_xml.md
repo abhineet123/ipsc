@@ -36,7 +36,9 @@
         - [Test_230606       @ swi/ext_reorg_roi_g2_16_53](#test_230606___swi_ext_reorg_roi_g2_16_53_)
         - [g2_0_15       @ swi/ext_reorg_roi_g2_16_53](#g2_0_15___swi_ext_reorg_roi_g2_16_53_)
     - [swi-rcnn       @ ext_reorg_roi_g2_16_53](#swi_rcnn___ext_reorg_roi_g2_16_53_)
-    - [cvnxt       @ ext_reorg_roi_g2_16_53](#cvnxt___ext_reorg_roi_g2_16_53_)
+    - [cnx       @ ext_reorg_roi_g2_16_53](#cnx___ext_reorg_roi_g2_16_53_)
+        - [Test_230606       @ cnx/ext_reorg_roi_g2_16_53](#test_230606___cnx_ext_reorg_roi_g2_16_53_)
+        - [g2_0_15       @ cnx/ext_reorg_roi_g2_16_53](#g2_0_15___cnx_ext_reorg_roi_g2_16_53_)
     - [idol       @ ext_reorg_roi_g2_16_53](#idol___ext_reorg_roi_g2_16_53_)
         - [Test_230606       @ idol/ext_reorg_roi_g2_16_53](#test_230606___idol_ext_reorg_roi_g2_16_5_3_)
         - [g2_0_15       @ idol/ext_reorg_roi_g2_16_53](#g2_0_15___idol_ext_reorg_roi_g2_16_5_3_)
@@ -252,8 +254,13 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_
 ## swi-rcnn       @ ext_reorg_roi_g2_16_53-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn/g2_0_15/results.bbox.json  gt_json=ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=12 enable_mask=0 save=0
 
-<a id="cvnxt___ext_reorg_roi_g2_16_53_"></a>
-## cvnxt       @ ext_reorg_roi_g2_16_53-->coco_to_xml
+<a id="cnx___ext_reorg_roi_g2_16_53_"></a>
+## cnx       @ ext_reorg_roi_g2_16_53-->coco_to_xml
+<a id="test_230606___cnx_ext_reorg_roi_g2_16_53_"></a>
+### Test_230606       @ cnx/ext_reorg_roi_g2_16_53-->coco_to_xml
+python3 coco_to_xml.py root_dir=/data/ipsc json=swi/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k/epoch_1014_on_Test_230606/results.segm.json  gt_json=Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.9 n_proc=1 save=1
+<a id="g2_0_15___cnx_ext_reorg_roi_g2_16_53_"></a>
+### g2_0_15       @ cnx/ext_reorg_roi_g2_16_53-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k/g2_0_15/results.segm.json  gt_json=ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=12
 
 <a id="idol___ext_reorg_roi_g2_16_53_"></a>
@@ -398,7 +405,7 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_
 ## cnx-large       @ ext_reorg_roi_g2_54_126-->coco_to_xml
 <a id="test_230606___cnx_large_ext_reorg_roi_g2_54_12_6_"></a>
 ### Test_230606       @ cnx-large/ext_reorg_roi_g2_54_126-->coco_to_xml
-python3 coco_to_xml.py root_dir=/data/ipsc json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058_on_Test_230606/results.segm.json  gt_json=Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0 n_proc=1 save=1
+python3 coco_to_xml.py root_dir=/data/ipsc json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k/epoch_106_on_Test_230606/results.segm.json  gt_json=Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0 n_proc=1 save=1
 <a id="g2_0_53___cnx_large_ext_reorg_roi_g2_54_12_6_"></a>
 ### g2_0_53       @ cnx-large/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi json=swi/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k/g2_0_53/results.segm.json  gt_json=ext_reorg_roi_g2_0_53.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt nms_thresh=0.1:0.9:0.1 n_proc=1

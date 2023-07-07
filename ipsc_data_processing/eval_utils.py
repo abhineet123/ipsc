@@ -221,10 +221,6 @@ def clamp(_vals, min_val, max_val):
 
 
 def drawBox(image, xmin, ymin, xmax, ymax, box_color=(0, 255, 0), label=None, font_size=0.3, mask=None):
-    # if cv2.__version__.startswith('3'):
-    #     font_line_type = cv2.LINE_AA
-    # else:
-    #     font_line_type = cv2.CV_AA
 
     image_float = image.astype(np.float32)
 

@@ -84,6 +84,7 @@ class Params:
             'nms_thresh',
         ]
 
+
 def ytvis_to_coco(ytvis_gt, ytvis_preds,
                   coco_gt_json_path, coco_json_path,
                   fix_category_id, incremental, load_coco, save_coco):
@@ -274,7 +275,7 @@ def ytvis_to_coco(ytvis_gt, ytvis_preds,
         det_vid_to_img = {}
         det_img_to_vid = {}
 
-        log_dir ='log/coco_to_xml'
+        log_dir = 'log/coco_to_xml'
 
         os.makedirs(log_dir, exist_ok=1)
 
@@ -857,8 +858,10 @@ def run(params, *argv):
 
                         ann_img[ann_mask_binary] = (params.alpha * ann_img[ann_mask_binary] +
                                                     (1 - params.alpha) * ann_mask_img[ann_mask_binary])
-                    else:
-                        drawBox(ann_img, np.asarray(ann_bbox), color=col, xywh=True)
+                    if params.enable_mask != 2:
+                        xmin, ymin, gt_w, gt_h = ann_bbox
+                        xmax, ymax = xmin + gt_w, ymin + gt_h
+                        drawBox(ann_img, xmin, ymin, xmax, ymax, box_color=col_bgr[col])
 
             ann_img = ann_img.astype(np.uint8)
 
@@ -874,12 +877,6 @@ def run(params, *argv):
                 zip(pred_scores, pred_bboxes, pred_segms, category_ids, pred_global_ids)):
 
             n_all_objs += 1
-            # print(f'pred_id: {pred_id}')
-
-            # pred_score = pred['score']
-            # pred_bbox = pred['bbox']
-            # pred_segm = pred['segmentation']
-            # category_id = pred['category_id']
 
             label = category_id_to_label[category_id]
             col = class_name_to_col[label]
@@ -956,8 +953,11 @@ def run(params, *argv):
                     pred_mask_img[mask] = col_bgr[col]
                     pred_img[mask] = (params.alpha * pred_img[mask] +
                                       (1 - params.alpha) * pred_mask_img[mask])
-                else:
-                    drawBox(pred_img, np.asarray(bbox), color=col, xywh=True)
+
+                if params.enable_mask != 2:
+                    xmin, ymin, det_w, det_h = bbox
+                    xmax, ymax = xmin + det_w, ymin + det_h
+                    drawBox(pred_img, xmin, ymin, xmax, ymax, box_color=col_bgr[col], label= f'{global_id}:{score:.2f}')
 
             xmin, ymin, w, h = bbox
 
@@ -983,6 +983,7 @@ def run(params, *argv):
                     "YMin": ymin,
                     "YMax": ymax,
                     "Confidence": score,
+                    "global_id": global_id,
                 }
                 if params.enable_mask:
                     row.update(
@@ -1022,6 +1023,7 @@ def run(params, *argv):
         csv_columns = [
             "ImageID", "LabelName",
             "XMin", "XMax", "YMin", "YMax", "Confidence",
+            "global_id"
         ]
         if params.enable_mask:
             csv_columns += ['mask_w', 'mask_h', 'mask_counts']
