@@ -51,8 +51,10 @@
         - [nms       @ seq-inc/ext_reorg_roi_g2_16_53](#nms___seq_inc_ext_reorg_roi_g2_16_53_)
         - [probs       @ seq-inc/ext_reorg_roi_g2_16_53](#probs___seq_inc_ext_reorg_roi_g2_16_53_)
     - [vita       @ ext_reorg_roi_g2_16_53](#vita___ext_reorg_roi_g2_16_53_)
-        - [0119999       @ vita/ext_reorg_roi_g2_16_53](#0119999___vita_ext_reorg_roi_g2_16_5_3_)
-        - [0329999       @ vita/ext_reorg_roi_g2_16_53](#0329999___vita_ext_reorg_roi_g2_16_5_3_)
+        - [Test_230606       @ vita/ext_reorg_roi_g2_16_53](#test_230606___vita_ext_reorg_roi_g2_16_5_3_)
+        - [g2_0_15       @ vita/ext_reorg_roi_g2_16_53](#g2_0_15___vita_ext_reorg_roi_g2_16_5_3_)
+            - [0119999       @ g2_0_15/vita/ext_reorg_roi_g2_16_53](#0119999___g2_0_15_vita_ext_reorg_roi_g2_16_5_3_)
+            - [0329999       @ g2_0_15/vita/ext_reorg_roi_g2_16_53](#0329999___g2_0_15_vita_ext_reorg_roi_g2_16_5_3_)
     - [vita-inc       @ ext_reorg_roi_g2_16_53](#vita_inc___ext_reorg_roi_g2_16_53_)
         - [0119999       @ vita-inc/ext_reorg_roi_g2_16_53](#0119999___vita_inc_ext_reorg_roi_g2_16_5_3_)
         - [0329999       @ vita-inc/ext_reorg_roi_g2_16_53](#0329999___vita_inc_ext_reorg_roi_g2_16_5_3_)
@@ -84,6 +86,7 @@
         - [g2_0_53       @ seq-inc/ext_reorg_roi_g2_54_126](#g2_0_53___seq_inc_ext_reorg_roi_g2_54_12_6_)
         - [g2_0_15       @ seq-inc/ext_reorg_roi_g2_54_126](#g2_0_15___seq_inc_ext_reorg_roi_g2_54_12_6_)
     - [vita       @ ext_reorg_roi_g2_54_126](#vita___ext_reorg_roi_g2_54_12_6_)
+        - [Test_230606       @ vita/ext_reorg_roi_g2_54_126](#test_230606___vita_ext_reorg_roi_g2_54_126_)
         - [g2_0_53       @ vita/ext_reorg_roi_g2_54_126](#g2_0_53___vita_ext_reorg_roi_g2_54_126_)
         - [g2_0_15       @ vita/ext_reorg_roi_g2_54_126](#g2_0_15___vita_ext_reorg_roi_g2_54_126_)
     - [vita-inc       @ ext_reorg_roi_g2_54_126](#vita_inc___ext_reorg_roi_g2_54_12_6_)
@@ -315,11 +318,17 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vnx
 
 <a id="vita___ext_reorg_roi_g2_16_53_"></a>
 ## vita       @ ext_reorg_roi_g2_16_53-->coco_to_xml
-<a id="0119999___vita_ext_reorg_roi_g2_16_5_3_"></a>
-### 0119999       @ vita/ext_reorg_roi_g2_16_53-->coco_to_xml
+
+<a id="test_230606___vita_ext_reorg_roi_g2_16_5_3_"></a>
+### Test_230606       @ vita/ext_reorg_roi_g2_16_53-->coco_to_xml
+python3 coco_to_xml.py root_dir=/data/ipsc json=vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999_Test_230606/results.json gt_json=ytvis19/ytvis_Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=1 nms_thresh=0 n_proc=1
+<a id="g2_0_15___vita_ext_reorg_roi_g2_16_5_3_"></a>
+### g2_0_15       @ vita/ext_reorg_roi_g2_16_53-->coco_to_xml
+<a id="0119999___g2_0_15_vita_ext_reorg_roi_g2_16_5_3_"></a>
+#### 0119999       @ g2_0_15/vita/ext_reorg_roi_g2_16_53-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0119999/results.json  gt_json=ipsc-ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=0
-<a id="0329999___vita_ext_reorg_roi_g2_16_5_3_"></a>
-### 0329999       @ vita/ext_reorg_roi_g2_16_53-->coco_to_xml
+<a id="0329999___g2_0_15_vita_ext_reorg_roi_g2_16_5_3_"></a>
+#### 0329999       @ g2_0_15/vita/ext_reorg_roi_g2_16_53-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999/results.json  gt_json=ipsc-ext_reorg_roi_g2_0_15.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=0 nms_thresh=0.1 n_proc=12
 __-max_length-1-__
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999_max_length-1/results.json  gt_json=ipsc-ext_reorg_roi_g2_0_15-max_length-1.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=0 nms_thresh=0:0.9:0.1 n_proc=2
@@ -479,6 +488,10 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vnx
 
 <a id="vita___ext_reorg_roi_g2_54_12_6_"></a>
 ## vita       @ ext_reorg_roi_g2_54_126-->coco_to_xml
+<a id="test_230606___vita_ext_reorg_roi_g2_54_126_"></a>
+### Test_230606       @ vita/ext_reorg_roi_g2_54_126-->coco_to_xml
+python3 coco_to_xml.py root_dir=/data/ipsc json=vita/vita-ipsc-ext_reorg_roi_g2_54_126_swin/inference_model_0194999_Test_230606/results.json gt_json=ytvis19/ytvis_Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=1 nms_thresh=0 n_proc=1
+
 <a id="g2_0_53___vita_ext_reorg_roi_g2_54_126_"></a>
 ### g2_0_53       @ vita/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vita/vita-ipsc-ext_reorg_roi_g2_54_126_swin/inference_model_0194999/results.json  gt_json=ipsc-ext_reorg_roi_g2_0_53.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=0 nms_thresh=0:0.9:0.1 n_proc=12
