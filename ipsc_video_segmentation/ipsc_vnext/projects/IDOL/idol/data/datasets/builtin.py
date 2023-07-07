@@ -124,7 +124,7 @@ for test_set in (
         {
             f"ytvis-ipsc-{test_set}": (
                 "ipsc",
-                f"ipsc//ytvis_{test_set}.json"
+                f"ipsc/ytvis19/ytvis_{test_set}.json"
             ),
         }
     )
