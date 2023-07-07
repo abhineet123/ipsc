@@ -116,13 +116,13 @@ for db in (
 
             }
         )
-        
+
 for test_set in (
         'Test_230606',
         'Test_211208',):
     _PREDEFINED_SPLITS_YTVIS_2019.update(
         {
-            f"ytvis_{test_set}": (
+            f"{test_set}": (
                 "ipsc",
                 f"ipsc//ytvis_{test_set}.json"
             ),
