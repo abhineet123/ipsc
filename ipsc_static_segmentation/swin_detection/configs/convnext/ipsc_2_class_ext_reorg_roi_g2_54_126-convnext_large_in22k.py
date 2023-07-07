@@ -5,8 +5,8 @@ _base_ = [
 ]
 
 dataset_type = 'IPSC2Class'
-data_root = 'data/ipsc/well3/all_frames_roi/'
-data_root_test = 'data/ipsc/'
+data_root = '/data/ipsc/well3/all_frames_roi/'
+data_root_test = '/data/ipsc/'
 
 model = dict(
     backbone=dict(

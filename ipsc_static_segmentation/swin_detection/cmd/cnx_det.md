@@ -15,6 +15,7 @@
     - [on-g2_0_53       @ g2_54_126-convnext_base_in22k](#on_g2_0_53___g2_54_126_convnext_base_in22_k_)
     - [on-g2_0_15       @ g2_54_126-convnext_base_in22k](#on_g2_0_15___g2_54_126_convnext_base_in22_k_)
 - [g2_54_126-convnext_large_in22k](#g2_54_126_convnext_large_in22_k_)
+    - [on-Test_230606       @ g2_54_126-convnext_large_in22k](#on_test_230606___g2_54_126_convnext_large_in22k_)
     - [on-g2_0_53       @ g2_54_126-convnext_large_in22k](#on_g2_0_53___g2_54_126_convnext_large_in22k_)
     - [on-g2_0_15       @ g2_54_126-convnext_large_in22k](#on_g2_0_15___g2_54_126_convnext_large_in22k_)
 - [g2_54_126-convnext_xlarge_in22k-coco](#g2_54_126_convnext_xlarge_in22k_coc_o_)
@@ -90,6 +91,9 @@ CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/convnext/ipsc_2_clas
 <a id="g2_54_126_convnext_large_in22_k_"></a>
 # g2_54_126-convnext_large_in22k 
 tools/dist_train.sh configs/convnext/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k.py 2 --cfg-options model.pretrained=pretrained/convnext_large_22k_224.pth data.samples_per_gpu=1
+<a id="on_test_230606___g2_54_126_convnext_large_in22k_"></a>
+## on-Test_230606       @ g2_54_126-convnext_large_in22k-->cnx_det
+CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/convnext/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k/epoch_106.pth eval=bbox,segm test_name=Test_230606
 <a id="on_g2_0_53___g2_54_126_convnext_large_in22k_"></a>
 ## on-g2_0_53       @ g2_54_126-convnext_large_in22k-->cnx_det
 CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/convnext/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-convnext_large_in22k/epoch_106.pth eval=bbox,segm test_name=g2_0_53
