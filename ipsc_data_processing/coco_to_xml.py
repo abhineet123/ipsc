@@ -957,7 +957,8 @@ def run(params, *argv):
                 if params.enable_mask != 2:
                     xmin, ymin, det_w, det_h = bbox
                     xmax, ymax = xmin + det_w, ymin + det_h
-                    drawBox(pred_img, xmin, ymin, xmax, ymax, box_color=col_bgr[col], label= f'{global_id}:{score:.2f}')
+                    drawBox(pred_img, xmin, ymin, xmax, ymax, box_color=col_bgr[col],
+                            label= f'{global_id}:{score:.2f}', font_size=0.6)
 
             xmin, ymin, w, h = bbox
 
