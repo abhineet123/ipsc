@@ -116,7 +116,18 @@ for db in (
 
             }
         )
-
+        
+for test_set in (
+        'Test_230606',
+        'Test_211208',):
+    _PREDEFINED_SPLITS_YTVIS_2019.update(
+        {
+            f"ytvis_{test_set}": (
+                "ipsc",
+                f"ipsc//ytvis_{test_set}.json"
+            ),
+        }
+    )
 
 # ==== Predefined splits for YTVIS 2021 ===========
 _PREDEFINED_SPLITS_YTVIS_2021 = {
