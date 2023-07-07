@@ -78,6 +78,15 @@ def save_json(json_dict, json_path):
         f.write(output_json_data)
 
 
+def save_ytvis_json(json_dict, json_path):
+    n_vids = len(json_dict['videos'])
+    n_json_objs = len(json_dict['annotations'])
+    print(f'saving ytvis json with {n_vids} videos and {n_json_objs} objects to: {json_path}')
+    with open(json_path, 'w') as f:
+        output_json_data = json.dumps(json_dict, indent=4)
+        f.write(output_json_data)
+
+
 def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
     rel_path = annotation_root.findtext('path')
     if rel_path is None:
@@ -427,6 +436,8 @@ def main():
     output_json_dir, output_json_fname = os.path.dirname(output_json), os.path.basename(output_json)
     output_json_fname_noext, output_json_fname_ext = os.path.splitext(output_json_fname)
 
+    ytvis_json_name = f'ytvis_{output_json_fname}'
+
     if not output_json_dir:
         if root_dir:
             output_json_dir = root_dir
@@ -489,6 +500,29 @@ def main():
         "annotations": [],
         "categories": []
     }
+    info = {
+        "version": "1.0",
+        "year": 2022,
+        "contributor": "asingh1",
+        "date_created": time_stamp
+    }
+    licenses = [
+        {
+            "url": "https://creativecommons.org/licenses/by/4.0/",
+            "id": 1,
+            "name": "Creative Commons Attribution 4.0 License"
+        }
+    ]
+
+    ytvis_json_dict = {
+        "info": info,
+        "licenses": licenses,
+        "videos": [],
+        "categories": [],
+        "annotations": [],
+    }
+    videos = []
+    annotations = []
 
     if no_annotations or write_empty:
         for seq_id, seq_path in enumerate(seq_paths):
@@ -515,7 +549,7 @@ def main():
 
             print(f'\n sequence {seq_id + 1} / {n_seq}: {seq_name}\n')
 
-            for img_file in tqdm(img_files):
+            for img_file_id, img_file in enumerate(tqdm(img_files)):
                 # img = cv2.imread(img_file)
                 width, height = imagesize.get(img_file)
                 filename = os.path.basename(img_file)
@@ -529,15 +563,31 @@ def main():
                     'width': width,
                     'id': seq_name + '/' + img_id
                 }
+                video_dict = {
+                    "width": width,
+                    "height": height,
+                    "length": 1,
+                    "date_captured": "",
+                    "license": 1,
+                    "flickr_url": "",
+                    "file_names": [rel_path, ],
+                    "id": img_file_id + 1,
+                    "coco_url": "",
+                }
                 output_json_dict['images'].append(image_info)
+                ytvis_json_dict['videos'].append(video_dict)
 
         if no_annotations:
             for label, label_id in class_dict.items():
                 category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
                 output_json_dict['categories'].append(category_info)
+                ytvis_json_dict['categories'].append(category_info)
 
             json_path = os.path.join(output_json_dir, output_json_fname)
             save_json(output_json_dict, json_path)
+
+            ytvis_json_path = os.path.join(output_json_dir, ytvis_json_name)
+            save_ytvis_json(ytvis_json_dict, ytvis_json_path)
             return
 
     dir_name = params.dir_name
@@ -583,7 +633,7 @@ def main():
         if params.samples_per_seq > 0:
             if params.samples_per_seq < 1.0:
                 """fractional"""
-                n_samples = int(n_files*params.samples_per_seq)
+                n_samples = int(n_files * params.samples_per_seq)
             else:
                 n_samples = int(params.samples_per_seq)
                 n_samples = min(n_samples, n_files)

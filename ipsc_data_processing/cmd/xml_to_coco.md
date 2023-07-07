@@ -32,6 +32,7 @@
         - [all_frames_roi       @ ext_reorg_roi-no_annotations/ipsc_2_class](#all_frames_roi___ext_reorg_roi_no_annotations_ipsc_2_clas_s_)
             - [all_frames_roi_7777_10249_10111_13349       @ all_frames_roi/ext_reorg_roi-no_annotations/ipsc_2_class](#all_frames_roi_7777_10249_10111_13349___all_frames_roi_ext_reorg_roi_no_annotations_ipsc_2_class_)
             - [all_frames_roi_8094_13016_11228_15282       @ all_frames_roi/ext_reorg_roi-no_annotations/ipsc_2_class](#all_frames_roi_8094_13016_11228_15282___all_frames_roi_ext_reorg_roi_no_annotations_ipsc_2_class_)
+        - [Test_230606       @ ext_reorg_roi-no_annotations/ipsc_2_class](#test_230606___ext_reorg_roi_no_annotations_ipsc_2_clas_s_)
         - [Test_211208       @ ext_reorg_roi-no_annotations/ipsc_2_class](#test_211208___ext_reorg_roi_no_annotations_ipsc_2_clas_s_)
         - [nd03       @ ext_reorg_roi-no_annotations/ipsc_2_class](#nd03___ext_reorg_roi_no_annotations_ipsc_2_clas_s_)
     - [g2_4       @ ipsc_2_class](#g2_4___ipsc_2_class_)
@@ -223,6 +224,10 @@ python xml_to_coco.py seq_paths=/data/ipsc/well3/all_frames_roi/all_frames_roi_7
 <a id="all_frames_roi_8094_13016_11228_15282___all_frames_roi_ext_reorg_roi_no_annotations_ipsc_2_class_"></a>
 #### all_frames_roi_8094_13016_11228_15282       @ all_frames_roi/ext_reorg_roi-no_annotations/ipsc_2_class-->xml_to_coco
 python xml_to_coco.py seq_paths=/data/ipsc/well3/all_frames_roi/all_frames_roi_8094_13016_11228_15282 class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=all_frames_roi_8094_13016_11228_15282.json no_annotations=1
+
+<a id="test_230606___ext_reorg_roi_no_annotations_ipsc_2_clas_s_"></a>
+### Test_230606       @ ext_reorg_roi-no_annotations/ipsc_2_class-->xml_to_coco
+python xml_to_coco.py seq_paths=/data/ipsc/Test_230606 class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=Test_230606.json no_annotations=1
 
 <a id="test_211208___ext_reorg_roi_no_annotations_ipsc_2_clas_s_"></a>
 ### Test_211208       @ ext_reorg_roi-no_annotations/ipsc_2_class-->xml_to_coco
