@@ -520,7 +520,7 @@ python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vnx
 ## vita       @ ext_reorg_roi_g2_54_126-->coco_to_xml
 <a id="test_230606___vita_ext_reorg_roi_g2_54_126_"></a>
 ### Test_230606       @ vita/ext_reorg_roi_g2_54_126-->coco_to_xml
-python3 coco_to_xml.py root_dir=/data/ipsc json=vita/vita-ipsc-ext_reorg_roi_g2_54_126_swin/inference_model_0194999_Test_230606/results.json gt_json=ytvis19/ytvis_Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=1 nms_thresh=0,0.2 n_proc=1
+python3 coco_to_xml.py root_dir=/data/ipsc json=vita/vita-ipsc-ext_reorg_roi_g2_54_126_swin/inference_model_0194999_Test_230606/results.json gt_json=ytvis19/ytvis_Test_230606.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=1 nms_thresh=0,0.2 n_proc=2
 <a id="g2_0_53___vita_ext_reorg_roi_g2_54_126_"></a>
 ### g2_0_53       @ vita/ext_reorg_roi_g2_54_126-->coco_to_xml
 python3 coco_to_xml.py root_dir=/data/ipsc/well3/all_frames_roi/ytvis19 json=vita/vita-ipsc-ext_reorg_roi_g2_54_126_swin/inference_model_0194999/results.json  gt_json=ipsc-ext_reorg_roi_g2_0_53.json class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt ytvis=1 save=0 nms_thresh=0:0.9:0.1 n_proc=12

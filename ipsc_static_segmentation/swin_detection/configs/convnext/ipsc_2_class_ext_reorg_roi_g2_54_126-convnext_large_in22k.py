@@ -184,10 +184,18 @@ data = dict(
         ann_file=data_root + 'ext_reorg_roi_g2_0_15.json',
         img_prefix=data_root,
         pipeline=test_pipeline),
+
     Test_230606=dict(
         samples_per_gpu=1,
         type=dataset_type,
         ann_file=data_root_test + 'Test_230606.json',
+        img_prefix=data_root_test,
+        pipeline=test_pipeline),
+
+    Test_230710=dict(
+        samples_per_gpu=1,
+        type=dataset_type,
+        ann_file=data_root_test + 'Test_230710.json',
         img_prefix=data_root_test,
         pipeline=test_pipeline),
 

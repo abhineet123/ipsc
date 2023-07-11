@@ -194,6 +194,13 @@ data = dict(
         img_prefix=data_root_test,
         pipeline=test_pipeline),
 
+    Test_230710=dict(
+        samples_per_gpu=1,
+        type=dataset_type,
+        ann_file=data_root_test + 'Test_230710.json',
+        img_prefix=data_root_test,
+        pipeline=test_pipeline),
+
 )
 
 evaluation = dict(metric=['bbox', 'segm'])
