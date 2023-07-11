@@ -104,7 +104,9 @@ for db in (
 
 for test_set in (
         'Test_230606',
-        'Test_211208',):
+        'Test_211208',
+        'Test_230710',
+):
     _PREDEFINED_SPLITS_YTVIS_2019.update(
         {
             f"ytvis-ipsc-{test_set}": (
