@@ -25,6 +25,7 @@
             - [model_0079999       @ swin-coco-retrain/ipsc-ext_reorg_roi_g2_16_53](#model_0079999___swin_coco_retrain_ipsc_ext_reorg_roi_g2_16_5_3_)
             - [model_0104999       @ swin-coco-retrain/ipsc-ext_reorg_roi_g2_16_53](#model_0104999___swin_coco_retrain_ipsc_ext_reorg_roi_g2_16_5_3_)
     - [swin-coco       @ ipsc-ext_reorg_roi_g2_16_53](#swin_coco___ipsc_ext_reorg_roi_g2_16_5_3_)
+        - [on-Test_230710       @ swin-coco/ipsc-ext_reorg_roi_g2_16_53](#on_test_230710___swin_coco_ipsc_ext_reorg_roi_g2_16_5_3_)
         - [on-Test_230606       @ swin-coco/ipsc-ext_reorg_roi_g2_16_53](#on_test_230606___swin_coco_ipsc_ext_reorg_roi_g2_16_5_3_)
         - [on-g2_0_15       @ swin-coco/ipsc-ext_reorg_roi_g2_16_53](#on_g2_0_15___swin_coco_ipsc_ext_reorg_roi_g2_16_5_3_)
             - [model_0119999       @ on-g2_0_15/swin-coco/ipsc-ext_reorg_roi_g2_16_53](#model_0119999___on_g2_0_15_swin_coco_ipsc_ext_reorg_roi_g2_16_53_)
@@ -32,6 +33,7 @@
             - [model_0329999       @ on-g2_0_15/swin-coco/ipsc-ext_reorg_roi_g2_16_53](#model_0329999___on_g2_0_15_swin_coco_ipsc_ext_reorg_roi_g2_16_53_)
                 - [incremental       @ model_0329999/on-g2_0_15/swin-coco/ipsc-ext_reorg_roi_g2_16_53](#incremental___model_0329999_on_g2_0_15_swin_coco_ipsc_ext_reorg_roi_g2_16_53_)
 - [ipsc-ext_reorg_roi_g2_54_126](#ipsc_ext_reorg_roi_g2_54_12_6_)
+    - [on-Test_230710       @ ipsc-ext_reorg_roi_g2_54_126](#on_test_230710___ipsc_ext_reorg_roi_g2_54_126_)
     - [on-Test_230606       @ ipsc-ext_reorg_roi_g2_54_126](#on_test_230606___ipsc_ext_reorg_roi_g2_54_126_)
     - [on-g2_0_53       @ ipsc-ext_reorg_roi_g2_54_126](#on_g2_0_53___ipsc_ext_reorg_roi_g2_54_126_)
         - [incremental       @ on-g2_0_53/ipsc-ext_reorg_roi_g2_54_126](#incremental___on_g2_0_53_ipsc_ext_reorg_roi_g2_54_12_6_)
@@ -166,6 +168,10 @@ sbatch cmd/vita-ipsc-ext_reorg_roi_g2_16_53_ytvis_swin.sh
 ```
 python train_net_vita.py --resume --num-gpus 2 --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_16_53-vita_SWIN_bs8.yaml MODEL.WEIGHTS pretrained/vita_swin_coco.pth SOLVER.IMS_PER_BATCH 2
 
+<a id="on_test_230710___swin_coco_ipsc_ext_reorg_roi_g2_16_5_3_"></a>
+### on-Test_230710       @ swin-coco/ipsc-ext_reorg_roi_g2_16_53-->vita
+CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_16_53-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_16_53_swin/model_0329999.pth TEST_NAME ytvis-ipsc-Test_230710 OUT_SUFFIX Test_230710
+
 <a id="on_test_230606___swin_coco_ipsc_ext_reorg_roi_g2_16_5_3_"></a>
 ### on-Test_230606       @ swin-coco/ipsc-ext_reorg_roi_g2_16_53-->vita
 CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_16_53-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_16_53_swin/model_0329999.pth TEST_NAME ytvis-ipsc-Test_230606 OUT_SUFFIX Test_230606
@@ -203,6 +209,10 @@ CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vi
 sbatch cmd/vita-ipsc-ext_reorg_roi_g2_54_126_ytvis_swin.sh
 ```
 python train_net_vita.py --num-gpus 2 --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_54_126-vita_SWIN_bs8.yaml MODEL.WEIGHTS pretrained/vita_swin_coco.pth SOLVER.IMS_PER_BATCH 2
+
+<a id="on_test_230710___ipsc_ext_reorg_roi_g2_54_126_"></a>
+## on-Test_230710       @ ipsc-ext_reorg_roi_g2_54_126-->vita
+CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_54_126-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_54_126_swin/model_0194999.pth TEST_NAME ytvis-ipsc-Test_230710 OUT_SUFFIX Test_230710
 
 <a id="on_test_230606___ipsc_ext_reorg_roi_g2_54_126_"></a>
 ## on-Test_230606       @ ipsc-ext_reorg_roi_g2_54_126-->vita
