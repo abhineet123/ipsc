@@ -16,6 +16,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 os.environ["RANK"] = "0"
+os.environ["WORLD_SIZE"] = "2"
 
 from mmdet import __version__
 from mmdet.apis import set_random_seed, train_detector
