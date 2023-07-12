@@ -436,8 +436,6 @@ def main():
     output_json_dir, output_json_fname = os.path.dirname(output_json), os.path.basename(output_json)
     output_json_fname_noext, output_json_fname_ext = os.path.splitext(output_json_fname)
 
-    ytvis_json_name = f'ytvis_{output_json_fname}'
-
     if not output_json_dir:
         if root_dir:
             output_json_dir = root_dir
@@ -585,13 +583,16 @@ def main():
                 category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
                 output_json_dict['categories'].append(category_info)
 
-                ytvis_category_info = {'supercategory': 'none', 'id': label_id+1, 'name': label}
+                ytvis_category_info = {'supercategory': 'none', 'id': label_id + 1, 'name': label}
                 ytvis_json_dict['categories'].append(ytvis_category_info)
 
             json_path = os.path.join(output_json_dir, output_json_fname)
             save_json(output_json_dict, json_path)
 
-            ytvis_json_path = os.path.join(output_json_dir, ytvis_json_name)
+            ytvis_json_dir = linux_path(output_json_dir, 'ytvis19')
+            ytvis_json_name = f'ytvis_{output_json_fname}'
+            os.makedirs(ytvis_json_dir, exist_ok=1)
+            ytvis_json_path = os.path.join(ytvis_json_dir, ytvis_json_name)
             save_ytvis_json(ytvis_json_dict, ytvis_json_path)
             return
 
