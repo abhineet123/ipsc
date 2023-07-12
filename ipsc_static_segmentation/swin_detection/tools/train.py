@@ -15,6 +15,8 @@ from mmcv.utils import get_git_hash
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
+os.environ["RANK"] = "0"
+
 from mmdet import __version__
 from mmdet.apis import set_random_seed, train_detector
 from mmdet.datasets import build_dataset
