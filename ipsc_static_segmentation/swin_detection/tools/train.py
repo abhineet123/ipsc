@@ -139,11 +139,11 @@ def main():
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
         distributed = False
-        import torch.distributed as dist
-        dist.init_process_group('gloo',
-                                init_method=args.init,
-                                rank=0, world_size=args.gpus
-                                )
+        # import torch.distributed as dist
+        # dist.init_process_group('gloo',
+        #                         init_method=args.init,
+        #                         rank=0, world_size=args.gpus
+        #                         )
     else:
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
