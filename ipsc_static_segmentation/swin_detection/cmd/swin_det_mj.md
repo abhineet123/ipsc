@@ -60,7 +60,7 @@ python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to
 # db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt       @ multi_gpu/-->swin_det_mj
 tools/dist_train.sh configs/swin/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt.py 2 --resume  --no-validate --init file:///tmp/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt-009 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=3 data.workers_per_gpu=3
 
-python tools/train.py configs/swin/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt.py --gpus 2  --launcher none --resume  --no-validate --init file:///tmp/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt-009 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=3 data.workers_per_gpu=3
+python tools/train.py configs/swin/db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt.py --gpus 2  --launcher none --resume --no-validate  --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=3 data.workers_per_gpu=3
 
 <a id="on_train_sept5_2k_100___db3_2_to_17_except_6_sept5_2k_100_large_huge_fps_to_gt__"></a>
 ### on-train_sept5_2k_100       @ db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt/-->swin_det_mj
