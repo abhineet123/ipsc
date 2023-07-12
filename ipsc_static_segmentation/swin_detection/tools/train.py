@@ -17,6 +17,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 os.environ["RANK"] = "0"
 os.environ["WORLD_SIZE"] = "2"
+os.environ["MASTER_ADDR"] = "2"
 
 from mmdet import __version__
 from mmdet.apis import set_random_seed, train_detector
@@ -141,7 +142,7 @@ def main():
         import torch.distributed as dist
         dist.init_process_group('gloo',
                                 init_method=args.init,
-                                rank=0, world_size=1
+                                rank=0, world_size=args.gpus
                                 )
     else:
         distributed = True
