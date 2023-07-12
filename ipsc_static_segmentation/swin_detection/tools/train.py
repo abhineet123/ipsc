@@ -12,6 +12,9 @@ from mmcv import Config, DictAction
 from mmcv.runner import get_dist_info, init_dist
 from mmcv.utils import get_git_hash
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from mmdet import __version__
 from mmdet.apis import set_random_seed, train_detector
 from mmdet.datasets import build_dataset
