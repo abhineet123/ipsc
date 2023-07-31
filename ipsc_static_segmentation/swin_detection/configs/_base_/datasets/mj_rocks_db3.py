@@ -86,6 +86,13 @@ data = dict(
         pipeline=test_pipeline,
         samples_per_gpu=3,
     ),
+    september_5_2020_fps=dict(
+        type='MojowRocksFPsToGT',
+        ann_file=data_root + 'september_5_2020-large_huge.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline,
+        samples_per_gpu=3,
+    ),
     part14_on_part4_on_part5_on_september_5_2020=dict(
         type='MojowRocksSyn',
         ann_file=data_root + 'part14_on_part4_on_part5_on_september_5_2020-large_huge.json',

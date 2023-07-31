@@ -155,4 +155,5 @@ data = dict(
         img_prefix=data_root,
         ann_file=data_root + 'db3_2_to_17_except_6-large_huge-val.json',
     ),
+
 )
