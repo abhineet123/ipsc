@@ -147,7 +147,9 @@ python3 -m csv_to_xml csv_paths=rockmaps/syn/part2_on_hub_cs210422102/annotation
 ## db5       @ cvat_to_xml-->xml_mj
 <a id="part1___db5_cvat_to_xm_l_"></a>
 ### part1       @ db5/cvat_to_xml-->xml_mj
-python3 -m cvat_to_xml input=part1 root_dir=/data/mojow_rock/rock_dataset5 allow_missing_images=0 move_images=0 vert_flip=0 allow_empty=0
+python3 -m cvat_to_xml input=part1 root_dir=/data/mojow_rock/rock_dataset5 allow_missing_images=0 move_images=0 vert_flip=0 allow_empty=1 db5=1
+
+python3 -m cvat_to_xml input=part2 root_dir=/data/mojow_rock/rock_dataset5 allow_missing_images=0 move_images=0 vert_flip=0 allow_empty=1 db5=1
 
 <a id="db4___cvat_to_xm_l_"></a>
 ## db4       @ cvat_to_xml-->xml_mj

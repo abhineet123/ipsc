@@ -1,6 +1,7 @@
 
 <!-- MarkdownTOC -->
 
+- [db5](#db5_)
 - [db4](#db4_)
     - [rockmaps       @ db4](#rockmaps___db_4_)
         - [hub1       @ rockmaps/db4](#hub1___rockmaps_db4_)
@@ -40,6 +41,10 @@
         - [large_huge       @ part14_on_part4_on_part5_on_september_5_2020/db3](#large_huge___part14_on_part4_on_part5_on_september_5_2020_db3_)
 
 <!-- /MarkdownTOC -->
+
+<a id="db5_"></a>
+# db5
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset5 seq_paths=db5.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db5.json val_ratio=0 allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
 
 <a id="db4_"></a>
 # db4
