@@ -10,6 +10,7 @@
 - [db3_2_to_17_except_6-large_huge       @ multi_gpu/](#db3_2_to_17_except_6_large_huge___multi_gpu_)
     - [multi_gpu       @ db3_2_to_17_except_6-large_huge](#multi_gpu___db3_2_to_17_except_6_large_hug_e_)
     - [single_gpu       @ db3_2_to_17_except_6-large_huge](#single_gpu___db3_2_to_17_except_6_large_hug_e_)
+        - [on-db5       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_db5___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-db4       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_db4___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-db4_rockmaps       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_db4_rockmaps___single_gpu_db3_2_to_17_except_6_large_huge_)
         - [on-september_5_2020       @ single_gpu/db3_2_to_17_except_6-large_huge](#on_september_5_2020___single_gpu_db3_2_to_17_except_6_large_huge_)
@@ -90,6 +91,12 @@ change the CPU IOMMU feature from Auto to Disabled
 <a id="single_gpu___db3_2_to_17_except_6_large_hug_e_"></a>
 ## single_gpu       @ db3_2_to_17_except_6-large_huge-->swin_det_mj
 python -m tools.train configs/swin/db3_2_to_17_except_6-large_huge.py --init file:///tmp/db3_2_to_17_except_6-large_huge-003 --cfg-options data.samples_per_gpu=3
+
+<a id="on_db5___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
+### on-db5       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=db5_part1 write_masks=0 write_xml=0
+
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge/epoch_231.pth eval=bbox,segm test_name=db5_part2 write_masks=0 write_xml=0
 
 <a id="on_db4___single_gpu_db3_2_to_17_except_6_large_huge_"></a>
 ### on-db4       @ single_gpu/db3_2_to_17_except_6-large_huge-->swin_det_mj
