@@ -1629,17 +1629,18 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
             class_col = col
         class_col = col_bgr[class_col]
 
-        rle = obj['mask']
-        mask_orig = mask_util.decode(rle).squeeze()
-        mask_orig = np.ascontiguousarray(mask_orig, dtype=np.uint8)
+        if mask:
+            rle = obj['mask']
+            mask_orig = mask_util.decode(rle).squeeze()
+            mask_orig = np.ascontiguousarray(mask_orig, dtype=np.uint8)
 
-        mask_h, mask_w = mask_orig.shape[:2]
+            mask_h, mask_w = mask_orig.shape[:2]
 
-        if (mask_h, mask_w) != (vis_h, vis_w):
-            resize_factor = vis_h / mask_h
-            mask_uint = cv2.resize(mask_orig, (vis_w, vis_h))
-        else:
-            mask_uint = mask_orig
+            if (mask_h, mask_w) != (vis_h, vis_w):
+                resize_factor = vis_h / mask_h
+                mask_uint = cv2.resize(mask_orig, (vis_w, vis_h))
+            else:
+                mask_uint = mask_orig
 
         if bbox:
             xmin, ymin, xmax, ymax = obj["bbox"]
@@ -1652,69 +1653,70 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
 
                 bb = (xmin, ymin, xmax, ymax)
 
-                mask_pts, mask_bb, is_multi = mask_img_to_pts(mask_orig)
+                if mask:
+                    mask_pts, mask_bb, is_multi = mask_img_to_pts(mask_orig)
 
-                mask_xmin, mask_ymin, w, h = mask_bb
-                mask_xmax, mask_ymax = mask_xmin + w, mask_ymin + h
+                    mask_xmin, mask_ymin, w, h = mask_bb
+                    mask_xmax, mask_ymax = mask_xmin + w, mask_ymin + h
 
-                mask_bb = (mask_xmin, mask_ymin, mask_xmax, mask_ymax)
-                mask_y, mask_x = np.nonzero(mask_orig)
+                    mask_bb = (mask_xmin, mask_ymin, mask_xmax, mask_ymax)
+                    mask_y, mask_x = np.nonzero(mask_orig)
 
-                mask_rgb = np.zeros((mask_h, mask_w, 3), dtype=np.uint8)
-                mask_rgb[mask_y, mask_x, :] = 255
+                    mask_rgb = np.zeros((mask_h, mask_w, 3), dtype=np.uint8)
+                    mask_rgb[mask_y, mask_x, :] = 255
 
-                cv2.rectangle(
-                    mask_rgb, (int(mask_xmin), int(mask_ymin)), (int(mask_xmax), int(mask_ymax)), (0, 255, 0),
-                    thickness)
-
-                if is_multi:
-                    msg = "annoying multi mask"
-                    cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
-                    # raise AssertionError(msg)
-                    continue
-
-                if len(mask_pts) < 4:
-                    msg = 'annoying mask with too few points'
-                    cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
-                    # raise AssertionError(msg)
-                    continue
-
-                # mask_pts = contour_pts_from_mask(mask_orig, allow_multi=0)
-                # mask_pts = np.asarray(mask_pts, dtype=np.int32)
-
-                # cv2.rectangle(
-                #     mask_rgb, (int(mask_xmin), int(mask_ymin)), (int(mask_xmax), int(mask_ymax)), (0, 255, 0),
-                #     thickness)
-                # cv2.imwrite('mask_bb mismatch.png', mask_rgb)
-
-                mask_bb_area = w * h
-
-                if mask_bb_area < 4:
-                    msg = 'annoying invalid mask with tiny area'
-                    cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
-                    raise AssertionError(f'{msg} {mask_bb_area}')
-                    # continue
-
-                if bb != mask_bb:
-                    msg = "mask_bb mismatch"
-                    cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
-                    # raise AssertionError(f'{msg}')
-                    continue
-
-                bb_norm = np.linalg.norm(np.asarray(bb))
-                mask_bb_norm = np.linalg.norm(np.asarray(mask_bb))
-                bb_diff_norm = np.linalg.norm(np.asarray(bb) - np.asarray(mask_bb))
-                bb_diff_norm_ratio = bb_diff_norm / max(bb_norm, mask_bb_norm)
-
-                if bb_diff_norm_ratio > 0.1:
                     cv2.rectangle(
-                        mask_rgb, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (0, 0, 255), thickness)
+                        mask_rgb, (int(mask_xmin), int(mask_ymin)), (int(mask_xmax), int(mask_ymax)), (0, 255, 0),
+                        thickness)
 
-                    cv2.imwrite(f'{log_dir}/mask_bb mismatch {time_stamp}.png', mask_rgb)
-                    # raise AssertionError("mask_bb mismatch")
-                    continue
+                    if is_multi:
+                        msg = "annoying multi mask"
+                        cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
+                        # raise AssertionError(msg)
+                        continue
 
-                xmin, ymin, xmax, ymax = mask_bb
+                    if len(mask_pts) < 4:
+                        msg = 'annoying mask with too few points'
+                        cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
+                        # raise AssertionError(msg)
+                        continue
+
+                    # mask_pts = contour_pts_from_mask(mask_orig, allow_multi=0)
+                    # mask_pts = np.asarray(mask_pts, dtype=np.int32)
+
+                    # cv2.rectangle(
+                    #     mask_rgb, (int(mask_xmin), int(mask_ymin)), (int(mask_xmax), int(mask_ymax)), (0, 255, 0),
+                    #     thickness)
+                    # cv2.imwrite('mask_bb mismatch.png', mask_rgb)
+
+                    mask_bb_area = w * h
+
+                    if mask_bb_area < 4:
+                        msg = 'annoying invalid mask with tiny area'
+                        cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
+                        raise AssertionError(f'{msg} {mask_bb_area}')
+                        # continue
+
+                    if bb != mask_bb:
+                        msg = "mask_bb mismatch"
+                        cv2.imwrite(f'{log_dir}/{msg} {time_stamp}.png', mask_rgb)
+                        # raise AssertionError(f'{msg}')
+                        continue
+
+                    bb_norm = np.linalg.norm(np.asarray(bb))
+                    mask_bb_norm = np.linalg.norm(np.asarray(mask_bb))
+                    bb_diff_norm = np.linalg.norm(np.asarray(bb) - np.asarray(mask_bb))
+                    bb_diff_norm_ratio = bb_diff_norm / max(bb_norm, mask_bb_norm)
+
+                    if bb_diff_norm_ratio > 0.1:
+                        cv2.rectangle(
+                            mask_rgb, (int(xmin), int(ymin)), (int(xmax), int(ymax)), (0, 0, 255), thickness)
+
+                        cv2.imwrite(f'{log_dir}/mask_bb mismatch {time_stamp}.png', mask_rgb)
+                        # raise AssertionError("mask_bb mismatch")
+                        continue
+
+                    xmin, ymin, xmax, ymax = mask_bb
 
             if resize_factor != 1.0:
                 xmin *= resize_factor

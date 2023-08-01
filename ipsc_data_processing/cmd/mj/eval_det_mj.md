@@ -52,9 +52,9 @@ python3 eval_det.py cfg=mj:db3:vis img_paths=september_5_2020_2K_100 det_paths=l
 
 <a id="on_db5___swi_db3_2_to_17_except_6_large_hug_e_"></a>
 ## on-db5       @ swi-db3_2_to_17_except_6-large_huge-->eval_det_mj
-python3 eval_det.py cfg=mj:db5 img_paths=part1 det_paths=log/swi/db3_2_to_17_except_6-large_huge/epoch_231_on_db5_part1/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-epoch_231_on_db5_part1 check_seq_name=1 combine_dets=0 fps_to_gt=0
+python3 eval_det.py cfg=mj:db5 img_paths=part1 det_paths=log/swi/db3_2_to_17_except_6-large_huge/epoch_231_on_db5_part1/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-epoch_231_on_db5_part1 check_seq_name=1 combine_dets=0 fps_to_gt=0 enable_mask=0 save_vis=1 vid_fmt=mp4v,5,mp4
 
-python3 eval_det.py cfg=mj:db5 img_paths=part2 det_paths=log/swi/db3_2_to_17_except_6-large_huge/epoch_231_on_db5_part2/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-epoch_231_on_db5_part2 check_seq_name=1 combine_dets=0 fps_to_gt=0
+python3 eval_det.py cfg=mj:db5 img_paths=part2 det_paths=log/swi/db3_2_to_17_except_6-large_huge/epoch_231_on_db5_part2/csv  save_suffix=mj/swi-db3_2_to_17_except_6-large_huge-epoch_231_on_db5_part2 check_seq_name=1 combine_dets=0 fps_to_gt=0 enable_mask=0 save_vis=1 vid_fmt=mp4v,5,mp4
 
 <a id="swi_db3_sept5_syn3_large_huge_"></a>
 # swi-db3_sept5_syn3-large_huge 
