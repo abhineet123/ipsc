@@ -59,7 +59,7 @@ python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to
 CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge-fps_to_gt/epoch_505.pth eval=bbox,segm test_name=db3_2_to_17_except_6_sept5_2k_100_large_huge write_masks=0 write_xml=0 
 <a id="on_september_5_2020_fps___db3_2_to_17_except_6_large_huge_fps_to_gt_"></a>
 ### on-september_5_2020_fps       @ db3_2_to_17_except_6-large_huge-fps_to_gt/-->swin_det_mj
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge-fps_to_gt/epoch_505.pth eval=bbox,segm test_name=september_5_2020_fps write_masks=0 write_xml=0 
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/db3_2_to_17_except_6-large_huge-fps_to_gt.py checkpoint=work_dirs/db3_2_to_17_except_6-large_huge-fps_to_gt/epoch_505.pth eval=bbox,segm test_name=september_5_2020_fps write_masks=0 write_xml=0
 
 <a id="db3_2_to_17_except_6_sept5_2k_100_large_huge_fps_to_gt___multi_gpu_"></a>
 # db3_2_to_17_except_6_sept5_2k_100-large_huge-fps_to_gt       @ multi_gpu/-->swin_det_mj
