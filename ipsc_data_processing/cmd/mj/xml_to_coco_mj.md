@@ -44,7 +44,9 @@
 
 <a id="db5_"></a>
 # db5
-python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset5 seq_paths=db5.txt class_names_path=lists/classes/predefined_classes_rock.txt output_json=db5.json val_ratio=0 allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset5 seq_paths=part1 class_names_path=lists/classes/predefined_classes_rock.txt output_json=db5-part1.json val_ratio=0 allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 enable_mask=0
+
+python3 xml_to_coco.py root_dir=/data/mojow_rock/rock_dataset5 seq_paths=part2 class_names_path=lists/classes/predefined_classes_rock.txt output_json=db5-part2.json val_ratio=0 allow_missing_images=0 remove_mj_dir_suffix=0 get_img_stats=0 enable_mask=0
 
 <a id="db4_"></a>
 # db4
