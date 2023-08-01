@@ -1,5 +1,7 @@
 <!-- MarkdownTOC -->
 
+- [cvat_to_csv_with_masks](#cvat_to_csv_with_mask_s_)
+- [epoch_to_time_and_id](#epoch_to_time_and_i_d_)
 - [csv_to_yolov5](#csv_to_yolov5_)
     - [ipsc-5_class       @ csv_to_yolov5](#ipsc_5_class___csv_to_yolov_5_)
     - [ext_reorg_roi       @ csv_to_yolov5](#ext_reorg_roi___csv_to_yolov_5_)
@@ -49,6 +51,13 @@
 
 <!-- /MarkdownTOC -->
 
+<a id="cvat_to_csv_with_mask_s_"></a>
+# cvat_to_csv_with_masks
+synthetic-data-generation/cmd/cvat_vis.md
+
+<a id="epoch_to_time_and_i_d_"></a>
+# epoch_to_time_and_id
+mj_yolov5/cmd/yolov5_setup.md
 
 <a id="csv_to_yolov5_"></a>
 # csv_to_yolov5
@@ -138,7 +147,7 @@ python3 -m csv_to_xml csv_paths=rockmaps/syn/part2_on_hub_cs210422102/annotation
 ## db5       @ cvat_to_xml-->xml_mj
 <a id="part1___db5_cvat_to_xm_l_"></a>
 ### part1       @ db5/cvat_to_xml-->xml_mj
-python3 -m cvat_to_xml input=part1 root_dir=/data/mojow_rock/rock_dataset5 allow_missing_images=0 move_images=0 vert_flip=0
+python3 -m cvat_to_xml input=part1 root_dir=/data/mojow_rock/rock_dataset5 allow_missing_images=0 move_images=0 vert_flip=0 allow_empty=0
 
 <a id="db4___cvat_to_xm_l_"></a>
 ## db4       @ cvat_to_xml-->xml_mj
@@ -217,3 +226,6 @@ python3 -m cvat_to_xml input=/data/mojow_rock/rock_dataset3/september_5_2020_2K_
 <a id="large_huge___part1_cvat_to_xm_l_"></a>
 ### large,huge       @ part1/cvat_to_xml-->xml_mj
 python3 -m cvat_to_xml input=/data/mojow_rock/rock_dataset3/part1/annotations.xml output=/data/mojow_rock/rock_dataset3 sizes=large,huge
+
+
+

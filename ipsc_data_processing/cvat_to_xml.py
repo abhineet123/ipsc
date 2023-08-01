@@ -55,6 +55,7 @@ class Params:
         self.cfg = ()
         self.input = ['', ]
         self.root_dir = ''
+        self.db5 = 0
         self.xml_name = 'annotations.xml'
         self.move_images = False
         self.sizes = []
@@ -67,6 +68,7 @@ class Params:
         self.rename_unused = 0
         self.rename_useless = 0
         self.allow_target_id = 1
+        self.allow_empty = 1
         self.write_empty = 0
         self.allow_missing_ann = 0
         self.name_from_title = 1
@@ -109,6 +111,62 @@ def parse_image(tag):
         width = float(image_dict["width"])
         height = float(image_dict["height"])
         bbox, mask = get_bbox_from_poly_points_string(points_string)
+        polygon["bbox"] = bbox
+        polygon["mask"] = mask
+
+        if bbox[0] == bbox[1] or bbox[2] == bbox[3]:  # remove bbox with 0 area
+            continue
+
+        image_dict['width'] = width
+        image_dict['height'] = height
+
+        image_dict['shapes'].append(polygon)
+
+    return image_dict
+
+
+def parse_image_db5(tag):
+    """
+    Parse image XML tag and store all information in the python dict
+    Note: Invalid bounding boxes (e.g. area == 0) will be removed.
+    For attributes and documentations about CVAT image 1.1 see:
+    https://openvinotoolkit.github.io/cvat/docs/manual/advanced/xml_format/
+    :param tag: image tag in XML file
+    :type tag: lxml.ElementTree
+    :param absolute: use absolute image pixel coordinates as opposed to fractional coordinates
+    :type absolute: bool
+    :return XML contents in python dict {image_attributes, shapes: [{polygon_attributes}]}
+
+                from https://github.com/newfarms/2d-rock-detection/blob/development/src/preprocessing/cvat_to_csv.py
+    """
+    image_dict = {'shapes': []}
+    for attr, value in tag.items():  # iterate all the attributes in the tag
+        image_dict[attr] = value
+
+    for bbox_tag in tag.iter('box'):
+        polygon = {}
+
+        # extract attributes from annotation
+        # for example: attributes size and easy
+        for attribute_tag in bbox_tag.iter('attribute'):
+            polygon[attribute_tag.attrib['name']] = attribute_tag.text
+
+        for key, value in bbox_tag.items():  # for example: label
+            polygon[key] = value
+
+        # calculate bounding boxes
+        x_min = float(bbox_tag.get("xtl"))
+        y_min = float(bbox_tag.get("ytl"))
+        x_max = float(bbox_tag.get("xbr"))
+        y_max = float(bbox_tag.get("ybr"))
+
+        bbox = [x_min, x_max, y_min, y_max]
+
+        mask = None
+
+        width = float(image_dict["width"])
+        height = float(image_dict["height"])
+
         polygon["bbox"] = bbox
         polygon["mask"] = mask
 
@@ -320,7 +378,11 @@ def main():
 
         pbar = tqdm(image_tags)
         for image_tag in pbar:
-            image_dict = parse_image(image_tag)
+            if params.db5:
+                image_dict = parse_image_db5(image_tag)
+            else:
+                image_dict = parse_image(image_tag)
+
             image_title_path = image_dict["name"]
             image_title = os.path.splitext(os.path.basename(image_title_path))[0]
 
@@ -329,7 +391,8 @@ def main():
             n_total_images += 1
 
             if n_boxes == 0:
-                # print(f'no annotated boxes in xml for image: {image_title}')
+                if not params.allow_empty:
+                    raise AssertionError(f'no annotated boxes in xml for image: {image_title}')
                 # if rename_useless:
                 #     dst_path = old_img_path + '.useless'
                 #     shutil.move(old_img_path, dst_path)
@@ -378,7 +441,8 @@ def main():
 
                         assert y_min < y_max, "invalid y_min, y_max"
 
-                        mask = [(x, img_h - y - 1, f) for x, y, f in mask]
+                        if mask is not None:
+                            mask = [(x, img_h - y - 1, f) for x, y, f in mask]
 
                     if params.horz_flip:
                         x_min = img_w - x_min - 1
@@ -389,7 +453,8 @@ def main():
 
                         assert x_min < x_max, "invalid x_min, x_max"
 
-                        mask = [(img_w - x - 1, y, f) for x, y, f in mask]
+                        if mask is not None:
+                            mask = [(img_w - x - 1, y, f) for x, y, f in mask]
 
                     # mask_pts =[(x, y) for x, y, f in mask]
                     # drawBox(src_img, x_min, y_min, x_max, y_max, mask=mask_pts)
