@@ -1609,7 +1609,7 @@ def compute_thresh_rec_prec(thresh_idx, score_thresholds,
 
 
 def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
-              in_place=False, bbox=True, mask=True, thickness=2, check_bb=0):
+              in_place=False, bbox=True, mask=False, thickness=2, check_bb=0):
     if in_place:
         vis_img = img
     else:

@@ -195,13 +195,13 @@ def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
 
 
 def draw_and_concat(src_img, frame_det_data, frame_gt_data, class_name_to_col, vis_alpha, vis_w, vis_h,
-                    vert_stack, check_det):
+                    vert_stack, check_det, mask=True):
     dets_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1)
     gt_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1)
 
     dets_vis_img = draw_objs(dets_vis_img, frame_det_data, vis_alpha, class_name_to_col, check_bb=check_det,
-                             thickness=1)
-    gt_vis_img = draw_objs(gt_vis_img, frame_gt_data, vis_alpha, class_name_to_col, thickness=1)
+                             thickness=1, mask=mask)
+    gt_vis_img = draw_objs(gt_vis_img, frame_gt_data, vis_alpha, class_name_to_col, thickness=1, mask=mask)
 
     cat_img_vis = np.concatenate((gt_vis_img, dets_vis_img), axis=0 if vert_stack else 1)
 
@@ -1280,11 +1280,11 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                         cat_img_vis = draw_and_concat(src_img, frame_det_data, frame_gt_data,
                                                       class_name_to_col, params.vis_alpha, vis_w, vis_h, vert_stack,
-                                                      params.check_det)
+                                                      params.check_det, mask=enable_mask)
 
                         cat_img_vis_all = draw_and_concat(src_img, frame_det_data, frame_gt_data,
                                                           class_name_to_col, params.vis_alpha, vis_w_all, vis_h_all,
-                                                          vert_stack, params.check_det)
+                                                          vert_stack, params.check_det, mask=enable_mask)
 
                         cat_img_h, cat_img_w = cat_img_vis_all.shape[:2]
 
