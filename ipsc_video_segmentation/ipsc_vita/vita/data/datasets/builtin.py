@@ -124,6 +124,7 @@ for test_set in (
         'Test_230606',
         'Test_211208',
         'Test_230710',
+        'Test_230805',
 ):
     _PREDEFINED_SPLITS_YTVIS_2019.update(
         {
