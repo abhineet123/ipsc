@@ -25,6 +25,7 @@ class Params:
         self.extrapolate_seg = 0
         self.allow_missing_seg = 1
         self.file_name = ''
+
         self.fps = 30
         self.ignore_invalid = 0
         self.ignore_missing = 0
@@ -56,6 +57,8 @@ class Params:
         self.raw_ctc_seg = 0
         self.vis_size = ''
 
+        self.save_img_seq = 0
+        self.sample = 0
 
 
 def main():
@@ -120,12 +123,9 @@ def main():
         if img_path:
             file_list = [linux_path(img_path, x) for x in file_list]
     elif img_path:
-        if img_path.startswith('camera'):
-            file_list = [img_path]
-        else:
-            file_list = [linux_path(img_path, name) for name in os.listdir(img_path) if
-                         os.path.isdir(linux_path(img_path, name))]
-            file_list.sort(key=sortKey)
+        file_list = [linux_path(img_path, name) for name in os.listdir(img_path) if
+                     os.path.isdir(linux_path(img_path, name))]
+        file_list.sort(key=sortKey)
     else:
         if not file_name:
             raise IOError('Either list file or a single sequence file must be provided')
@@ -177,7 +177,10 @@ def main():
         ann_lines = open(ann_path).readlines()
 
         ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
-        # ann_data.sort(key=lambda x: x[0])
+
+        """sort by frame IDs"""
+        ann_data.sort(key=lambda x: x[0])
+
         # ann_data = np.asarray(ann_data)
 
         if mode == 0:
@@ -185,48 +188,76 @@ def main():
         else:
             src_path = img_path
 
-        src_files = [f for f in os.listdir(src_path) if
-                     os.path.isfile(linux_path(src_path, f)) and f.endswith(img_ext)]
-        src_files.sort(key=sortKey)
-        n_frames = len(src_files)
+        vid_cap = None
+        src_files = None
+
+        if os.path.isdir(src_path):
+            src_files = [f for f in os.listdir(src_path) if
+                         os.path.isfile(linux_path(src_path, f)) and f.endswith(img_ext)]
+            src_files.sort(key=sortKey)
+            n_frames = len(src_files)
+            is_vid = 0
+        elif os.path.isfile(src_path):
+            vid_cap = cv2.VideoCapture()
+            if not vid_cap.open(src_path):
+                raise AssertionError(f'Video file {src_path} could not be opened')
+            n_frames = vid_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            is_vid = 1
+            img_seq_out_dir = os.path.splitext(src_path)[0]
+            if params.save_img_seq:
+                print(f'saving image sequence to {img_seq_out_dir}')
+        else:
+            raise AssertionError(f'invalid source path: {src_path}')
 
         print('n_frames: ', n_frames)
+
+        valid_frame_ids = list(range(n_frames))
+
+        if params.sample:
+            print(f'sampling 1 in {params.sample} frames')
+            valid_frame_ids = valid_frame_ids[:params.sample:]
 
         total_n_frames += n_frames
 
         obj_ids = []
 
         obj_dict = {}
-        for __id, _data in enumerate(ann_data):
 
-            # if _data[7] != 1 or _data[8] < min_vis:
+        vid_frame_id = -1
+        for __id, _datum in enumerate(ann_data):
+
+            # if _datum[7] != 1 or _datum[8] < min_vis:
             #     continue
-            obj_id = int(_data[1])
+            frame_id = int(_datum[0]) - 1
+            if frame_id not in valid_frame_ids:
+                continue
+
+            obj_id = int(_datum[1])
 
             obj_ids.append(obj_id)
 
             # Bounding box sanity check
-            bbox = [float(x) for x in _data[2:6]]
+            bbox = [float(x) for x in _datum[2:6]]
             l, t, w, h = bbox
             xmin = int(l)
             ymin = int(t)
             xmax = int(xmin + w)
             ymax = int(ymin + h)
+
             if xmin >= xmax or ymin >= ymax:
-                msg = f'Invalid box {[xmin, ymin, xmax, ymax]}\n in line {__id} : {_data}\n'
+                msg = f'Invalid box {[xmin, ymin, xmax, ymax]}\n in line {__id} : {_datum}\n'
                 if ignore_invalid:
                     print(msg)
                 else:
                     raise AssertionError(msg)
 
-            confidence = float(_data[6])
+            confidence = float(_datum[6])
 
             if w <= 0 or h <= 0 or confidence == 0:
                 """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
                 continue
 
-            frame_id = int(_data[0]) - 1
-            # xmin, ymin, w, h = _data[2:]
+            # xmin, ymin, w, h = _datum[2:]
 
             if percent_scores:
                 confidence /= 100.0
@@ -238,7 +269,7 @@ def main():
                 pass
             else:
                 msg = "Invalid confidence: {} in line {} : {}".format(
-                    confidence, __id, _data)
+                    confidence, __id, _datum)
 
                 if ignore_invalid == 2:
                     confidence = 1
@@ -288,8 +319,12 @@ def main():
             continue
 
         if not vis_size:
-            temp_img = cv2.imread(linux_path(src_path, src_files[0]))
-            vis_height, vis_width, _ = temp_img.shape
+            if is_vid:
+                vis_height = vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+                vis_width = vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+            else:
+                temp_img = cv2.imread(linux_path(src_path, src_files[0]))
+                vis_height, vis_width, _ = temp_img.shape
 
             if seg_dir_path is not None:
                 """concatenate segmentation image to the right of the source image"""
@@ -347,19 +382,34 @@ def main():
         missing_seg_images = []
 
         for frame_id in tqdm(range(n_frames)):
-            filename = src_files[frame_id]
+            if is_vid:
+                filename = f'frame{frame_id + 1}:06d'
+
+                assert vid_frame_id <= frame_id, "vid_frame_id exceeds frame_id"
+
+                image = None
+
+                while vid_frame_id < frame_id:
+                    ret, image = vid_cap.read()
+                    vid_frame_id += 1
+                    if not ret:
+                        raise AssertionError('Frame {:d} could not be read'.format(vid_frame_id + 1))
+
+                if params.save_img_seq:
+                    out_img_path = linux_path(img_seq_out_dir, filename)
+                    cv2.imwrite(out_img_path, image)
+            else:
+                filename = src_files[frame_id]
+                img_file_path = linux_path(src_path, filename)
+                if not os.path.exists(img_file_path):
+                    raise SystemError('Image file {} does not exist'.format(img_file_path))
+
+                image = cv2.imread(img_file_path)
 
             filename_no_ext = os.path.splitext(filename)[0]
-
             xml_fname = filename_no_ext + '.xml'
 
             out_xml_path = linux_path(xml_dir_path, xml_fname)
-
-            img_file_path = linux_path(src_path, filename)
-            if not os.path.exists(img_file_path):
-                raise SystemError('Image file {} does not exist'.format(img_file_path))
-
-            image = cv2.imread(img_file_path)
 
             vis_img = image.copy()
             seg_img_vis = np.zeros_like(vis_img)

@@ -1,3 +1,6 @@
+### Test_230805       @ ext_reorg_roi-no_annotations/ipsc_2_class-->xml_to_coco
+python xml_to_coco.py seq_paths=/data/ipsc/Test_230805 class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=Test_230805.json no_annotations=1
+
 ## on-Test_230805       @ g2_16_53-convnext_large_in22k-->cnx_det
 python3 tools/test.py config=configs/convnext/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k/epoch_1014.pth eval=bbox,segm test_name=Test_230805 
 ## on-Test_230805       @ g2_54_126-convnext_large_in22k-->cnx_det
@@ -9,7 +12,7 @@ python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-n
 ## on-Test_230805       @ ipsc-ext_reorg_roi_g2_54_126-->vita
 CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_54_126-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_54_126_swin/model_0194999.pth TEST_NAME ytvis-ipsc-Test_230805 OUT_SUFFIX Test_230805
 ### on-Test_230805       @ swin-coco/ipsc-ext_reorg_roi_g2_16_53-->vita
-CUDA_VISIBLE_DEVICES=1 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_16_53-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_16_53_swin/model_0329999.pth TEST_NAME ytvis-ipsc-Test_230805 OUT_SUFFIX Test_230805
+CUDA_VISIBLE_DEVICES=0 python train_net_vita.py --config-file configs/ytvis19/vita-ipsc-ext_reorg_roi_g2_16_53-vita_SWIN_bs8.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/vita-ipsc-ext_reorg_roi_g2_16_53_swin/model_0329999.pth TEST_NAME ytvis-ipsc-Test_230805 OUT_SUFFIX Test_230805
 ##### Test_230805       @ incremental/on-g2_0_15/ext_reorg_roi_g2_16_53/idol-->vnext
 CUDA_VISIBLE_DEVICES=1 python3 projects/IDOL/train_net.py --config-file projects/IDOL/configs/idol-ipsc-ext_reorg_roi_g2_16_53_ytvis_swinL.yaml --num-gpus 1 --eval-only MODEL.WEIGHTS log/idol-ipsc-ext_reorg_roi_g2_16_53/model_0254999.pth USE_PROBS 1 TEST_NAME ytvis-ipsc-Test_230805 OUT_SUFFIX Test_230805
 ### on-Test_230805       @ ext_reorg_roi_g2_54_126/idol-->vnext

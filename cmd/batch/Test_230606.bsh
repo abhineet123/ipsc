@@ -1,3 +1,6 @@
+### Test_230606       @ ext_reorg_roi-no_annotations/ipsc_2_class-->xml_to_coco
+python xml_to_coco.py seq_paths=/data/ipsc/Test_230606 class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=Test_230606.json no_annotations=1
+
 ## on-Test_230606       @ g2_16_53-convnext_large_in22k-->cnx_det
 python3 tools/test.py config=configs/convnext/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k/epoch_1014.pth eval=bbox,segm test_name=Test_230606 
 ## on-Test_230606       @ g2_54_126-convnext_large_in22k-->cnx_det
