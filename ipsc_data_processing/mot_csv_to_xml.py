@@ -499,7 +499,11 @@ def main():
         if mode == 0:
             xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
         else:
-            xml_dir_path = linux_path(img_path, out_dir_name)
+            if is_vid:
+                img_path_noext = os.path.splitext(img_path)[0]
+                xml_dir_path = linux_path(img_path_noext, out_dir_name)
+            else:
+                xml_dir_path = linux_path(img_path, out_dir_name)
 
         os.makedirs(xml_dir_path, exist_ok=1)
 
