@@ -368,13 +368,16 @@ def main():
         else:
             raise AssertionError(f'invalid source path: {src_path}')
 
-        print('n_frames: ', n_frames)
+        print(f'n_frames: {n_frames}')
 
         valid_frame_ids = list(range(n_frames))
 
         if params.sample:
             print(f'sampling 1 in {params.sample} frames')
-            valid_frame_ids = valid_frame_ids[:params.sample:]
+            valid_frame_ids = valid_frame_ids[::params.sample]
+
+            n_valid_frames = len(valid_frame_ids)
+            print(f'n_valid_frames: {n_valid_frames}')
 
         total_n_frames += n_frames
 
