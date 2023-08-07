@@ -360,7 +360,7 @@ def main():
             vid_cap = cv2.VideoCapture()
             if not vid_cap.open(src_path):
                 raise AssertionError(f'Video file {src_path} could not be opened')
-            n_frames = vid_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            n_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
             is_vid = 1
             img_seq_out_dir = os.path.splitext(src_path)[0]
             if params.save_img_seq:
@@ -377,7 +377,7 @@ def main():
             valid_frame_ids = valid_frame_ids[:params.sample:]
 
         total_n_frames += n_frames
-        
+
         seq_name = os.path.basename(img_path)
         if is_vid:
             seq_name = os.path.splitext(seq_name)[0]
