@@ -370,14 +370,14 @@ def main():
 
         print(f'n_frames: {n_frames}')
 
-        valid_frame_ids = list(range(n_frames))
+        sampled_frame_ids = list(range(n_frames))
 
         if params.sample:
             print(f'sampling 1 in {params.sample} frames')
-            valid_frame_ids = valid_frame_ids[::params.sample]
+            sampled_frame_ids = sampled_frame_ids[::params.sample]
 
-            n_valid_frames = len(valid_frame_ids)
-            print(f'n_valid_frames: {n_valid_frames}')
+            n_sampled_frames = len(sampled_frame_ids)
+            print(f'n_sampled_frames: {n_sampled_frames}')
 
         total_n_frames += n_frames
 
@@ -418,9 +418,9 @@ def main():
         print(f'Reading {data_type} from {ann_path}')
 
         if is_csv:
-            obj_ids, obj_dict = parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_scores)
+            obj_ids, obj_dict = parse_csv(ann_path, sampled_frame_ids, ignore_invalid, percent_scores, clamp_scores)
         else:
-            obj_ids, obj_dict = parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores,
+            obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, label, ignore_invalid, percent_scores,
                                           clamp_scores)
 
         print('Done reading {}'.format(data_type))
@@ -518,7 +518,7 @@ def main():
 
         vid_frame_id = -1
 
-        for frame_id in tqdm(valid_frame_ids):
+        for frame_id in tqdm(sampled_frame_ids):
             if is_vid:
                 filename = f'frame{frame_id + 1:06d}.jpg'
 
