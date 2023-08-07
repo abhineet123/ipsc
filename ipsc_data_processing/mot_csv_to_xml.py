@@ -38,6 +38,16 @@ class Params:
         self.list_file_name = ''
         self.map_folder = ''
         self.min_vis = 0.5
+
+        """
+        if mode == 0:
+            ann_path = linux_path(img_path, 'gt', 'gt.txt')
+        elif mode == 1:
+            ann_path = linux_path(img_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
+        elif mode == 2:
+            is_csv = 1
+            ann_path = linux_path(img_path, f'{seq_name}.csv')
+        """
         self.mode = 1
         self.n_classes = 4
         self.n_frames = 0

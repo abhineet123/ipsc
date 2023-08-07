@@ -65,7 +65,7 @@ python mot_to_synthetic.py root_dir=/data/CTC/Images list_file_name=ctc_train.tx
 
 <a id="mnist_mot___mot_csv_to_xml_"></a>
 ## MNIST_MOT       @ mot_csv_to_xml-->mot
-python mot_csv_to_xml.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_3_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 label=digit show_img=1 vis_size=1920x1080 sample=30 save_img_seq=1
+python mot_csv_to_xml.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_3_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 label=digit show_img=1 vis_size=1920x1080 sample=30 save_img_seq=1 mode=2
 
 <a id="ctc___mot_csv_to_xml_"></a>
 ## CTC       @ mot_csv_to_xml-->mot
