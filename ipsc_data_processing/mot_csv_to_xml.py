@@ -177,7 +177,7 @@ def parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_s
         if frame_id not in valid_frame_ids:
             continue
 
-        row_ids = grouped_predictions[filename]
+        row_ids = grouped_predictions.groups[filename]
 
         img_df = df.loc[row_ids]
         for _, row in img_df.iterrows():
