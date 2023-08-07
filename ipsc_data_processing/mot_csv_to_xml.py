@@ -524,7 +524,7 @@ def main():
 
         for frame_id in tqdm(sampled_frame_ids):
             if is_vid:
-                filename = f'frame{frame_id + 1:06d}.jpg'
+                filename = f'image{frame_id + 1:06d}.jpg'
 
                 assert vid_frame_id <= frame_id, "vid_frame_id exceeds frame_id"
 
@@ -697,8 +697,8 @@ def main():
                                     if prev_bbox is not None:
                                         prev_seg_pts = obj_ids_to_seg_pts[obj_id][-1]
 
-                                        tx = curr_bbox[0] - prev_bbox[0]
-                                        ty = curr_bbox[1] - prev_bbox[1]
+                                        tx = bbox[0] - prev_bbox[0]
+                                        ty = bbox[1] - prev_bbox[1]
 
                                         seg_pts = [[x + tx, y + ty] for x, y, f in prev_seg_pts]
 
