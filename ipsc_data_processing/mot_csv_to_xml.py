@@ -394,7 +394,11 @@ def main():
             ann_path = linux_path(img_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
         elif mode == 2:
             is_csv = 1
-            ann_path = linux_path(img_path, f'{seq_name}.csv')
+            if is_vid:
+                img_path_noext = os.path.splitext(img_path)[0]
+                ann_path = f'{img_path_noext}.csv'
+            else:
+                ann_path = linux_path(img_path, f'{data_type}.csv')
         else:
             raise AssertionError(f'Invalid mode: {mode}')
 
