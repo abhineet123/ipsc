@@ -157,31 +157,29 @@ def main():
 
         print('sequence {}/{}: {}: '.format(seq_idx + 1, n_seq, seq_name))
 
+        is_csv = 0
+
         if mode == 0:
             ann_path = linux_path(img_path, 'gt', 'gt.txt')
-        else:
+        elif mode == 1:
             ann_path = linux_path(img_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
+        elif mode == 2:
+            is_csv = 1
+            ann_path = linux_path(img_path, f'{seq_name}.csv')
+        else:
+            raise AssertionError(f'Invalid mode: {mode}')
 
         ann_path = os.path.abspath(ann_path)
 
         if not os.path.exists(ann_path):
-            msg = "Annotation file for sequence {} not found: {}".format(seq_name, ann_path)
+            msg = f"Annotation file for sequence {seq_name} not found: {ann_path}"
             if ignore_missing:
                 print(msg)
                 continue
             else:
                 raise IOError(msg)
 
-        print('Reading {} from {}'.format(data_type, ann_path))
-
-        ann_lines = open(ann_path).readlines()
-
-        ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
-
-        """sort by frame IDs"""
-        ann_data.sort(key=lambda x: x[0])
-
-        # ann_data = np.asarray(ann_data)
+        print(f'Reading {data_type} from {ann_path}')
 
         if mode == 0:
             src_path = linux_path(img_path, 'img1')
@@ -223,70 +221,119 @@ def main():
 
         obj_dict = {}
 
-        vid_frame_id = -1
-        for __id, _datum in enumerate(ann_data):
+        if is_csv:
+            import pandas as pd
+            df = pd.read_csv(ann_path)
+            n_predictions = len(df)
 
-            # if _datum[7] != 1 or _datum[8] < min_vis:
-            #     continue
-            frame_id = int(_datum[0]) - 1
-            if frame_id not in valid_frame_ids:
-                continue
+            df['filename'] = df['filename'].astype(str)
 
-            obj_id = int(_datum[1])
+            grouped_predictions = df.groupby("ImageID")
+            filenames = list(grouped_predictions.groups)
+            
+            filenames.sort()
 
-            obj_ids.append(obj_id)
+            n_grouped_predictions = len(grouped_predictions.groups)
+            print(f'{ann_path} --> {n_predictions} labels for {n_grouped_predictions} images')
 
-            # Bounding box sanity check
-            bbox = [float(x) for x in _datum[2:6]]
-            l, t, w, h = bbox
-            xmin = int(l)
-            ymin = int(t)
-            xmax = int(xmin + w)
-            ymax = int(ymin + h)
+            pbar = tqdm(grouped_predictions.groups.items(), total=len(grouped_predictions.groups))
 
-            if xmin >= xmax or ymin >= ymax:
-                msg = f'Invalid box {[xmin, ymin, xmax, ymax]}\n in line {__id} : {_datum}\n'
-                if ignore_invalid:
-                    print(msg)
+            for img_id, row_ids in pbar:
+            for _, row in df_det.iterrows():
+                filename = row['filename']
+
+                try:
+                    confidence = row['confidence']
+                except KeyError:
+                    confidence = 1.0
+
+                xmin = float(row['xmin'])
+                ymin = float(row['ymin'])
+                xmax = float(row['xmax'])
+                ymax = float(row['ymax'])
+
+                # width = float(row['width'])
+                # height = float(row['height'])
+                class_name = row['class']
+
+                try:
+                    target_id = row['target_id']
+                except KeyError:
+                    target_id = -1
+
+                w, h = xmax - xmin, ymax - ymin
+
+        else:
+            ann_lines = open(ann_path).readlines()
+            ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
+
+            """sort by frame IDs"""
+            ann_data.sort(key=lambda x: x[0])
+            # ann_data = np.asarray(ann_data)
+
+            for __id, _datum in enumerate(ann_data):
+
+                # if _datum[7] != 1 or _datum[8] < min_vis:
+                #     continue
+                frame_id = int(_datum[0]) - 1
+                if frame_id not in valid_frame_ids:
+                    continue
+
+                obj_id = int(_datum[1])
+
+                obj_ids.append(obj_id)
+
+                # Bounding box sanity check
+                bbox = [float(x) for x in _datum[2:6]]
+                l, t, w, h = bbox
+                xmin = int(l)
+                ymin = int(t)
+                xmax = int(xmin + w)
+                ymax = int(ymin + h)
+
+                if xmin >= xmax or ymin >= ymax:
+                    msg = f'Invalid box {[xmin, ymin, xmax, ymax]}\n in line {__id} : {_datum}\n'
+                    if ignore_invalid:
+                        print(msg)
+                    else:
+                        raise AssertionError(msg)
+
+                confidence = float(_datum[6])
+
+                if w <= 0 or h <= 0 or confidence == 0:
+                    """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
+                    continue
+
+                # xmin, ymin, w, h = _datum[2:]
+
+                if percent_scores:
+                    confidence /= 100.0
+
+                if clamp_scores:
+                    confidence = max(min(confidence, 1), 0)
+
+                if 0 <= confidence <= 1:
+                    pass
                 else:
-                    raise AssertionError(msg)
+                    msg = "Invalid confidence: {} in line {} : {}".format(
+                        confidence, __id, _datum)
 
-            confidence = float(_datum[6])
+                    if ignore_invalid == 2:
+                        confidence = 1
+                    elif ignore_invalid == 1:
+                        print(msg)
+                    else:
+                        raise AssertionError(msg)
 
-            if w <= 0 or h <= 0 or confidence == 0:
-                """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
-                continue
-
-            # xmin, ymin, w, h = _datum[2:]
-
-            if percent_scores:
-                confidence /= 100.0
-
-            if clamp_scores:
-                confidence = max(min(confidence, 1), 0)
-
-            if 0 <= confidence <= 1:
-                pass
-            else:
-                msg = "Invalid confidence: {} in line {} : {}".format(
-                    confidence, __id, _datum)
-
-                if ignore_invalid == 2:
-                    confidence = 1
-                elif ignore_invalid == 1:
-                    print(msg)
-                else:
-                    raise AssertionError(msg)
-
-            obj_entry = {
-                'id': obj_id,
-                'label': label,
-                'bbox': bbox,
-                'confidence': confidence
-            }
-            if frame_id not in obj_dict:
-                obj_dict[frame_id] = []
-            obj_dict[frame_id].append(obj_entry)
+                obj_entry = {
+                    'id': obj_id,
+                    'label': label,
+                    'bbox': bbox,
+                    'confidence': confidence
+                }
+                if frame_id not in obj_dict:
+                    obj_dict[frame_id] = []
+                obj_dict[frame_id].append(obj_entry)
 
         print('Done reading {}'.format(data_type))
 
@@ -381,9 +428,11 @@ def main():
 
         missing_seg_images = []
 
-        for frame_id in tqdm(range(n_frames)):
+        vid_frame_id = -1
+
+        for frame_id in tqdm(valid_frame_ids):
             if is_vid:
-                filename = f'frame{frame_id + 1}:06d'
+                filename = f'frame{frame_id + 1:06d}.jpg'
 
                 assert vid_frame_id <= frame_id, "vid_frame_id exceeds frame_id"
 
