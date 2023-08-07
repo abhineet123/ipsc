@@ -343,6 +343,9 @@ def main():
 
     for seq_idx, img_path in enumerate(file_list):
         seq_name = os.path.basename(img_path)
+        if is_vid:
+            seq_name = os.path.splitext(seq_name)[0]
+
         print('seq_name: ', seq_name)
 
         print('sequence {}/{}: {}: '.format(seq_idx + 1, n_seq, seq_name))
