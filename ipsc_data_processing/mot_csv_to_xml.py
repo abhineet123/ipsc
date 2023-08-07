@@ -225,7 +225,7 @@ def parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_s
 
             # width = float(row['width'])
             # height = float(row['height'])
-            label = row['class']
+            label = str(row['class'])
 
             try:
                 target_id = int(row['target_id'])
