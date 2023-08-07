@@ -61,6 +61,7 @@ class Params:
         self.write_masks = 0
         self.mask_dir_name = 'masks'
         self.ignore_invalid_label = 0
+        self.skip_invalid = 1
 
         self.start_frame_id = 0
         self.end_frame_id = -1
@@ -185,6 +186,7 @@ def save_boxes_coco(annotation_paths,
                     extract_num_from_imgid,
                     enable_mask,
                     allow_missing_images,
+                    skip_invalid,
                     ignore_invalid_label,
                     remove_mj_dir_suffix,
                     get_img_stats,
@@ -324,8 +326,10 @@ def save_boxes_coco(annotation_paths,
             ann = get_coco_annotation_from_obj(obj=obj, label2id=label2id, enable_mask=enable_mask,
                                                ignore_invalid_label=ignore_invalid_label)
             if ann is None:
-                print(f'\nskipping object {obj_id + 1} in {xml_path}')
-                continue
+                if skip_invalid:
+                    print(f'\nskipping object {obj_id + 1} in {xml_path}')
+                    continue
+                raise AssertionError(f'\ninvalid object {obj_id + 1} in {xml_path}')
 
             ann.update(
                 {
@@ -710,6 +714,7 @@ def main():
                         class_dict, val_json_path,
                         extract_num_from_imgid, enable_mask,
                         excluded_images=all_excluded_images,
+                        skip_invalid=params.skip_invalid,
                         ignore_invalid_label=params.ignore_invalid_label,
                         allow_missing_images=params.allow_missing_images,
                         remove_mj_dir_suffix=params.remove_mj_dir_suffix,
@@ -738,6 +743,7 @@ def main():
                         extract_num_from_imgid, enable_mask,
                         excluded_images=all_excluded_images,
                         allow_missing_images=params.allow_missing_images,
+                        skip_invalid=params.skip_invalid,
                         ignore_invalid_label=params.ignore_invalid_label,
                         remove_mj_dir_suffix=params.remove_mj_dir_suffix,
                         get_img_stats=params.get_img_stats,
