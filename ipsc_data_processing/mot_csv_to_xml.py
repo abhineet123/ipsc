@@ -61,6 +61,180 @@ class Params:
         self.sample = 0
 
 
+def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, clamp_scores):
+    ann_lines = open(ann_path).readlines()
+    ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
+
+    """sort by frame IDs"""
+    ann_data.sort(key=lambda x: x[0])
+    # ann_data = np.asarray(ann_data)
+
+    obj_ids = []
+    obj_dict = {}
+
+    for __id, _datum in enumerate(ann_data):
+
+        # if _datum[7] != 1 or _datum[8] < min_vis:
+        #     continue
+        frame_id = int(_datum[0]) - 1
+        if frame_id not in valid_frame_ids:
+            continue
+
+        obj_id = int(_datum[1])
+
+        obj_ids.append(obj_id)
+
+        # Bounding box sanity check
+        bbox = [float(x) for x in _datum[2:6]]
+        l, t, w, h = bbox
+        xmin = l
+        ymin = t
+        xmax = xmin + w
+        ymax = ymin + h
+
+        bbox = [xmin, ymin, xmax, ymax]
+
+        if xmin >= xmax or ymin >= ymax:
+            msg = f'Invalid box {[xmin, ymin, xmax, ymax]}\n in line {__id} : {_datum}\n'
+            if ignore_invalid:
+                print(msg)
+            else:
+                raise AssertionError(msg)
+
+        confidence = float(_datum[6])
+
+        if w <= 0 or h <= 0 or confidence == 0:
+            """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
+            continue
+
+        # xmin, ymin, w, h = _datum[2:]
+
+        if percent_scores:
+            confidence /= 100.0
+
+        if clamp_scores:
+            confidence = max(min(confidence, 1), 0)
+
+        if 0 <= confidence <= 1:
+            pass
+        else:
+            msg = "Invalid confidence: {} in line {} : {}".format(
+                confidence, __id, _datum)
+
+            if ignore_invalid == 2:
+                confidence = 1
+            elif ignore_invalid == 1:
+                print(msg)
+            else:
+                raise AssertionError(msg)
+
+        obj_entry = {
+            'id': obj_id,
+            'label': label,
+            'bbox': bbox,
+            'confidence': confidence
+        }
+        if frame_id not in obj_dict:
+            obj_dict[frame_id] = []
+        obj_dict[frame_id].append(obj_entry)
+
+    return obj_ids, obj_dict
+
+
+def parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_scores):
+    obj_ids = []
+    obj_dict = {}
+
+    import pandas as pd
+    df = pd.read_csv(ann_path)
+    n_predictions = len(df)
+
+    df['filename'] = df['filename'].astype(str)
+
+    grouped_predictions = df.groupby("filename")
+    filenames = list(grouped_predictions.groups.keys())
+
+    filenames.sort()
+
+    n_filenames = len(filenames)
+    print(f'{ann_path} --> {n_predictions} labels for {n_filenames} images')
+
+    pbar = tqdm(filenames, total=n_filenames)
+
+    for frame_id, filename in enumerate(pbar):
+
+        if frame_id not in valid_frame_ids:
+            continue
+
+        row_ids = grouped_predictions[filename]
+
+        img_df = df.loc[row_ids]
+        for _, row in img_df.iterrows():
+
+            try:
+                confidence = row['confidence']
+            except KeyError:
+                confidence = 1.0
+
+            xmin = float(row['xmin'])
+            ymin = float(row['ymin'])
+            xmax = float(row['xmax'])
+            ymax = float(row['ymax'])
+
+            if xmin >= xmax or ymin >= ymax:
+                msg = f'Invalid box {[xmin, ymin, xmax, ymax]}\n for file {filename}\n'
+                if ignore_invalid:
+                    print(msg)
+                else:
+                    raise AssertionError(msg)
+
+            if confidence == 0:
+                """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
+                continue
+
+            # xmin, ymin, w, h = _datum[2:]
+
+            if percent_scores:
+                confidence /= 100.0
+
+            if clamp_scores:
+                confidence = max(min(confidence, 1), 0)
+
+            if 0 <= confidence <= 1:
+                pass
+            else:
+                msg = f"Invalid confidence: {confidence} for file {filename}"
+
+                if ignore_invalid == 2:
+                    confidence = 1
+                elif ignore_invalid == 1:
+                    print(msg)
+                else:
+                    raise AssertionError(msg)
+
+            # width = float(row['width'])
+            # height = float(row['height'])
+            label = row['class']
+
+            try:
+                target_id = int(row['target_id'])
+            except KeyError:
+                target_id = -1
+
+            bbox = [xmin, ymin, xmax, ymax]
+            obj_entry = {
+                'id': target_id,
+                'label': label,
+                'bbox': bbox,
+                'confidence': confidence
+            }
+            if frame_id not in obj_dict:
+                obj_dict[frame_id] = []
+            obj_dict[frame_id].append(obj_entry)
+            obj_ids.append(target_id)
+    return obj_ids, obj_dict
+
+
 def main():
     params = Params()
     paramparse.process(params)
@@ -217,123 +391,11 @@ def main():
 
         total_n_frames += n_frames
 
-        obj_ids = []
-
-        obj_dict = {}
-
         if is_csv:
-            import pandas as pd
-            df = pd.read_csv(ann_path)
-            n_predictions = len(df)
-
-            df['filename'] = df['filename'].astype(str)
-
-            grouped_predictions = df.groupby("ImageID")
-            filenames = list(grouped_predictions.groups)
-            
-            filenames.sort()
-
-            n_grouped_predictions = len(grouped_predictions.groups)
-            print(f'{ann_path} --> {n_predictions} labels for {n_grouped_predictions} images')
-
-            pbar = tqdm(grouped_predictions.groups.items(), total=len(grouped_predictions.groups))
-
-            for img_id, row_ids in pbar:
-            for _, row in df_det.iterrows():
-                filename = row['filename']
-
-                try:
-                    confidence = row['confidence']
-                except KeyError:
-                    confidence = 1.0
-
-                xmin = float(row['xmin'])
-                ymin = float(row['ymin'])
-                xmax = float(row['xmax'])
-                ymax = float(row['ymax'])
-
-                # width = float(row['width'])
-                # height = float(row['height'])
-                class_name = row['class']
-
-                try:
-                    target_id = row['target_id']
-                except KeyError:
-                    target_id = -1
-
-                w, h = xmax - xmin, ymax - ymin
-
+            obj_ids, obj_dict = parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_scores)
         else:
-            ann_lines = open(ann_path).readlines()
-            ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
-
-            """sort by frame IDs"""
-            ann_data.sort(key=lambda x: x[0])
-            # ann_data = np.asarray(ann_data)
-
-            for __id, _datum in enumerate(ann_data):
-
-                # if _datum[7] != 1 or _datum[8] < min_vis:
-                #     continue
-                frame_id = int(_datum[0]) - 1
-                if frame_id not in valid_frame_ids:
-                    continue
-
-                obj_id = int(_datum[1])
-
-                obj_ids.append(obj_id)
-
-                # Bounding box sanity check
-                bbox = [float(x) for x in _datum[2:6]]
-                l, t, w, h = bbox
-                xmin = int(l)
-                ymin = int(t)
-                xmax = int(xmin + w)
-                ymax = int(ymin + h)
-
-                if xmin >= xmax or ymin >= ymax:
-                    msg = f'Invalid box {[xmin, ymin, xmax, ymax]}\n in line {__id} : {_datum}\n'
-                    if ignore_invalid:
-                        print(msg)
-                    else:
-                        raise AssertionError(msg)
-
-                confidence = float(_datum[6])
-
-                if w <= 0 or h <= 0 or confidence == 0:
-                    """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
-                    continue
-
-                # xmin, ymin, w, h = _datum[2:]
-
-                if percent_scores:
-                    confidence /= 100.0
-
-                if clamp_scores:
-                    confidence = max(min(confidence, 1), 0)
-
-                if 0 <= confidence <= 1:
-                    pass
-                else:
-                    msg = "Invalid confidence: {} in line {} : {}".format(
-                        confidence, __id, _datum)
-
-                    if ignore_invalid == 2:
-                        confidence = 1
-                    elif ignore_invalid == 1:
-                        print(msg)
-                    else:
-                        raise AssertionError(msg)
-
-                obj_entry = {
-                    'id': obj_id,
-                    'label': label,
-                    'bbox': bbox,
-                    'confidence': confidence
-                }
-                if frame_id not in obj_dict:
-                    obj_dict[frame_id] = []
-                obj_dict[frame_id].append(obj_entry)
+            obj_ids, obj_dict = parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores,
+                                          clamp_scores)
 
         print('Done reading {}'.format(data_type))
 
@@ -545,14 +607,7 @@ def main():
                     bbox = obj['bbox']
                     confidence = obj['confidence']
 
-                    l, t, w, h = bbox
-                    xmin = int(l)
-                    ymin = int(t)
-
-                    xmax = int(xmin + w)
-                    ymax = int(ymin + h)
-
-                    curr_bbox = [xmin, ymin, xmax, ymax]
+                    xmin, ymin, xmax, ymax = bbox
 
                     if extrapolate_seg:
                         if obj_id in obj_ids_to_bboxes:
@@ -561,16 +616,16 @@ def main():
                             obj_ids_to_bboxes[obj_id] = []
                             prev_bbox = None
 
-                        obj_ids_to_bboxes[obj_id].append(curr_bbox)
+                        obj_ids_to_bboxes[obj_id].append(bbox)
 
                     xmin, xmax = clamp([xmin, xmax], 0, width - 1)
                     ymin, ymax = clamp([ymin, ymax], 0, height - 1)
 
                     xml_dict = dict(
-                        xmin=xmin,
-                        ymin=ymin,
-                        xmax=xmax,
-                        ymax=ymax,
+                        xmin=int(xmin),
+                        ymin=int(ymin),
+                        xmax=int(xmax),
+                        ymax=int(ymax),
                         name=label,
                         difficult=False,
                         bbox_source=bbox_source,

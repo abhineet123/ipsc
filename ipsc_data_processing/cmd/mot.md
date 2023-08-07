@@ -3,12 +3,12 @@
 - [mot_to_synthetic](#mot_to_syntheti_c_)
     - [CTMC       @ mot_to_synthetic](#ctmc___mot_to_synthetic_)
     - [CTC       @ mot_to_synthetic](#ctc___mot_to_synthetic_)
-- [mot_to_xml](#mot_to_xm_l_)
-    - [MNIST_MOT       @ mot_to_xml](#mnist_mot___mot_to_xml_)
-    - [CTC       @ mot_to_xml](#ctc___mot_to_xml_)
-        - [annotations       @ CTC/mot_to_xml](#annotations___ctc_mot_to_xml_)
-    - [CTMC       @ mot_to_xml](#ctmc___mot_to_xml_)
-        - [annotations       @ CTMC/mot_to_xml](#annotations___ctmc_mot_to_xm_l_)
+- [mot_csv_to_xml](#mot_csv_to_xm_l_)
+    - [MNIST_MOT       @ mot_csv_to_xml](#mnist_mot___mot_csv_to_xml_)
+    - [CTC       @ mot_csv_to_xml](#ctc___mot_csv_to_xml_)
+        - [annotations       @ CTC/mot_csv_to_xml](#annotations___ctc_mot_csv_to_xml_)
+    - [CTMC       @ mot_csv_to_xml](#ctmc___mot_csv_to_xml_)
+        - [annotations       @ CTMC/mot_csv_to_xml](#annotations___ctmc_mot_csv_to_xm_l_)
 - [mot_to_csv](#mot_to_cs_v_)
     - [CTC       @ mot_to_csv](#ctc___mot_to_csv_)
         - [annotations       @ CTC/mot_to_csv](#annotations___ctc_mot_to_csv_)
@@ -60,26 +60,26 @@ python mot_to_synthetic.py root_dir=/data/CTMC/Images list_file_name=ctmc_train.
 
 python mot_to_synthetic.py root_dir=/data/CTC/Images list_file_name=ctc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell
 
-<a id="mot_to_xm_l_"></a>
-# mot_to_xml
+<a id="mot_csv_to_xm_l_"></a>
+# mot_csv_to_xml
 
-<a id="mnist_mot___mot_to_xml_"></a>
-## MNIST_MOT       @ mot_to_xml-->mot
-python mot_to_xml.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_3_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 label=digit show_img=1 vis_size=1920x1080 sample=30 save_img_seq=1
+<a id="mnist_mot___mot_csv_to_xml_"></a>
+## MNIST_MOT       @ mot_csv_to_xml-->mot
+python mot_csv_to_xml.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_3_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 label=digit show_img=1 vis_size=1920x1080 sample=30 save_img_seq=1
 
-<a id="ctc___mot_to_xml_"></a>
-## CTC       @ mot_to_xml-->mot
-<a id="annotations___ctc_mot_to_xml_"></a>
-### annotations       @ CTC/mot_to_xml-->mot
-python mot_to_xml.py root_dir=/data/CTC img_dir=Images seg_dir=Labels_TIF list_file_name=lists/ctc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=1 seg_ext=tif raw_ctc_seg=1 save_video=1 vis_size=1920x1080
+<a id="ctc___mot_csv_to_xml_"></a>
+## CTC       @ mot_csv_to_xml-->mot
+<a id="annotations___ctc_mot_csv_to_xml_"></a>
+### annotations       @ CTC/mot_csv_to_xml-->mot
+python mot_csv_to_xml.py root_dir=/data/CTC img_dir=Images seg_dir=Labels_TIF list_file_name=lists/ctc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=1 seg_ext=tif raw_ctc_seg=1 save_video=1 vis_size=1920x1080
 
-<a id="ctmc___mot_to_xml_"></a>
-## CTMC       @ mot_to_xml-->mot
-<a id="annotations___ctmc_mot_to_xm_l_"></a>
-### annotations       @ CTMC/mot_to_xml-->mot
-python mot_to_xml.py root_dir=/data/CTMC img_dir=Images list_file_name=lists/ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0 save_video=1 vis_size=1920x1080
+<a id="ctmc___mot_csv_to_xml_"></a>
+## CTMC       @ mot_csv_to_xml-->mot
+<a id="annotations___ctmc_mot_csv_to_xm_l_"></a>
+### annotations       @ CTMC/mot_csv_to_xml-->mot
+python mot_csv_to_xml.py root_dir=/data/CTMC img_dir=Images list_file_name=lists/ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0 save_video=1 vis_size=1920x1080
 
-python mot_to_xml.py root_dir=/data/CTMC img_dir=Images list_file_name=ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0 save_video=0 start_id=29
+python mot_csv_to_xml.py root_dir=/data/CTMC img_dir=Images list_file_name=ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0 save_video=0 start_id=29
 
 <a id="mot_to_cs_v_"></a>
 # mot_to_csv
