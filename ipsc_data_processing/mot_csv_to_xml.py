@@ -63,6 +63,7 @@ class Params:
         self.show_class = 0
         self.show_img = 1
         self.start_id = 0
+        self.end_id = -1
         self.stats_only = 0
         self.raw_ctc_seg = 0
         self.vis_size = ''
@@ -270,6 +271,7 @@ def main():
     save_video = params.save_video
     mode = params.mode
     start_id = params.start_id
+    end_id = params.end_id
     ignore_missing = params.ignore_missing
     label = params.label
     percent_scores = params.percent_scores
@@ -321,7 +323,11 @@ def main():
     pause_after_frame = 1
     total_n_frames = 0
     total_unique_obj_ids = 0
-    file_list = file_list[start_id:]
+
+    if end_id < 0:
+        end_id = len(file_list) - 1
+
+    file_list = file_list[start_id:end_id+1]
     seq_to_n_unique_obj_ids = {}
 
     n_seq = len(file_list)
