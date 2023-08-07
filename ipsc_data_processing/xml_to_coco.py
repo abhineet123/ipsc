@@ -66,6 +66,8 @@ class Params:
         self.end_frame_id = -1
 
         self.n_seq = 0
+        self.start_id = 0
+        self.end_id = -1
         self.only_list = 0
 
 
@@ -410,6 +412,9 @@ def main():
     no_annotations = params.no_annotations
     write_empty = params.write_empty
     excluded_images_list = params.excluded_images_list
+
+    start_id = params.start_id
+    end_id = params.end_id
     n_seq = params.n_seq
 
     if seq_paths:
@@ -427,8 +432,13 @@ def main():
     else:
         raise IOError('Either seq_paths or root_dir must be provided')
 
-    if 0 < n_seq < len(seq_paths):
-        seq_paths = seq_paths[:n_seq]
+    if n_seq > 0:
+        end_id = start_id + n_seq - 1
+
+    if end_id < 0:
+        end_id = len(seq_paths) - 1
+
+    seq_paths = seq_paths[start_id:end_id+1]
 
     n_seq = len(seq_paths)
     assert n_seq > 0, "no sequences found"
