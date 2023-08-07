@@ -322,6 +322,7 @@ def main():
 
     pause_after_frame = 1
     total_n_frames = 0
+    total_sampled_n_frames = 0
     total_unique_obj_ids = 0
 
     if end_id < 0:
@@ -380,6 +381,7 @@ def main():
             print(f'n_sampled_frames: {n_sampled_frames}')
 
         total_n_frames += n_frames
+        total_sampled_n_frames += n_sampled_frames
 
         seq_name = os.path.basename(img_path)
         if is_vid:
@@ -825,6 +827,7 @@ def main():
         # print('out_n_frames: ', out_frame_id)
 
     print('total_n_frames: ', total_n_frames)
+    print('total_sampled_n_frames: ', total_sampled_n_frames)
     print('total_unique_obj_ids: ', total_unique_obj_ids)
 
 
