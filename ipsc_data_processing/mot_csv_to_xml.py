@@ -25,6 +25,7 @@ class Params:
         self.extrapolate_seg = 0
         self.allow_missing_seg = 1
         self.file_name = ''
+        self.vid_ext = ''
 
         self.fps = 30
         self.ignore_invalid = 0
@@ -288,6 +289,8 @@ def main():
     allow_missing_seg = params.allow_missing_seg
     extrapolate_seg = params.extrapolate_seg
 
+    vid_ext = params.vid_ext
+
     image_exts = ['jpg', 'bmp', 'png', 'tif']
 
     if img_dir:
@@ -351,23 +354,24 @@ def main():
         vid_cap = None
         src_files = None
 
-        if os.path.isdir(src_path):
+        if vid_ext:
+            is_vid = 1
+            vid_path = f'{src_path}.{vid_ext}'
+            assert os.path.isfile(vid_path), f"invalid vid_path: {vid_path}"
+            vid_cap = cv2.VideoCapture()
+            if not vid_cap.open(src_path):
+                raise AssertionError(f'Video file {src_path} could not be opened')
+            n_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            img_seq_out_dir = os.path.splitext(src_path)[0]
+            if params.save_img_seq:
+                print(f'saving image sequence to {img_seq_out_dir}')
+        else:
+            assert os.path.isdir(src_path), f'invalid source path: {src_path}'
             src_files = [f for f in os.listdir(src_path) if
                          os.path.isfile(linux_path(src_path, f)) and f.endswith(img_ext)]
             src_files.sort(key=sortKey)
             n_frames = len(src_files)
             is_vid = 0
-        elif os.path.isfile(src_path):
-            vid_cap = cv2.VideoCapture()
-            if not vid_cap.open(src_path):
-                raise AssertionError(f'Video file {src_path} could not be opened')
-            n_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            is_vid = 1
-            img_seq_out_dir = os.path.splitext(src_path)[0]
-            if params.save_img_seq:
-                print(f'saving image sequence to {img_seq_out_dir}')
-        else:
-            raise AssertionError(f'invalid source path: {src_path}')
 
         print(f'n_frames: {n_frames}')
 
@@ -384,8 +388,8 @@ def main():
         total_sampled_n_frames += n_sampled_frames
 
         seq_name = os.path.basename(img_path)
-        if is_vid:
-            seq_name = os.path.splitext(seq_name)[0]
+        # if is_vid:
+        #     seq_name = os.path.splitext(seq_name)[0]
 
         print('seq_name: ', seq_name)
 
@@ -400,8 +404,8 @@ def main():
         elif mode == 2:
             is_csv = 1
             if is_vid:
-                img_path_noext = os.path.splitext(img_path)[0]
-                ann_path = f'{img_path_noext}.csv'
+                # img_path_noext = os.path.splitext(img_path)[0]
+                ann_path = f'{img_path}.csv'
             else:
                 ann_path = linux_path(img_path, f'{data_type}.csv')
         else:
@@ -502,8 +506,8 @@ def main():
             xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
         else:
             if is_vid:
-                img_path_noext = os.path.splitext(img_path)[0]
-                xml_dir_path = linux_path(img_path_noext, out_dir_name)
+                # img_path_noext = os.path.splitext(img_path)[0]
+                xml_dir_path = linux_path(img_path, out_dir_name)
             else:
                 xml_dir_path = linux_path(img_path, out_dir_name)
 
