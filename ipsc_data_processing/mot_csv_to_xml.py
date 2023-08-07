@@ -342,38 +342,6 @@ def main():
             bbox_source = data_type
 
     for seq_idx, img_path in enumerate(file_list):
-        seq_name = os.path.basename(img_path)
-        if is_vid:
-            seq_name = os.path.splitext(seq_name)[0]
-
-        print('seq_name: ', seq_name)
-
-        print('sequence {}/{}: {}: '.format(seq_idx + 1, n_seq, seq_name))
-
-        is_csv = 0
-
-        if mode == 0:
-            ann_path = linux_path(img_path, 'gt', 'gt.txt')
-        elif mode == 1:
-            ann_path = linux_path(img_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
-        elif mode == 2:
-            is_csv = 1
-            ann_path = linux_path(img_path, f'{seq_name}.csv')
-        else:
-            raise AssertionError(f'Invalid mode: {mode}')
-
-        ann_path = os.path.abspath(ann_path)
-
-        if not os.path.exists(ann_path):
-            msg = f"Annotation file for sequence {seq_name} not found: {ann_path}"
-            if ignore_missing:
-                print(msg)
-                continue
-            else:
-                raise IOError(msg)
-
-        print(f'Reading {data_type} from {ann_path}')
-
         if mode == 0:
             src_path = linux_path(img_path, 'img1')
         else:
@@ -409,6 +377,38 @@ def main():
             valid_frame_ids = valid_frame_ids[:params.sample:]
 
         total_n_frames += n_frames
+        
+        seq_name = os.path.basename(img_path)
+        if is_vid:
+            seq_name = os.path.splitext(seq_name)[0]
+
+        print('seq_name: ', seq_name)
+
+        print('sequence {}/{}: {}: '.format(seq_idx + 1, n_seq, seq_name))
+
+        is_csv = 0
+
+        if mode == 0:
+            ann_path = linux_path(img_path, 'gt', 'gt.txt')
+        elif mode == 1:
+            ann_path = linux_path(img_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
+        elif mode == 2:
+            is_csv = 1
+            ann_path = linux_path(img_path, f'{seq_name}.csv')
+        else:
+            raise AssertionError(f'Invalid mode: {mode}')
+
+        ann_path = os.path.abspath(ann_path)
+
+        if not os.path.exists(ann_path):
+            msg = f"Annotation file for sequence {seq_name} not found: {ann_path}"
+            if ignore_missing:
+                print(msg)
+                continue
+            else:
+                raise IOError(msg)
+
+        print(f'Reading {data_type} from {ann_path}')
 
         if is_csv:
             obj_ids, obj_dict = parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_scores)
