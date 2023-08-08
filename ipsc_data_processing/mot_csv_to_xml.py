@@ -773,7 +773,7 @@ def main():
                         else:
                             drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label, font_size=0.5, box_color=obj_col)
 
-                xml_writer.save(targetFile=out_xml_path)
+                xml_writer.save(targetFile=out_xml_path, verbose=False)
             else:
                 print('No {} found for frame {}: {}'.format(data_type, frame_id, img_file_path))
 
