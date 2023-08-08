@@ -1,6 +1,8 @@
 from .builder import DATASETS, PIPELINES, build_dataloader, build_dataset
 from .cityscapes import CityscapesDataset
 
+from .mnist_mot import MNIST_MOT
+
 from .ipsc_5_class import IPSC5Class
 from .ipsc_2_class import IPSC2Class
 
@@ -28,7 +30,7 @@ from .wider_face import WIDERFaceDataset
 from .xml_style import XMLDataset
 
 __all__ = [
-    'CustomDataset', 'XMLDataset', 'IPSC5Class', 'IPSC2Class',
+    'CustomDataset', 'XMLDataset', 'MNIST_MOT', 'IPSC5Class', 'IPSC2Class',
     'MojowRocksBase', 'MojowRocks', 'MojowRocksSyn', 'MojowRocksFPsToGT', 'MojowRocksSynFPsToGT',
     'CTC', 'CTMC',
     'COCOPerson', 'CocoDataset', 'DeepFashionDataset',
