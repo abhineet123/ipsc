@@ -72,7 +72,7 @@
 <!-- /MarkdownTOC -->
 <a id="mnist_mot___xml_to_coc_o_"></a>
 # mnist_mot       @ xml_to_coco-->coco
-python xml_to_coco.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images seq_paths=lists/mnist_mot_rgb_512_1k_9600_3_var.txt class_names_path=lists/classes/mnist_mot.txt output_json=mnist_mot_rgb_512_1k_9600_3_var.json ignore_invalid_label=0 val_ratio=0 end_id=0 skip_invalid=0 enable_mask=0
+python xml_to_coco.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images seq_paths=lists/mnist_mot_rgb_512_1k_9600_3_var.txt class_names_path=lists/classes/mnist_mot.txt output_json=mnist_mot_rgb_512_1k_9600_3_var.json ignore_invalid_label=0 val_ratio=1 start_id=1000 end_id=1000 skip_invalid=0 enable_mask=0
 
 <a id="all_frames_roi___mnist_mo_t_"></a>
 ## all_frames_roi       @ mnist_mot-->xml_to_coco

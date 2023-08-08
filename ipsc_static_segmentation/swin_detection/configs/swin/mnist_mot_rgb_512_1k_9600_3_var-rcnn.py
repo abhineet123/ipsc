@@ -188,6 +188,14 @@ data = dict(
         ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_3_var.json',
         img_prefix=data_root,
         pipeline=train_pipeline),
+
+    val=dict(
+        type=dataset_type,
+        ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_3_var-val.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline),
+
+
 )
 
 evaluation = dict(metric=['bbox'])
