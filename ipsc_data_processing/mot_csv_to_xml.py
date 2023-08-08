@@ -359,10 +359,10 @@ def main():
             vid_path = f'{src_path}.{vid_ext}'
             assert os.path.isfile(vid_path), f"invalid vid_path: {vid_path}"
             vid_cap = cv2.VideoCapture()
-            if not vid_cap.open(src_path):
-                raise AssertionError(f'Video file {src_path} could not be opened')
+            if not vid_cap.open(vid_path):
+                raise AssertionError(f'Video file {vid_path} could not be opened')
             n_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            img_seq_out_dir = os.path.splitext(src_path)[0]
+            img_seq_out_dir = src_path
             if params.save_img_seq:
                 print(f'saving image sequence to {img_seq_out_dir}')
         else:
