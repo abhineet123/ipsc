@@ -87,28 +87,28 @@ img_norm_cfg = dict(
     std=[3.8680854929799238, 2.779076999079257, 2.897625266406576],
     to_rgb=True)
 
-# __scale = 1
-#
-# __img_scale = [(480, 1333),
-#                (512, 1333),
-#                (544, 1333),
-#                (576, 1333),
-#                (608, 1333),
-#                (640, 1333),
-#                (672, 1333),
-#                (704, 1333),
-#                (736, 1333),
-#                (768, 1333),
-#                (800, 1333)]
-# __crop_size = (384, 600)
-#
-# __img_scale2 = [(400, 1333),
-#                 (500, 1333),
-#                 (600, 1333)]
-#
-# __crop_size = [int(x / __scale) for x in __crop_size]
-# __img_scale = [(int(x / __scale), int(y / __scale)) for x, y in __img_scale]
-# __img_scale2 = [(int(x / __scale), int(y / __scale)) for x, y in __img_scale2]
+__scale = 1
+
+__img_scale = [(480, 1333),
+               (512, 1333),
+               (544, 1333),
+               (576, 1333),
+               (608, 1333),
+               (640, 1333),
+               (672, 1333),
+               (704, 1333),
+               (736, 1333),
+               (768, 1333),
+               (800, 1333)]
+__crop_size = (384, 600)
+
+__img_scale2 = [(400, 1333),
+                (500, 1333),
+                (600, 1333)]
+
+__crop_size = [int(x / __scale) for x in __crop_size]
+__img_scale = [(int(x / __scale), int(y / __scale)) for x, y in __img_scale]
+__img_scale2 = [(int(x / __scale), int(y / __scale)) for x, y in __img_scale2]
 
 # augmentation strategy originates from DETR / Sparse RCNN
 
@@ -116,30 +116,30 @@ train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True, with_mask=False),
     dict(type='RandomFlip', flip_ratio=0.5),
-    # dict(type='AutoAugment',
-    #      policies=[
-    #          [
-    #              dict(type='Resize',
-    #                   img_scale=__img_scale,
-    #                   multiscale_mode='value',
-    #                   keep_ratio=True)
-    #          ],
-    #          [
-    #              dict(type='Resize',
-    #                   img_scale=__img_scale2,
-    #                   multiscale_mode='value',
-    #                   keep_ratio=True),
-    #              dict(type='RandomCrop',
-    #                   crop_type='absolute_range',
-    #                   crop_size=__crop_size,
-    #                   allow_negative_crop=True),
-    #              dict(type='Resize',
-    #                   img_scale=__img_scale,
-    #                   multiscale_mode='value',
-    #                   override=True,
-    #                   keep_ratio=True)
-    #          ]
-    #      ]),
+    dict(type='AutoAugment',
+         policies=[
+             [
+                 dict(type='Resize',
+                      img_scale=__img_scale,
+                      multiscale_mode='value',
+                      keep_ratio=True)
+             ],
+             [
+                 dict(type='Resize',
+                      img_scale=__img_scale2,
+                      multiscale_mode='value',
+                      keep_ratio=True),
+                 dict(type='RandomCrop',
+                      crop_type='absolute_range',
+                      crop_size=__crop_size,
+                      allow_negative_crop=True),
+                 dict(type='Resize',
+                      img_scale=__img_scale,
+                      multiscale_mode='value',
+                      override=True,
+                      keep_ratio=True)
+             ]
+         ]),
     dict(type='Normalize', **img_norm_cfg),
     # dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
