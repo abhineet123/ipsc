@@ -198,5 +198,8 @@ data = dict(
 
 )
 
-evaluation = dict(metric=['bbox'])
+evaluation = dict(
+    metric=['bbox'],
+    save_best='bbox_mAP',
+)
 
