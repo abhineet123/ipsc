@@ -65,10 +65,13 @@ class Params:
 
         self.start_frame_id = 0
         self.end_frame_id = -1
+        self.frame_stride = 1
 
         self.n_seq = 0
         self.start_id = 0
         self.end_id = -1
+        self.seq_stride = 1
+
         self.only_list = 0
 
 
@@ -420,6 +423,8 @@ def main():
     start_id = params.start_id
     end_id = params.end_id
     n_seq = params.n_seq
+    seq_stride = params.seq_stride
+
 
     if seq_paths:
         if os.path.isfile(seq_paths):
@@ -442,7 +447,7 @@ def main():
     if end_id < 0:
         end_id = len(seq_paths) - 1
 
-    seq_paths = seq_paths[start_id:end_id+1]
+    seq_paths = seq_paths[start_id:end_id+1:seq_stride]
 
     n_seq = len(seq_paths)
     assert n_seq > 0, "no sequences found"
@@ -467,7 +472,7 @@ def main():
     if load_samples:
         # if load_samples == '1':
         #     load_samples = 'seq_to_samples.txt'
-        print('load_samples: {}'.format(pformat(load_samples)))
+        # print('load_samples: {}'.format(pformat(load_samples)))
         if load_samples_root:
             load_samples = [os.path.join(load_samples_root, k) for k in load_samples]
         print('Loading samples from : {}'.format(load_samples))
@@ -639,11 +644,12 @@ def main():
 
         start_frame_id = params.start_frame_id
         end_frame_id = params.end_frame_id
+        frame_stride = params.frame_stride
 
         if end_frame_id < start_frame_id:
             end_frame_id = len(xml_files) - 1
 
-        xml_files = xml_files[start_frame_id:end_frame_id + 1]
+        xml_files = xml_files[start_frame_id:end_frame_id + 1:frame_stride]
 
         if shuffle:
             random.shuffle(xml_files)
