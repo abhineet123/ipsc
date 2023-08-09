@@ -461,31 +461,33 @@ def main():
         else:
             output_json_dir = os.path.dirname(seq_paths[0])
 
-    seq_to_samples = {}
+    if True:
+        """seq_to_samples not supported yet"""
+        seq_to_samples = {}
 
-    if len(load_samples) == 1:
-        if load_samples[0] == 1:
-            load_samples = ['seq_to_samples.txt', ]
-        elif load_samples[0] == 0:
-            load_samples = []
+        if len(load_samples) == 1:
+            if load_samples[0] == 1:
+                load_samples = ['seq_to_samples.txt', ]
+            elif load_samples[0] == 0:
+                load_samples = []
 
-    if load_samples:
-        # if load_samples == '1':
-        #     load_samples = 'seq_to_samples.txt'
-        # print('load_samples: {}'.format(pformat(load_samples)))
-        if load_samples_root:
-            load_samples = [os.path.join(load_samples_root, k) for k in load_samples]
-        print('Loading samples from : {}'.format(load_samples))
-        for _f in load_samples:
-            if os.path.isdir(_f):
-                _f = os.path.join(_f, 'seq_to_samples.txt')
-            with open(_f, 'r') as fid:
-                curr_seq_to_samples = ast.literal_eval(fid.read())
-                for _seq in curr_seq_to_samples:
-                    if _seq in seq_to_samples:
-                        seq_to_samples[_seq] += curr_seq_to_samples[_seq]
-                    else:
-                        seq_to_samples[_seq] = curr_seq_to_samples[_seq]
+        if load_samples:
+            # if load_samples == '1':
+            #     load_samples = 'seq_to_samples.txt'
+            # print('load_samples: {}'.format(pformat(load_samples)))
+            if load_samples_root:
+                load_samples = [os.path.join(load_samples_root, k) for k in load_samples]
+            print('Loading samples from : {}'.format(load_samples))
+            for _f in load_samples:
+                if os.path.isdir(_f):
+                    _f = os.path.join(_f, 'seq_to_samples.txt')
+                with open(_f, 'r') as fid:
+                    curr_seq_to_samples = ast.literal_eval(fid.read())
+                    for _seq in curr_seq_to_samples:
+                        if _seq in seq_to_samples:
+                            seq_to_samples[_seq] += curr_seq_to_samples[_seq]
+                        else:
+                            seq_to_samples[_seq] = curr_seq_to_samples[_seq]
 
     class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
     class_names, class_cols = zip(*[k.split('\t') for k in class_info])
