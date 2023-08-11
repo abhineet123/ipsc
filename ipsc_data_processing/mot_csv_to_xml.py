@@ -7,6 +7,8 @@ import paramparse
 
 from tqdm import tqdm
 
+from xml_to_coco import save_json
+
 from eval_utils import ImageSequenceWriter as ImageWriter
 from pascal_voc_io import PascalVocWriter
 from eval_utils import contour_pts_to_mask, mask_img_to_pts, sortKey, resize_ar, \
@@ -35,10 +37,11 @@ class Params:
         self.seg_dir = ''
         self.img_ext = 'jpg'
         self.seg_ext = 'png'
-        self.label = 'person'
+        # self.label = 'person'
         self.list_file_name = ''
         self.map_folder = ''
         self.min_vis = 0.5
+        self.class_names_path = ''
 
         """
         if mode == 0:
@@ -71,6 +74,10 @@ class Params:
 
         self.save_img_seq = 0
         self.sample = 0
+        self.allow_empty = 0
+
+        self.json_dir = 0
+        self.json_fname = 0
 
 
 def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, clamp_scores):
@@ -274,7 +281,7 @@ def main():
     start_id = params.start_id
     end_id = params.end_id
     ignore_missing = params.ignore_missing
-    label = params.label
+    # label = params.label
     percent_scores = params.percent_scores
     clamp_scores = params.clamp_scores
     ignore_invalid = params.ignore_invalid
@@ -288,6 +295,9 @@ def main():
     raw_ctc_seg = params.raw_ctc_seg
     allow_missing_seg = params.allow_missing_seg
     extrapolate_seg = params.extrapolate_seg
+    class_names_path = params.class_names_path
+
+    assert class_names_path, "class_names_path must be provided"
 
     vid_ext = params.vid_ext
 
@@ -323,6 +333,10 @@ def main():
     if not out_root_dir:
         out_root_dir = linux_path(os.path.dirname(file_list[0]), 'vis')
 
+    class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
+    class_names, class_cols = zip(*[k.split('\t') for k in class_info])
+    label2id = {x.strip(): i for (i, x) in enumerate(class_names)}
+
     pause_after_frame = 1
     total_n_frames = 0
     total_sampled_n_frames = 0
@@ -331,7 +345,7 @@ def main():
     if end_id < 0:
         end_id = len(file_list) - 1
 
-    file_list = file_list[start_id:end_id+1]
+    file_list = file_list[start_id:end_id + 1]
     seq_to_n_unique_obj_ids = {}
 
     n_seq = len(file_list)
@@ -345,7 +359,29 @@ def main():
         else:
             bbox_source = data_type
 
+    json_dict = {
+        "images": [],
+        "type": "instances",
+        "annotations": [],
+        "categories": []
+    }
+    for label, label_id in label2id.items():
+        category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
+        json_dict['categories'].append(category_info)
+
+    bnd_id = 1
+
+    json_dir = params.json_dir
+    json_fname = params.json_fname
+
+    assert json_fname, "json_fname must be provided"
+
+    if not json_dir:
+        json_dir = os.path.dirname(file_list[0])
+
     for seq_idx, img_path in enumerate(file_list):
+        seq_name = os.path.basename(img_path)
+
         if mode == 0:
             src_path = linux_path(img_path, 'img1')
         else:
@@ -387,7 +423,6 @@ def main():
         total_n_frames += n_frames
         total_sampled_n_frames += n_sampled_frames
 
-        seq_name = os.path.basename(img_path)
         # if is_vid:
         #     seq_name = os.path.splitext(seq_name)[0]
 
@@ -426,10 +461,11 @@ def main():
         if is_csv:
             obj_ids, obj_dict = parse_csv(ann_path, sampled_frame_ids, ignore_invalid, percent_scores, clamp_scores)
         else:
-            obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, label, ignore_invalid, percent_scores,
+            assert len(class_names) == 1, "multiple class names not supported in MOT mode"
+            obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores,
                                           clamp_scores)
 
-        print('Done reading {}'.format(data_type))
+        print(f'Done reading {data_type}')
 
         enable_resize = 0
 
@@ -542,9 +578,10 @@ def main():
                     if not ret:
                         raise AssertionError('Frame {:d} could not be read'.format(vid_frame_id + 1))
 
+                img_file_path = linux_path(img_seq_out_dir, filename)
+
                 if params.save_img_seq:
-                    out_img_path = linux_path(img_seq_out_dir, filename)
-                    cv2.imwrite(out_img_path, image)
+                    cv2.imwrite(img_file_path, image)
             else:
                 filename = src_files[frame_id]
                 img_file_path = linux_path(src_path, filename)
@@ -554,16 +591,33 @@ def main():
                 image = cv2.imread(img_file_path)
 
             filename_no_ext = os.path.splitext(filename)[0]
-            xml_fname = filename_no_ext + '.xml'
+            height, width = image.shape[:2]
 
+            rel_path = linux_path(f'{seq_name}/{filename}')
+            img_id = linux_path(f'{seq_name}/{filename_no_ext}')
+            json_img_info = {
+                'file_name': rel_path,
+                'height': height,
+                'width': width,
+                'id': seq_name + '/' + img_id
+            }
+            json_dict['images'].append(json_img_info)
+
+            xml_fname = filename_no_ext + '.xml'
             out_xml_path = linux_path(xml_dir_path, xml_fname)
 
             vis_img = image.copy()
             seg_img_vis = np.zeros_like(vis_img)
 
-            height, width = image.shape[:2]
-
-            if frame_id in obj_dict:
+            try:
+                objects = obj_dict[frame_id]
+            except KeyError:
+                msg = f'No {data_type} found for frame {frame_id}: {img_file_path}'
+                if params.allow_empty:
+                    print(msg)
+                else:
+                    raise AssertionError(msg)
+            else:
                 if save_video and save_raw:
                     video_out.write(image)
 
@@ -572,8 +626,6 @@ def main():
 
                 image_shape = [height, width, 3]
                 xml_writer = PascalVocWriter(src_path, filename, image_shape)
-
-                objects = obj_dict[frame_id]
 
                 n_objs = len(objects)
 
@@ -657,6 +709,10 @@ def main():
                     xmin, xmax = clamp([xmin, xmax], 0, width - 1)
                     ymin, ymax = clamp([ymin, ymax], 0, height - 1)
 
+                    o_width = xmax - xmin
+                    o_height = ymax - ymin
+                    category_id = label2id[label]
+
                     xml_dict = dict(
                         xmin=int(xmin),
                         ymin=int(ymin),
@@ -670,6 +726,18 @@ def main():
                         mask=None,
                         mask_img=None
                     )
+
+                    json_ann = {
+                        'image_id': json_img_info['id'],
+                        'area': o_width * o_height,
+                        'iscrowd': 0,
+                        'bbox': [xmin, ymin, o_width, o_height],
+                        'label': label,
+                        'category_id': category_id,
+                        'ignore': 0,
+                        'id': bnd_id
+                    }
+                    bnd_id += 1
 
                     if seg_dir_path is not None:
 
@@ -754,8 +822,17 @@ def main():
 
                             xml_dict['mask'] = seg_pts
 
+                            mask_pts_flat = []
+                            for _pt in seg_pts:
+                                mask_pts_flat.append(float(_pt[0]))
+                                mask_pts_flat.append(float(_pt[1]))
+                            json_ann.update({
+                                'segmentation': [mask_pts_flat, ],
+                            })
+
                         # print()
 
+                    json_dict['annotations'].append(json_ann)
                     xml_writer.addBndBox(**xml_dict)
 
                     if show_img or (save_video and not save_raw):
@@ -774,8 +851,6 @@ def main():
                             drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label, font_size=0.5, box_color=obj_col)
 
                 xml_writer.save(targetFile=out_xml_path, verbose=False)
-            else:
-                print('No {} found for frame {}: {}'.format(data_type, frame_id, img_file_path))
 
             if save_video or show_img:
                 curr_obj_cols = [rgb_cols[k] for k in curr_obj_ids]
@@ -829,6 +904,9 @@ def main():
             cv2.destroyWindow(seq_name)
         # total_n_frames += out_frame_id
         # print('out_n_frames: ', out_frame_id)
+
+    output_json = os.path.join(json_dir,json_fname )
+    save_json(json_dict, output_json)
 
     print('total_n_frames: ', total_n_frames)
     print('total_sampled_n_frames: ', total_sampled_n_frames)

@@ -425,7 +425,6 @@ def main():
     n_seq = params.n_seq
     seq_stride = params.seq_stride
 
-
     if seq_paths:
         if os.path.isfile(seq_paths):
             seq_paths = [x.strip() for x in open(seq_paths).readlines() if x.strip()]
@@ -447,7 +446,7 @@ def main():
     if end_id < 0:
         end_id = len(seq_paths) - 1
 
-    seq_paths = seq_paths[start_id:end_id+1:seq_stride]
+    seq_paths = seq_paths[start_id:end_id + 1:seq_stride]
 
     n_seq = len(seq_paths)
     assert n_seq > 0, "no sequences found"
@@ -546,7 +545,6 @@ def main():
             "categories": [],
             "annotations": [],
         }
-
 
         for seq_id, seq_path in enumerate(seq_paths):
             img_files = glob.glob(os.path.join(seq_path, '**/*.jpg'), recursive=True)
@@ -722,7 +720,8 @@ def main():
 
         save_boxes_coco(val_xml,
                         output_json_dict,
-                        class_dict, val_json_path,
+                        class_dict,
+                        val_json_path,
                         extract_num_from_imgid, enable_mask,
                         excluded_images=all_excluded_images,
                         skip_invalid=params.skip_invalid,
@@ -750,7 +749,8 @@ def main():
 
         save_boxes_coco(train_xml,
                         output_json_dict,
-                        class_dict, train_json_path,
+                        class_dict,
+                        train_json_path,
                         extract_num_from_imgid, enable_mask,
                         excluded_images=all_excluded_images,
                         allow_missing_images=params.allow_missing_images,
