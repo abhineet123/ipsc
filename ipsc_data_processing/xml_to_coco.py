@@ -547,8 +547,11 @@ def main():
             "annotations": [],
         }
 
+
         for seq_id, seq_path in enumerate(seq_paths):
             img_files = glob.glob(os.path.join(seq_path, '**/*.jpg'), recursive=True)
+
+            assert len(img_files) > 0, f"no img_files found in {seq_path}"
 
             img_files.sort(key=lambda fname: os.path.basename(fname))
 

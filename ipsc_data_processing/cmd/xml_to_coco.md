@@ -226,6 +226,9 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/e
 <a id="ext_reorg_roi_no_annotations___ipsc_2_class_"></a>
 ## ext_reorg_roi-no_annotations       @ ipsc_2_class-->xml_to_coco
 <a id="reorg_roi___ext_reorg_roi_no_annotations_ipsc_2_clas_s_"></a>
+python xml_to_coco.py root_dir=/data/ipsc/well3 seq_paths=ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi.json end_frame_id=-1 no_annotations=1
+
+<a id="reorg_roi___ext_reorg_roi_no_annotations_ipsc_2_clas_s_"></a>
 ### reorg_roi       @ ext_reorg_roi-no_annotations/ipsc_2_class-->xml_to_coco
 python xml_to_coco.py root_dir=/data/ipsc/well3/reorg_roi seq_paths=reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=reorg_roi.json end_frame_id=126 no_annotations=1
 
