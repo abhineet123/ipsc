@@ -5,6 +5,8 @@
     - [CTC       @ mot_to_synthetic](#ctc___mot_to_synthetic_)
 - [mot_csv_to_xml](#mot_csv_to_xm_l_)
     - [MNIST_MOT       @ mot_csv_to_xml](#mnist_mot___mot_csv_to_xml_)
+        - [n-1       @ MNIST_MOT/mot_csv_to_xml](#n_1___mnist_mot_mot_csv_to_xml_)
+        - [n-3       @ MNIST_MOT/mot_csv_to_xml](#n_3___mnist_mot_mot_csv_to_xml_)
     - [CTC       @ mot_csv_to_xml](#ctc___mot_csv_to_xml_)
         - [annotations       @ CTC/mot_csv_to_xml](#annotations___ctc_mot_csv_to_xml_)
     - [CTMC       @ mot_csv_to_xml](#ctmc___mot_csv_to_xml_)
@@ -65,7 +67,12 @@ python mot_to_synthetic.py root_dir=/data/CTC/Images list_file_name=ctc_train.tx
 
 <a id="mnist_mot___mot_csv_to_xml_"></a>
 ## MNIST_MOT       @ mot_csv_to_xml-->mot
-python mot_csv_to_xml.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_3_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 label=digit show_img=0 sample=30 save_img_seq=1 mode=2 start_id=0 end_id=-1 vid_ext=mp4
+<a id="n_1___mnist_mot_mot_csv_to_xml_"></a>
+### n-1       @ MNIST_MOT/mot_csv_to_xml-->mot
+python mot_csv_to_xml.py root_dir=/data/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 show_img=0 sample=30 save_img_seq=1 mode=2 start_id=0 end_id=-1 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt
+<a id="n_3___mnist_mot_mot_csv_to_xml_"></a>
+### n-3       @ MNIST_MOT/mot_csv_to_xml-->mot
+python mot_csv_to_xml.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_3_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 label=digit show_img=0 sample=30 save_img_seq=1 mode=2 start_id=0 end_id=-1 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt
 
 <a id="ctc___mot_csv_to_xml_"></a>
 ## CTC       @ mot_csv_to_xml-->mot
