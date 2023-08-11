@@ -359,25 +359,26 @@ def main():
         else:
             bbox_source = data_type
 
-    json_dict = {
-        "images": [],
-        "type": "instances",
-        "annotations": [],
-        "categories": []
-    }
-    for label, label_id in label2id.items():
-        category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
-        json_dict['categories'].append(category_info)
-
-    bnd_id = 1
-
-    json_dir = params.json_dir
     json_fname = params.json_fname
+    if json_fname:
+        json_dict = {
+            "images": [],
+            "type": "instances",
+            "annotations": [],
+            "categories": []
+        }
+        for label, label_id in label2id.items():
+            category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
+            json_dict['categories'].append(category_info)
 
-    assert json_fname, "json_fname must be provided"
+        bnd_id = 1
 
-    if not json_dir:
-        json_dir = os.path.dirname(file_list[0])
+        json_dir = params.json_dir
+
+        if not json_dir:
+            json_dir = os.path.dirname(file_list[0])
+
+        os.makedirs(json_dir, exist_ok=1)
 
     for seq_idx, img_path in enumerate(file_list):
         seq_name = os.path.basename(img_path)
@@ -593,18 +594,21 @@ def main():
             filename_no_ext = os.path.splitext(filename)[0]
             height, width = image.shape[:2]
 
-            rel_path = linux_path(f'{seq_name}/{filename}')
-            img_id = linux_path(f'{seq_name}/{filename_no_ext}')
-            json_img_info = {
-                'file_name': rel_path,
-                'height': height,
-                'width': width,
-                'id': seq_name + '/' + img_id
-            }
-            json_dict['images'].append(json_img_info)
+            if json_fname:
+                rel_path = linux_path(f'{seq_name}/{filename}')
+                img_id = linux_path(f'{seq_name}/{filename_no_ext}')
 
-            xml_fname = filename_no_ext + '.xml'
-            out_xml_path = linux_path(xml_dir_path, xml_fname)
+                json_img_info = {
+                    'file_name': rel_path,
+                    'height': height,
+                    'width': width,
+                    'id': seq_name + '/' + img_id
+                }
+                json_dict['images'].append(json_img_info)
+
+            else:
+                xml_fname = filename_no_ext + '.xml'
+                out_xml_path = linux_path(xml_dir_path, xml_fname)
 
             vis_img = image.copy()
             seg_img_vis = np.zeros_like(vis_img)
@@ -625,7 +629,8 @@ def main():
                 # out_filename = 'image{:06d}.jpg'.format(out_frame_id)
 
                 image_shape = [height, width, 3]
-                xml_writer = PascalVocWriter(src_path, filename, image_shape)
+                if not json_fname:
+                    xml_writer = PascalVocWriter(src_path, filename, image_shape)
 
                 n_objs = len(objects)
 
@@ -709,35 +714,36 @@ def main():
                     xmin, xmax = clamp([xmin, xmax], 0, width - 1)
                     ymin, ymax = clamp([ymin, ymax], 0, height - 1)
 
-                    o_width = xmax - xmin
-                    o_height = ymax - ymin
-                    category_id = label2id[label]
+                    if json_fname:
+                        o_width = xmax - xmin
+                        o_height = ymax - ymin
+                        category_id = label2id[label]
 
-                    xml_dict = dict(
-                        xmin=int(xmin),
-                        ymin=int(ymin),
-                        xmax=int(xmax),
-                        ymax=int(ymax),
-                        name=label,
-                        difficult=False,
-                        bbox_source=bbox_source,
-                        id_number=obj_id,
-                        score=confidence,
-                        mask=None,
-                        mask_img=None
-                    )
-
-                    json_ann = {
-                        'image_id': json_img_info['id'],
-                        'area': o_width * o_height,
-                        'iscrowd': 0,
-                        'bbox': [xmin, ymin, o_width, o_height],
-                        'label': label,
-                        'category_id': category_id,
-                        'ignore': 0,
-                        'id': bnd_id
-                    }
-                    bnd_id += 1
+                        json_ann = {
+                            'image_id': json_img_info['id'],
+                            'area': o_width * o_height,
+                            'iscrowd': 0,
+                            'bbox': [xmin, ymin, o_width, o_height],
+                            'label': label,
+                            'category_id': category_id,
+                            'ignore': 0,
+                            'id': bnd_id
+                        }
+                        bnd_id += 1
+                    else:
+                        xml_dict = dict(
+                            xmin=int(xmin),
+                            ymin=int(ymin),
+                            xmax=int(xmax),
+                            ymax=int(ymax),
+                            name=label,
+                            difficult=False,
+                            bbox_source=bbox_source,
+                            id_number=obj_id,
+                            score=confidence,
+                            mask=None,
+                            mask_img=None
+                        )
 
                     if seg_dir_path is not None:
 
@@ -820,20 +826,24 @@ def main():
 
                                 obj_ids_to_seg_pts[obj_id].append(seg_pts)
 
-                            xml_dict['mask'] = seg_pts
 
-                            mask_pts_flat = []
-                            for _pt in seg_pts:
-                                mask_pts_flat.append(float(_pt[0]))
-                                mask_pts_flat.append(float(_pt[1]))
-                            json_ann.update({
-                                'segmentation': [mask_pts_flat, ],
-                            })
+                            if json_fname:
+                                mask_pts_flat = []
+                                for _pt in seg_pts:
+                                    mask_pts_flat.append(float(_pt[0]))
+                                    mask_pts_flat.append(float(_pt[1]))
+                                json_ann.update({
+                                    'segmentation': [mask_pts_flat, ],
+                                })
+                            else:
+                                xml_dict['mask'] = seg_pts
 
                         # print()
 
-                    json_dict['annotations'].append(json_ann)
-                    xml_writer.addBndBox(**xml_dict)
+                    if json_fname:
+                        json_dict['annotations'].append(json_ann)
+                    else:
+                        xml_writer.addBndBox(**xml_dict)
 
                     if show_img or (save_video and not save_raw):
                         obj_col = rgb_cols[obj_id]
@@ -850,7 +860,8 @@ def main():
                         else:
                             drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label, font_size=0.5, box_color=obj_col)
 
-                xml_writer.save(targetFile=out_xml_path, verbose=False)
+                if not json_fname:
+                    xml_writer.save(targetFile=out_xml_path, verbose=False)
 
             if save_video or show_img:
                 curr_obj_cols = [rgb_cols[k] for k in curr_obj_ids]
@@ -905,8 +916,9 @@ def main():
         # total_n_frames += out_frame_id
         # print('out_n_frames: ', out_frame_id)
 
-    output_json = os.path.join(json_dir,json_fname )
-    save_json(json_dict, output_json)
+    if json_fname:
+        output_json = os.path.join(json_dir, json_fname)
+        save_json(json_dict, output_json)
 
     print('total_n_frames: ', total_n_frames)
     print('total_sampled_n_frames: ', total_sampled_n_frames)
