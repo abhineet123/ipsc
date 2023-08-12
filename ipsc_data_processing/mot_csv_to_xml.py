@@ -414,7 +414,6 @@ def main():
             if params.save_img_seq:
                 print(f'saving image sequence to {img_seq_out_dir}')
                 os.makedirs(img_seq_out_dir, exist_ok=1)
-                exit()
         else:
             assert os.path.isdir(src_path), f'invalid source path: {src_path}'
             src_files = [f for f in os.listdir(src_path) if
