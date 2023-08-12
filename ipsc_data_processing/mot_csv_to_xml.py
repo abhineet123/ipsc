@@ -60,6 +60,7 @@ class Params:
         self.resize_factor = 1.0
         self.root_dir = ''
         self.out_root_dir = ''
+        self.out_root_suffix = ''
         self.save_file_name = ''
         self.save_path = ''
         self.save_raw = 0
@@ -264,6 +265,7 @@ def main():
     file_name = params.file_name
     root_dir = params.root_dir
     out_root_dir = params.out_root_dir
+    out_root_suffix = params.out_root_suffix
     list_file_name = params.list_file_name
     img_ext = params.img_ext
     # ignore_occl = params.ignore_occl
@@ -338,6 +340,9 @@ def main():
     class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
     class_names, class_cols = zip(*[k.split('\t') for k in class_info])
     label2id = {x.strip(): i for (i, x) in enumerate(class_names)}
+
+    if not out_root_dir and out_root_suffix:
+        out_root_dir = f'{root_dir}_{out_root_suffix}'
 
     pause_after_frame = 1
     total_n_frames = 0
@@ -595,7 +600,7 @@ def main():
 
                 img_file_path = linux_path(img_seq_out_dir, filename)
 
-                if params.save_img_seq:
+                if params.save_img_seq and not os.path.isfile(img_file_path):
                     cv2.imwrite(img_file_path, image)
             else:
                 filename = src_files[frame_id]

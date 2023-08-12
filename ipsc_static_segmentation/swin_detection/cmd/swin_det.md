@@ -1,6 +1,7 @@
 <!-- MarkdownTOC -->
 
 - [mnist_mot](#mnist_mot_)
+    - [n-1       @ mnist_mot](#n_1___mnist_mo_t_)
     - [n-3       @ mnist_mot](#n_3___mnist_mo_t_)
 - [ext_reorg_roi       @ swin_base_2_class](#ext_reorg_roi___swin_base_2_clas_s_)
     - [g2_0_37       @ ext_reorg_roi](#g2_0_37___ext_reorg_ro_i_)
@@ -37,6 +38,10 @@
 <!-- /MarkdownTOC -->
 <a id="mnist_mot_"></a>
 # mnist_mot 
+
+<a id="n_1___mnist_mo_t_"></a>
+## n-1       @ mnist_mot-->swin_det
+tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
 
 <a id="n_3___mnist_mo_t_"></a>
 ## n-3       @ mnist_mot-->swin_det
