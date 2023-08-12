@@ -69,7 +69,7 @@ python mot_to_synthetic.py root_dir=/data/CTC/Images list_file_name=ctc_train.tx
 ## MNIST_MOT       @ mot_csv_to_xml-->mot
 <a id="n_1___mnist_mot_mot_csv_to_xml_"></a>
 ### n-1       @ MNIST_MOT/mot_csv_to_xml-->mot
-python mot_csv_to_xml.py root_dir=~/data/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 show_img=0 sample=30 save_img_seq=1 mode=2 start_id=0 end_id=-1 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt json_fname=mnist_mot_rgb_512_1k_9600_1_var.json
+python mot_csv_to_xml.py root_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations mode=1 ignore_invalid=0 start_id=0 show_img=0 sample=30 save_img_seq=1 mode=2 start_id=0 end_id=-1 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt json_fname=mnist_mot_rgb_512_1k_9600_1_var.json out_root_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_var_json
 
 <a id="n_3___mnist_mot_mot_csv_to_xml_"></a>
 ### n-3       @ MNIST_MOT/mot_csv_to_xml-->mot

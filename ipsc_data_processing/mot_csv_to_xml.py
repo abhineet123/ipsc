@@ -55,11 +55,11 @@ class Params:
         self.mode = 1
         self.n_classes = 4
         self.n_frames = 0
-        self.out_root_dir = ''
         self.out_suffix = ''
         self.percent_scores = 0
         self.resize_factor = 1.0
         self.root_dir = ''
+        self.out_root_dir = ''
         self.save_file_name = ''
         self.save_path = ''
         self.save_raw = 0
@@ -71,6 +71,7 @@ class Params:
         self.stats_only = 0
         self.raw_ctc_seg = 0
         self.vis_size = ''
+        self.vis_root_dir = ''
 
         self.save_img_seq = 0
         self.sample = 0
@@ -262,6 +263,7 @@ def main():
     data_type = params.data_type
     file_name = params.file_name
     root_dir = params.root_dir
+    out_root_dir = params.out_root_dir
     list_file_name = params.list_file_name
     img_ext = params.img_ext
     # ignore_occl = params.ignore_occl
@@ -272,7 +274,7 @@ def main():
     codec = params.codec
     fps = params.fps
     vis_size = params.vis_size
-    out_root_dir = params.out_root_dir
+    vis_root_dir = params.vis_root_dir
     save_path = params.save_path
     # min_vis = params.min_vis
     save_raw = params.save_raw
@@ -330,8 +332,8 @@ def main():
             raise IOError('Either list file or a single sequence file must be provided')
         file_list = [file_name]
 
-    if not out_root_dir:
-        out_root_dir = linux_path(os.path.dirname(file_list[0]), 'vis')
+    if not vis_root_dir:
+        vis_root_dir = linux_path(os.path.dirname(file_list[0]), 'vis')
 
     class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
     class_names, class_cols = zip(*[k.split('\t') for k in class_info])
@@ -378,7 +380,13 @@ def main():
         if not json_dir:
             json_dir = os.path.dirname(file_list[0])
 
+        if out_root_dir:
+            json_dir = json_dir.replace(root_dir, out_root_dir, 1)
+
         os.makedirs(json_dir, exist_ok=1)
+        json_path = os.path.join(json_dir, json_fname)
+
+        print(f'saving json to {json_path}')
 
     for seq_idx, img_path in enumerate(file_list):
         seq_name = os.path.basename(img_path)
@@ -400,8 +408,13 @@ def main():
                 raise AssertionError(f'Video file {vid_path} could not be opened')
             n_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
             img_seq_out_dir = src_path
+            if out_root_dir:
+                img_seq_out_dir = img_seq_out_dir.replace(root_dir, out_root_dir, 1)
+
             if params.save_img_seq:
                 print(f'saving image sequence to {img_seq_out_dir}')
+                os.makedirs(img_seq_out_dir, exist_ok=1)
+                exit()
         else:
             assert os.path.isdir(src_path), f'invalid source path: {src_path}'
             src_files = [f for f in os.listdir(src_path) if
@@ -512,7 +525,7 @@ def main():
             enable_resize = 1
 
         if not save_path:
-            save_path = linux_path(out_root_dir, os.path.basename(img_path) + '.' + ext)
+            save_path = linux_path(vis_root_dir, os.path.basename(img_path) + '.' + ext)
 
         save_dir = os.path.dirname(save_path)
         save_seq_name = os.path.splitext(os.path.basename(save_path))[0]
@@ -539,16 +552,6 @@ def main():
             out_dir_name = '{}_{}'.format(data_type, out_suffix)
         else:
             out_dir_name = '{}'.format(data_type)
-        if mode == 0:
-            xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
-        else:
-            if is_vid:
-                # img_path_noext = os.path.splitext(img_path)[0]
-                xml_dir_path = linux_path(img_path, out_dir_name)
-            else:
-                xml_dir_path = linux_path(img_path, out_dir_name)
-
-        os.makedirs(xml_dir_path, exist_ok=1)
 
         if seg_dir_path is not None and raw_ctc_seg:
             gold_seg_dir_path = linux_path(seg_dir_path, f'{seq_name}_GT', 'SEG')
@@ -556,7 +559,19 @@ def main():
             print(f'looking for gold standard CTC segmentations in {gold_seg_dir_path}')
             print(f'looking for silver standard CTC segmentations in {silver_seg_dir_path}')
 
-        print('saving xml files to {}'.format(xml_dir_path))
+        if not json_fname:
+            if mode == 0:
+                xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
+            else:
+                if is_vid:
+                    # img_path_noext = os.path.splitext(img_path)[0]
+                    xml_dir_path = linux_path(img_path, out_dir_name)
+                else:
+                    xml_dir_path = linux_path(img_path, out_dir_name)
+
+            os.makedirs(xml_dir_path, exist_ok=1)
+
+            print(f'saving xml files to {xml_dir_path}')
 
         obj_ids_to_bboxes = {}
         obj_ids_to_seg_pts = {}
@@ -917,8 +932,7 @@ def main():
         # print('out_n_frames: ', out_frame_id)
 
     if json_fname:
-        output_json = os.path.join(json_dir, json_fname)
-        save_json(json_dict, output_json)
+        save_json(json_dict, json_path)
 
     print('total_n_frames: ', total_n_frames)
     print('total_sampled_n_frames: ', total_sampled_n_frames)
