@@ -29,6 +29,7 @@
         - [apex       @ misc/install](#apex___misc_install_)
     - [bugs       @ install](#bugs___instal_l_)
 - [file locations](#file_location_s_)
+    - [train_progress_bar       @ file_locations](#train_progress_bar___file_locations_)
     - [optimizer_config       @ file_locations](#optimizer_config___file_locations_)
         - [lr_updater       @ optimizer_config/file_locations](#lr_updater___optimizer_config_file_location_s_)
     - [checkpoint_saving       @ file_locations](#checkpoint_saving___file_locations_)
@@ -290,6 +291,9 @@ sudo nvidia-smi -i 0,1 -pl 300
 
 <a id="file_location_s_"></a>
 # file locations
+<a id="train_progress_bar___file_locations_"></a>
+## train_progress_bar       @ file_locations-->swin_det_setup
+mmcv/runner/epoch_based_runner.py
 <a id="optimizer_config___file_locations_"></a>
 ## optimizer_config       @ file_locations-->swin_det_setup
 configs/_base_/schedules/schedule_1x.py
