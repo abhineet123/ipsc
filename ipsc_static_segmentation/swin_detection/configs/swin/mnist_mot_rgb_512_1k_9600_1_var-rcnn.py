@@ -5,7 +5,7 @@ _base_ = [
 ]
 
 dataset_type = 'MNIST_MOT'
-data_root = '/data/MNIST_MOT_RGB_512x512_1_1000_9600_var_json/Images/'
+data_root = '/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_var_json/Images/'
 
 model = dict(
     backbone=dict(
