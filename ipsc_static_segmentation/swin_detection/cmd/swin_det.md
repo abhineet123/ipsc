@@ -41,14 +41,14 @@
 
 <a id="n_1___mnist_mo_t_"></a>
 ## n-1       @ mnist_mot-->swin_det
-tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
+tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
 
 <a id="n_3___mnist_mo_t_"></a>
 ## n-3       @ mnist_mot-->swin_det
 tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
-
+```
 --nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py --launcher pytorch --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=12 data.workers_per_gpu=6 --no-validate
-
+```
 <a id="ext_reorg_roi___swin_base_2_clas_s_"></a>
 # ext_reorg_roi       @ swin_base_2_class-->swin_det
 <a id="g2_0_37___ext_reorg_ro_i_"></a>
