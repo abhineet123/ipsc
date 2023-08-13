@@ -41,7 +41,7 @@
 
 <a id="n_1___mnist_mo_t_"></a>
 ## n-1       @ mnist_mot-->swin_det
-tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume-from work_dirs/mnist_mot_rgb_512_1k_9600_1_var/latest.pth
+tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume-from work_dirs/mnist_mot_rgb_512_1k_9600_1_var-rcnn/latest.pth
 <a id="n_3___mnist_mo_t_"></a>
 ## n-3       @ mnist_mot-->swin_det
 tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
