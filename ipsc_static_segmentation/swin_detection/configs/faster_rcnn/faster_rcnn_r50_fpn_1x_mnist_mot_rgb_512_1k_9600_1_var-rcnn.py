@@ -51,6 +51,9 @@ data = dict(
         pipeline=test_pipeline),
 )
 
+runner = dict(type='EpochBasedRunnerAmp', max_epochs=10000)
+checkpoint_config = dict(interval=1, max_keep_ckpts=3)
+
 evaluation = dict(
     metric=['bbox'],
     save_best='bbox_mAP',
