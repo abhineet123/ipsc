@@ -45,7 +45,8 @@
 # mnist_mot-r50
 <a id="n_1___mnist_mot_r5_0_"></a>
 ## n-1       @ mnist_mot-r50-->swin_det
-tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
+CUDA_VISIBLE_DEVICES=0 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=24 data.workers_per_gpu=6
+
 <a id="n_3___mnist_mot_r5_0_"></a>
 ## n-3       @ mnist_mot-r50-->swin_det
 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6

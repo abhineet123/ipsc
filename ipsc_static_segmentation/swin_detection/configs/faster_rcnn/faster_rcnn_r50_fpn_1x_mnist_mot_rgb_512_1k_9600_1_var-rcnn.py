@@ -40,7 +40,7 @@ data = dict(
     workers_per_gpu=1,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_1_var.json',
+        ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_1_var-train.json',
         img_prefix=data_root,
         pipeline=train_pipeline),
 

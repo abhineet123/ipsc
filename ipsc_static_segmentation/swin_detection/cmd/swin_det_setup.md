@@ -306,7 +306,7 @@ sudo nvidia-smi -i 0,1 -pl 300
 configs/_base_/schedules/schedule_1x.py
 <a id="lr_updater___optimizer_config_file_location_s_"></a>
 ### lr_updater       @ optimizer_config/file_locations-->swin_det_setup
-C:/python7/Lib/site-packages/mmcv/runner/hooks/lr_updater.py
+lib/site-packages/mmcv/runner/hooks/lr_updater.py
 <a id="checkpoint_saving___file_locations_"></a>
 ## checkpoint_saving       @ file_locations-->swin_det_setup
 mmcv_custom/runner/checkpoint.py
@@ -315,7 +315,7 @@ mmcv_custom/runner/checkpoint.py
 mmcv_custom/runner/epoch_based_runner.py
 <a id="train_progress_bar___file_locations_"></a>
 ## train_progress_bar       @ file_locations-->swin_det_setup
-mmcv/runner/epoch_based_runner.py
+line 52 in mmcv/runner/epoch_based_runner.py (use pycharm)
 
 <a id="data_pipelines___file_locations_"></a>
 ## data_pipelines       @ file_locations-->swin_det_setup
