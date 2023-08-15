@@ -1,5 +1,7 @@
 <!-- MarkdownTOC -->
 
+- [mnist_mot-r50](#mnist_mot_r50_)
+    - [n-3       @ mnist_mot-r50](#n_3___mnist_mot_r5_0_)
 - [mnist_mot](#mnist_mot_)
     - [n-1       @ mnist_mot](#n_1___mnist_mo_t_)
     - [n-3       @ mnist_mot](#n_3___mnist_mo_t_)
@@ -36,6 +38,13 @@
         - [on-g2_0_15       @ g2_54_126-no_validate/ext_reorg_roi](#on_g2_0_15___g2_54_126_no_validate_ext_reorg_ro_i__1)
 
 <!-- /MarkdownTOC -->
+<a id="mnist_mot_"></a>
+
+<a id="mnist_mot_r50_"></a>
+# mnist_mot-r50
+<a id="n_3___mnist_mot_r5_0_"></a>
+## n-3       @ mnist_mot-r50-->swin_det
+tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
 <a id="mnist_mot_"></a>
 # mnist_mot 
 

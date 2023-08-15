@@ -19,13 +19,15 @@
             - [torch1.10.0       @ cu113/mmcv/install](#torch1_10_0___cu113_mmcv_install_)
             - [torch1.10.2       @ cu113/mmcv/install](#torch1_10_2___cu113_mmcv_install_)
         - [py3.10       @ mmcv/install](#py3_10___mmcv_install_)
-            - [torch1.12       @ py3.10/mmcv/install](#torch1_12___py3_10_mmcv_instal_l_)
             - [torch1.11       @ py3.10/mmcv/install](#torch1_11___py3_10_mmcv_instal_l_)
+            - [torch1.12       @ py3.10/mmcv/install](#torch1_12___py3_10_mmcv_instal_l_)
         - [uninstall       @ mmcv/install](#uninstall___mmcv_install_)
         - [misc       @ mmcv/install](#misc___mmcv_install_)
     - [openmim       @ install](#openmim___instal_l_)
     - [mmdet       @ install](#mmdet___instal_l_)
     - [misc       @ install](#misc___instal_l_)
+        - [pycocotools       @ misc/install](#pycocotools___misc_install_)
+            - [mmpycocotools       @ pycocotools/misc/install](#mmpycocotools___pycocotools_misc_install_)
         - [apex       @ misc/install](#apex___misc_install_)
     - [bugs       @ install](#bugs___instal_l_)
 - [file locations](#file_location_s_)
@@ -63,6 +65,8 @@ source /usr/local/bin/virtualenvwrapper.sh
 nano ~/.bashrc
 alias swi='workon swin_i'
 source ~/.bashrc
+
+mkvirtualenv -p python3.10 swin_i
 
 mkvirtualenv swin_i
 workon swin_i
@@ -154,13 +158,13 @@ python -m pip install -v mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv
 <a id="py3_10___mmcv_install_"></a>
 ### py3.10       @ mmcv/install-->swin_det_setup
 
-<a id="torch1_12___py3_10_mmcv_instal_l_"></a>
-#### torch1.12       @ py3.10/mmcv/install-->swin_det_setup
-python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.12.0/index.html
-
 <a id="torch1_11___py3_10_mmcv_instal_l_"></a>
 #### torch1.11       @ py3.10/mmcv/install-->swin_det_setup
 python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
+
+<a id="torch1_12___py3_10_mmcv_instal_l_"></a>
+#### torch1.12       @ py3.10/mmcv/install-->swin_det_setup
+python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.12.0/index.html
 
 <a id="uninstall___mmcv_install_"></a>
 ### uninstall       @ mmcv/install-->swin_det_setup
@@ -201,23 +205,24 @@ sys.path.append(swin_det_dir)
 <a id="misc___instal_l_"></a>
 ## misc       @ install-->swin_det_setup
 python -m pip install -v setuptools==59.5.0
-python -m pip install -v tqdm
-python -m pip install -v terminaltables
-python -m pip install -v lxml
-python -m pip install -v fiftyone
-python -m pip install -v instaboostfast
-python -m pip install -v paramparse
+python -m pip install -v tqdm terminaltables lxml fiftyone instaboostfast paramparse imagesize
 
 python -m pip install -v git+https://github.com/cocodataset/panopticapi.git
 python -m pip install -v git+https://github.com/lvis-dataset/lvis-api.git
 
-python -m pip install -v albumentations>=0.3.2 --no-binary imgaug,albumentations
+python -m pip install -v albumentations>=0.3.2 --no-binary imgaug,albumentations cython
+python -m pip install tensorflow tensorboard
 
+<a id="pycocotools___misc_install_"></a>
+### pycocotools       @ misc/install-->swin_det_setup
+python -m pip install pycocotools
+<a id="mmpycocotools___pycocotools_misc_install_"></a>
+#### mmpycocotools       @ pycocotools/misc/install-->swin_det_setup
 python -m pip uninstall pycocotools
 python -m pip uninstall mmpycocotools
 python -m pip install mmpycocotools
-
-python -m pip install tensorflow tensorboard
+__cc1: fatal error: ../common/maskApi.c: No such file or directory__
+apparently no solution - stick to pycocotools
 
 <a id="apex___misc_install_"></a>
 ### apex       @ misc/install-->swin_det_setup
@@ -233,7 +238,7 @@ https://github.com/opencv/opencv-python/issues/591
 uninstall opencv
 
 python -m pip uninstall opencv-python
-python -m pip uninstall opencv-python-headles
+python -m pip uninstall opencv-python-headless
 
 python -m pip install -v opencv-python
 
