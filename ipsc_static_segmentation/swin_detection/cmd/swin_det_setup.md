@@ -205,6 +205,7 @@ sys.path.append(swin_det_dir)
 <a id="misc___instal_l_"></a>
 ## misc       @ install-->swin_det_setup
 python -m pip install -v setuptools==59.5.0
+python -m pip install -v setuptools
 python -m pip install -v tqdm terminaltables lxml fiftyone instaboostfast paramparse imagesize
 
 python -m pip install -v git+https://github.com/cocodataset/panopticapi.git
@@ -220,9 +221,13 @@ python -m pip install pycocotools
 #### mmpycocotools       @ pycocotools/misc/install-->swin_det_setup
 python -m pip uninstall pycocotools
 python -m pip uninstall mmpycocotools
-python -m pip install mmpycocotools
+python -m pip3 install mmpycocotools
+
+py3.10/ubuntu 22.04/e5g:
 __cc1: fatal error: ../common/maskApi.c: No such file or directory__
-apparently no solution - stick to pycocotools
+apparently no solution
+
+copy both folders from `cmd/mmpycocotools-py3.10.zip` (installed copy from GRS) into `~/.virtualenvs/swin_i/lib/python3.10/site-packages`
 
 <a id="apex___misc_install_"></a>
 ### apex       @ misc/install-->swin_det_setup
