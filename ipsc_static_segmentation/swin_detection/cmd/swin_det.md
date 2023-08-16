@@ -45,17 +45,18 @@
 # mnist_mot-r50
 <a id="n_1___mnist_mot_r5_0_"></a>
 ## n-1       @ mnist_mot-r50-->swin_det
-CUDA_VISIBLE_DEVICES=0 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=24 data.workers_per_gpu=6
+CUDA_VISIBLE_DEVICES=0 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=32 data.workers_per_gpu=6 --resume
 
 <a id="n_3___mnist_mot_r5_0_"></a>
 ## n-3       @ mnist_mot-r50-->swin_det
-tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
+PORT=29501 CUDA_VISIBLE_DEVICES=1 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 1 --init file:///tmp/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-00656565 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=48 data.workers_per_gpu=6 --resume
 
 <a id="mnist_mot_"></a>
 # mnist_mot 
 <a id="n_1___mnist_mo_t_"></a>
 ## n-1       @ mnist_mot-->swin_det
 tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume-from work_dirs/mnist_mot_rgb_512_1k_9600_1_var-rcnn/latest.pth
+
 <a id="n_3___mnist_mo_t_"></a>
 ## n-3       @ mnist_mot-->swin_det
 tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
@@ -85,6 +86,7 @@ tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.
 <a id="epoch_2751___on_g2_38_53_g2_0_37_no_validate_ext_reorg_ro_i_"></a>
 #### epoch_2751       @ on-g2_38_53/g2_0_37-no_validate/ext_reorg_roi-->swin_det
 python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_2751.pth eval=bbox,segm test_name=g2_38_53
+
 <a id="epoch_6638___on_g2_38_53_g2_0_37_no_validate_ext_reorg_ro_i_"></a>
 #### epoch_6638       @ on-g2_38_53/g2_0_37-no_validate/ext_reorg_roi-->swin_det
 python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_6638.pth eval=bbox,segm test_name=g2_38_53

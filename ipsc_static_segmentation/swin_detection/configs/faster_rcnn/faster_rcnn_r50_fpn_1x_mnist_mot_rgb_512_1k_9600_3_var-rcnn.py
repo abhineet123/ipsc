@@ -4,7 +4,7 @@ _base_ = [
     '../_base_/default_runtime.py'
 ]
 dataset_type = 'MNIST_MOT'
-data_root = '/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images/'
+data_root = '/data_ssd/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images/'
 img_norm_cfg = dict(
     mean=[93.154, 162.034, 240.900],
     std=[3.868, 2.779, 2.897],
@@ -50,6 +50,9 @@ data = dict(
         img_prefix=data_root,
         pipeline=test_pipeline),
 )
+
+runner = dict(type='EpochBasedRunnerAmp', max_epochs=10000)
+checkpoint_config = dict(interval=1, max_keep_ckpts=3)
 
 evaluation = dict(
     metric=['bbox'],

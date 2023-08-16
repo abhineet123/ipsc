@@ -26,8 +26,8 @@
     - [openmim       @ install](#openmim___instal_l_)
     - [mmdet       @ install](#mmdet___instal_l_)
     - [misc       @ install](#misc___instal_l_)
-        - [pycocotools       @ misc/install](#pycocotools___misc_install_)
-            - [mmpycocotools       @ pycocotools/misc/install](#mmpycocotools___pycocotools_misc_install_)
+        - [mmpycocotools       @ misc/install](#mmpycocotools___misc_install_)
+            - [py3.10/ubuntu_22.04/e5g:       @ mmpycocotools/misc/install](#py3_10_ubuntu_22_04_e5g____mmpycocotools_misc_install_)
         - [apex       @ misc/install](#apex___misc_install_)
     - [bugs       @ install](#bugs___instal_l_)
 - [file locations](#file_location_s_)
@@ -67,6 +67,7 @@ alias swi='workon swin_i'
 source ~/.bashrc
 
 mkvirtualenv -p python3.10 swin_i
+mkvirtualenv -p python3.7 swin_i2
 
 mkvirtualenv swin_i
 workon swin_i
@@ -110,7 +111,7 @@ python -m pip install torch==1.9.0+cu102 torchvision==0.10.0+cu102 torchaudio===
 
 <a id="cu113___torch_instal_l_"></a>
 ### cu113       @ torch/install-->swin_det_setup
-python -m pip install -v torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio===0.10.2+cu113 -f https://download.pytorch.org/whl/torch_stable.html
+python -m pip install torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio===0.10.2+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 
 <a id="py3_10___cu113_torch_instal_l_"></a>
 #### py3.10       @ cu113/torch/install-->swin_det_setup
@@ -127,7 +128,7 @@ pip install torch==1.12.0+cu116 torchvision==0.13.0+cu116 torchaudio==0.12.0 --e
 https://mmcv.readthedocs.io/en/latest/get_started/installation.html
 
 python -c 'import torch;print(torch.__version__);print(torch.version.cuda)'
-pip install -v mmcv-full==1.7.0 -f https://download.openmmlab.com/mmcv/dist/cu117/torch1.13/index.html
+pip install mmcv-full==1.7.0 -f https://download.openmmlab.com/mmcv/dist/cu117/torch1.13/index.html
 
 <a id="from_source___cc_mmcv_instal_l_"></a>
 #### from_source       @ cc/mmcv/install-->swin_det_setup
@@ -153,11 +154,10 @@ python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/di
 <a id="torch1_10_2___cu113_mmcv_install_"></a>
 #### torch1.10.2       @ cu113/mmcv/install-->swin_det_setup
 __might take a while__
-python -m pip install -v mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.2/index.html
+python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.2/index.html
 
 <a id="py3_10___mmcv_install_"></a>
 ### py3.10       @ mmcv/install-->swin_det_setup
-
 <a id="torch1_11___py3_10_mmcv_instal_l_"></a>
 #### torch1.11       @ py3.10/mmcv/install-->swin_det_setup
 python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
@@ -169,10 +169,10 @@ python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/di
 <a id="uninstall___mmcv_install_"></a>
 ### uninstall       @ mmcv/install-->swin_det_setup
 python -m pip uninstall mmcv-full
-python -m pip install -v mmcv-full
+python -m pip install mmcv-full
 
 python -m pip uninstall torch torchvision
-python -m pip install -v torch torchvision
+python -m pip install torch torchvision
 
 <a id="misc___mmcv_install_"></a>
 ### misc       @ mmcv/install-->swin_det_setup
@@ -183,8 +183,8 @@ python -m pip install libboost-dev
 
 <a id="openmim___instal_l_"></a>
 ## openmim       @ install-->swin_det_setup
-python -m pip install -v openmim
-python -m pip install -v --upgrade timm
+python -m pip install openmim
+python -m pip install --upgrade timm
 
 <a id="mmdet___instal_l_"></a>
 ## mmdet       @ install-->swin_det_setup
@@ -204,37 +204,44 @@ sys.path.append(swin_det_dir)
 
 <a id="misc___instal_l_"></a>
 ## misc       @ install-->swin_det_setup
-python -m pip install -v setuptools==59.5.0
-python -m pip install -v setuptools
-python -m pip install -v tqdm terminaltables lxml fiftyone instaboostfast paramparse imagesize
+python -m pip install setuptools==59.5.0
+python -m pip install setuptools
+python -m pip install tqdm terminaltables lxml fiftyone instaboostfast paramparse imagesize
 
-python -m pip install -v git+https://github.com/cocodataset/panopticapi.git
-python -m pip install -v git+https://github.com/lvis-dataset/lvis-api.git
+python -m pip install git+https://github.com/cocodataset/panopticapi.git
+python -m pip install git+https://github.com/lvis-dataset/lvis-api.git
 
-python -m pip install -v albumentations>=0.3.2 --no-binary imgaug,albumentations cython
+python -m pip install albumentations>=0.3.2 --no-binary imgaug,albumentations cython
 python -m pip install tensorflow tensorboard
 
-<a id="pycocotools___misc_install_"></a>
-### pycocotools       @ misc/install-->swin_det_setup
-python -m pip install pycocotools
-<a id="mmpycocotools___pycocotools_misc_install_"></a>
-#### mmpycocotools       @ pycocotools/misc/install-->swin_det_setup
+<a id="mmpycocotools___misc_install_"></a>
+### mmpycocotools       @ misc/install-->swin_det_setup
 python -m pip uninstall pycocotools
 python -m pip uninstall mmpycocotools
-python -m pip3 install mmpycocotools
-
-py3.10/ubuntu 22.04/e5g:
+python -m pip install mmpycocotools
+<a id="py3_10_ubuntu_22_04_e5g____mmpycocotools_misc_install_"></a>
+#### py3.10/ubuntu_22.04/e5g:       @ mmpycocotools/misc/install-->swin_det_setup
 __cc1: fatal error: ../common/maskApi.c: No such file or directory__
-apparently no solution
 
+```
+python -m pip download mmpycocotools
+tar -xf mmpycocotools-12.0.3.tar.gz
+python setup.py install
+```
+
+change `../common/maskApi.c` in line 2 of `mmpycocotools-12.0.3/pycocotools/_mask.pyx`
+
+temp solution:
 copy both folders from `cmd/mmpycocotools-py3.10.zip` (installed copy from GRS) into `~/.virtualenvs/swin_i/lib/python3.10/site-packages`
+numpy version <= 1.23.5
+
 
 <a id="apex___misc_install_"></a>
 ### apex       @ misc/install-->swin_det_setup
 __best_not_installed__
 git clone https://github.com/NVIDIA/apex
 cd apex
-pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+pip install --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 
 <a id="bugs___instal_l_"></a>
 ## bugs       @ install-->swin_det_setup
@@ -245,11 +252,11 @@ uninstall opencv
 python -m pip uninstall opencv-python
 python -m pip uninstall opencv-python-headless
 
-python -m pip install -v opencv-python
+python -m pip install opencv-python
 
 
-python -m  pip install -v "opencv-python-headless<4.3
-python -m pip install -v opencv-python==4.1.2.30+computecanada
+python -m  pip install "opencv-python-headless<4.3
+python -m pip install opencv-python==4.1.2.30+computecanada
 
 __AttributeError: module 'numpy' has no attribute 'float'__
 python -m pip install "numpy<1.24"
