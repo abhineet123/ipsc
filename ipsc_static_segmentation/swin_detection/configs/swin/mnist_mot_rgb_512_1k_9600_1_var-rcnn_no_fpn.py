@@ -18,9 +18,9 @@ model = dict(
         patch_norm=True,
         use_checkpoint=False
     ),
-    # neck=dict(
-    #     in_channels=[128, 256, 512, 1024]
-    # ),
+    neck=dict(
+        in_channels=[128, 256, 512, 1024]
+    ),
     roi_head=dict(
         bbox_head=[
             dict(
