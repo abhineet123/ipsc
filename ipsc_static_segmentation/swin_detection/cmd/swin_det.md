@@ -5,6 +5,7 @@
     - [n-3       @ mnist_mot-r50](#n_3___mnist_mot_r5_0_)
 - [mnist_mot](#mnist_mot_)
     - [n-1       @ mnist_mot](#n_1___mnist_mo_t_)
+    - [n-1-no-fpn       @ mnist_mot](#n_1_no_fpn___mnist_mo_t_)
     - [n-3       @ mnist_mot](#n_3___mnist_mo_t_)
 - [ext_reorg_roi       @ swin_base_2_class](#ext_reorg_roi___swin_base_2_clas_s_)
     - [g2_0_37       @ ext_reorg_roi](#g2_0_37___ext_reorg_ro_i_)
@@ -54,7 +55,13 @@ PORT=29501 CUDA_VISIBLE_DEVICES=1 tools/dist_train.sh configs/faster_rcnn/faster
 # mnist_mot 
 <a id="n_1___mnist_mo_t_"></a>
 ## n-1       @ mnist_mot-->swin_det
-tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume-from work_dirs/mnist_mot_rgb_512_1k_9600_1_var-rcnn/latest.pth
+tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume
+<a id="n_1_no_fpn___mnist_mo_t_"></a>
+## n-1-no-fpn       @ mnist_mot-->swin_det
+tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume
+```
+--nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py --launcher pytorch --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
+```
 
 <a id="n_3___mnist_mo_t_"></a>
 ## n-3       @ mnist_mot-->swin_det
