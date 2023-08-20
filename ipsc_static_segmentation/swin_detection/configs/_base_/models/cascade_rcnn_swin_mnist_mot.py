@@ -18,10 +18,11 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         use_checkpoint=False),
     neck=dict(
-        type='FPN',
+        type='ChannelMapper',
         in_channels=[96, 192, 384, 768],
         out_channels=256,
-        num_outs=5),
+        # num_outs=5,
+    ),
     rpn_head=dict(
         type='RPNHead',
         in_channels=256,
