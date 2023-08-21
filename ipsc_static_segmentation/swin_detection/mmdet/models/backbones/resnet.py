@@ -20,11 +20,12 @@ class BasicBlock(nn.Module):
                  dilation=1,
                  downsample=None,
                  style='pytorch',
-                 use_checkpoint=False,
+                 with_cp=False,
                  conv_cfg=None,
                  norm_cfg=dict(type='BN'),
                  dcn=None,
-                 plugins=None):
+                 plugins=None,
+                 ):
         super(BasicBlock, self).__init__()
         assert dcn is None, 'Not implemented yet.'
         assert plugins is None, 'Not implemented yet.'
@@ -102,11 +103,12 @@ class Bottleneck(nn.Module):
                  dilation=1,
                  downsample=None,
                  style='pytorch',
-                 use_checkpoint=False,
+                 with_cp=False,
                  conv_cfg=None,
                  norm_cfg=dict(type='BN'),
                  dcn=None,
-                 plugins=None):
+                 plugins=None,
+                 ):
         """Bottleneck block for ResNet.
 
         If style is "pytorch", the stride-two layer is the 3x3 conv layer, if
@@ -379,7 +381,7 @@ class ResNet(nn.Module):
                  dcn=None,
                  stage_with_dcn=(False, False, False, False),
                  plugins=None,
-                 use_checkpoint=False,
+                 with_cp=False,
                  zero_init_residual=True):
         super(ResNet, self).__init__()
         if depth not in self.arch_settings:
@@ -435,7 +437,7 @@ class ResNet(nn.Module):
                 dilation=dilation,
                 style=self.style,
                 avg_down=self.avg_down,
-                use_checkpoint=with_cp,
+                with_cp=with_cp,
                 conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
                 dcn=dcn,
