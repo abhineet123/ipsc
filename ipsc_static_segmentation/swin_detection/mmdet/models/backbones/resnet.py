@@ -20,7 +20,7 @@ class BasicBlock(nn.Module):
                  dilation=1,
                  downsample=None,
                  style='pytorch',
-                 with_cp=False,
+                 use_checkpoint=False,
                  conv_cfg=None,
                  norm_cfg=dict(type='BN'),
                  dcn=None,
@@ -51,7 +51,7 @@ class BasicBlock(nn.Module):
         self.downsample = downsample
         self.stride = stride
         self.dilation = dilation
-        self.with_cp = with_cp
+        self.use_checkpoint = use_checkpoint
 
     @property
     def norm1(self):
@@ -83,7 +83,7 @@ class BasicBlock(nn.Module):
 
             return out
 
-        if self.with_cp and x.requires_grad:
+        if self.use_checkpoint and x.requires_grad:
             out = cp.checkpoint(_inner_forward, x)
         else:
             out = _inner_forward(x)
@@ -103,7 +103,7 @@ class Bottleneck(nn.Module):
                  dilation=1,
                  downsample=None,
                  style='pytorch',
-                 with_cp=False,
+                 use_checkpoint=False,
                  conv_cfg=None,
                  norm_cfg=dict(type='BN'),
                  dcn=None,
@@ -127,7 +127,7 @@ class Bottleneck(nn.Module):
         self.stride = stride
         self.dilation = dilation
         self.style = style
-        self.with_cp = with_cp
+        self.use_checkpoint = use_checkpoint
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
         self.dcn = dcn
@@ -291,7 +291,7 @@ class Bottleneck(nn.Module):
 
             return out
 
-        if self.with_cp and x.requires_grad:
+        if self.use_checkpoint and x.requires_grad:
             out = cp.checkpoint(_inner_forward, x)
         else:
             out = _inner_forward(x)
@@ -334,7 +334,7 @@ class ResNet(nn.Module):
               plugin, options are 'after_conv1', 'after_conv2', 'after_conv3'.
             - stages (tuple[bool], optional): Stages to apply plugin, length
               should be same as 'num_stages'.
-        with_cp (bool): Use checkpoint or not. Using checkpoint will save some
+        use_checkpoint (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed.
         zero_init_residual (bool): Whether to use zero init for last norm layer
             in resblocks to let them behave as identity.
@@ -381,7 +381,7 @@ class ResNet(nn.Module):
                  dcn=None,
                  stage_with_dcn=(False, False, False, False),
                  plugins=None,
-                 with_cp=False,
+                 use_checkpoint=False,
                  zero_init_residual=True):
         super(ResNet, self).__init__()
         if depth not in self.arch_settings:
@@ -404,7 +404,7 @@ class ResNet(nn.Module):
         self.frozen_stages = frozen_stages
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
-        self.with_cp = with_cp
+        self.use_checkpoint = use_checkpoint
         self.norm_eval = norm_eval
         self.dcn = dcn
         self.stage_with_dcn = stage_with_dcn
@@ -437,7 +437,7 @@ class ResNet(nn.Module):
                 dilation=dilation,
                 style=self.style,
                 avg_down=self.avg_down,
-                with_cp=with_cp,
+                use_checkpoint=use_checkpoint,
                 conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
                 dcn=dcn,
