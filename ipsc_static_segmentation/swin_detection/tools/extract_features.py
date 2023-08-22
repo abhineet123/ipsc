@@ -6,9 +6,15 @@ swin_det_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print(f'swin_det_dir: {swin_det_dir}')
 sys.path.append(swin_det_dir)
 
+home_path = os.path.expanduser('~')
+deep_mdp_path = os.path.join(home_path, 'isl_labeling_tool', 'deep_mdp')
+sys.path.append(deep_mdp_path)
+
 from tqdm import tqdm
 import time
+import copy
 import cv2
+from datetime import datetime
 
 import mmcv
 import torch
@@ -23,68 +29,29 @@ from mmdet.datasets import (build_dataloader, build_dataset,
 from mmdet.models import build_detector
 from mmdet.utils.misc import read_class_info
 
+
+from input import Input
+from objects import Annotations
+from data import Data
+from utilities import CustomLogger, SIIF, linux_path
+
 import numpy as np
 
 import paramparse
 
 
 class Params:
-    """
-    MMDet test (and eval) a model
-    :ivar cfg_options: override some settings in the used config, the key-value pair in xxx=yyy format will be merged
-    into config file. If the value to be overwritten is a list, it should be like key="[a,b]" or key=a,
-    b It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" Note that the quotation marks are necessary
-    and that no white space is allowed.
-    :type cfg_options: list
-
-    :ivar eval: evaluation metrics, which depends on the dataset, e.g., "bbox", "segm", "proposal" for COCO,
-    and "mAP", "recall" for PASCAL VOC
-    :type eval: list
-
-    :ivar eval_options: custom options for evaluation, the key-value pair in xxx=yyy format will be kwargs for
-    dataset.evaluate() function
-    :type eval_options: list
-
-    :ivar format_only: Format the output results without perform evaluation. It is useful when you want to format the
-    result to a specific format and submit it to the test server
-    :type format_only: bool
-
-    :ivar fuse_conv_bn: Whether to fuse conv and bn, this will slightly increasethe inference speed
-    :type fuse_conv_bn: bool
-
-    :ivar gpu_collect: whether to use gpu to collect results.
-    :type gpu_collect: bool
-
-    :ivar launcher: job launcher
-    :type launcher: str
-
-    :ivar local_rank:
-    :type local_rank: int
-
-    :ivar options: custom options for evaluation, the key-value pair in xxx=yyy format will be kwargs for
-    dataset.evaluate() function (deprecate), change to --eval-options instead.
-    :type options: list
-
-    :ivar out: output result file in pickle format
-    :type out: str
-
-    :ivar show: show results
-    :type show: bool
-
-    :ivar show_dir: directory where painted images will be saved
-    :type show_dir: str
-
-    :ivar show_score_thr: score threshold (default: 0.3)
-    :type show_score_thr: float
-
-    :ivar tmpdir: tmp directory used for collecting results from multiple workers, available when gpu-collect is not
-    specified
-    :type tmpdir: str
-
-    """
+    class SlidingWindow:
+        sample = 0
+        size = 0
+        stride = 0
 
     def __init__(self):
-        self.cfg = ()
+        self.cfg = ('',)
+
+        self.set = ''
+        self.seq = ()
+
         self.config = ''
         self.checkpoint = ''
         self.cfg_options = None
@@ -109,37 +76,91 @@ class Params:
         self.filter_objects = 0
         self.show_score_thr = 0.3
         self.tmpdir = ''
+        self.n_proc = 1
         self.test_name = 'test'
-        # self.class_info = 'data/classes_ipsc_5_class.txt'
+        self.feat_name = 'backbone'
+
+        self.slide = Params.SlidingWindow()
+
+        self.input = Input.Params(source_type=-1, batch_mode=False)
+        self.data = Data.Params()
+        self.ann = Annotations.Params()
 
 
 def single_gpu_test(
+        seq_info,
         model,
-        feat_name
-                    ):
+        params,
+):
+    """
+    :param seq_info:
+    :param model:
+    :param Params params:
+    :return:
+    """
     model.eval()
     results = []
 
+    seq_id, seq_suffix, start_id, end_id = seq_info
 
-    image_paths = []
-    n_images = len(image_paths)
+    _logger = CustomLogger.setup(__name__)
 
-    pbar = tqdm(image_paths, total=n_images)
-    for batch_id, img_path in enumerate(pbar):
-        img = cv2.imread(img_path)
+    _data = Data(params.data, _logger)
+
+    if not _data.initialize(params.set, seq_id, 0, _logger, silent=1):
+        _logger.error('Data module could not be initialized')
+        return None
+
+    subset = "training" if _data.split == 'train' else "validation"
+
+    input_params = copy.deepcopy(params.input)  # type: Input.Params
+
+    """end_id is exclusive but Input expects inclusive"""
+    input_params.frame_ids = (start_id, end_id - 1)
+
+    _input = Input(input_params, _logger)
+    seq_name = _data.seq_name
+
+    print(f'\nseq {seq_id + 1}: {seq_name}\n')
+
+    if not _input.initialize(_data):
+        _logger.error('Input pipeline could not be initialized')
+        return False
+
+    # read detections and annotations
+    if not _input.read_annotations():
+        _logger.error('Annotations could not be read')
+        return False
+
+    # if not _input.read_detections():
+    #     _logger.error('Detections could not be read')
+    #     return False
+
+    _frame_size = _input.frame_size
+    _n_frames = _input.n_frames
+
+    _annotations = _input.annotations  # type: Annotations
+
+    n_images = _input.n_frames
+
+    frame_iter = _input.read_iter(length=params.batch_size)
+
+    feat_name = params.feat_name
+
+    pbar = tqdm(frame_iter, total=n_images)
+    for batch_id, img in enumerate(pbar):
         img_reshaped = img.transpose([2, 0, 1])
         img_expanded = np.expand_dims(img_reshaped, 0)
 
         img_tensor = torch.tensor(img_expanded, dtype=torch.float32)
 
         with torch.no_grad():
-            result = model(return_loss=False, rescale=True, img=img_tensor)
+            final_feat = model.extract_feat(img_tensor)
 
         feat = model.features[feat_name]
 
-
-
     return results
+
 
 def main():
     params = Params()
@@ -155,7 +176,6 @@ def main():
         params.out_dir = os.path.join(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
 
     os.makedirs(params.out_dir, exist_ok=1)
-
 
     cfg = Config.fromfile(params.config)
     if params.cfg_options is not None:
@@ -228,84 +248,104 @@ def main():
             device_ids=[torch.cuda.current_device()],
             broadcast_buffers=False)
 
-    workers_per_gpu = cfg.data.workers_per_gpu
+    _logger = CustomLogger.setup(__name__)
+    _data = Data(params.data, _logger)
 
-    if workers_per_gpu < samples_per_gpu:
-        workers_per_gpu = samples_per_gpu
+    try:
+        params.set = int(params.set)
+    except ValueError:
+        params.set = params.data.name_to_id(params.set)
 
-    while True:
-        start_t = time.time()
-        dataset = build_dataset(test_data_cfg)
-        model.CLASSES = dataset.CLASSES[:]
+    set_name = _data.sets[params.set]
+    n_sequences = len(_data.sequences[set_name])
 
-        if not distributed:
-            outputs = single_gpu_test(model, data_loader,
-                                      out_dir=params.out_dir,
-                                      show_score_thr=params.show_score_thr,
-                                      filter_objects=params.filter_objects,
-                                      write_masks=params.write_masks,
-                                      write_xml=params.write_xml,
-                                      )
-        else:
-            outputs = multi_gpu_test(model, data_loader, params.tmpdir,
-                                     params.gpu_collect)
+    seq_ids = params.seq
 
-        json_file_info = dataset.format_results(outputs, jsonfile_prefix=params.out)
+    if not seq_ids:
+        seq_ids = tuple(range(n_sequences))
 
-        json_file_dict = json_file_info[0]
-        for eval_type in params.eval:
-            src_path = json_file_dict[eval_type]
+    sample = params.slide.sample
+    if sample <= 0:
+        sample = 1
 
-            src_name = os.path.basename(src_path)
-            dst_path = os.path.join(params.out_dir, src_name)
+    seq_info_list = []
+    pbar = tqdm(seq_ids)
+    for seq_id in pbar:
 
-            shutil.copy(src_path, dst_path)
+        if not _data.initialize(params.set, seq_id, 0, _logger, silent=1):
+            _logger.error('Data module could not be initialized')
+            return None
 
-            print(f'{eval_type} --> {dst_path}')
+        start_id = 0
+        seq_name = _data.seq_name
+        seq_n_frames = _data.seq_n_frames
 
-        kwargs = {} if params.eval_options is None else params.eval_options
-        rank, _ = get_dist_info()
-        if rank == 0:
-            if params.out:
-                print(f'\nwriting results to {params.out}')
-                mmcv.dump(outputs, params.out)
-            if params.format_only:
-                dataset.format_results(outputs, **kwargs)
-            if params.eval:
-                eval_kwargs = cfg.get('evaluation', {}).copy()
-                # hard-code way to remove EvalHook params
-                for key in [
-                    'interval', 'tmpdir', 'start', 'gpu_collect', 'save_best',
-                    'rule'
-                ]:
-                    eval_kwargs.pop(key, None)
-                eval_kwargs.update(dict(metric=params.eval, **kwargs))
-                eval_out = dataset.evaluate(outputs, **eval_kwargs)
-                print(eval_out)
+        assert seq_n_frames % sample == 0, f"sample size {sample} does not divide seq_n_frames {seq_n_frames} evenly"
 
-        end_t = time.time()
+        win_size = params.slide.size
+        if win_size <= 0:
+            win_size = int(_data.seq_n_frames / sample)
 
-        time_taken = end_t - start_t
-        print('time taken: {:.2f} sec'.format(time_taken))
+        win_stride = params.slide.stride
+        if win_stride <= 0:
+            win_stride = win_size
 
-        if params.multi_run:
-            k = input('\npress Enter to run segmentation again or q + Enter to exit\n')
-            k = k.strip()
-            # print('k: {}'.format(k))
-            if k.lower() == 'q':
-                print('exiting...')
+        while True:
+            abs_start_id = int(start_id * sample)
+
+            if abs_start_id >= seq_n_frames:
                 break
 
-            # try:
-            #     import msvcrt as m
-            # except ImportError:
-            #     _ = input('press enter to run segmentation again')
-            # else:
-            #     print('press any key to run segmentation again')
-            #     m.getch()
-            # continue
-        else:
-            break
+            end_id = start_id + win_size
+
+            abs_end_id = int(end_id * sample)
+
+            if abs_end_id >= seq_n_frames:
+                abs_end_id = seq_n_frames
+                end_id = int(abs_end_id / sample)
+
+            suffix = f'{abs_start_id}_{abs_end_id}'
+
+            seq_info_list.append((seq_id, suffix, abs_start_id, abs_end_id))
+
+            print(f'{seq_name}--{suffix}: {abs_start_id} to {abs_end_id}')
+
+            start_id += win_stride
+
+    n_seq = len(seq_info_list)
+
+    # exit()
+
+    timestamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
+    out_dir = linux_path('log', f'mot_to_dnc', f'{set_name}_{timestamp}')
+    os.makedirs(out_dir, exist_ok=1)
+
+    traj_lengths_out_dir = linux_path(out_dir, 'traj_lengths')
+    os.makedirs(traj_lengths_out_dir, exist_ok=1)
+
+    n_proc = min(params.n_proc, n_seq)
+
+    import functools
+    func = functools.partial(
+        single_gpu_test,
+        params=params,
+        model=model,
+    )
+
+    if n_proc > 1:
+        import multiprocessing
+
+        print(f'running in parallel over {n_proc} processes')
+        with multiprocessing.Pool(n_proc) as pool:
+            results = pool.map(func, seq_info_list)
+
+        results.sort(key=lambda x: x[0])
+    else:
+        results = []
+        for seq_info in seq_info_list:
+            result = func(seq_info)
+
+            results.append(result)
 
 
 if __name__ == '__main__':

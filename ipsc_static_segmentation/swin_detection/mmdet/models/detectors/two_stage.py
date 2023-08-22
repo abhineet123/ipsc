@@ -25,6 +25,8 @@ class TwoStageDetector(BaseDetector):
         super(TwoStageDetector, self).__init__()
         self.backbone = build_backbone(backbone)
 
+        self.features = {}
+
         if neck is not None:
             self.neck = build_neck(neck)
 
@@ -80,8 +82,10 @@ class TwoStageDetector(BaseDetector):
     def extract_feat(self, img):
         """Directly extract features from the backbone+neck."""
         x = self.backbone(img)
+        self.features['backbone'] = x
         if self.with_neck:
             x = self.neck(x)
+            self.features['neck'] = x
         return x
 
     def forward_dummy(self, img):
