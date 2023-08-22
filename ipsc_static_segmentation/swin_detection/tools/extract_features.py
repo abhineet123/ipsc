@@ -71,13 +71,9 @@ class Params:
         self.show = 0
         self.batch_size = 1
         self.out_dir = ''
-        self.write_xml = 0
-        self.write_masks = 0
-        self.filter_objects = 0
-        self.show_score_thr = 0.3
         self.tmpdir = ''
         self.n_proc = 1
-        self.test_name = 'test'
+        self.test_name = 'val'
         self.feat_name = 'backbone'
 
         self.slide = Params.SlidingWindow()
@@ -147,19 +143,26 @@ def single_gpu_test(
 
     feat_name = params.feat_name
 
-    pbar = tqdm(frame_iter, total=n_images)
-    for batch_id, img in enumerate(pbar):
-        img_reshaped = img.transpose([2, 0, 1])
-        img_expanded = np.expand_dims(img_reshaped, 0)
+    avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(2, 2))
 
-        img_tensor = torch.tensor(img_expanded, dtype=torch.float32)
+    pbar = tqdm(frame_iter, total=n_images)
+    for batch_id, img_list in enumerate(pbar):
+        img = np.stack(img_list, axis=0)
+        """bring channel to front"""
+        img_reshaped = img.transpose([0, 3, 1, 2])
+        img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
 
         with torch.no_grad():
             final_feat = model.extract_feat(img_tensor)
 
-        feat = model.features[feat_name]
+            # feat_list = model.features[feat_name]
+            avg_pool_feats = []
+            for feat in final_feat:
+                avg_pool_feat = avg_pool(feat)
+                avg_pool_feats.append(avg_pool_feat)
+            print()
 
-    return results
+    return avg_pool_feats
 
 
 def main():
@@ -233,20 +236,16 @@ def main():
     checkpoint = load_checkpoint(model, params.checkpoint, map_location='cpu')
     if params.fuse_conv_bn:
         model = fuse_conv_bn(model)
-    # old versions did not save class info in checkpoints, this walkaround is
-    # for backward compatibility
-    # if 'CLASSES' in checkpoint.get('meta', {}):
-    #     model.CLASSES = checkpoint['meta']['CLASSES']
-    # else:
-    #     model.CLASSES = list(class_id_to_color.keys())
 
-    if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
-    else:
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
-            broadcast_buffers=False)
+    # if not distributed:
+    #     model = MMDataParallel(model, device_ids=[0])
+    # else:
+    #     model = MMDistributedDataParallel(
+    #         model.cuda(),
+    #         device_ids=[torch.cuda.current_device()],
+    #         broadcast_buffers=False)
+
+    model = model.cuda()
 
     _logger = CustomLogger.setup(__name__)
     _data = Data(params.data, _logger)
