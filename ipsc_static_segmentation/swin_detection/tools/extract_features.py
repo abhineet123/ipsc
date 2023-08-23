@@ -291,6 +291,7 @@ def run(seq_info,
 
 
 def load_raw(out_path):
+    print(f'loading raw features from {out_path}')
     loaded_feat = np.load(out_path)
     n_feat = len(loaded_feat)
     feat_list = [None, ] * n_feat
@@ -305,6 +306,7 @@ def save_raw(feat_list, out_path):
         feat_np = feat.cpu().numpy()
         feat_np_dict[str(feat_id)] = feat_np
 
+    print(f'Saving raw features to {out_path}')
     np.savez_compressed(out_path, **feat_np_dict)
 
 
