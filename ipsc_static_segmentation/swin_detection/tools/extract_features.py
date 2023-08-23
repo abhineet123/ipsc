@@ -37,6 +37,12 @@ flatten = torch.nn.Flatten()
 avg_pool_8 = torch.nn.AdaptiveAvgPool2d(output_size=(8, 8))
 avg_pool_4 = torch.nn.AdaptiveAvgPool2d(output_size=(4, 4))
 avg_pool_2 = torch.nn.AdaptiveAvgPool2d(output_size=(2, 2))
+max_pool_2 = torch.nn.MaxPool2d(2, stride=2, return_indices=True)
+max_unpool_2 = torch.nn.MaxUnpool2d(2, stride=2)
+max_pool_4 = torch.nn.MaxPool2d(4, stride=4, return_indices=True)
+max_unpool_4 = torch.nn.MaxUnpool2d(4, stride=4)
+max_pool_8 = torch.nn.MaxPool2d(8, stride=8, return_indices=True)
+max_unpool_8 = torch.nn.MaxUnpool2d(8, stride=8)
 
 
 class Params:
@@ -88,8 +94,8 @@ class Params:
         self.feat_name = 'neck'
         self.reduce = 'f3'
 
-        self.load_raw = 0
-        self.save_raw = 0
+        self.raw = 0
+        self.pool = 2
 
         self.mean = [93.154564, 162.03416, 240.90062]
         self.std = [3.8680854, 2.779077, 2.8976252]
@@ -155,7 +161,7 @@ def run(seq_info,
 
     feat_name = params.feat_name
 
-    if params.save_raw or params.load_raw:
+    if params.raw:
         out_ext = 'npz'
     else:
         out_ext = 'npy'
@@ -168,9 +174,9 @@ def run(seq_info,
     reduced_feat_list = []
     score_thr = 0.3
     raw_feat = {}
-    x = None
-    if params.load_raw:
-        x_all = load_raw(out_path)
+
+    if params.vis and params.raw:
+        x_all = load_raw(out_path, params.pool)
 
     for batch_id, img_list in enumerate(pbar):
         imgs = []
@@ -212,9 +218,8 @@ def run(seq_info,
 
         if params.vis:
             x = None
-            if params.load_raw:
+            if params.raw:
                 x = x_all[batch_id]
-                img_tensor = None
 
             with torch.no_grad():
                 results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ], x=x)
@@ -272,8 +277,8 @@ def run(seq_info,
             with torch.no_grad():
                 final_feat = model.extract_feat(img_tensor)
 
-            if params.save_raw:
-                raw_feat = save_raw(final_feat, out_path + f'-{batch_id}', raw_feat, batch_id)
+            if params.raw:
+                save_raw(final_feat, raw_feat, batch_id, params.pool)
                 continue
 
             feat_list = model.features[feat_name]
@@ -290,15 +295,16 @@ def run(seq_info,
             reduced_feat_np = reduced_feat.cpu().numpy()
             reduced_feat_list.append(reduced_feat_np)
 
-    if params.save_raw:
-        print(f'Saving raw features to {out_path}')
-        np.savez_compressed(out_path, **raw_feat)
-    elif not params.load_raw:
-        reduced_feat_all = np.concatenate(reduced_feat_list, axis=0)
-        np.save(out_path, reduced_feat_all)
+    if not params.vis:
+        if params.raw:
+            print(f'Saving raw features to {out_path}')
+            np.savez_compressed(out_path, **raw_feat)
+        else:
+            reduced_feat_all = np.concatenate(reduced_feat_list, axis=0)
+            np.save(out_path, reduced_feat_all)
 
 
-def load_raw(out_path):
+def load_raw(out_path, pool):
     # if not out_path.endswith('.npz'):
     #     out_path += '.npz'
 
@@ -307,11 +313,32 @@ def load_raw(out_path):
     feat_dict = {}
     loaded_feat = np.load(out_path)
     for _id, feat in loaded_feat.items():
+
+        if pool > 0:
+            assert feat.shape[0] % 2 == 0, f"invalid feature shape for pooling: {feat.shape}"
+            batch_size = int(feat.shape[0] / 2)
+            feat = feat[:batch_size, ...]
+            indices = feat[batch_size:, ...].astype(np.int64)
+
+            feat = torch.from_numpy(feat).cuda()
+            indices = torch.from_numpy(indices).cuda()
+            if pool == 2:
+                feat_unpooled = max_unpool_2(feat, indices)
+            elif pool == 4:
+                feat_unpooled = max_unpool_4(feat, indices)
+            elif pool == 8:
+                feat_unpooled = max_unpool_8(feat, indices)
+            else:
+                raise AssertionError(f'invalid pool: {pool}')
+            feat_pt = feat_unpooled
+        else:
+            feat_pt = torch.from_numpy(feat).cuda()
+
         batch_id, feat_id = _id.split('_')
         batch_id, feat_id = int(batch_id), int(feat_id)
         if batch_id not in feat_dict:
             feat_dict[batch_id] = {}
-        feat_dict[batch_id][feat_id] = torch.from_numpy(feat).cuda()
+        feat_dict[batch_id][feat_id] = feat_pt
 
     n_batches = len(feat_dict)
     feat_list = [None, ] * n_batches
@@ -323,11 +350,26 @@ def load_raw(out_path):
     return feat_list
 
 
-def save_raw(feat_list, out_path, raw_feat, batch_id):
+def save_raw(feat_list, raw_feat, batch_id, pool):
     for feat_id, feat in enumerate(feat_list):
+
+        if pool == 0:
+            pass
+        elif pool == 2:
+            feat, indices = max_pool_2(feat)
+        elif pool == 4:
+            feat, indices = max_pool_4(feat)
+        elif pool == 8:
+            feat, indices = max_pool_8(feat)
+        else:
+            raise AssertionError(f'invalid pool: {pool}')
+
         feat_np = feat.cpu().numpy()
+        if pool > 0:
+            indices_np = indices.cpu().numpy()
+            feat_np = np.concatenate(feat_np, indices_np, axis=0)
         raw_feat[f'{batch_id}_{feat_id}'] = feat_np
-    return raw_feat
+
 
 
 def avg_all(feat_list):
@@ -468,8 +510,10 @@ def main():
         params.out_name = 'features'
 
     if not params.out_suffix:
-        if params.save_raw or  params.load_raw:
+        if params.raw:
             params.out_suffix = f'raw'
+            if params.pool > 0:
+                params.out_suffix = f'{params.out_suffix}_{params.pool}'
         else:
             params.out_suffix = f'{params.feat_name}_{params.reduce}'
 
