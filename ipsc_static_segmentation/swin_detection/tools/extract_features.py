@@ -199,8 +199,10 @@ def run(seq_info,
                 # print()
 
                 for img_id, img in enumerate(img_list):
+
                     img_show = np.copy(img)
-                    # cv2.imshow('img_show init', img_show)
+
+                    cv2.imshow('img_show init', img_show)
                     # cv2.waitKey(0)
 
                     curr_result = results[img_id]
