@@ -15,6 +15,8 @@ import cv2
 from datetime import datetime
 
 import torch
+
+import mmcv
 from mmcv import Config
 from mmcv.cnn import fuse_conv_bn
 from mmcv.runner import load_checkpoint, wrap_fp16_model
@@ -25,7 +27,7 @@ from mmdet.utils.misc import read_class_info, linux_path
 from input import Input
 from objects import Annotations
 from data import Data
-from utilities import CustomLogger, linux_path
+from utilities import CustomLogger, linux_path, draw_box
 
 import numpy as np
 
@@ -56,6 +58,7 @@ class Params:
         self.ckpt = ''
         self.ckpt_dir = ''
         self.ckpt_name = ''
+
         self.cfg_options = None
         # self.eval = ["bbox", "segm"]
         self.eval = []
@@ -95,7 +98,7 @@ class Params:
 def run(seq_info,
         model,
         params: Params,
-        class_to_color,
+        classes,
         ):
     model.eval()
 
@@ -154,46 +157,99 @@ def run(seq_info,
 
     pbar = tqdm(frame_iter, total=n_batches)
     reduced_feat_list = []
-    show_score_thr = 0.3
+    score_thr = 0.3
+
+    mean = [93.154564, 162.03416, 240.90062]
+    std = [3.8680854, 2.779077, 2.8976252]
 
     for batch_id, img_list in enumerate(pbar):
-        img = np.stack(img_list, axis=0)
-        """bring channel to front"""
-        img_reshaped = img.transpose([0, 3, 1, 2])
-        img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
-
         with torch.no_grad():
             if params.vis:
-                result = model(return_loss=False, rescale=True, img=img_tensor)
+                imgs = []
+                img_metas = []
+                for img_id, img in enumerate(img_list):
+                    img_norm = mmcv.imnormalize(img, np.asarray(mean), np.asarray(std), to_rgb=True)
+
+                    imgs.append(img_norm)
+
+                    global_img_id = int(batch_id * params.batch_size + img_id)
+                    img_meta = dict(
+                        filename=linux_path(_input.source_path, f'image{global_img_id + 1:06d}.jpg'),
+                        ori_filename=linux_path(_input.seq_name, f'image{global_img_id + 1:06d}.jpg'),
+                        ori_shape=img.shape,
+                        img_shape=img.shape,
+                        pad_shape=img.shape,
+                        scale_factor=[1., 1., 1., 1.],
+                        flip=False,
+                        flip_direction=None,
+                        img_norm_cfg=dict(
+                            mean=mean,
+                            std=std,
+                            to_rgb=True
+                        ),
+                        batch_input_shape=img.shape[:2]
+                    )
+                    img_metas.append(img_meta)
+
+                img = np.stack(imgs, axis=0)
+                """bring channel to front"""
+                img_reshaped = img.transpose([0, 3, 1, 2])
+                img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
+
+                results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ])
+
+                # print()
+
                 for img_id, img in enumerate(img_list):
                     img_show = np.copy(img)
+                    cv2.imshow('img_show init', img_show)
+                    cv2.waitKey(0)
 
-                    curr_result = result[img_id]
+                    curr_result = results[img_id]
 
-                    model.show_result(
-                        img_show,
-                        curr_result,
-                        show=1,
-                        out_file=None,
-                        score_thr=show_score_thr,
-                        class_to_color=class_to_color,
-                    )
+                    bboxes = np.vstack(curr_result)
+                    labels = [
+                        np.full(bbox.shape[0], i, dtype=np.int32)
+                        for i, bbox in enumerate(curr_result)
+                    ]
+                    labels = np.concatenate(labels)
 
-                    # csv_rows = model.show_result(
-                    #     img_show,
-                    #     curr_result,
-                    #     show=False,
-                    #     out_dir=seq_out_dir,
-                    #     out_filename=img_name,
-                    #     out_xml_dir=seq_xml_out_dir,
-                    #     out_mask_dir=seq_mask_out_dir,
-                    #     score_thr=show_score_thr,
-                    #     classes=classes,
-                    #     palette_flat=palette_flat,
-                    #     write_masks=write_masks,
-                    #     write_xml=write_xml,
-                    # )
+                    if score_thr > 0:
+                        assert bboxes.shape[1] == 5
+                        scores = bboxes[:, -1]
+                        inds = scores > score_thr
+                        bboxes = bboxes[inds, :]
+                        labels = labels[inds]
+
+                    for i, (bbox, label) in enumerate(zip(bboxes, labels)):
+                        # bbox_int = bbox.astype(np.int32)
+                        try:
+                            xmin, ymin, xmax, ymax, conf = bbox
+                        except ValueError:
+                            xmin, ymin, xmax, ymax = bbox
+                            conf = 1.0
+
+                        xmin, ymin, xmax, ymax = [int(x) for x in [xmin, ymin, xmax, ymax]]
+
+                        class_id = label
+                        class_name = classes[class_id]
+
+                        w, h = xmax - xmin, ymax - ymin
+
+                        bbox_wh = np.asarray([xmin, ymin, w, h])
+
+                        draw_box(img_show, bbox_wh, _id=None, color='black', thickness=2,
+                                 is_dotted=0, transparency=0.,
+                                 text_col=None,
+                                 font=cv2.FONT_HERSHEY_TRIPLEX, font_size=0.5, label=class_name)
+
+                    cv2.imshow('img_show', img_show)
+                    cv2.waitKey(1)
             else:
+                img = np.stack(img_list, axis=0)
+                """bring channel to front"""
+                img_reshaped = img.transpose([0, 3, 1, 2])
+                img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
                 final_feat = model.extract_feat(img_tensor)
             feat_list = model.features[feat_name]
             if params.reduce == 'f3':
@@ -249,6 +305,7 @@ def main():
 
     classes, composite_classes = read_class_info(params.class_info_path)
     class_to_color = {i: k[1] for i, k in enumerate(classes)}
+    classes = {i: k[0] for i, k in enumerate(classes)}
 
     config_name = os.path.splitext(os.path.basename(params.config))[0]
 
@@ -415,7 +472,7 @@ def main():
         run,
         params=params,
         model=model,
-        class_to_color=class_to_color,
+        classes=classes,
     )
 
     if n_proc > 1:

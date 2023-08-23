@@ -35,7 +35,7 @@ class MNIST_MOT(CustomDataset):
                [176, 48, 96],  # maroon
                [34, 139, 34],  # forest_green
                [255, 165, 0],  # orange
-               [0, 0, 255]
+               [0, 0, 255],
                ]
 
     def load_annotations(self, ann_file):

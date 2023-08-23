@@ -84,7 +84,11 @@ class Params:
     def __init__(self):
         self.cfg = ()
         self.config = ''
+
         self.ckpt = ''
+        self.ckpt_dir = ''
+        self.ckpt_name = ''
+
         self.cfg_options = None
         # self.eval = ["bbox", "segm"]
         self.eval = []
@@ -173,12 +177,11 @@ def main():
             if cfg.model.neck.rfp_backbone.get('pretrained'):
                 cfg.model.neck.rfp_backbone.pretrained = None
 
-    # in case the test dataset is concatenated
     samples_per_gpu = params.batch_size
     test_data_cfg = cfg.data[params.test_name]
     if isinstance(test_data_cfg, dict):
         test_data_cfg.test_mode = True
-        samples_per_gpu = test_data_cfg.pop('samples_per_gpu', 1)
+        # samples_per_gpu = test_data_cfg.pop('samples_per_gpu', 1)
         if samples_per_gpu > 1:
             # Replace 'ImageToTensor' to 'DefaultFormatBundle'
             test_data_cfg.pipeline = replace_ImageToTensor(
@@ -186,8 +189,8 @@ def main():
     elif isinstance(test_data_cfg, list):
         for ds_cfg in test_data_cfg:
             ds_cfg.test_mode = True
-        samples_per_gpu = max(
-            [ds_cfg.pop('samples_per_gpu', 1) for ds_cfg in test_data_cfg])
+        # samples_per_gpu = max(
+        #     [ds_cfg.pop('samples_per_gpu', 1) for ds_cfg in test_data_cfg])
         if samples_per_gpu > 1:
             for ds_cfg in test_data_cfg:
                 ds_cfg.pipeline = replace_ImageToTensor(ds_cfg.pipeline)
