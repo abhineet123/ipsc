@@ -272,6 +272,7 @@ def main():
 
     set_name = _data.sets[params.set]
     n_sequences = len(_data.sequences[set_name])
+    print(f'n_sequences: {n_sequences}')
 
     seq_ids = params.seq
 
@@ -292,6 +293,8 @@ def main():
 
     seq_info_list = []
     pbar = tqdm(seq_ids)
+    print(f'seq_ids: {seq_ids}')
+
     for seq_id in pbar:
 
         if not _data.initialize(params.set, seq_id, 0, _logger, silent=1):
