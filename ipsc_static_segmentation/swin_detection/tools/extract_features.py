@@ -233,8 +233,10 @@ def main():
     if not params.out_name:
         params.out_name = 'features'
 
-    if params.out_suffix:
-        params.out_name = f'{params.out_name}_{params.out_suffix}'
+    if not params.out_suffix:
+        params.out_suffix = f'{params.feat_name}_{params.reduce}'
+        
+    params.out_name = f'{params.out_name}_{params.out_suffix}'
 
     if not params.out_dir:
         params.out_dir = linux_path(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
