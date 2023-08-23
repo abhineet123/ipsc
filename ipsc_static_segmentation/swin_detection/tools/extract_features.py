@@ -20,6 +20,8 @@ from mmcv.cnn import fuse_conv_bn
 from mmcv.runner import load_checkpoint, wrap_fp16_model
 
 from mmdet.models import build_detector
+from mmdet.utils.misc import read_class_info
+
 
 from input import Input
 from objects import Annotations
@@ -76,6 +78,10 @@ class Params:
         self.out_suffix = ''
         self.tmpdir = ''
         self.n_proc = 1
+
+        self.vis = 1
+        self.class_info_path = 'data/mnist_mot.txt'
+
         self.test_name = 'val'
         self.feat_name = 'neck'
         self.reduce = 'f3'
@@ -90,6 +96,7 @@ class Params:
 def run(seq_info,
         model,
         params,
+        class_to_color,
         ):
     """
     :param seq_info:
@@ -154,6 +161,8 @@ def run(seq_info,
 
     pbar = tqdm(frame_iter, total=n_batches)
     reduced_feat_list = []
+    show_score_thr = 0.3
+
     for batch_id, img_list in enumerate(pbar):
         img = np.stack(img_list, axis=0)
         """bring channel to front"""
@@ -161,7 +170,38 @@ def run(seq_info,
         img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
 
         with torch.no_grad():
-            final_feat = model.extract_feat(img_tensor)
+            if params.vis:
+                result = model(return_loss=False, rescale=True, img=img_tensor)
+                for img_id, img in enumerate(img_list):
+                    img_show = np.copy(img)
+
+                    curr_result = result[img_id]
+
+                    model.show_result(
+                        img_show,
+                        curr_result,
+                        show=1,
+                        out_file=None,
+                        score_thr=show_score_thr,
+                        class_to_color=class_to_color,
+                    )
+
+                    # csv_rows = model.show_result(
+                    #     img_show,
+                    #     curr_result,
+                    #     show=False,
+                    #     out_dir=seq_out_dir,
+                    #     out_filename=img_name,
+                    #     out_xml_dir=seq_xml_out_dir,
+                    #     out_mask_dir=seq_mask_out_dir,
+                    #     score_thr=show_score_thr,
+                    #     classes=classes,
+                    #     palette_flat=palette_flat,
+                    #     write_masks=write_masks,
+                    #     write_xml=write_xml,
+                    # )
+            else:
+                final_feat = model.extract_feat(img_tensor)
             feat_list = model.features[feat_name]
             if params.reduce == 'f3':
                 reduced_feat = f3(feat_list)
@@ -213,6 +253,9 @@ def main():
 
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(params.local_rank)
+
+    classes, composite_classes = read_class_info(params.class_info_path)
+    class_to_color = {i: k[1] for i, k in enumerate(classes)}
 
     config_name = os.path.splitext(os.path.basename(params.config))[0]
 
@@ -377,6 +420,7 @@ def main():
         run,
         params=params,
         model=model,
+        class_to_color=class_to_color,
     )
 
     if n_proc > 1:
