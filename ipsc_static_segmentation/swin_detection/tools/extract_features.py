@@ -34,6 +34,11 @@ import numpy as np
 
 import paramparse
 
+flatten = torch.nn.Flatten()
+avg_pool_8 = torch.nn.AdaptiveAvgPool2d(output_size=(8, 8))
+avg_pool_4 = torch.nn.AdaptiveAvgPool2d(output_size=(4, 4))
+avg_pool_2 = torch.nn.AdaptiveAvgPool2d(output_size=(2, 2))
+
 
 class Params:
     class SlidingWindow:
@@ -135,7 +140,7 @@ def run(seq_info,
     _annotations = _input.annotations  # type: Annotations
 
     n_images = _input.n_frames
-    n_batches = int(n_images/params.batch_size)
+    n_batches = int(n_images / params.batch_size)
 
     _input._read_all_frames()
 
@@ -160,6 +165,8 @@ def run(seq_info,
             feat_list = model.features[feat_name]
             if params.reduce == 'f3':
                 reduced_feat = f3(feat_list)
+            elif params.reduce == 'f3_8':
+                reduced_feat = f3_8(feat_list)
             elif params.reduce == 'avg_all':
                 reduced_feat = avg_all(feat_list)
             else:
@@ -174,25 +181,29 @@ def run(seq_info,
     np.save(out_path, reduced_feat_all)
 
 
-
 def avg_all(feat_list):
-    avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(2, 2))
-
     avg_pool_feats = []
     for feat in feat_list:
-        avg_pool_feat = avg_pool(feat, (2, 2))
+        avg_pool_feat = avg_pool_2(feat, (2, 2))
         avg_pool_feat_flat = torch.flatten(avg_pool_feat)
         avg_pool_feats.append(avg_pool_feat_flat)
     print()
     return avg_pool_feats
 
 
-def f3(feat_list):
+def f3_8(feat_list):
     flatten = torch.nn.Flatten()
-    avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(8, 8))
     feat = feat_list[3]
-    feat_pooled = avg_pool(feat)
+    feat_pooled = avg_pool_8(feat)
     feat_flat = flatten(feat_pooled)
+    return feat_flat
+
+
+def f3(feat_list):
+    # avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(8, 8))
+    feat = feat_list[3]
+    # feat_pooled = avg_pool(feat)
+    feat_flat = flatten(feat)
     return feat_flat
 
 
