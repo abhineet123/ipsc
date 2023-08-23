@@ -165,7 +165,7 @@ def run(seq_info,
         img_metas = []
         for img_id, img in enumerate(img_list):
             cv2.imshow('img init', img)
-            k = cv2.waitKey(0)
+            k = cv2.waitKey(1)
             if k == 27:
                 exit()
             print(f'img_show: {img_id}')
