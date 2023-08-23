@@ -167,6 +167,10 @@ def run(seq_info,
     pbar = tqdm(frame_iter, total=n_batches)
     reduced_feat_list = []
     score_thr = 0.3
+    raw_feat = {}
+    x = None
+    if params.load_raw:
+        x_all = load_raw(out_path)
 
     for batch_id, img_list in enumerate(pbar):
         imgs = []
@@ -209,7 +213,8 @@ def run(seq_info,
         if params.vis:
             x = None
             if params.load_raw:
-                x = load_raw(out_path + f'-{batch_id}')
+                x = x_all[batch_id]
+                img_tensor = None
 
             with torch.no_grad():
                 results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ], x=x)
@@ -268,46 +273,61 @@ def run(seq_info,
                 final_feat = model.extract_feat(img_tensor)
 
             if params.save_raw:
-                save_raw(final_feat, out_path + f'-{batch_id}')
+                raw_feat = save_raw(final_feat, out_path + f'-{batch_id}', raw_feat, batch_id)
                 continue
 
-        feat_list = model.features[feat_name]
+            feat_list = model.features[feat_name]
 
-        if params.reduce == 'f3':
-            reduced_feat = f3(feat_list)
-        elif params.reduce == 'f3_8':
-            reduced_feat = f3_8(feat_list)
-        elif params.reduce == 'avg_all':
-            reduced_feat = avg_all(feat_list)
-        else:
-            raise AssertionError(f'invalid reduce type: {params.reduce}')
+            if params.reduce == 'f3':
+                reduced_feat = f3(feat_list)
+            elif params.reduce == 'f3_8':
+                reduced_feat = f3_8(feat_list)
+            elif params.reduce == 'avg_all':
+                reduced_feat = avg_all(feat_list)
+            else:
+                raise AssertionError(f'invalid reduce type: {params.reduce}')
 
-        reduced_feat_np = reduced_feat.cpu().numpy()
-        reduced_feat_list.append(reduced_feat_np)
+            reduced_feat_np = reduced_feat.cpu().numpy()
+            reduced_feat_list.append(reduced_feat_np)
 
-    if not params.save_raw:
+    if params.save_raw:
+        print(f'Saving raw features to {out_path}')
+        np.savez_compressed(out_path, **raw_feat)
+    elif not params.load_raw:
         reduced_feat_all = np.concatenate(reduced_feat_list, axis=0)
         np.save(out_path, reduced_feat_all)
 
 
 def load_raw(out_path):
+    # if not out_path.endswith('.npz'):
+    #     out_path += '.npz'
+
     print(f'loading raw features from {out_path}')
+
+    feat_dict = {}
     loaded_feat = np.load(out_path)
-    n_feat = len(loaded_feat)
-    feat_list = [None, ] * n_feat
-    for feat_id, feat in loaded_feat.items():
-        feat_list[int(feat_id)] = torch.from_numpy(feat)
+    for _id, feat in loaded_feat.items():
+        batch_id, feat_id = _id.split('_')
+        batch_id, feat_id = int(batch_id), int(feat_id)
+        if batch_id not in feat_dict:
+            feat_dict[batch_id] = {}
+        feat_dict[batch_id][feat_id] = torch.from_numpy(feat).cuda()
+
+    n_batches = len(feat_dict)
+    feat_list = [None, ] * n_batches
+    for batch_id in feat_dict:
+        n_feat = len(feat_dict[batch_id])
+        feat_list[batch_id] = [None, ] * n_feat
+        for feat_id in feat_dict[batch_id]:
+            feat_list[batch_id][feat_id] = feat_dict[batch_id][feat_id]
     return feat_list
 
 
-def save_raw(feat_list, out_path):
-    feat_np_dict = {}
+def save_raw(feat_list, out_path, raw_feat, batch_id):
     for feat_id, feat in enumerate(feat_list):
         feat_np = feat.cpu().numpy()
-        feat_np_dict[str(feat_id)] = feat_np
-
-    print(f'Saving raw features to {out_path}')
-    np.savez_compressed(out_path, **feat_np_dict)
+        raw_feat[f'{batch_id}_{feat_id}'] = feat_np
+    return raw_feat
 
 
 def avg_all(feat_list):
@@ -449,7 +469,7 @@ def main():
 
     if not params.out_suffix:
         if params.save_raw or  params.load_raw:
-            params.out_suffix = f'{params.feat_name}_raw'
+            params.out_suffix = f'raw'
         else:
             params.out_suffix = f'{params.feat_name}_{params.reduce}'
 
