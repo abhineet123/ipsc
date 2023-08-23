@@ -361,7 +361,7 @@ def main():
 
     print(f'n_seq: {n_seq}')
 
-    exit()
+    # exit()
 
     timestamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
     out_dir = linux_path('log', f'mot_to_dnc', f'{set_name}_{timestamp}')
