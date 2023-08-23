@@ -164,10 +164,10 @@ def run(seq_info,
         imgs = []
         img_metas = []
         for img_id, img in enumerate(img_list):
-            cv2.imshow('img init', img)
-            k = cv2.waitKey(1)
-            if k == 27:
-                exit()
+            # cv2.imshow('img init', img)
+            # k = cv2.waitKey(1)
+            # if k == 27:
+            #     exit()
             # print(f'img: {img_id}')
 
             img_norm = mmcv.imnormalize(img, np.asarray(mean), np.asarray(std), to_rgb=True)
