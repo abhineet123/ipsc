@@ -388,7 +388,7 @@ def main():
         results.sort(key=lambda x: x[0])
     else:
         results = []
-        for seq_info in seq_info_list:
+        for seq_info in tqdm(seq_info_list):
             result = func(seq_info)
 
             results.append(result)
