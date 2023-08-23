@@ -76,6 +76,8 @@ class Params:
         self.show = 0
         self.batch_size = 1
         self.out_dir = ''
+        self.out_name = ''
+        self.out_suffix = ''
         self.tmpdir = ''
         self.n_proc = 1
         self.test_name = 'val'
@@ -228,8 +230,16 @@ def main():
 
     checkpoint_dir = os.path.dirname(params.ckpt)
     checkpoint_name = os.path.splitext(os.path.basename(params.ckpt))[0]
+    if not params.out_name:
+        params.out_name = 'features'
+
+    if params.out_suffix:
+        params.out_name = f'{params.out_name}_{params.out_suffix}'
+
     if not params.out_dir:
-        params.out_dir = os.path.join(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
+        params.out_dir = linux_path(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
+
+    params.out_dir = linux_path(params.out_dir, params.out_name)
 
     os.makedirs(params.out_dir, exist_ok=1)
 
