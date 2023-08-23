@@ -90,7 +90,7 @@ class Params:
 
         self.slide = Params.SlidingWindow()
 
-        self.input = Input.Params(source_type=-1, batch_mode=True)
+        self.input = Input.Params(source_type=-1, batch_mode=False)
         self.data = Data.Params()
         self.ann = Annotations.Params()
 
