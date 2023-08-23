@@ -241,6 +241,10 @@ def main():
 
     params.out_dir = linux_path(params.out_dir, params.out_name)
 
+    print(f'writing features to {params.out_dir}')
+
+    exit()
+
     os.makedirs(params.out_dir, exist_ok=1)
 
     if True:
