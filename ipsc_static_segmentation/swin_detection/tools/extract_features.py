@@ -52,6 +52,8 @@ class Params:
 
         self.set = ''
         self.seq = ()
+        self.start_seq = 0
+        self.end_seq = -1
 
         self.config = ''
         self.ckpt = ''
@@ -305,6 +307,14 @@ def main():
 
     if not seq_ids:
         seq_ids = tuple(range(n_sequences))
+
+    if params.start_seq < 0:
+        params.start_seq = 0
+
+    if params.end_seq < 0:
+        params.end_seq = len(seq_ids) - 1
+
+    seq_ids = seq_ids[params.start_seq:params.end_seq + 1]
 
     sample = params.slide.sample
     if sample <= 0:
