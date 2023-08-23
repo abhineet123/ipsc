@@ -16,24 +16,19 @@ import copy
 import cv2
 from datetime import datetime
 
-import mmcv
 import torch
-from mmcv import Config, DictAction
+from mmcv import Config
 from mmcv.cnn import fuse_conv_bn
-from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
-from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
-                         wrap_fp16_model)
+from mmcv.runner import init_dist, load_checkpoint, wrap_fp16_model
 
-from mmdet.datasets import (build_dataloader, build_dataset,
-                            replace_ImageToTensor)
+from mmdet.datasets import replace_ImageToTensor
+
 from mmdet.models import build_detector
-from mmdet.utils.misc import read_class_info
-
 
 from input import Input
 from objects import Annotations
 from data import Data
-from utilities import CustomLogger, SIIF, linux_path
+from utilities import CustomLogger, linux_path
 
 import numpy as np
 
@@ -45,6 +40,7 @@ class Params:
         sample = 0
         size = 0
         stride = 0
+        num = 0
 
     def __init__(self):
         self.cfg = ('',)
@@ -53,7 +49,9 @@ class Params:
         self.seq = ()
 
         self.config = ''
-        self.checkpoint = ''
+        self.ckpt = ''
+        self.ckpt_dir = ''
+        self.ckpt_name = ''
         self.cfg_options = None
         # self.eval = ["bbox", "segm"]
         self.eval = []
@@ -74,7 +72,8 @@ class Params:
         self.tmpdir = ''
         self.n_proc = 1
         self.test_name = 'val'
-        self.feat_name = 'backbone'
+        self.feat_name = 'neck'
+        self.reduce = 'f3'
 
         self.slide = Params.SlidingWindow()
 
@@ -83,11 +82,10 @@ class Params:
         self.ann = Annotations.Params()
 
 
-def single_gpu_test(
-        seq_info,
+def run(seq_info,
         model,
         params,
-):
+        ):
     """
     :param seq_info:
     :param model:
@@ -95,9 +93,8 @@ def single_gpu_test(
     :return:
     """
     model.eval()
-    results = []
 
-    seq_id, seq_suffix, start_id, end_id = seq_info
+    seq_id, start_id, end_id = seq_info
 
     _logger = CustomLogger.setup(__name__)
 
@@ -138,14 +135,20 @@ def single_gpu_test(
     _annotations = _input.annotations  # type: Annotations
 
     n_images = _input.n_frames
+    n_batches = int(n_images/params.batch_size)
+
+    _input._read_all_frames()
 
     frame_iter = _input.read_iter(length=params.batch_size)
 
     feat_name = params.feat_name
 
-    avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(2, 2))
+    out_name = f'{seq_name}--{start_id}_{end_id}.npy'
 
-    pbar = tqdm(frame_iter, total=n_images)
+    out_path = linux_path(params.out_dir, out_name)
+
+    pbar = tqdm(frame_iter, total=n_batches)
+    reduced_feat_list = []
     for batch_id, img_list in enumerate(pbar):
         img = np.stack(img_list, axis=0)
         """bring channel to front"""
@@ -154,15 +157,43 @@ def single_gpu_test(
 
         with torch.no_grad():
             final_feat = model.extract_feat(img_tensor)
+            feat_list = model.features[feat_name]
+            if params.reduce == 'f3':
+                reduced_feat = f3(feat_list)
+            elif params.reduce == 'avg_all':
+                reduced_feat = avg_all(feat_list)
+            else:
+                raise AssertionError(f'invalid reduce type: {params.reduce}')
 
-            # feat_list = model.features[feat_name]
-            avg_pool_feats = []
-            for feat in final_feat:
-                avg_pool_feat = avg_pool(feat)
-                avg_pool_feats.append(avg_pool_feat)
-            print()
+            reduced_feat_np = reduced_feat.cpu().numpy()
 
+            reduced_feat_list.append(reduced_feat_np)
+
+    reduced_feat_all = np.concatenate(reduced_feat_list, axis=0)
+
+    np.save(out_path, reduced_feat_all)
+
+
+
+def avg_all(feat_list):
+    avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(2, 2))
+
+    avg_pool_feats = []
+    for feat in feat_list:
+        avg_pool_feat = avg_pool(feat, (2, 2))
+        avg_pool_feat_flat = torch.flatten(avg_pool_feat)
+        avg_pool_feats.append(avg_pool_feat_flat)
+    print()
     return avg_pool_feats
+
+
+def f3(feat_list):
+    flatten = torch.nn.Flatten()
+    avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(8, 8))
+    feat = feat_list[3]
+    feat_pooled = avg_pool(feat)
+    feat_flat = flatten(feat_pooled)
+    return feat_flat
 
 
 def main():
@@ -172,80 +203,81 @@ def main():
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(params.local_rank)
 
-    checkpoint_dir = os.path.dirname(params.checkpoint)
-    checkpoint_name = os.path.splitext(os.path.basename(params.checkpoint))[0]
+    config_name = os.path.splitext(os.path.basename(params.config))[0]
 
+    if not params.ckpt:
+        if not params.ckpt_dir:
+            params.ckpt_dir = linux_path('work_dirs', config_name)
+        if not params.ckpt_name:
+            params.ckpt_name = 'latest.pth'
+
+        params.ckpt = linux_path(params.ckpt_dir, params.ckpt_name)
+
+    checkpoint_dir = os.path.dirname(params.ckpt)
+    checkpoint_name = os.path.splitext(os.path.basename(params.ckpt))[0]
     if not params.out_dir:
         params.out_dir = os.path.join(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
 
     os.makedirs(params.out_dir, exist_ok=1)
 
-    cfg = Config.fromfile(params.config)
-    if params.cfg_options is not None:
-        cfg.merge_from_dict(params.cfg_options)
-    # import modules from string list.
-    if cfg.get('custom_imports', None):
-        from mmcv.utils import import_modules_from_strings
-        import_modules_from_strings(**cfg['custom_imports'])
-    # set cudnn_benchmark
-    if cfg.get('cudnn_benchmark', False):
-        torch.backends.cudnn.benchmark = True
-    cfg.model.pretrained = None
-    if cfg.model.get('neck'):
-        if isinstance(cfg.model.neck, list):
-            for neck_cfg in cfg.model.neck:
-                if neck_cfg.get('rfp_backbone'):
-                    if neck_cfg.rfp_backbone.get('pretrained'):
-                        neck_cfg.rfp_backbone.pretrained = None
-        elif cfg.model.neck.get('rfp_backbone'):
-            if cfg.model.neck.rfp_backbone.get('pretrained'):
-                cfg.model.neck.rfp_backbone.pretrained = None
+    if True:
+        cfg = Config.fromfile(params.config)
+        if params.cfg_options is not None:
+            cfg.merge_from_dict(params.cfg_options)
+        # import modules from string list.
+        if cfg.get('custom_imports', None):
+            from mmcv.utils import import_modules_from_strings
+            import_modules_from_strings(**cfg['custom_imports'])
+        # set cudnn_benchmark
+        if cfg.get('cudnn_benchmark', False):
+            torch.backends.cudnn.benchmark = True
+        cfg.model.pretrained = None
+        if cfg.model.get('neck'):
+            if isinstance(cfg.model.neck, list):
+                for neck_cfg in cfg.model.neck:
+                    if neck_cfg.get('rfp_backbone'):
+                        if neck_cfg.rfp_backbone.get('pretrained'):
+                            neck_cfg.rfp_backbone.pretrained = None
+            elif cfg.model.neck.get('rfp_backbone'):
+                if cfg.model.neck.rfp_backbone.get('pretrained'):
+                    cfg.model.neck.rfp_backbone.pretrained = None
 
-    # in case the test dataset is concatenated
-    samples_per_gpu = params.batch_size
-    test_data_cfg = cfg.data[params.test_name]
-    if isinstance(test_data_cfg, dict):
-        test_data_cfg.test_mode = True
-        samples_per_gpu = test_data_cfg.pop('samples_per_gpu', 1)
-        if samples_per_gpu > 1:
-            # Replace 'ImageToTensor' to 'DefaultFormatBundle'
-            test_data_cfg.pipeline = replace_ImageToTensor(
-                test_data_cfg.pipeline)
-    elif isinstance(test_data_cfg, list):
-        for ds_cfg in test_data_cfg:
-            ds_cfg.test_mode = True
-        samples_per_gpu = max(
-            [ds_cfg.pop('samples_per_gpu', 1) for ds_cfg in test_data_cfg])
-        if samples_per_gpu > 1:
+        # in case the test dataset is concatenated
+        samples_per_gpu = params.batch_size
+        test_data_cfg = cfg.data[params.test_name]
+        if isinstance(test_data_cfg, dict):
+            test_data_cfg.test_mode = True
+            samples_per_gpu = test_data_cfg.pop('samples_per_gpu', 1)
+            if samples_per_gpu > 1:
+                # Replace 'ImageToTensor' to 'DefaultFormatBundle'
+                test_data_cfg.pipeline = replace_ImageToTensor(
+                    test_data_cfg.pipeline)
+        elif isinstance(test_data_cfg, list):
             for ds_cfg in test_data_cfg:
-                ds_cfg.pipeline = replace_ImageToTensor(ds_cfg.pipeline)
+                ds_cfg.test_mode = True
+            samples_per_gpu = max(
+                [ds_cfg.pop('samples_per_gpu', 1) for ds_cfg in test_data_cfg])
+            if samples_per_gpu > 1:
+                for ds_cfg in test_data_cfg:
+                    ds_cfg.pipeline = replace_ImageToTensor(ds_cfg.pipeline)
 
-    # init distributed env first, since logger depends on the dist info.
-    if params.launcher == 'none':
-        distributed = False
-    else:
-        distributed = True
-        init_dist(params.launcher, **cfg.dist_params)
+        # init distributed env first, since logger depends on the dist info.
+        if params.launcher == 'none':
+            distributed = False
+        else:
+            distributed = True
+            init_dist(params.launcher, **cfg.dist_params)
 
-    # build the model and load checkpoint
-    cfg.model.train_cfg = None
-    model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
-    fp16_cfg = cfg.get('fp16', None)
-    if fp16_cfg is not None:
-        wrap_fp16_model(model)
-    checkpoint = load_checkpoint(model, params.checkpoint, map_location='cpu')
-    if params.fuse_conv_bn:
-        model = fuse_conv_bn(model)
-
-    # if not distributed:
-    #     model = MMDataParallel(model, device_ids=[0])
-    # else:
-    #     model = MMDistributedDataParallel(
-    #         model.cuda(),
-    #         device_ids=[torch.cuda.current_device()],
-    #         broadcast_buffers=False)
-
-    model = model.cuda()
+        # build the model and load checkpoint
+        cfg.model.train_cfg = None
+        model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
+        fp16_cfg = cfg.get('fp16', None)
+        if fp16_cfg is not None:
+            wrap_fp16_model(model)
+        checkpoint = load_checkpoint(model, params.ckpt, map_location='cpu')
+        if params.fuse_conv_bn:
+            model = fuse_conv_bn(model)
+        model = model.cuda()
 
     _logger = CustomLogger.setup(__name__)
     _data = Data(params.data, _logger)
@@ -289,10 +321,11 @@ def main():
         if win_stride <= 0:
             win_stride = win_size
 
+        win_id = 0
         while True:
             abs_start_id = int(start_id * sample)
 
-            if abs_start_id >= seq_n_frames:
+            if abs_start_id >= seq_n_frames or win_id >= params.slide.num > 0:
                 break
 
             end_id = start_id + win_size
@@ -303,13 +336,15 @@ def main():
                 abs_end_id = seq_n_frames
                 end_id = int(abs_end_id / sample)
 
-            suffix = f'{abs_start_id}_{abs_end_id}'
+            # suffix = f'{abs_start_id}_{abs_end_id}'
 
-            seq_info_list.append((seq_id, suffix, abs_start_id, abs_end_id))
+            seq_info_list.append((seq_id, abs_start_id, abs_end_id))
 
-            print(f'{seq_name}--{suffix}: {abs_start_id} to {abs_end_id}')
+            # print(f'{seq_name}--{suffix}: {abs_start_id} to {abs_end_id}')
 
             start_id += win_stride
+
+            win_id += 1
 
     n_seq = len(seq_info_list)
 
@@ -326,7 +361,7 @@ def main():
 
     import functools
     func = functools.partial(
-        single_gpu_test,
+        run,
         params=params,
         model=model,
     )
