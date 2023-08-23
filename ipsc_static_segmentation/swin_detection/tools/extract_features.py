@@ -209,7 +209,7 @@ def run(seq_info,
         if params.vis:
             x = None
             if params.load_raw:
-                x = load_raw(out_path)
+                x = load_raw(out_path + f'-{batch_id}')
 
             with torch.no_grad():
                 results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ], x=x)
@@ -268,7 +268,7 @@ def run(seq_info,
                 final_feat = model.extract_feat(img_tensor)
 
             if params.save_raw:
-                save_raw(final_feat, out_path)
+                save_raw(final_feat, out_path + f'-{batch_id}')
                 continue
 
         feat_list = model.features[feat_name]
@@ -293,10 +293,11 @@ def run(seq_info,
 def load_raw(out_path):
     loaded_feat = np.load(out_path)
     n_feat = len(loaded_feat)
-    feat_list = [None, ]*n_feat
+    feat_list = [None, ] * n_feat
     for feat_id, feat in loaded_feat.items():
         feat_list[int(feat_id)] = torch.from_numpy(feat)
     return feat_list
+
 
 def save_raw(feat_list, out_path):
     feat_np_dict = {}
@@ -445,7 +446,10 @@ def main():
         params.out_name = 'features'
 
     if not params.out_suffix:
-        params.out_suffix = f'{params.feat_name}_{params.reduce}'
+        if params.save_raw or  params.load_raw:
+            params.out_suffix = f'{params.feat_name}_raw'
+        else:
+            params.out_suffix = f'{params.feat_name}_{params.reduce}'
 
     params.out_name = f'{params.out_name}_{params.out_suffix}'
 
