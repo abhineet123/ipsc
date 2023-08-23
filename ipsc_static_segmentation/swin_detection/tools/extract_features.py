@@ -235,7 +235,7 @@ def main():
 
     if not params.out_suffix:
         params.out_suffix = f'{params.feat_name}_{params.reduce}'
-        
+
     params.out_name = f'{params.out_name}_{params.out_suffix}'
 
     if not params.out_dir:
@@ -244,8 +244,6 @@ def main():
     params.out_dir = linux_path(params.out_dir, params.out_name)
 
     print(f'writing features to {params.out_dir}')
-
-    exit()
 
     os.makedirs(params.out_dir, exist_ok=1)
 
