@@ -247,7 +247,7 @@ def run(seq_info,
                                  font=cv2.FONT_HERSHEY_TRIPLEX, font_size=0.5, label=class_name)
 
                     cv2.imshow('img_show', img_show)
-                    k = cv2.waitKey(0)
+                    k = cv2.waitKey(1)
                     if k == 27:
                         exit()
 
