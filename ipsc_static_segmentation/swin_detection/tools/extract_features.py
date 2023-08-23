@@ -286,6 +286,8 @@ def main():
         params.end_seq = len(seq_ids) - 1
 
     seq_ids = seq_ids[params.start_seq:params.end_seq + 1]
+    print(f'start_seq: {params.start_seq}')
+    print(f'end_seq: {params.end_seq}')
 
     sample = params.slide.sample
     if sample <= 0:
