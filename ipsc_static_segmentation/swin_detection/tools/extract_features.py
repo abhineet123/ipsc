@@ -163,39 +163,39 @@ def run(seq_info,
     std = [3.8680854, 2.779077, 2.8976252]
 
     for batch_id, img_list in enumerate(pbar):
+        imgs = []
+        img_metas = []
+        for img_id, img in enumerate(img_list):
+            img_norm = mmcv.imnormalize(img, np.asarray(mean), np.asarray(std), to_rgb=True)
+
+            imgs.append(img_norm)
+
+            global_img_id = int(batch_id * params.batch_size + img_id)
+            img_meta = dict(
+                filename=linux_path(_input.source_path, f'image{global_img_id + 1:06d}.jpg'),
+                ori_filename=linux_path(_input.seq_name, f'image{global_img_id + 1:06d}.jpg'),
+                ori_shape=img.shape,
+                img_shape=img.shape,
+                pad_shape=img.shape,
+                scale_factor=[1., 1., 1., 1.],
+                flip=False,
+                flip_direction=None,
+                img_norm_cfg=dict(
+                    mean=mean,
+                    std=std,
+                    to_rgb=True
+                ),
+                batch_input_shape=img.shape[:2]
+            )
+            img_metas.append(img_meta)
+
+        img = np.stack(imgs, axis=0)
+        """bring channel to front"""
+        img_reshaped = img.transpose([0, 3, 1, 2])
+        img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
+
         with torch.no_grad():
             if params.vis:
-                imgs = []
-                img_metas = []
-                for img_id, img in enumerate(img_list):
-                    img_norm = mmcv.imnormalize(img, np.asarray(mean), np.asarray(std), to_rgb=True)
-
-                    imgs.append(img_norm)
-
-                    global_img_id = int(batch_id * params.batch_size + img_id)
-                    img_meta = dict(
-                        filename=linux_path(_input.source_path, f'image{global_img_id + 1:06d}.jpg'),
-                        ori_filename=linux_path(_input.seq_name, f'image{global_img_id + 1:06d}.jpg'),
-                        ori_shape=img.shape,
-                        img_shape=img.shape,
-                        pad_shape=img.shape,
-                        scale_factor=[1., 1., 1., 1.],
-                        flip=False,
-                        flip_direction=None,
-                        img_norm_cfg=dict(
-                            mean=mean,
-                            std=std,
-                            to_rgb=True
-                        ),
-                        batch_input_shape=img.shape[:2]
-                    )
-                    img_metas.append(img_meta)
-
-                img = np.stack(imgs, axis=0)
-                """bring channel to front"""
-                img_reshaped = img.transpose([0, 3, 1, 2])
-                img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
-
                 results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ])
 
                 # print()
@@ -245,11 +245,9 @@ def run(seq_info,
 
                     cv2.imshow('img_show', img_show)
                     cv2.waitKey(1)
+
+                    print(f'here we are img_id: {img_id}')
             else:
-                img = np.stack(img_list, axis=0)
-                """bring channel to front"""
-                img_reshaped = img.transpose([0, 3, 1, 2])
-                img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
                 final_feat = model.extract_feat(img_tensor)
             feat_list = model.features[feat_name]
             if params.reduce == 'f3':
