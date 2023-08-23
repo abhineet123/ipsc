@@ -195,6 +195,12 @@ data = dict(
         img_prefix=data_root,
         pipeline=test_pipeline),
 
+    test=dict(
+        type=dataset_type,
+        ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_1_var-test.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline),
+
 
 )
 

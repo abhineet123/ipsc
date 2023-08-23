@@ -20,7 +20,8 @@ from mmdet.apis import multi_gpu_test, single_gpu_test
 from mmdet.datasets import (build_dataloader, build_dataset,
                             replace_ImageToTensor)
 from mmdet.models import build_detector
-from mmdet.utils.misc import read_class_info
+
+from mmdet.utils.misc import read_class_info, linux_path
 
 import paramparse
 
@@ -83,7 +84,7 @@ class Params:
     def __init__(self):
         self.cfg = ()
         self.config = ''
-        self.checkpoint = ''
+        self.ckpt = ''
         self.cfg_options = None
         # self.eval = ["bbox", "segm"]
         self.eval = []
@@ -117,8 +118,18 @@ def main():
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(params.local_rank)
 
-    checkpoint_dir = os.path.dirname(params.checkpoint)
-    checkpoint_name = os.path.splitext(os.path.basename(params.checkpoint))[0]
+    config_name = os.path.splitext(os.path.basename(params.config))[0]
+
+    if not params.ckpt:
+        if not params.ckpt_dir:
+            params.ckpt_dir = linux_path('work_dirs', config_name)
+        if not params.ckpt_name:
+            params.ckpt_name = 'latest.pth'
+
+        params.ckpt = linux_path(params.ckpt_dir, params.ckpt_name)
+
+    checkpoint_dir = os.path.dirname(params.ckpt)
+    checkpoint_name = os.path.splitext(os.path.basename(params.ckpt))[0]
 
     if not params.out_dir:
         params.out_dir = os.path.join(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
@@ -194,7 +205,7 @@ def main():
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(model)
-    checkpoint = load_checkpoint(model, params.checkpoint, map_location='cpu')
+    checkpoint = load_checkpoint(model, params.ckpt, map_location='cpu')
     if params.fuse_conv_bn:
         model = fuse_conv_bn(model)
     # old versions did not save class info in checkpoints, this walkaround is

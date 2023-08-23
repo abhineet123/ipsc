@@ -47,36 +47,38 @@
 # mnist_mot-r50
 <a id="n_1___mnist_mot_r5_0_"></a>
 ## n-1       @ mnist_mot-r50-->swin_det
-CUDA_VISIBLE_DEVICES=0 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=48 data.workers_per_gpu=6
+CUDA_VISIBLE_DEVICES=0 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_ckpt=True data.samples_per_gpu=48 data.workers_per_gpu=6
 <a id="n_1_no_fpn___mnist_mot_r5_0_"></a>
 ## n-1-no_fpn       @ mnist_mot-r50-->swin_det
-PORT=29502 CUDA_VISIBLE_DEVICES=1 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=48 data.workers_per_gpu=6
+PORT=29502 CUDA_VISIBLE_DEVICES=1 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_ckpt=True data.samples_per_gpu=48 data.workers_per_gpu=6
 
 python3 tools/extract_features.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var seq=0
 
 <a id="n_3___mnist_mot_r5_0_"></a>
 ## n-3       @ mnist_mot-r50-->swin_det
-PORT=29501 CUDA_VISIBLE_DEVICES=1 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 1 --init file:///tmp/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-00656565 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=48 data.workers_per_gpu=6
+PORT=29501 CUDA_VISIBLE_DEVICES=1 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 1 --init file:///tmp/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-00656565 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_ckpt=True data.samples_per_gpu=48 data.workers_per_gpu=6
 
 ```
---nproc_per_node=1 --master_port=29501 tools/train.py configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_checkpoint=True data.samples_per_gpu=48 data.workers_per_gpu=6 --resume
+--nproc_per_node=1 --master_port=29501 tools/train.py configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_3_var-rcnn.py --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_ckpt=True data.samples_per_gpu=48 data.workers_per_gpu=6 --resume
 ```
 <a id="mnist_mot_"></a>
 # mnist_mot
 <a id="n_1___mnist_mo_t_"></a>
 ## n-1       @ mnist_mot-->swin_det
-tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume
+tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 data.workers_per_gpu=6 --resume
 
-python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py checkpoint=work_dirs/mnist_mot_rgb_512_1k_9600_1_var-rcnn/best_bbox_mAP.pth eval=bbox test_name=val
+python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py ckpt=work_dirs/mnist_mot_rgb_512_1k_9600_1_var-rcnn/best_bbox_mAP.pth eval=bbox test_name=val
 
 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var seq=0
 
 <a id="n_1_no_fpn___mnist_mo_t_"></a>
 ## n-1-no_fpn       @ mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=0,1 tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=16 data.workers_per_gpu=6
+CUDA_VISIBLE_DEVICES=0,1 tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=16 data.workers_per_gpu=6
 ```
---nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
+--nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 data.workers_per_gpu=6
 ```
+
+python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test
 
 CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var start_seq=0,1000 end_seq=99,1099 batch_size=32 test_name=train_480_2 @slide size=480 num=2 
 
@@ -84,125 +86,125 @@ CUDA_VISIBLE_DEVICES=1 python3 tools/extract_features.py config=configs/swin/mni
 
 <a id="n_3___mnist_mo_t_"></a>
 ## n-3       @ mnist_mot-->swin_det
-tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
+tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 data.workers_per_gpu=6
 ```
---nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=12 data.workers_per_gpu=6 --no-validate
+--nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/mnist_mot_rgb_512_1k_9600_3_var-rcnn.py --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=12 data.workers_per_gpu=6 --no-validate
 ```
 <a id="ext_reorg_roi___swin_base_2_clas_s_"></a>
 # ext_reorg_roi       @ swin_base_2_class-->swin_det
 <a id="g2_0_37___ext_reorg_ro_i_"></a>
 ## g2_0_37       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37/latest.pth
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37/latest.pth
 
 <a id="on_g2_38_53___g2_0_37_ext_reorg_ro_i_"></a>
 ### on-g2_38_53       @ g2_0_37/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37/epoch_488.pth eval=bbox,segm test_name=g2_38_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37/epoch_488.pth eval=bbox,segm test_name=g2_38_53
 
 <a id="on_g2_38_53___g2_0_37_ext_reorg_ro_i__1"></a>
 ### on-g2_38_53       @ g2_0_37/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37/epoch_488.pth eval=bbox,segm test_name=g2_38_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37/epoch_488.pth eval=bbox,segm test_name=g2_38_53
 
 <a id="g2_0_37_no_validate___ext_reorg_ro_i_"></a>
 ## g2_0_37-no_validate       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=6 --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/latest.pth --no-validate
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=4 data.workers_per_gpu=6 --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/latest.pth --no-validate
 
 <a id="on_g2_38_53___g2_0_37_no_validate_ext_reorg_ro_i_"></a>
 ### on-g2_38_53       @ g2_0_37-no_validate/ext_reorg_roi-->swin_det
 <a id="epoch_2751___on_g2_38_53_g2_0_37_no_validate_ext_reorg_ro_i_"></a>
 #### epoch_2751       @ on-g2_38_53/g2_0_37-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_2751.pth eval=bbox,segm test_name=g2_38_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_2751.pth eval=bbox,segm test_name=g2_38_53
 
 <a id="epoch_6638___on_g2_38_53_g2_0_37_no_validate_ext_reorg_ro_i_"></a>
 #### epoch_6638       @ on-g2_38_53/g2_0_37-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_6638.pth eval=bbox,segm test_name=g2_38_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_6638.pth eval=bbox,segm test_name=g2_38_53
 
 <a id="g2_0_37_rcnn_win7___ext_reorg_ro_i_"></a>
 ## g2_0_37-rcnn-win7       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-rcnn-win7.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window7_224_22k.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-rcnn-win7.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window7_224_22k.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 data.workers_per_gpu=6
 <a id="on_g2_38_53___g2_0_37_rcnn_win7_ext_reorg_ro_i_"></a>
 ### on-g2_38_53       @ g2_0_37-rcnn-win7/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-rcnn-win7.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-rcnn-win7/epoch_274.pth eval=bbox test_name=g2_38_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-rcnn-win7.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-rcnn-win7/epoch_274.pth eval=bbox test_name=g2_38_53
 
 <a id="g2_0_37_no_validate_rcnn___g2_0_37_rcnn_win7_ext_reorg_ro_i_"></a>
 ### g2_0_37-no_validate-rcnn       @ g2_0_37-rcnn-win7/ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
 <a id="on_g2_38_53___g2_0_37_rcnn_win7_ext_reorg_ro_i__1"></a>
 ### on-g2_38_53       @ g2_0_37-rcnn-win7/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn/epoch_144.pth eval=bbox test_name=g2_38_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn/epoch_144.pth eval=bbox test_name=g2_38_53
 
 <a id="g2_0_37_no_validate_rcnn_win7___ext_reorg_ro_i_"></a>
 ## g2_0_37-no_validate-rcnn-win7       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn-win7.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window7_224_22k.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn-win7.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window7_224_22k.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
 <a id="on_g2_38_53___g2_0_37_no_validate_rcnn_win7_ext_reorg_ro_i_"></a>
 ### on-g2_38_53       @ g2_0_37-no_validate-rcnn-win7/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn-win7.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn-win7/epoch_123.pth eval=bbox test_name=g2_38_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn-win7.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate-rcnn-win7/epoch_123.pth eval=bbox test_name=g2_38_53
 
 <a id="g2_15_53_no_validate___ext_reorg_ro_i_"></a>
 ## g2_15_53-no_validate       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_15_53-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_15_53-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate
 
 <a id="on_g2_0_14___g2_15_53_no_validate_ext_reorg_roi_"></a>
 ### on-g2_0_14       @ g2_15_53-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_2751.pth eval=bbox,segm test_name=g2_0_14
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/epoch_2751.pth eval=bbox,segm test_name=g2_0_14
 
 <a id="g2_16_53_no_validate___ext_reorg_ro_i_"></a>
 ## g2_16_53-no_validate       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_2554.pth
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_2554.pth
 ```
-python -m torch.distributed.launch --nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py --launcher pytorch --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_2554.pth
+python -m torch.distributed.launch --nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py --launcher pytorch --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_2554.pth
 ```
 
 <a id="on_g2_0_15___g2_16_53_no_validate_ext_reorg_roi_"></a>
 ### on-g2_0_15       @ g2_16_53-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=g2_0_15
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=g2_0_15
 
 <a id="on_test_230710___g2_16_53_no_validate_ext_reorg_roi_"></a>
 ### on-Test_230710       @ g2_16_53-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=Test_230710
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=Test_230710
 
 <a id="on_test_230606___g2_16_53_no_validate_ext_reorg_roi_"></a>
 ### on-Test_230606       @ g2_16_53-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=Test_230606
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/epoch_3273.pth eval=bbox,segm test_name=Test_230606
 
 <a id="g2_16_53_no_validate_rcnn___ext_reorg_ro_i_"></a>
 ## g2_16_53-no_validate-rcnn       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=6 data.workers_per_gpu=6 --no-validate
 <a id="on_g2_0_15___g2_16_53_no_validate_rcnn_ext_reorg_ro_i_"></a>
 ### on-g2_0_15       @ g2_16_53-no_validate-rcnn/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn/latest.pth eval=bbox test_name=g2_0_15
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn/latest.pth eval=bbox test_name=g2_0_15
 
 <a id="g2_54_126_no_validate_coco___ext_reorg_ro_i_"></a>
 ## g2_54_126-no_validate-coco       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-coco.py 2 --cfg-options model.pretrained=pretrained/cascade_mask_rcnn_swin_base_patch4_window7.pth model.backbone.use_checkpoint=True data.samples_per_gpu=2 data.workers_per_gpu=2 --no-validate
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-coco.py 2 --cfg-options model.pretrained=pretrained/cascade_mask_rcnn_swin_base_patch4_window7.pth model.backbone.use_ckpt=True data.samples_per_gpu=2 data.workers_per_gpu=2 --no-validate
 
 <a id="g2_54_126_no_validate___ext_reorg_ro_i_"></a>
 ## g2_54_126-no_validate       @ ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/latest.pth
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=4 data.workers_per_gpu=4 --no-validate --resume-from work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/latest.pth
 
 <a id="on_test_230710___g2_54_126_no_validate_ext_reorg_ro_i_"></a>
 ### on-Test_230710       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=Test_230710
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=Test_230710
 
 <a id="on_test_230606___g2_54_126_no_validate_ext_reorg_ro_i_"></a>
 ### on-Test_230606       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=Test_230606
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=Test_230606
 
 <a id="on_g2_0_53___g2_54_126_no_validate_ext_reorg_ro_i_"></a>
 ### on-g2_0_53       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=g2_0_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=g2_0_53
 <a id="on_g2_0_15___g2_54_126_no_validate_ext_reorg_ro_i_"></a>
 ### on-g2_0_15       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=g2_0_15
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate/epoch_2058.pth eval=bbox,segm test_name=g2_0_15
 
 <a id="g2_54_126_no_validate_rcnn___g2_54_126_no_validate_ext_reorg_ro_i_"></a>
 ### g2_54_126-no_validate-rcnn       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
-tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=12 data.workers_per_gpu=6 --no-validate
+tools/dist_train.sh configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn.py 2 --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_ckpt=True data.samples_per_gpu=12 data.workers_per_gpu=6 --no-validate
 <a id="on_g2_0_53___g2_54_126_no_validate_ext_reorg_ro_i__1"></a>
 ### on-g2_0_53       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn/latest.pth eval=bbox test_name=g2_0_53
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn/latest.pth eval=bbox test_name=g2_0_53
 <a id="on_g2_0_15___g2_54_126_no_validate_ext_reorg_ro_i__1"></a>
 ### on-g2_0_15       @ g2_54_126-no_validate/ext_reorg_roi-->swin_det
-python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn.py checkpoint=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn/latest.pth eval=bbox test_name=g2_0_15
+python3 tools/test.py config=configs/swin/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn.py ckpt=work_dirs/ipsc_2_class_ext_reorg_roi_g2_54_126-no_validate-rcnn/latest.pth eval=bbox test_name=g2_0_15
 
 
 

@@ -20,7 +20,7 @@ from mmcv.cnn import fuse_conv_bn
 from mmcv.runner import load_checkpoint, wrap_fp16_model
 
 from mmdet.models import build_detector
-from mmdet.utils.misc import read_class_info
+from mmdet.utils.misc import read_class_info, linux_path
 
 from input import Input
 from objects import Annotations
@@ -94,15 +94,9 @@ class Params:
 
 def run(seq_info,
         model,
-        params,
+        params: Params,
         class_to_color,
         ):
-    """
-    :param seq_info:
-    :param model:
-    :param Params params:
-    :return:
-    """
     model.eval()
 
     seq_id, start_id, end_id = seq_info
@@ -266,7 +260,6 @@ def main():
 
         params.ckpt = linux_path(params.ckpt_dir, params.ckpt_name)
 
-
     _logger = CustomLogger.setup(__name__)
     _data = Data(params.data, _logger)
 
@@ -373,7 +366,7 @@ def main():
 
     print(f'n_seq: {n_seq}')
 
-    exit()
+    # exit()
 
     if True:
         cfg = Config.fromfile(params.config)
