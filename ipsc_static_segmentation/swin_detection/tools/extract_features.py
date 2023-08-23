@@ -168,6 +168,7 @@ def run(seq_info,
             k = cv2.waitKey(0)
             if k == 27:
                 exit()
+            print(f'img_show: {img_id}')
 
             img_norm = mmcv.imnormalize(img, np.asarray(mean), np.asarray(std), to_rgb=True)
 
@@ -250,7 +251,7 @@ def run(seq_info,
                     if k == 27:
                         exit()
 
-                    print(f'here we are img_id: {img_id}')
+                    print(f'img_show: {img_id}')
             else:
                 final_feat = model.extract_feat(img_tensor)
             feat_list = model.features[feat_name]
