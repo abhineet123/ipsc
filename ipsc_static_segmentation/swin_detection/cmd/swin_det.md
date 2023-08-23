@@ -78,7 +78,9 @@ CUDA_VISIBLE_DEVICES=0,1 tools/dist_train.sh configs/swin/mnist_mot_rgb_512_1k_9
 --nproc_per_node=2 --master_port=29500 tools/train.py configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py --cfg-options model.pretrained=pretrained/swin_base_patch4_window12_384.pth model.backbone.use_checkpoint=True data.samples_per_gpu=6 data.workers_per_gpu=6
 ```
 
-CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var end_seq=99 batch_size=48 test_name=train_480_2 @slide size=480 num=2 
+CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var end_seq=99 batch_size=32 test_name=train_480_2 @slide size=480 num=2 
+
+CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var start_seq=1099 end_seq=1000 batch_size=32 test_name=train_480_2 @slide size=480 num=2 
 
 CUDA_VISIBLE_DEVICES=1 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var end_seq=99 batch_size=48 test_name=train_480_2 reduce=f3_8 @slide size=480 num=2 
 

@@ -1,9 +1,7 @@
-import shutil
 import os
 import sys
 
 swin_det_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(f'swin_det_dir: {swin_det_dir}')
 sys.path.append(swin_det_dir)
 
 home_path = os.path.expanduser('~')
@@ -19,9 +17,7 @@ from datetime import datetime
 import torch
 from mmcv import Config
 from mmcv.cnn import fuse_conv_bn
-from mmcv.runner import init_dist, load_checkpoint, wrap_fp16_model
-
-from mmdet.datasets import replace_ImageToTensor
+from mmcv.runner import load_checkpoint, wrap_fp16_model
 
 from mmdet.models import build_detector
 
