@@ -88,6 +88,12 @@ class Params:
         self.feat_name = 'neck'
         self.reduce = 'f3'
 
+        self.load_raw = 0
+        self.save_raw = 0
+
+        self.mean = [93.154564, 162.03416, 240.90062]
+        self.std = [3.8680854, 2.779077, 2.8976252]
+
         self.slide = Params.SlidingWindow()
 
         self.input = Input.Params(source_type=-1, batch_mode=False)
@@ -149,16 +155,18 @@ def run(seq_info,
 
     feat_name = params.feat_name
 
-    out_name = f'{seq_name}--{start_id}_{end_id}.npy'
+    if params.save_raw or params.load_raw:
+        out_ext = 'npz'
+    else:
+        out_ext = 'npy'
+
+    out_name = f'{seq_name}--{start_id}_{end_id}.{out_ext}'
 
     out_path = linux_path(params.out_dir, out_name)
 
     pbar = tqdm(frame_iter, total=n_batches)
     reduced_feat_list = []
     score_thr = 0.3
-
-    mean = [93.154564, 162.03416, 240.90062]
-    std = [3.8680854, 2.779077, 2.8976252]
 
     for batch_id, img_list in enumerate(pbar):
         imgs = []
@@ -170,7 +178,7 @@ def run(seq_info,
             #     exit()
             # print(f'img: {img_id}')
 
-            img_norm = mmcv.imnormalize(img, np.asarray(mean), np.asarray(std), to_rgb=True)
+            img_norm = mmcv.imnormalize(img, np.asarray(params.mean), np.asarray(params.std), to_rgb=True)
 
             imgs.append(img_norm)
 
@@ -185,8 +193,8 @@ def run(seq_info,
                 flip=False,
                 flip_direction=None,
                 img_norm_cfg=dict(
-                    mean=mean,
-                    std=std,
+                    mean=params.mean,
+                    std=params.std,
                     to_rgb=True
                 ),
                 batch_input_shape=img.shape[:2]
@@ -198,79 +206,105 @@ def run(seq_info,
         img_reshaped = img.transpose([0, 3, 1, 2])
         img_tensor = torch.tensor(img_reshaped, dtype=torch.float32).cuda()
 
-        with torch.no_grad():
-            if params.vis:
-                results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ])
+        if params.vis:
+            x = None
+            if params.load_raw:
+                x = load_raw(out_path)
 
-                # print()
+            with torch.no_grad():
+                results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ], x=x)
 
-                for img_id, img in enumerate(img_list):
+            # print()
 
-                    img_show = np.copy(img)
+            for img_id, img in enumerate(img_list):
 
-                    curr_result = results[img_id]
+                img_show = np.copy(img)
 
-                    bboxes = np.vstack(curr_result)
-                    labels = [
-                        np.full(bbox.shape[0], i, dtype=np.int32)
-                        for i, bbox in enumerate(curr_result)
-                    ]
-                    labels = np.concatenate(labels)
+                curr_result = results[img_id]
 
-                    if score_thr > 0:
-                        assert bboxes.shape[1] == 5
-                        scores = bboxes[:, -1]
-                        inds = scores > score_thr
-                        bboxes = bboxes[inds, :]
-                        labels = labels[inds]
+                bboxes = np.vstack(curr_result)
+                labels = [
+                    np.full(bbox.shape[0], i, dtype=np.int32)
+                    for i, bbox in enumerate(curr_result)
+                ]
+                labels = np.concatenate(labels)
 
-                    for i, (bbox, label) in enumerate(zip(bboxes, labels)):
-                        # bbox_int = bbox.astype(np.int32)
-                        try:
-                            xmin, ymin, xmax, ymax, conf = bbox
-                        except ValueError:
-                            xmin, ymin, xmax, ymax = bbox
-                            conf = 1.0
+                if score_thr > 0:
+                    assert bboxes.shape[1] == 5
+                    scores = bboxes[:, -1]
+                    inds = scores > score_thr
+                    bboxes = bboxes[inds, :]
+                    labels = labels[inds]
 
-                        xmin, ymin, xmax, ymax = [int(x) for x in [xmin, ymin, xmax, ymax]]
+                for i, (bbox, label) in enumerate(zip(bboxes, labels)):
+                    # bbox_int = bbox.astype(np.int32)
+                    try:
+                        xmin, ymin, xmax, ymax, conf = bbox
+                    except ValueError:
+                        xmin, ymin, xmax, ymax = bbox
+                        conf = 1.0
 
-                        class_id = label
-                        class_name = classes[class_id]
+                    xmin, ymin, xmax, ymax = [int(x) for x in [xmin, ymin, xmax, ymax]]
 
-                        w, h = xmax - xmin, ymax - ymin
+                    class_id = label
+                    class_name = classes[class_id]
 
-                        bbox_wh = np.asarray([xmin, ymin, w, h])
+                    w, h = xmax - xmin, ymax - ymin
 
-                        draw_box(img_show, bbox_wh, _id=None, color='black', thickness=2,
-                                 is_dotted=0, transparency=0.,
-                                 text_col=None,
-                                 font=cv2.FONT_HERSHEY_TRIPLEX, font_size=0.5, label=class_name)
+                    bbox_wh = np.asarray([xmin, ymin, w, h])
 
-                    cv2.imshow('img_show', img_show)
-                    k = cv2.waitKey(1)
-                    if k == 27:
-                        exit()
+                    draw_box(img_show, bbox_wh, _id=None, color='black', thickness=2,
+                             is_dotted=0, transparency=0.,
+                             text_col=None,
+                             font=cv2.FONT_HERSHEY_TRIPLEX, font_size=0.5, label=class_name)
 
-                    # print(f'img_show: {img_id}')
-            else:
+                cv2.imshow('img_show', img_show)
+                k = cv2.waitKey(1)
+                if k == 27:
+                    exit()
+                # print(f'img_show: {img_id}')
+        else:
+            with torch.no_grad():
                 final_feat = model.extract_feat(img_tensor)
-            feat_list = model.features[feat_name]
-            if params.reduce == 'f3':
-                reduced_feat = f3(feat_list)
-            elif params.reduce == 'f3_8':
-                reduced_feat = f3_8(feat_list)
-            elif params.reduce == 'avg_all':
-                reduced_feat = avg_all(feat_list)
-            else:
-                raise AssertionError(f'invalid reduce type: {params.reduce}')
 
-            reduced_feat_np = reduced_feat.cpu().numpy()
+            if params.save_raw:
+                save_raw(final_feat, out_path)
+                continue
 
-            reduced_feat_list.append(reduced_feat_np)
+        feat_list = model.features[feat_name]
 
-    reduced_feat_all = np.concatenate(reduced_feat_list, axis=0)
+        if params.reduce == 'f3':
+            reduced_feat = f3(feat_list)
+        elif params.reduce == 'f3_8':
+            reduced_feat = f3_8(feat_list)
+        elif params.reduce == 'avg_all':
+            reduced_feat = avg_all(feat_list)
+        else:
+            raise AssertionError(f'invalid reduce type: {params.reduce}')
 
-    np.save(out_path, reduced_feat_all)
+        reduced_feat_np = reduced_feat.cpu().numpy()
+        reduced_feat_list.append(reduced_feat_np)
+
+    if not params.save_raw:
+        reduced_feat_all = np.concatenate(reduced_feat_list, axis=0)
+        np.save(out_path, reduced_feat_all)
+
+
+def load_raw(out_path):
+    loaded_feat = np.load(out_path)
+    n_feat = len(loaded_feat)
+    feat_list = [None, ]*n_feat
+    for feat_id, feat in loaded_feat.items():
+        feat_list[int(feat_id)] = torch.from_numpy(feat)
+    return feat_list
+
+def save_raw(feat_list, out_path):
+    feat_np_dict = {}
+    for feat_id, feat in enumerate(feat_list):
+        feat_np = feat.cpu().numpy()
+        feat_np_dict[str(feat_id)] = feat_np
+
+    np.savez_compressed(out_path, **feat_np_dict)
 
 
 def avg_all(feat_list):

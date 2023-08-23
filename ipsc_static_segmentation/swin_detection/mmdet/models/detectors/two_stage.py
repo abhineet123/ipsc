@@ -188,11 +188,12 @@ class TwoStageDetector(BaseDetector):
         return await self.roi_head.async_simple_test(
             x, proposal_list, img_meta, rescale=rescale)
 
-    def simple_test(self, img, img_metas, proposals=None, rescale=False):
+    def simple_test(self, img, img_metas, proposals=None, rescale=False, x=None):
         """Test without augmentation."""
         assert self.with_bbox, 'Bbox head must be implemented.'
 
-        x = self.extract_feat(img)
+        if x is None:
+            x = self.extract_feat(img)
 
         # get origin input shape to onnx dynamic input shape
         if torch.onnx.is_in_onnx_export():
