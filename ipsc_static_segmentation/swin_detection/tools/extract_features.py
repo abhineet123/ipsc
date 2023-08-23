@@ -22,7 +22,6 @@ from mmcv.runner import load_checkpoint, wrap_fp16_model
 from mmdet.models import build_detector
 from mmdet.utils.misc import read_class_info
 
-
 from input import Input
 from objects import Annotations
 from data import Data
@@ -50,8 +49,8 @@ class Params:
 
         self.set = ''
         self.seq = ()
-        self.start_seq = 0
-        self.end_seq = -1
+        self.start_seq = ()
+        self.end_seq = ()
 
         self.config = ''
         self.ckpt = ''
@@ -268,39 +267,6 @@ def main():
         params.ckpt = linux_path(params.ckpt_dir, params.ckpt_name)
 
 
-    if True:
-        cfg = Config.fromfile(params.config)
-        if params.cfg_options is not None:
-            cfg.merge_from_dict(params.cfg_options)
-        # import modules from string list.
-        if cfg.get('custom_imports', None):
-            from mmcv.utils import import_modules_from_strings
-            import_modules_from_strings(**cfg['custom_imports'])
-        # set cudnn_benchmark
-        if cfg.get('cudnn_benchmark', False):
-            torch.backends.cudnn.benchmark = True
-        cfg.model.pretrained = None
-        if cfg.model.get('neck'):
-            if isinstance(cfg.model.neck, list):
-                for neck_cfg in cfg.model.neck:
-                    if neck_cfg.get('rfp_backbone'):
-                        if neck_cfg.rfp_backbone.get('pretrained'):
-                            neck_cfg.rfp_backbone.pretrained = None
-            elif cfg.model.neck.get('rfp_backbone'):
-                if cfg.model.neck.rfp_backbone.get('pretrained'):
-                    cfg.model.neck.rfp_backbone.pretrained = None
-
-        # build the model and load checkpoint
-        cfg.model.train_cfg = None
-        model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
-        fp16_cfg = cfg.get('fp16', None)
-        if fp16_cfg is not None:
-            wrap_fp16_model(model)
-        checkpoint = load_checkpoint(model, params.ckpt, map_location='cpu')
-        if params.fuse_conv_bn:
-            model = fuse_conv_bn(model)
-        model = model.cuda()
-
     _logger = CustomLogger.setup(__name__)
     _data = Data(params.data, _logger)
 
@@ -318,15 +284,18 @@ def main():
     if not seq_ids:
         seq_ids = tuple(range(n_sequences))
 
-    if params.start_seq < 0:
-        params.start_seq = 0
+    if params.start_seq or params.end_seq:
+        assert len(params.start_seq) == len(params.end_seq), "mismatch between start_seq and end_seq lengths"
+        temp_seq_ids = []
+        for start_seq, end_seq in zip(params.start_seq, params.end_seq):
+            if start_seq < 0:
+                start_seq = 0
 
-    if params.end_seq < 0:
-        params.end_seq = len(seq_ids) - 1
+            if end_seq < 0:
+                end_seq = len(seq_ids) - 1
 
-    seq_ids = seq_ids[params.start_seq:params.end_seq + 1]
-    print(f'start_seq: {params.start_seq}')
-    print(f'end_seq: {params.end_seq}')
+            temp_seq_ids += list(seq_ids[start_seq:end_seq + 1])
+        seq_ids = tuple(temp_seq_ids)
 
     sample = params.slide.sample
     if sample <= 0:
@@ -404,7 +373,40 @@ def main():
 
     print(f'n_seq: {n_seq}')
 
-    # exit()
+    exit()
+
+    if True:
+        cfg = Config.fromfile(params.config)
+        if params.cfg_options is not None:
+            cfg.merge_from_dict(params.cfg_options)
+        # import modules from string list.
+        if cfg.get('custom_imports', None):
+            from mmcv.utils import import_modules_from_strings
+            import_modules_from_strings(**cfg['custom_imports'])
+        # set cudnn_benchmark
+        if cfg.get('cudnn_benchmark', False):
+            torch.backends.cudnn.benchmark = True
+        cfg.model.pretrained = None
+        if cfg.model.get('neck'):
+            if isinstance(cfg.model.neck, list):
+                for neck_cfg in cfg.model.neck:
+                    if neck_cfg.get('rfp_backbone'):
+                        if neck_cfg.rfp_backbone.get('pretrained'):
+                            neck_cfg.rfp_backbone.pretrained = None
+            elif cfg.model.neck.get('rfp_backbone'):
+                if cfg.model.neck.rfp_backbone.get('pretrained'):
+                    cfg.model.neck.rfp_backbone.pretrained = None
+
+        # build the model and load checkpoint
+        cfg.model.train_cfg = None
+        model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
+        fp16_cfg = cfg.get('fp16', None)
+        if fp16_cfg is not None:
+            wrap_fp16_model(model)
+        checkpoint = load_checkpoint(model, params.ckpt, map_location='cpu')
+        if params.fuse_conv_bn:
+            model = fuse_conv_bn(model)
+        model = model.cuda()
 
     timestamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
     out_dir = linux_path('log', f'mot_to_dnc', f'{set_name}_{timestamp}')
