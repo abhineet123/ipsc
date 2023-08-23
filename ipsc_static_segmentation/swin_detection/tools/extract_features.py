@@ -228,24 +228,6 @@ def main():
 
         params.ckpt = linux_path(params.ckpt_dir, params.ckpt_name)
 
-    checkpoint_dir = os.path.dirname(params.ckpt)
-    checkpoint_name = os.path.splitext(os.path.basename(params.ckpt))[0]
-    if not params.out_name:
-        params.out_name = 'features'
-
-    if not params.out_suffix:
-        params.out_suffix = f'{params.feat_name}_{params.reduce}'
-
-    params.out_name = f'{params.out_name}_{params.out_suffix}'
-
-    if not params.out_dir:
-        params.out_dir = linux_path(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
-
-    params.out_dir = linux_path(params.out_dir, params.out_name)
-
-    print(f'writing features to {params.out_dir}')
-
-    os.makedirs(params.out_dir, exist_ok=1)
 
     if True:
         cfg = Config.fromfile(params.config)
@@ -357,7 +339,28 @@ def main():
 
     n_seq = len(seq_info_list)
 
-    # exit()
+    checkpoint_dir = os.path.dirname(params.ckpt)
+    checkpoint_name = os.path.splitext(os.path.basename(params.ckpt))[0]
+    if not params.out_name:
+        params.out_name = 'features'
+
+    if not params.out_suffix:
+        params.out_suffix = f'{params.feat_name}_{params.reduce}'
+
+    params.out_name = f'{params.out_name}_{params.out_suffix}'
+
+    if not params.out_dir:
+        params.out_dir = linux_path(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
+
+    params.out_dir = linux_path(params.out_dir, params.out_name)
+
+    print(f'writing features to {params.out_dir}')
+
+    os.makedirs(params.out_dir, exist_ok=1)
+
+    print(f'n_seq: {n_seq}')
+
+    exit()
 
     timestamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
     out_dir = linux_path('log', f'mot_to_dnc', f'{set_name}_{timestamp}')
