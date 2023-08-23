@@ -202,8 +202,8 @@ def run(seq_info,
 
                 for img_id, img in enumerate(img_list):
                     img_show = np.copy(img)
-                    cv2.imshow('img_show init', img_show)
-                    cv2.waitKey(0)
+                    # cv2.imshow('img_show init', img_show)
+                    # cv2.waitKey(0)
 
                     curr_result = results[img_id]
 
@@ -244,7 +244,9 @@ def run(seq_info,
                                  font=cv2.FONT_HERSHEY_TRIPLEX, font_size=0.5, label=class_name)
 
                     cv2.imshow('img_show', img_show)
-                    cv2.waitKey(1)
+                    k = cv2.waitKey(0)
+                    if k==27:
+                        exit()
 
                     print(f'here we are img_id: {img_id}')
             else:
