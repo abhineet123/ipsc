@@ -90,7 +90,7 @@ class Params:
 
         self.slide = Params.SlidingWindow()
 
-        self.input = Input.Params(source_type=-1, batch_mode=False)
+        self.input = Input.Params(source_type=-1, batch_mode=True)
         self.data = Data.Params()
         self.ann = Annotations.Params()
 
@@ -144,8 +144,6 @@ def run(seq_info,
 
     n_images = _input.n_frames
     n_batches = int(n_images / params.batch_size)
-
-    _input._read_all_frames()
 
     frame_iter = _input.read_iter(length=params.batch_size)
 
@@ -245,7 +243,7 @@ def run(seq_info,
 
                     cv2.imshow('img_show', img_show)
                     k = cv2.waitKey(0)
-                    if k==27:
+                    if k == 27:
                         exit()
 
                     print(f'here we are img_id: {img_id}')
