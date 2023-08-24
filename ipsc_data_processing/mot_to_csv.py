@@ -6,8 +6,80 @@ from tqdm import tqdm
 
 import paramparse
 
+from mot_csv_to_xml import parse_csv, parse_mot
 from eval_utils import ImageSequenceWriter as ImageWriter
 from eval_utils import sortKey, resize_ar, drawBox, clamp, linux_path
+
+def parse_mot_old():
+    ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
+    # ann_data.sort(key=lambda x: x[0])
+    # ann_data = np.asarray(ann_data)
+
+    obj_ids = []
+    obj_dict = {}
+    for __id, _data in enumerate(ann_data):
+
+        # if _data[7] != 1 or _data[8] < min_vis:
+        #     continue
+        obj_id = int(_data[1])
+
+        obj_ids.append(obj_id)
+
+        # Bounding box sanity check
+        bbox = [float(x) for x in _data[2:6]]
+        l, t, w, h = bbox
+        xmin = int(l)
+        ymin = int(t)
+        xmax = int(xmin + w)
+        ymax = int(ymin + h)
+        if xmin >= xmax or ymin >= ymax:
+            msg = 'Invalid box {}\n in line {} : {}\n'.format(
+                [xmin, ymin, xmax, ymax], __id, _data
+            )
+            if ignore_invalid:
+                print(msg)
+            else:
+                raise AssertionError(msg)
+
+        confidence = float(_data[6])
+
+        if w <= 0 or h <= 0 or confidence == 0:
+            """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
+            continue
+
+        frame_id = int(_data[0]) - 1
+        # xmin, ymin, w, h = _data[2:]
+
+        if percent_scores:
+            confidence /= 100.0
+
+        if clamp_scores:
+            confidence = max(min(confidence, 1), 0)
+
+        if 0 <= confidence <= 1:
+            pass
+        else:
+            msg = "Invalid confidence: {} in line {} : {}".format(
+                confidence, __id, _data)
+
+            if ignore_invalid == 2:
+                confidence = 1
+            elif ignore_invalid == 1:
+                print(msg)
+            else:
+                raise AssertionError(msg)
+
+        obj_entry = {
+            'id': obj_id,
+            'label': label,
+            'bbox': bbox,
+            'confidence': confidence
+        }
+        if frame_id not in obj_dict:
+            obj_dict[frame_id] = []
+        obj_dict[frame_id].append(obj_entry)
+
+    print('Done reading {}'.format(data_type))
 
 class Params:
     def __init__(self):
@@ -21,13 +93,21 @@ class Params:
         self.fps = 30
         self.ignore_invalid = 0
         self.ignore_missing = 0
-        self.ignore_occl = 1
         self.img_ext = 'jpg'
-        self.label = 'person'
         self.list_file_name = ''
         self.map_folder = ''
-        self.min_vis = 0.5
+
+        """
+        if mode == 0:
+            ann_path = linux_path(img_path, 'gt', 'gt.txt')
+        elif mode == 1:
+            ann_path = linux_path(img_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
+        elif mode == 2:
+            is_csv = 1
+            ann_path = linux_path(img_path, f'{seq_name}.csv')
+        """
         self.mode = 1
+
         self.n_classes = 4
         self.n_frames = 0
         self.out_root_dir = ''
@@ -49,6 +129,7 @@ class Params:
         self.allow_empty = 1
         self.sample = 0
         self.vid_ext = ''
+        self.class_names_path = ''
 
 
 def main():
@@ -62,7 +143,6 @@ def main():
     root_dir = params.root_dir
     list_file_name = params.list_file_name
     img_ext = params.img_ext
-    ignore_occl = params.ignore_occl
     show_img = params.show_img
     show_class = params.show_class
     resize_factor = params.resize_factor
@@ -71,13 +151,11 @@ def main():
     fps = params.fps
     vis_size = params.vis_size
     save_path = params.save_path
-    min_vis = params.min_vis
     save_raw = params.save_raw
     save_video = params.save_video
     mode = params.mode
     start_id = params.start_id
     ignore_missing = params.ignore_missing
-    label = params.label
     percent_scores = params.percent_scores
     clamp_scores = params.clamp_scores
     ignore_invalid = params.ignore_invalid
@@ -85,8 +163,13 @@ def main():
     vid_ext = params.vid_ext
     out_root_dir = params.out_root_dir
     out_root_suffix = params.out_root_suffix
+    class_names_path = params.class_names_path
 
     image_exts = ['jpg', 'bmp', 'png', 'tif']
+
+    class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
+    class_names, class_cols = zip(*[k.split('\t') for k in class_info])
+    # label2id = {x.strip(): i for (i, x) in enumerate(class_names)}
 
     if list_file_name:
         if not os.path.exists(list_file_name):
@@ -125,29 +208,6 @@ def main():
 
         print('sequence {}/{}: {}: '.format(seq_idx + 1, n_seq, seq_name))
 
-        if mode == 0:
-            ann_path = linux_path(seq_path, 'gt', 'gt.txt')
-        else:
-            ann_path = linux_path(seq_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
-
-        ann_path = os.path.abspath(ann_path)
-
-        if not os.path.exists(ann_path):
-            msg = f"{data_type} file for sequence {seq_name} not found: {ann_path}"
-            if ignore_missing:
-                print(msg)
-                continue
-            else:
-                raise IOError(msg)
-
-        print(f'Reading {data_type} from {ann_path}')
-
-        ann_lines = open(ann_path).readlines()
-
-        ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
-        # ann_data.sort(key=lambda x: x[0])
-        # ann_data = np.asarray(ann_data)
-
         vid_cap = None
         src_path = None
 
@@ -175,80 +235,49 @@ def main():
 
             n_frames = len(src_files)
 
+        sampled_frame_ids = list(range(n_frames))
+
+        is_csv = 0
+
+        if mode == 0:
+            ann_path = linux_path(seq_path, 'gt', 'gt.txt')
+        elif mode == 1:
+            ann_path = linux_path(seq_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
+        elif mode == 2:
+            is_csv = 1
+            if is_vid:
+                ann_path = f'{seq_path}.csv'
+            else:
+                ann_path = linux_path(seq_path, f'{data_type}.csv')
+
+        ann_path = os.path.abspath(ann_path)
+
+        if not os.path.exists(ann_path):
+            msg = f"{data_type} file for sequence {seq_name} not found: {ann_path}"
+            if ignore_missing:
+                print(msg)
+                continue
+            else:
+                raise IOError(msg)
+
+        print(f'Reading {data_type} from {ann_path}')
+
+        ann_lines = open(ann_path).readlines()
+
         if params.sample:
             print(f'sampling 1 in {params.sample} frames')
-            src_files = src_files[::params.sample]
+            sampled_frame_ids = sampled_frame_ids[::params.sample]
 
         print('n_frames: ', n_frames)
 
         total_n_frames += n_frames
 
-        obj_ids = []
-
-        obj_dict = {}
-        for __id, _data in enumerate(ann_data):
-
-            # if _data[7] != 1 or _data[8] < min_vis:
-            #     continue
-            obj_id = int(_data[1])
-
-            obj_ids.append(obj_id)
-
-            # Bounding box sanity check
-            bbox = [float(x) for x in _data[2:6]]
-            l, t, w, h = bbox
-            xmin = int(l)
-            ymin = int(t)
-            xmax = int(xmin + w)
-            ymax = int(ymin + h)
-            if xmin >= xmax or ymin >= ymax:
-                msg = 'Invalid box {}\n in line {} : {}\n'.format(
-                    [xmin, ymin, xmax, ymax], __id, _data
-                )
-                if ignore_invalid:
-                    print(msg)
-                else:
-                    raise AssertionError(msg)
-
-            confidence = float(_data[6])
-
-            if w <= 0 or h <= 0 or confidence == 0:
-                """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
-                continue
-
-            frame_id = int(_data[0]) - 1
-            # xmin, ymin, w, h = _data[2:]
-
-            if percent_scores:
-                confidence /= 100.0
-
-            if clamp_scores:
-                confidence = max(min(confidence, 1), 0)
-
-            if 0 <= confidence <= 1:
-                pass
-            else:
-                msg = "Invalid confidence: {} in line {} : {}".format(
-                    confidence, __id, _data)
-
-                if ignore_invalid == 2:
-                    confidence = 1
-                elif ignore_invalid == 1:
-                    print(msg)
-                else:
-                    raise AssertionError(msg)
-
-            obj_entry = {
-                'id': obj_id,
-                'label': label,
-                'bbox': bbox,
-                'confidence': confidence
-            }
-            if frame_id not in obj_dict:
-                obj_dict[frame_id] = []
-            obj_dict[frame_id].append(obj_entry)
-
-        print('Done reading {}'.format(data_type))
+        if is_csv:
+            obj_ids, obj_dict = parse_csv(ann_path, sampled_frame_ids, ignore_invalid, percent_scores, clamp_scores)
+        else:
+            assert len(class_names) == 1, "multiple class names not supported in MOT mode"
+            obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores,
+                                          clamp_scores)
 
         enable_resize = 0
 
@@ -370,7 +399,7 @@ def main():
 
                         drawBox(image, xmin, ymin, xmax, ymax, label=_label, font_size=0.5)
             else:
-                print(f'No {data_type} found for frame {frame_id}: {file_path}')
+                print(f'No {data_type} found for frame {frame_id}')
                 if not params.allow_empty:
                     raise AssertionError()
 
