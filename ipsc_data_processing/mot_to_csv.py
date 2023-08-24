@@ -120,7 +120,7 @@ class Params:
         self.save_path = ''
         self.save_raw = 0
         self.save_video = 0
-        self.show_class = 0
+        self.show_class = 2
         self.show_img = 1
         self.start_id = 0
         self.end_id = 0
@@ -418,10 +418,12 @@ def main():
                     csv_raw.append(raw_data)
 
                     if show_img or not save_raw:
-                        if show_class:
-                            _label = '{} {}'.format(label, obj_id)
+                        if show_class == 2:
+                            _label = f'{label}'
+                        elif show_class == 1:
+                            _label = f'{obj_id}: {label}'
                         else:
-                            _label = '{}'.format(obj_id)
+                            _label = f'{obj_id}'
 
                         drawBox(image, xmin, ymin, xmax, ymax, label=_label, font_size=0.5)
             else:
