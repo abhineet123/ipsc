@@ -11,83 +11,82 @@ from eval_utils import ImageSequenceWriter as ImageWriter
 from eval_utils import sortKey, resize_ar, drawBox, clamp, linux_path
 
 
-def parse_mot_old():
-    ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
-    # ann_data.sort(key=lambda x: x[0])
-    # ann_data = np.asarray(ann_data)
-
-    obj_ids = []
-    obj_dict = {}
-    for __id, _data in enumerate(ann_data):
-
-        # if _data[7] != 1 or _data[8] < min_vis:
-        #     continue
-        obj_id = int(_data[1])
-
-        obj_ids.append(obj_id)
-
-        # Bounding box sanity check
-        bbox = [float(x) for x in _data[2:6]]
-        l, t, w, h = bbox
-        xmin = int(l)
-        ymin = int(t)
-        xmax = int(xmin + w)
-        ymax = int(ymin + h)
-        if xmin >= xmax or ymin >= ymax:
-            msg = 'Invalid box {}\n in line {} : {}\n'.format(
-                [xmin, ymin, xmax, ymax], __id, _data
-            )
-            if ignore_invalid:
-                print(msg)
-            else:
-                raise AssertionError(msg)
-
-        confidence = float(_data[6])
-
-        if w <= 0 or h <= 0 or confidence == 0:
-            """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
-            continue
-
-        frame_id = int(_data[0]) - 1
-        # xmin, ymin, w, h = _data[2:]
-
-        if percent_scores:
-            confidence /= 100.0
-
-        if clamp_scores:
-            confidence = max(min(confidence, 1), 0)
-
-        if 0 <= confidence <= 1:
-            pass
-        else:
-            msg = "Invalid confidence: {} in line {} : {}".format(
-                confidence, __id, _data)
-
-            if ignore_invalid == 2:
-                confidence = 1
-            elif ignore_invalid == 1:
-                print(msg)
-            else:
-                raise AssertionError(msg)
-
-        obj_entry = {
-            'id': obj_id,
-            'label': label,
-            'bbox': bbox,
-            'confidence': confidence
-        }
-        if frame_id not in obj_dict:
-            obj_dict[frame_id] = []
-        obj_dict[frame_id].append(obj_entry)
-
-    print('Done reading {}'.format(data_type))
-
-
+#
+# def parse_mot_old():
+#     ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
+#     # ann_data.sort(key=lambda x: x[0])
+#     # ann_data = np.asarray(ann_data)
+#
+#     obj_ids = []
+#     obj_dict = {}
+#     for __id, _data in enumerate(ann_data):
+#
+#         # if _data[7] != 1 or _data[8] < min_vis:
+#         #     continue
+#         obj_id = int(_data[1])
+#
+#         obj_ids.append(obj_id)
+#
+#         # Bounding box sanity check
+#         bbox = [float(x) for x in _data[2:6]]
+#         l, t, w, h = bbox
+#         xmin = int(l)
+#         ymin = int(t)
+#         xmax = int(xmin + w)
+#         ymax = int(ymin + h)
+#         if xmin >= xmax or ymin >= ymax:
+#             msg = 'Invalid box {}\n in line {} : {}\n'.format(
+#                 [xmin, ymin, xmax, ymax], __id, _data
+#             )
+#             if ignore_invalid:
+#                 print(msg)
+#             else:
+#                 raise AssertionError(msg)
+#
+#         confidence = float(_data[6])
+#
+#         if w <= 0 or h <= 0 or confidence == 0:
+#             """annoying meaningless unexplained crappy boxes that exist for no apparent reason at all"""
+#             continue
+#
+#         frame_id = int(_data[0]) - 1
+#         # xmin, ymin, w, h = _data[2:]
+#
+#         if percent_scores:
+#             confidence /= 100.0
+#
+#         if clamp_scores:
+#             confidence = max(min(confidence, 1), 0)
+#
+#         if 0 <= confidence <= 1:
+#             pass
+#         else:
+#             msg = "Invalid confidence: {} in line {} : {}".format(
+#                 confidence, __id, _data)
+#
+#             if ignore_invalid == 2:
+#                 confidence = 1
+#             elif ignore_invalid == 1:
+#                 print(msg)
+#             else:
+#                 raise AssertionError(msg)
+#
+#         obj_entry = {
+#             'id': obj_id,
+#             'label': label,
+#             'bbox': bbox,
+#             'confidence': confidence
+#         }
+#         if frame_id not in obj_dict:
+#             obj_dict[frame_id] = []
+#         obj_dict[frame_id].append(obj_entry)
+#
+#     print('Done reading {}'.format(data_type))
 class Params:
     def __init__(self):
         self.cfg = ()
         self.clamp_scores = 0
-        self.codec = 'H264'
+        self.codec = 'MP4V'
         self.csv_file_name = ''
         self.data_type = 'annotations'
         self.ext = 'mkv'
