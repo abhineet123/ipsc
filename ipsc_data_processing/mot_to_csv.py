@@ -299,7 +299,7 @@ def main():
             obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores,
                                           clamp_scores)
 
-        print(f'{list(obj_dict.keys())}')
+        # print(f'{list(obj_dict.keys())}')
         enable_resize = 0
 
         unique_obj_ids = list(set(obj_ids))
