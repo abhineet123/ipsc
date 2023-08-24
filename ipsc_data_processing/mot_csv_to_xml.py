@@ -308,9 +308,9 @@ def main():
     image_exts = ['jpg', 'bmp', 'png', 'tif']
 
     if img_dir:
-        img_path = linux_path(root_dir, img_dir)
+        img_root_dir = linux_path(root_dir, img_dir)
     else:
-        img_path = root_dir
+        img_root_dir = root_dir
 
     if seg_dir:
         seg_dir_path = linux_path(root_dir, seg_dir)
@@ -322,20 +322,28 @@ def main():
     if list_file_name:
         if not os.path.exists(list_file_name):
             raise IOError('List file: {} does not exist'.format(list_file_name))
-        file_list = [x.strip() for x in open(list_file_name).readlines() if x.strip()]
-        if img_path:
-            file_list = [linux_path(img_path, x) for x in file_list]
-    elif img_path:
-        file_list = [linux_path(img_path, name) for name in os.listdir(img_path) if
-                     os.path.isdir(linux_path(img_path, name))]
-        file_list.sort(key=sortKey)
+        seq_paths = [x.strip() for x in open(list_file_name).readlines() if x.strip()]
+        if img_root_dir:
+            seq_paths = [linux_path(img_root_dir, x) for x in seq_paths]
+    elif img_root_dir:
+        if vid_ext:
+            seq_paths = [linux_path(img_root_dir, name) for name in os.listdir(img_root_dir) if
+                         os.path.isfile(linux_path(img_root_dir, name)) and name.endswith(vid_ext)]
+
+            """remove ext to be compatible with image sequence paths"""
+            seq_paths = [os.path.splitext(seq_path)[0] for seq_path in seq_paths]
+            seq_paths.sort(key=sortKey)
+        else:
+            seq_paths = [linux_path(img_root_dir, name) for name in os.listdir(img_root_dir) if
+                         os.path.isdir(linux_path(img_root_dir, name))]
+            seq_paths.sort(key=sortKey)
     else:
         if not file_name:
             raise IOError('Either list file or a single sequence file must be provided')
-        file_list = [file_name]
+        seq_paths = [file_name]
 
     if not vis_root_dir:
-        vis_root_dir = linux_path(os.path.dirname(file_list[0]), 'vis')
+        vis_root_dir = linux_path(os.path.dirname(seq_paths[0]), 'vis')
 
     class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
     class_names, class_cols = zip(*[k.split('\t') for k in class_info])
@@ -350,12 +358,12 @@ def main():
     total_unique_obj_ids = 0
 
     if end_id < 0:
-        end_id = len(file_list) - 1
+        end_id = len(seq_paths) - 1
 
-    file_list = file_list[start_id:end_id + 1]
+    seq_paths = seq_paths[start_id:end_id + 1]
     seq_to_n_unique_obj_ids = {}
 
-    n_seq = len(file_list)
+    n_seq = len(seq_paths)
     print('Running over {} sequences'.format(n_seq))
 
     if not bbox_source:
@@ -383,7 +391,7 @@ def main():
         json_dir = params.json_dir
 
         if not json_dir:
-            json_dir = os.path.dirname(file_list[0])
+            json_dir = os.path.dirname(seq_paths[0])
 
         if out_root_dir:
             json_dir = json_dir.replace(root_dir, out_root_dir, 1)
@@ -393,13 +401,13 @@ def main():
 
         print(f'saving json to {json_path}')
 
-    for seq_idx, img_path in enumerate(file_list):
-        seq_name = os.path.basename(img_path)
+    for seq_idx, img_root_dir in enumerate(seq_paths):
+        seq_name = os.path.basename(img_root_dir)
 
         if mode == 0:
-            src_path = linux_path(img_path, 'img1')
+            src_path = linux_path(img_root_dir, 'img1')
         else:
-            src_path = img_path
+            src_path = img_root_dir
 
         vid_cap = None
         src_files = None
@@ -451,16 +459,16 @@ def main():
         is_csv = 0
 
         if mode == 0:
-            ann_path = linux_path(img_path, 'gt', 'gt.txt')
+            ann_path = linux_path(img_root_dir, 'gt', 'gt.txt')
         elif mode == 1:
-            ann_path = linux_path(img_path, f'../../{data_type.capitalize()}/{seq_name}.txt')
+            ann_path = linux_path(img_root_dir, f'../../{data_type.capitalize()}/{seq_name}.txt')
         elif mode == 2:
             is_csv = 1
             if is_vid:
-                # img_path_noext = os.path.splitext(img_path)[0]
-                ann_path = f'{img_path}.csv'
+                # img_path_noext = os.path.splitext(img_root_dir)[0]
+                ann_path = f'{img_root_dir}.csv'
             else:
-                ann_path = linux_path(img_path, f'{data_type}.csv')
+                ann_path = linux_path(img_root_dir, f'{data_type}.csv')
         else:
             raise AssertionError(f'Invalid mode: {mode}')
 
@@ -529,7 +537,7 @@ def main():
             enable_resize = 1
 
         if not save_path:
-            save_path = linux_path(vis_root_dir, os.path.basename(img_path) + '.' + ext)
+            save_path = linux_path(vis_root_dir, os.path.basename(img_root_dir) + '.' + ext)
 
         save_dir = os.path.dirname(save_path)
         save_seq_name = os.path.splitext(os.path.basename(save_path))[0]
@@ -568,10 +576,10 @@ def main():
                 xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
             else:
                 if is_vid:
-                    # img_path_noext = os.path.splitext(img_path)[0]
-                    xml_dir_path = linux_path(img_path, out_dir_name)
+                    # img_path_noext = os.path.splitext(img_root_dir)[0]
+                    xml_dir_path = linux_path(img_root_dir, out_dir_name)
                 else:
-                    xml_dir_path = linux_path(img_path, out_dir_name)
+                    xml_dir_path = linux_path(img_root_dir, out_dir_name)
 
             os.makedirs(xml_dir_path, exist_ok=1)
 

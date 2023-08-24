@@ -172,9 +172,9 @@ def main():
     img_dir = params.img_dir
 
     if img_dir:
-        img_path = linux_path(root_dir, img_dir)
+        img_root_dir = linux_path(root_dir, img_dir)
     else:
-        img_path = root_dir
+        img_root_dir = root_dir
 
     image_exts = ['jpg', 'bmp', 'png', 'tif']
 
@@ -186,12 +186,20 @@ def main():
         if not os.path.exists(list_file_name):
             raise IOError('List file: {} does not exist'.format(list_file_name))
         seq_paths = [x.strip() for x in open(list_file_name).readlines() if x.strip()]
-        if root_dir:
-            seq_paths = [linux_path(root_dir, x) for x in seq_paths]
-    elif img_path:
-        seq_paths = [linux_path(img_path, name) for name in os.listdir(img_path) if
-                     os.path.isdir(linux_path(img_path, name))]
-        seq_paths.sort(key=sortKey)
+        if img_root_dir:
+            seq_paths = [linux_path(img_root_dir, x) for x in seq_paths]
+    elif img_root_dir:
+        if vid_ext:
+            seq_paths = [linux_path(img_root_dir, name) for name in os.listdir(img_root_dir) if
+                         os.path.isfile(linux_path(img_root_dir, name)) and name.endswith(vid_ext)]
+
+            """remove ext to be compatible with image sequence paths"""
+            seq_paths = [os.path.splitext(seq_path)[0] for seq_path in seq_paths]
+            seq_paths.sort(key=sortKey)
+        else:
+            seq_paths = [linux_path(img_root_dir, name) for name in os.listdir(img_root_dir) if
+                         os.path.isdir(linux_path(img_root_dir, name))]
+            seq_paths.sort(key=sortKey)
     else:
         if not file_name:
             raise IOError('Either list file or a single sequence file must be provided')
