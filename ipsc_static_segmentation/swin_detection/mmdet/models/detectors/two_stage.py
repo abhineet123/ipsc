@@ -219,11 +219,14 @@ class TwoStageDetector(BaseDetector):
             else:
                 raise AssertionError(f'invalid pool: {pool}')
 
+            x_pooled = []
             for feat_id, feat in enumerate(x):
                 feat_pooled, indices = max_pool(feat)
                 feat_unpooled = max_unpool(feat_pooled, indices)
 
-                x[feat_id] = feat_unpooled
+                x_pooled.append(feat_unpooled)
+
+            x = tuple(x_pooled)
 
         # get origin input shape to onnx dynamic input shape
         if torch.onnx.is_in_onnx_export():
