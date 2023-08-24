@@ -86,7 +86,7 @@ class Params:
     def __init__(self):
         self.cfg = ()
         self.clamp_scores = 0
-        self.codec = 'MP4V'
+        self.codec = 'mp4v'
         self.csv_file_name = ''
         self.data_type = 'annotations'
         self.ext = 'mp4'
