@@ -314,8 +314,9 @@ def main():
 
         if not vis_size:
             if is_vid:
-                vis_height = vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-                vis_width = vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+                vis_height = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                vis_width = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+
             else:
                 temp_img = cv2.imread(linux_path(src_path, src_files[0]))
                 vis_height, vis_width, _ = temp_img.shape
