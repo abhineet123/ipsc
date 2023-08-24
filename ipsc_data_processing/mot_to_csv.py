@@ -10,6 +10,7 @@ from mot_csv_to_xml import parse_csv, parse_mot
 from eval_utils import ImageSequenceWriter as ImageWriter
 from eval_utils import sortKey, resize_ar, drawBox, clamp, linux_path
 
+
 def parse_mot_old():
     ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
     # ann_data.sort(key=lambda x: x[0])
@@ -81,6 +82,7 @@ def parse_mot_old():
 
     print('Done reading {}'.format(data_type))
 
+
 class Params:
     def __init__(self):
         self.cfg = ()
@@ -123,6 +125,7 @@ class Params:
         self.show_class = 0
         self.show_img = 1
         self.start_id = 0
+        self.end_id = 0
         self.stats_only = 0
         self.vis_size = ''
 
@@ -155,6 +158,7 @@ def main():
     save_video = params.save_video
     mode = params.mode
     start_id = params.start_id
+    end_id = params.end_id
     ignore_missing = params.ignore_missing
     percent_scores = params.percent_scores
     clamp_scores = params.clamp_scores
@@ -200,7 +204,11 @@ def main():
     pause_after_frame = 1
     total_n_frames = 0
     total_unique_obj_ids = 0
-    seq_paths = seq_paths[start_id:]
+
+    if end_id < 0:
+        end_id = len(seq_paths) - 1
+    seq_paths = seq_paths[start_id:end_id + 1]
+    
     seq_to_n_unique_obj_ids = {}
     for seq_idx, seq_path in enumerate(seq_paths):
         seq_name = os.path.basename(seq_path)
