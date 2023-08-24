@@ -134,82 +134,67 @@ python mot_to_csv.py root_dir=/data/MNIST_MOT_RGB/Images data_type=annotations m
 
 <a id="mot15_obsolete___mot_to_csv_"></a>
 ## mot15_obsolete       @ mot_to_csv-->mot
-
-<a id="frcnn___mot1_5_"></a>
-
 python mot_to_csv.py root_dir=/data/MOT2015/Images list_file_name=mot15.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=annotations
 
 python mot_to_csv.py root_dir=/data/MOT2015/Images list_file_name=mot15.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=detections percent_scores=1 clamp_scores=1
 
 <a id="mot17_obsolete___mot_to_csv_"></a>
 ## mot17_obsolete       @ mot_to_csv-->mot
-
 <a id="frcnn___mot17_obsolete_mot_to_cs_v_"></a>
 ### frcnn       @ mot17_obsolete/mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/MOT2017/Images list_file_name=mot17_frcnn.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=annotations
 
 python mot_to_csv.py root_dir=/data/MOT2017/Images list_file_name=mot17_frcnn.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=detections percent_scores=0 clamp_scores=1
 
 <a id="sdp___mot17_obsolete_mot_to_cs_v_"></a>
 ### sdp       @ mot17_obsolete/mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/MOT2017_SDP/Images list_file_name=mot17_sdp.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=annotations
 
 python mot_to_csv.py root_dir=/data/MOT2017_SDP/Images list_file_name=mot17_sdp.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=detections percent_scores=0 clamp_scores=1
 
 <a id="dpm___mot17_obsolete_mot_to_cs_v_"></a>
 ### dpm       @ mot17_obsolete/mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/MOT2017_DPM/Images list_file_name=mot17_dpm.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=annotations
 
 python mot_to_csv.py root_dir=/data/MOT2017_DPM/Images list_file_name=mot17_dpm.txt show_img=0 ignore_occl=0 mode=1 start_id=0 label=person data_type=detections percent_scores=0 clamp_scores=1
 
 <a id="detrac___mot_to_csv_"></a>
 ## detrac       @ mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 ignore_occl=0 mode=1 start_id=0 label=vehicle data_type=annotations ignore_invalid=1
 
 python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 ignore_occl=0 mode=1 start_id=0 label=vehicle data_type=detections
 
 <a id="gram___mot_to_csv_"></a>
 ## GRAM       @ mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/GRAM/Images show_img=0 ignore_occl=0 mode=1 start_id=0 label=vehicle data_type=annotations
 
 python mot_to_csv.py root_dir=/data/GRAM/Images show_img=0 ignore_occl=0 mode=1 start_id=0 label=vehicle data_type=detections
 
 <a id="no_idot___gram_mot_to_cs_v_"></a>
 ### no_idot       @ GRAM/mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/GRAM/Images list_file_name=gram_only.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=vehicle show_img=0 stats_only=1
 
 
 <a id="idot___mot_to_csv_"></a>
 ## IDOT       @ mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/IDOT/Images list_file_name=idot.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=vehicle show_img=0 stats_only=1
 
 <a id="linux___idot_mot_to_cs_v_"></a>
 ### linux       @ IDOT/mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 ignore_occl=0 mode=1 start_id=0 label=vehicle
 
 <a id="detrac_48_mvi_40991___linux_idot_mot_to_cs_v_"></a>
 #### detrac_48_MVI_40991       @ linux/IDOT/mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=1 ignore_occl=0 mode=1 start_id=0 label=vehicle start_id=47
 
 <a id="mot2015___mot_to_csv_"></a>
 ## MOT2015       @ mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/MOT2015/Images show_img=0 ignore_occl=0 mode=1 start_id=0 ignore_missing=1 percent_scores=1 label=person
 
 python mot_to_csv.py root_dir=/data/MOT2015/Images show_img=0 ignore_occl=0 mode=1 start_id=0 ignore_missing=1 label=person percent_scores=1 data_type=detections clamp_scores=1
 
 <a id="mot2017___mot_to_csv_"></a>
 ## MOT2017       @ mot_to_csv-->mot
-
 <a id="frcnn___mot2017_mot_to_csv_"></a>
 ### FRCNN       @ MOT2017/mot_to_csv-->mot
 python mot_to_csv.py root_dir=/data/MOT2017/Images show_img=0 ignore_occl=0 mode=1 start_id=0 ignore_missing=1 label=person
@@ -230,20 +215,15 @@ python mot_to_csv.py root_dir=/data/MOT2017_SDP/Images show_img=0 ignore_occl=0 
 
 <a id="mot17_old_"></a>
 # MOT17_old
-
 python mot_to_csv.py root_dir=G:\Datasets\MOT17\train show_img=1 ignore_occl=0
-
 python mot_to_csv.py root_dir=G:\Datasets\MOT17\train show_img=1 ignore_occl=0  save_raw=1 ext=jpg
 
 <a id="temporal_subsampling___mot17_old_"></a>
 ### temporal_subsampling       @ MOT17_old/-->mot
-
 python temporal_subsampling.py root_dir=G:\Datasets\Acamp\acamp10k\mot show_img=1 start_id=0 frame_gap=2 ext=jpg save_raw=1 out_root_dir=G:\Datasets\Acamp\acamp10k\mot\ss_0_2 show_img=0
-
 
 <a id="csv_to_mo_t_"></a>
 # csv_to_mot
-
 <a id="isl___csv_to_mot_"></a>
 ## isl       @ csv_to_mot-->mot
 python csv_to_mot.py root_dir=/data/ISL/Images recursive=1 data_type=annotations
