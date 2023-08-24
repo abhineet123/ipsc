@@ -117,9 +117,12 @@ def single_gpu_test(model,
 
                 seq_name_to_paths[seq_name] = (seq_out_dir, seq_mask_out_dir, seq_xml_out_dir, out_csv_path)
 
-                os.makedirs(seq_out_dir, exist_ok=1)
-                os.makedirs(seq_mask_out_dir, exist_ok=1)
-                os.makedirs(seq_xml_out_dir, exist_ok=1)
+                if write_xml:
+                    os.makedirs(seq_out_dir, exist_ok=1)
+                    os.makedirs(seq_mask_out_dir, exist_ok=1)
+
+                if write_masks:
+                    os.makedirs(seq_xml_out_dir, exist_ok=1)
 
                 seq_to_csv_rows[out_csv_path] = []
                 """write header to csv file"""
