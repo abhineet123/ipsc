@@ -133,6 +133,7 @@ class Params:
         self.sample = 0
         self.vid_ext = ''
         self.class_names_path = ''
+        self.img_dir = ''
 
 
 def main():
@@ -168,6 +169,12 @@ def main():
     out_root_dir = params.out_root_dir
     out_root_suffix = params.out_root_suffix
     class_names_path = params.class_names_path
+    img_dir = params.img_dir
+
+    if img_dir:
+        img_path = linux_path(root_dir, img_dir)
+    else:
+        img_path = root_dir
 
     image_exts = ['jpg', 'bmp', 'png', 'tif']
 
@@ -181,13 +188,10 @@ def main():
         seq_paths = [x.strip() for x in open(list_file_name).readlines() if x.strip()]
         if root_dir:
             seq_paths = [linux_path(root_dir, x) for x in seq_paths]
-    elif root_dir:
-        if root_dir.startswith('camera'):
-            seq_paths = [root_dir]
-        else:
-            seq_paths = [linux_path(root_dir, name) for name in os.listdir(root_dir) if
-                         os.path.isdir(linux_path(root_dir, name))]
-            seq_paths.sort(key=sortKey)
+    elif img_path:
+        seq_paths = [linux_path(img_path, name) for name in os.listdir(img_path) if
+                     os.path.isdir(linux_path(img_path, name))]
+        seq_paths.sort(key=sortKey)
     else:
         if not file_name:
             raise IOError('Either list file or a single sequence file must be provided')
@@ -208,7 +212,7 @@ def main():
     if end_id < 0:
         end_id = len(seq_paths) - 1
     seq_paths = seq_paths[start_id:end_id + 1]
-    
+
     seq_to_n_unique_obj_ids = {}
     for seq_idx, seq_path in enumerate(seq_paths):
         seq_name = os.path.basename(seq_path)
