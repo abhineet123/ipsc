@@ -219,7 +219,7 @@ class TwoStageDetector(BaseDetector):
             else:
                 raise AssertionError(f'invalid pool: {pool}')
 
-            for feat_id, feat in x:
+            for feat_id, feat in enumerate(x):
                 feat_pooled, indices = max_pool(feat)
                 feat_unpooled = max_unpool(feat_pooled, indices)
 
