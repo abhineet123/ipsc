@@ -285,7 +285,10 @@ def main():
             print(f'sampling 1 in {params.sample} frames')
             sampled_frame_ids = sampled_frame_ids[::params.sample]
 
-        print('n_frames: ', n_frames)
+        n_sampled_frames = len(sampled_frame_ids)
+
+        print(f'n_frames: {n_frames}')
+        print(f'n_sampled_frames: {n_sampled_frames}', )
 
         total_n_frames += n_frames
 
@@ -296,6 +299,7 @@ def main():
             obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores,
                                           clamp_scores)
 
+        print(f'{list(obj_dict.keys())}')
         enable_resize = 0
 
         unique_obj_ids = list(set(obj_ids))
