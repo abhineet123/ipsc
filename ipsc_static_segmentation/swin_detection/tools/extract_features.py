@@ -43,7 +43,8 @@ max_pool_4 = torch.nn.MaxPool2d(4, stride=4, return_indices=True)
 max_unpool_4 = torch.nn.MaxUnpool2d(4, stride=4)
 max_pool_8 = torch.nn.MaxPool2d(8, stride=8, return_indices=True)
 max_unpool_8 = torch.nn.MaxUnpool2d(8, stride=8)
-
+max_pool_16 = torch.nn.MaxPool2d(16, stride=16, return_indices=True)
+max_unpool_16 = torch.nn.MaxUnpool2d(16, stride=16)
 
 class Params:
     class SlidingWindow:
@@ -328,6 +329,8 @@ def load_raw(out_path, pool):
                 feat_unpooled = max_unpool_4(feat_pooled, indices)
             elif pool == 8:
                 feat_unpooled = max_unpool_8(feat_pooled, indices)
+            elif pool == 16:
+                feat_unpooled = max_unpool_16(feat_pooled, indices)
             else:
                 raise AssertionError(f'invalid pool: {pool}')
 
@@ -363,6 +366,8 @@ def save_raw(feat_list, raw_feat, batch_id, pool):
                 feat_pooled, indices = max_pool_4(feat)
             elif pool == 8:
                 feat_pooled, indices = max_pool_8(feat)
+            elif pool == 16:
+                feat_pooled, indices = max_pool_16(feat)
             else:
                 raise AssertionError(f'invalid pool: {pool}')
 
