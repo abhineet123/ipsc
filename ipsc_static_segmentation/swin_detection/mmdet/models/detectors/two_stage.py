@@ -5,6 +5,13 @@ import torch.nn as nn
 from ..builder import DETECTORS, build_backbone, build_head, build_neck
 from .base import BaseDetector
 
+max_pool_2 = torch.nn.MaxPool2d(2, stride=2, return_indices=True)
+max_unpool_2 = torch.nn.MaxUnpool2d(2, stride=2)
+max_pool_4 = torch.nn.MaxPool2d(4, stride=4, return_indices=True)
+max_unpool_4 = torch.nn.MaxUnpool2d(4, stride=4)
+max_pool_8 = torch.nn.MaxPool2d(8, stride=8, return_indices=True)
+max_unpool_8 = torch.nn.MaxUnpool2d(8, stride=8)
+
 
 @DETECTORS.register_module()
 class TwoStageDetector(BaseDetector):
@@ -99,11 +106,11 @@ class TwoStageDetector(BaseDetector):
         # rpn
         if self.with_rpn:
             rpn_outs = self.rpn_head(x)
-            outs = outs + (rpn_outs, )
+            outs = outs + (rpn_outs,)
         proposals = torch.randn(1000, 4).to(img.device)
         # roi_head
         roi_outs = self.roi_head.forward_dummy(x, proposals)
-        outs = outs + (roi_outs, )
+        outs = outs + (roi_outs,)
         return outs
 
     def forward_train(self,
@@ -188,12 +195,30 @@ class TwoStageDetector(BaseDetector):
         return await self.roi_head.async_simple_test(
             x, proposal_list, img_meta, rescale=rescale)
 
-    def simple_test(self, img, img_metas, proposals=None, rescale=False, x=None):
+    def simple_test(self, img, img_metas, proposals=None, rescale=False, x=None, pool=0):
         """Test without augmentation."""
         assert self.with_bbox, 'Bbox head must be implemented.'
 
         if x is None:
             x = self.extract_feat(img)
+
+            if pool == 2:
+                max_pool = max_pool_2
+                max_unpool = max_unpool_2
+            elif pool == 4:
+                max_pool = max_pool_4
+                max_unpool = max_unpool_4
+            elif pool == 8:
+                max_pool = max_pool_8
+                max_unpool = max_unpool_8
+            else:
+                raise AssertionError(f'invalid pool: {pool}')
+
+            for feat_id, feat in x:
+                feat_pooled, indices = max_pool(feat)
+                feat_unpooled = max_unpool(feat_pooled, indices)
+
+                x[feat_id] = feat_unpooled
 
         # get origin input shape to onnx dynamic input shape
         if torch.onnx.is_in_onnx_export():

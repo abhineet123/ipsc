@@ -73,7 +73,9 @@ python mot_csv_to_xml.py root_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_va
 
 python mot_csv_to_xml.py root_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations ignore_invalid=0 show_img=0 save_img_seq=1 mode=2 start_id=1000 end_id=-1 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt json_fname=mnist_mot_rgb_512_1k_9600_1_var-val.json out_root_suffix=json sample=300
 
-python mot_csv_to_xml.py root_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations ignore_invalid=0 show_img=0 save_img_seq=0 mode=2 start_id=1000 end_id=1001 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt json_fname=mnist_mot_rgb_512_1k_9600_1_var-test.json out_root_suffix=json sample=300
+python mot_csv_to_xml.py root_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations ignore_invalid=0 show_img=0 save_img_seq=1 mode=2 start_id=1000 end_id=-1 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt json_fname=mnist_mot_rgb_512_1k_9600_1_var-test.json out_root_suffix=json sample=30
+
+python mot_csv_to_xml.py root_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations ignore_invalid=0 show_img=0 save_img_seq=0 mode=2 start_id=1000 end_id=1001 vid_ext=mp4 class_names_path=lists/classes/mnist_mot.txt json_fname=mnist_mot_rgb_512_1k_9600_1_var-test_dummy.json out_root_suffix=json sample=300
 
 <a id="n_3___mnist_mot_mot_csv_to_xml_"></a>
 ### n-3       @ MNIST_MOT/mot_csv_to_xml-->mot

@@ -112,6 +112,9 @@ class Params:
         self.show_score_thr = 0.3
         self.tmpdir = ''
         self.test_name = 'test'
+
+        self.pool = 0
+
         # self.class_info = 'data/classes_ipsc_5_class.txt'
 
 
@@ -137,6 +140,8 @@ def main():
 
     if not params.out_dir:
         params.out_dir = os.path.join(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
+        if params.pool > 0:
+            params.out_dir += f'_pool_{params.pool}'
 
     os.makedirs(params.out_dir, exist_ok=1)
 
@@ -253,6 +258,7 @@ def main():
                                       filter_objects=params.filter_objects,
                                       write_masks=params.write_masks,
                                       write_xml=params.write_xml,
+                                      pool=params.pool,
                                       )
         else:
             outputs = multi_gpu_test(model, data_loader, params.tmpdir,

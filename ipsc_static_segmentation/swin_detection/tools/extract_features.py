@@ -95,7 +95,7 @@ class Params:
         self.reduce = 'f3'
 
         self.raw = 0
-        self.pool = 2
+        self.pool = 0
 
         self.mean = [93.154564, 162.03416, 240.90062]
         self.std = [3.8680854, 2.779077, 2.8976252]
@@ -219,7 +219,7 @@ def run(seq_info,
         if params.vis:
             x = None
             if params.raw:
-                x = x_all[batch_id]
+                x = [k.cuda() for k in x_all[batch_id]]
 
             with torch.no_grad():
                 results = model(return_loss=False, rescale=True, img=[img_tensor, ], img_metas=[img_metas, ], x=x)
@@ -312,27 +312,28 @@ def load_raw(out_path, pool):
 
     feat_dict = {}
     loaded_feat = np.load(out_path)
-    for _id, feat in loaded_feat.items():
+    for _id, feat in tqdm(loaded_feat.items()):
 
         if pool > 0:
             assert feat.shape[0] % 2 == 0, f"invalid feature shape for pooling: {feat.shape}"
             batch_size = int(feat.shape[0] / 2)
-            feat = feat[:batch_size, ...]
+            feat_pooled = feat[:batch_size, ...].astype(np.float32)
             indices = feat[batch_size:, ...].astype(np.int64)
 
-            feat = torch.from_numpy(feat).cuda()
+            feat_pooled = torch.from_numpy(feat_pooled).float().cuda()
             indices = torch.from_numpy(indices).cuda()
             if pool == 2:
-                feat_unpooled = max_unpool_2(feat, indices)
+                feat_unpooled = max_unpool_2(feat_pooled, indices)
             elif pool == 4:
-                feat_unpooled = max_unpool_4(feat, indices)
+                feat_unpooled = max_unpool_4(feat_pooled, indices)
             elif pool == 8:
-                feat_unpooled = max_unpool_8(feat, indices)
+                feat_unpooled = max_unpool_8(feat_pooled, indices)
             else:
                 raise AssertionError(f'invalid pool: {pool}')
-            feat_pt = feat_unpooled
+
+            feat_pt = feat_unpooled.cpu().float()
         else:
-            feat_pt = torch.from_numpy(feat).cuda()
+            feat_pt = torch.from_numpy(feat)
 
         batch_id, feat_id = _id.split('_')
         batch_id, feat_id = int(batch_id), int(feat_id)
@@ -354,23 +355,23 @@ def save_raw(feat_list, raw_feat, batch_id, pool):
     for feat_id, feat in enumerate(feat_list):
 
         if pool == 0:
-            pass
-        elif pool == 2:
-            feat, indices = max_pool_2(feat)
-        elif pool == 4:
-            feat, indices = max_pool_4(feat)
-        elif pool == 8:
-            feat, indices = max_pool_8(feat)
+            feat_np = feat.cpu().numpy()
         else:
-            raise AssertionError(f'invalid pool: {pool}')
+            if pool == 2:
+                feat_pooled, indices = max_pool_2(feat)
+            elif pool == 4:
+                feat_pooled, indices = max_pool_4(feat)
+            elif pool == 8:
+                feat_pooled, indices = max_pool_8(feat)
+            else:
+                raise AssertionError(f'invalid pool: {pool}')
 
-        feat_np = feat.cpu().numpy()
-        if pool > 0:
-            indices_np = indices.cpu().numpy()
-            feat_np = np.concatenate(feat_np, indices_np, axis=0)
+            feat_pooled_np = feat_pooled.cpu().numpy().astype(np.float32)
+            indices_np = indices.cpu().numpy().astype(np.float32)
+
+            feat_np = np.concatenate((feat_pooled_np, indices_np), axis=0)
+
         raw_feat[f'{batch_id}_{feat_id}'] = feat_np
-
-
 
 def avg_all(feat_list):
     avg_pool_feats = []

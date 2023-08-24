@@ -26,6 +26,7 @@ def single_gpu_test(model,
                     out_dir,
                     show_score_thr,
                     filter_objects,
+                    pool,
                     ):
     assert out_dir is not None, "out_dir must be provided"
 
@@ -75,7 +76,7 @@ def single_gpu_test(model,
     pbar = tqdm(data_loader, total=n_data_loader)
     for batch_id, data in enumerate(pbar):
         with torch.no_grad():
-            result = model(return_loss=False, rescale=True, **data)
+            result = model(return_loss=False, rescale=True, pool=pool, **data)
 
         batch_size = len(result)
         if batch_size == 1 and isinstance(data['img'][0], torch.Tensor):
