@@ -391,12 +391,14 @@ def main():
                     bbox = obj['bbox']
                     confidence = obj['confidence']
 
-                    l, t, w, h = bbox
-                    xmin = int(l)
-                    ymin = int(t)
+                    # l, t, w, h = bbox
+                    # xmin = int(l)
+                    # ymin = int(t)
+                    #
+                    # xmax = int(xmin + w)
+                    # ymax = int(ymin + h)
 
-                    xmax = int(xmin + w)
-                    ymax = int(ymin + h)
+                    xmin, ymin, xmax, ymax = bbox
 
                     xmin, xmax = clamp([xmin, xmax], 0, width - 1)
                     ymin, ymax = clamp([ymin, ymax], 0, height - 1)
