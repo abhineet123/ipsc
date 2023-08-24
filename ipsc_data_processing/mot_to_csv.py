@@ -115,7 +115,6 @@ class Params:
         self.out_root_suffix = ''
         self.out_suffix = ''
         self.percent_scores = 0
-        self.resize_factor = 1.0
         self.root_dir = ''
         self.save_file_name = ''
         self.save_path = ''
@@ -148,7 +147,6 @@ def main():
     img_ext = params.img_ext
     show_img = params.show_img
     show_class = params.show_class
-    resize_factor = params.resize_factor
     ext = params.ext
     codec = params.codec
     fps = params.fps
@@ -352,8 +350,10 @@ def main():
 
         vid_frame_id = -1
 
-        # out_frame_id = 0
-        for frame_id in tqdm(range(n_frames)):
+        n_empty = 0
+        pbar = tqdm(range(n_frames))
+        for frame_id in pbar:
+
             filename = src_files[frame_id]
 
             if is_vid:
@@ -419,9 +419,10 @@ def main():
 
                         drawBox(image, xmin, ymin, xmax, ymax, label=_label, font_size=0.5)
             else:
-                print(f'No {data_type} found for frame {frame_id}')
+                n_empty += 1
+                pbar.set_description(f'n_empty: {n_empty}')
                 if not params.allow_empty:
-                    raise AssertionError()
+                    raise AssertionError(f'No {data_type} found for frame {frame_id}')
 
             if save_video or show_img:
                 if enable_resize:
@@ -451,6 +452,9 @@ def main():
             csv_file = csv_file.replace(root_dir, out_root_dir, 1)
 
         print('saving csv file to {}'.format(csv_file))
+
+        os.makedirs(os.path.dirname(csv_file), exist_ok=1)
+
         df = pd.DataFrame(csv_raw)
         df.to_csv(csv_file)
         if save_video:
