@@ -11,6 +11,8 @@ max_pool_4 = torch.nn.MaxPool2d(4, stride=4, return_indices=True)
 max_unpool_4 = torch.nn.MaxUnpool2d(4, stride=4)
 max_pool_8 = torch.nn.MaxPool2d(8, stride=8, return_indices=True)
 max_unpool_8 = torch.nn.MaxUnpool2d(8, stride=8)
+max_pool_16 = torch.nn.MaxPool2d(16, stride=16, return_indices=True)
+max_unpool_16 = torch.nn.MaxUnpool2d(16, stride=16)
 
 
 @DETECTORS.register_module()
@@ -211,6 +213,9 @@ class TwoStageDetector(BaseDetector):
             elif pool == 8:
                 max_pool = max_pool_8
                 max_unpool = max_unpool_8
+            elif pool == 16:
+                max_pool = max_pool_16
+                max_unpool = max_unpool_16
             else:
                 raise AssertionError(f'invalid pool: {pool}')
 
