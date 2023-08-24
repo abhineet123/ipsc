@@ -89,7 +89,7 @@ class Params:
         self.codec = 'MP4V'
         self.csv_file_name = ''
         self.data_type = 'annotations'
-        self.ext = 'mkv'
+        self.ext = 'mp4'
         self.file_name = ''
         self.fps = 30
         self.ignore_invalid = 0
