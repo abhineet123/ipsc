@@ -146,7 +146,7 @@ def single_gpu_test(model,
             csv_rows = model.module.show_result(
                 img_show,
                 curr_result,
-                show=1,
+                show=False,
                 out_dir=seq_out_dir,
                 out_filename=img_name,
                 out_xml_dir=seq_xml_out_dir,
