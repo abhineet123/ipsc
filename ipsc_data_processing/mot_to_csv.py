@@ -355,7 +355,7 @@ def main():
         vid_frame_id = -1
 
         n_empty = 0
-        pbar = tqdm(range(n_frames))
+        pbar = tqdm(sampled_frame_ids)
         for frame_id in pbar:
 
             filename = src_files[frame_id]
