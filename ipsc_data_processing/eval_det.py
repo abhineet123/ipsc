@@ -724,7 +724,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         else:
                             img_path_to_size[file_path] = (det_img_w, det_img_h)
 
-                        det_class = row['class']
+                        det_class = str(row['class'])
 
                         try:
                             confidence = row['confidence']
