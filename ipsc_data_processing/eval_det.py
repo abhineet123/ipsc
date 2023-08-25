@@ -548,7 +548,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     ymin = float(row['ymin'])
                     xmax = float(row['xmax'])
                     ymax = float(row['ymax'])
-                    gt_class = row['class']
+                    gt_class = str(row['class'])
                     try:
                         gt_img_w = int(row['width'])
                         gt_img_h = int(row['height'])
