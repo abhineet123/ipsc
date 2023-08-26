@@ -143,6 +143,9 @@ def main():
         params.out_dir = os.path.join(checkpoint_dir, f'{checkpoint_name}_on_{params.test_name}')
         if params.pool > 0:
             params.out_dir += f'_pool_{params.pool}'
+        if params.set_zero:
+            set_zero_str = '_'.join(str(x) for x in params.set_zero)
+            params.out_dir += f'_set_zero_{set_zero_str}'
 
     os.makedirs(params.out_dir, exist_ok=1)
 
