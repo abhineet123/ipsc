@@ -113,6 +113,7 @@ class Params:
         self.tmpdir = ''
         self.test_name = 'test'
 
+        self.set_zero = ()
         self.pool = 0
 
         # self.class_info = 'data/classes_ipsc_5_class.txt'
