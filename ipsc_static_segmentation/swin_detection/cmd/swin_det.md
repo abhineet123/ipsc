@@ -20,6 +20,7 @@
                 - [3       @ set_zero/test/n-1-no_fpn/mnist_mot](#3___set_zero_test_n_1_no_fpn_mnist_mot_)
                 - [1,2,3       @ set_zero/test/n-1-no_fpn/mnist_mot](#1_2_3___set_zero_test_n_1_no_fpn_mnist_mot_)
                 - [2,3       @ set_zero/test/n-1-no_fpn/mnist_mot](#2_3___set_zero_test_n_1_no_fpn_mnist_mot_)
+        - [extract_features       @ n-1-no_fpn/mnist_mot](#extract_features___n_1_no_fpn_mnist_mot_)
     - [n-3       @ mnist_mot](#n_3___mnist_mo_t_)
 - [ext_reorg_roi       @ swin_base_2_class](#ext_reorg_roi___swin_base_2_clas_s_)
     - [g2_0_37       @ ext_reorg_roi](#g2_0_37___ext_reorg_ro_i_)
@@ -140,7 +141,8 @@ CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_5
 
 
 CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var start_seq=0,1000 end_seq=99,1099 batch_size=32 test_name=train_480_2 @slide size=480 num=2 
-
+<a id="extract_features___n_1_no_fpn_mnist_mot_"></a>
+### extract_features       @ n-1-no_fpn/mnist_mot-->swin_det
 CUDA_VISIBLE_DEVICES=1 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var start_seq=0,1000 end_seq=99,1099 batch_size=24 test_name=train_480_2 reduce=f3_8 @slide size=480 num=2 
 
 __dbg__
