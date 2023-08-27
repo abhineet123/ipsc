@@ -403,33 +403,35 @@ def avg_all(feat_list):
 
 def f0_max_16(feat_list):
     feat = feat_list[0]
-    feat_pooled = max_pool_16(feat)
+    feat_pooled, _ = max_pool_16(feat)
     # feat_flat = flatten(feat_pooled)
     return feat_pooled
 
 
 def f0_max_8(feat_list):
     feat = feat_list[0]
-    feat_pooled = max_pool_8(feat)
+    feat_pooled, _ = max_pool_8(feat)
     # feat_flat = flatten(feat_pooled)
     return feat_pooled
+
 
 def f0_max_2(feat_list):
     feat = feat_list[0]
-    feat_pooled = max_pool_2(feat)
+    feat_pooled, _ = max_pool_2(feat)
     # feat_flat = flatten(feat_pooled)
     return feat_pooled
 
+
 def f0_max_4(feat_list):
     feat = feat_list[0]
-    feat_pooled = max_pool_4(feat)
+    feat_pooled, _ = max_pool_4(feat)
     # feat_flat = flatten(feat_pooled)
     return feat_pooled
 
 
 def f3_max_8(feat_list):
     feat = feat_list[3]
-    feat_pooled = max_pool_8(feat)
+    feat_pooled, _ = max_pool_8(feat)
     # feat_flat = flatten(feat_pooled)
     return feat_pooled
 
