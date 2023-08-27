@@ -103,6 +103,7 @@ python mot_csv_to_xml.py root_dir=/data/CTMC img_dir=Images list_file_name=ctmc_
 <a id="mnist_mot___mot_to_csv_"></a>
 ## MNIST_MOT       @ mot_to_csv-->mot
 python mot_to_csv.py root_dir=/data/MNIST_MOT_RGB_512x512_1_1000_9600_var img_dir=Images list_file_name=lists/mnist_mot_rgb_512_1k_9600_1_var.txt data_type=annotations mode=2 ignore_invalid=0 start_id=0 end_id=-1 show_img=0 class_names_path=lists/classes/mnist_mot.txt out_root_suffix=json sample=30 save_video=0 vid_ext=mp4
+
 <a id="ctc___mot_to_csv_"></a>
 ## CTC       @ mot_to_csv-->mot
 <a id="annotations___ctc_mot_to_csv_"></a>
@@ -117,7 +118,6 @@ python mot_to_csv.py root_dir=/data/CTC/Images list_file_name=ctc_train.txt data
 
 <a id="ctmc___mot_to_csv_"></a>
 ## CTMC       @ mot_to_csv-->mot
-
 <a id="annotations___ctmc_mot_to_cs_v_"></a>
 ### annotations       @ CTMC/mot_to_csv-->mot
 python mot_to_csv.py root_dir=/data/CTMC/Images list_file_name=ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0
@@ -135,7 +135,6 @@ python mot_to_csv.py root_dir=/data/CTMC/Images list_file_name=ctmc_all.txt data
 
 <a id="mnist_mot_rgb___mot_to_csv_"></a>
 ## MNIST_MOT_RGB       @ mot_to_csv-->mot
-
 python mot_to_csv.py root_dir=/data/MNIST_MOT_RGB/Images data_type=annotations mode=1 vis_size=600x600
 
 <a id="mot15_obsolete___mot_to_csv_"></a>

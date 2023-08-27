@@ -204,30 +204,30 @@ class TwoStageDetector(BaseDetector):
         if x is None:
             x = self.extract_feat(img)
 
-            if pool > 0:
-                if pool == 2:
-                    max_pool = max_pool_2
-                    max_unpool = max_unpool_2
-                elif pool == 4:
-                    max_pool = max_pool_4
-                    max_unpool = max_unpool_4
-                elif pool == 8:
-                    max_pool = max_pool_8
-                    max_unpool = max_unpool_8
-                elif pool == 16:
-                    max_pool = max_pool_16
-                    max_unpool = max_unpool_16
-                else:
-                    raise AssertionError(f'invalid pool: {pool}')
+        if pool > 0:
+            if pool == 2:
+                max_pool = max_pool_2
+                max_unpool = max_unpool_2
+            elif pool == 4:
+                max_pool = max_pool_4
+                max_unpool = max_unpool_4
+            elif pool == 8:
+                max_pool = max_pool_8
+                max_unpool = max_unpool_8
+            elif pool == 16:
+                max_pool = max_pool_16
+                max_unpool = max_unpool_16
+            else:
+                raise AssertionError(f'invalid pool: {pool}')
 
-                x_pooled = []
-                for feat_id, feat in enumerate(x):
-                    feat_pooled, indices = max_pool(feat)
-                    feat_unpooled = max_unpool(feat_pooled, indices)
+            x_pooled = []
+            for feat_id, feat in enumerate(x):
+                feat_pooled, indices = max_pool(feat)
+                feat_unpooled = max_unpool(feat_pooled, indices)
 
-                    x_pooled.append(feat_unpooled)
+                x_pooled.append(feat_unpooled)
 
-                x = tuple(x_pooled)
+            x = tuple(x_pooled)
 
         for _id in set_zero:
             x[_id].zero_()

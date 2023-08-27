@@ -112,22 +112,31 @@ CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_5
 #### set_zero       @ test/n-1-no_fpn/mnist_mot-->swin_det
 <a id="0_1_2___set_zero_test_n_1_no_fpn_mnist_mot_"></a>
 ##### 0,1,2       @ set_zero/test/n-1-no_fpn/mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test batch_size=8 set_zero=0,1,2
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=0,1,2
 <a id="0_1___set_zero_test_n_1_no_fpn_mnist_mot_"></a>
 ##### 0,1       @ set_zero/test/n-1-no_fpn/mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test batch_size=8 set_zero=0,1
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=0,1
 <a id="0___set_zero_test_n_1_no_fpn_mnist_mot_"></a>
 ##### 0       @ set_zero/test/n-1-no_fpn/mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test batch_size=8 set_zero=0
+CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=0
 <a id="3___set_zero_test_n_1_no_fpn_mnist_mot_"></a>
 ##### 3       @ set_zero/test/n-1-no_fpn/mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test batch_size=8 set_zero=3
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=3
 <a id="1_2_3___set_zero_test_n_1_no_fpn_mnist_mot_"></a>
 ##### 1,2,3       @ set_zero/test/n-1-no_fpn/mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test batch_size=8 set_zero=1,2,3
+CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3
+
+CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=16
+
+CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=8
+
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=4
+
+CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=2
+
 <a id="2_3___set_zero_test_n_1_no_fpn_mnist_mot_"></a>
 ##### 2,3       @ set_zero/test/n-1-no_fpn/mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test batch_size=8 set_zero=2,3
+CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=2,3
 
 
 CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var start_seq=0,1000 end_seq=99,1099 batch_size=32 test_name=train_480_2 @slide size=480 num=2 

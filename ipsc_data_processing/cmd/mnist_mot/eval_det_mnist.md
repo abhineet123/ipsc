@@ -8,3 +8,15 @@ python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1
 python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1_var_test.txt det_paths=log/swi/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn/best_bbox_mAP_on_test_pool_8/csv gt_csv_name=annotations.csv save_suffix=mnist_mot-n1-pool_8 nms_thresh=0 n_proc=1 enable_mask=0
 ## pool_16       @ n-1-->eval_det_mnist
 python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1_var_test.txt det_paths=log/swi/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn/best_bbox_mAP_on_test_pool_16/csv gt_csv_name=annotations.csv save_suffix=mnist_mot-n1-pool_16 nms_thresh=0 n_proc=1 enable_mask=0
+
+## set_zero_1_2_3       @ n-1-->eval_det_mnist
+python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1_var_test_1_10.txt det_paths=log/swi/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn/best_bbox_mAP_on_test_1_10_pool_16_set_zero_1_2_3/csv gt_csv_name=annotations.csv save_suffix=mnist_mot-n1-1_10-pool_16-set_zero_1_2_3 nms_thresh=0 n_proc=1 enable_mask=0
+
+python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1_var_test_1_10.txt det_paths=log/swi/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn/best_bbox_mAP_on_test_1_10_pool_8_set_zero_1_2_3/csv gt_csv_name=annotations.csv save_suffix=mnist_mot-n1-1_10-pool_8-set_zero_1_2_3 nms_thresh=0 n_proc=1 enable_mask=0
+
+python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1_var_test_1_10.txt det_paths=log/swi/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn/best_bbox_mAP_on_test_1_10_pool_4_set_zero_1_2_3/csv gt_csv_name=annotations.csv save_suffix=mnist_mot-n1-1_10-pool_4-set_zero_1_2_3 nms_thresh=0 n_proc=1 enable_mask=0
+
+python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1_var_test_1_10.txt det_paths=log/swi/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn/best_bbox_mAP_on_test_1_10_pool_2_set_zero_1_2_3/csv gt_csv_name=annotations.csv save_suffix=mnist_mot-n1-1_10-pool_2-set_zero_1_2_3 nms_thresh=0 n_proc=1 enable_mask=0
+
+python3 eval_det.py cfg=mnist_mot:n1 img_paths=lists/mnist_mot_rgb_512_1k_9600_1_var_test_1_10.txt det_paths=log/swi/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn/best_bbox_mAP_on_test_1_10_set_zero_1_2_3/csv gt_csv_name=annotations.csv save_suffix=mnist_mot-n1-1_10-set_zero_1_2_3 nms_thresh=0 n_proc=1 enable_mask=0
+
