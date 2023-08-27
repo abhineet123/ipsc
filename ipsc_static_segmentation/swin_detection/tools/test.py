@@ -263,6 +263,7 @@ def main():
                                       write_masks=params.write_masks,
                                       write_xml=params.write_xml,
                                       pool=params.pool,
+                                      set_zero=params.set_zero,
                                       )
         else:
             outputs = multi_gpu_test(model, data_loader, params.tmpdir,
