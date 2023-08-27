@@ -230,8 +230,8 @@ class TwoStageDetector(BaseDetector):
                 x = tuple(x_pooled)
 
         for _id in set_zero:
-            x[_id]._zero()
-            
+            x[_id].zero_()
+
         # get origin input shape to onnx dynamic input shape
         if torch.onnx.is_in_onnx_export():
             img_shape = torch._shape_as_tensor(img)[2:]
