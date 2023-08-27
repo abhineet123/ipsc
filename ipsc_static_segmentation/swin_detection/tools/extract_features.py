@@ -46,6 +46,7 @@ max_unpool_8 = torch.nn.MaxUnpool2d(8, stride=8)
 max_pool_16 = torch.nn.MaxPool2d(16, stride=16, return_indices=True)
 max_unpool_16 = torch.nn.MaxUnpool2d(16, stride=16)
 
+
 class Params:
     class SlidingWindow:
         sample = 0
@@ -88,13 +89,13 @@ class Params:
         self.tmpdir = ''
         self.n_proc = 1
 
-        self.vis = 1
         self.class_info_path = 'data/mnist_mot.txt'
 
         self.test_name = 'val'
         self.feat_name = 'neck'
-        self.reduce = 'f3'
+        self.reduce = 'f0_max_16'
 
+        self.vis = 0
         self.raw = 0
         self.pool = 0
 
@@ -286,8 +287,13 @@ def run(seq_info,
 
             if params.reduce == 'f3':
                 reduced_feat = f3(feat_list)
+            elif params.reduce == 'f0_max_2':
+                reduced_feat = f0_max_2(feat_list)
+            elif params.reduce == 'f0_max_4':
+                reduced_feat = f0_max_4(feat_list)
             elif params.reduce == 'f0_max_8':
                 reduced_feat = f0_max_8(feat_list)
+
             elif params.reduce == 'f0_max_16':
                 reduced_feat = f0_max_16(feat_list)
             elif params.reduce == 'f3_max_8':
@@ -384,6 +390,7 @@ def save_raw(feat_list, raw_feat, batch_id, pool):
 
         raw_feat[f'{batch_id}_{feat_id}'] = feat_np
 
+
 def avg_all(feat_list):
     avg_pool_feats = []
     for feat in feat_list:
@@ -400,11 +407,25 @@ def f0_max_16(feat_list):
     # feat_flat = flatten(feat_pooled)
     return feat_pooled
 
+
 def f0_max_8(feat_list):
     feat = feat_list[0]
     feat_pooled = max_pool_8(feat)
     # feat_flat = flatten(feat_pooled)
     return feat_pooled
+
+def f0_max_2(feat_list):
+    feat = feat_list[0]
+    feat_pooled = max_pool_2(feat)
+    # feat_flat = flatten(feat_pooled)
+    return feat_pooled
+
+def f0_max_4(feat_list):
+    feat = feat_list[0]
+    feat_pooled = max_pool_4(feat)
+    # feat_flat = flatten(feat_pooled)
+    return feat_pooled
+
 
 def f3_max_8(feat_list):
     feat = feat_list[3]
