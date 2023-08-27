@@ -286,7 +286,13 @@ def run(seq_info,
 
             if params.reduce == 'f3':
                 reduced_feat = f3(feat_list)
-            elif params.reduce == 'f3_8':
+            elif params.reduce == 'f0_max_8':
+                reduced_feat = f0_max_8(feat_list)
+            elif params.reduce == 'f0_max_16':
+                reduced_feat = f0_max_16(feat_list)
+            elif params.reduce == 'f3_max_8':
+                reduced_feat = f3_max_8(feat_list)
+            elif params.reduce == 'f3_avg_8':
                 reduced_feat = f3_avg_8(feat_list)
             elif params.reduce == 'avg_all':
                 reduced_feat = avg_all(feat_list)
@@ -382,18 +388,29 @@ def avg_all(feat_list):
     avg_pool_feats = []
     for feat in feat_list:
         avg_pool_feat = avg_pool_2(feat, (2, 2))
-        avg_pool_feat_flat = torch.flatten(avg_pool_feat)
-        avg_pool_feats.append(avg_pool_feat_flat)
+        # avg_pool_feat_flat = torch.flatten(avg_pool_feat)
+        avg_pool_feats.append(avg_pool_feat)
     print()
     return avg_pool_feats
 
 
+def f0_max_16(feat_list):
+    feat = feat_list[0]
+    feat_pooled = max_pool_16(feat)
+    # feat_flat = flatten(feat_pooled)
+    return feat_pooled
+
+def f0_max_8(feat_list):
+    feat = feat_list[0]
+    feat_pooled = max_pool_8(feat)
+    # feat_flat = flatten(feat_pooled)
+    return feat_pooled
+
 def f3_max_8(feat_list):
-    flatten = torch.nn.Flatten()
     feat = feat_list[3]
     feat_pooled = max_pool_8(feat)
-    feat_flat = flatten(feat_pooled)
-    return feat_flat
+    # feat_flat = flatten(feat_pooled)
+    return feat_pooled
 
 
 def f3_avg_8(feat_list):
