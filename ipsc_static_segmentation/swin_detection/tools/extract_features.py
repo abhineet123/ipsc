@@ -314,6 +314,7 @@ def run(seq_info,
             np.savez_compressed(out_path, **raw_feat)
         else:
             reduced_feat_all = np.concatenate(reduced_feat_list, axis=0)
+            print(f'\nsaving feature of size {reduced_feat_all.shape} to {out_path}\n')
             np.save(out_path, reduced_feat_all)
 
 
