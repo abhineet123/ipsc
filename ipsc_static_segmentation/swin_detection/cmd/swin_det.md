@@ -167,7 +167,7 @@ CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mni
 CUDA_VISIBLE_DEVICES=1 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_100_960_var batch_size=48 test_name=test_100_960_480 reduce=f0_max_16 @slide size=480 
 <a id="f0_max_4___100_960_extract_features_n_1_no_fpn_mnist_mo_t_"></a>
 ##### f0_max_4       @ 100_960/extract_features/n-1-no_fpn/mnist_mot-->swin_det
-CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_100_960_var batch_size=48 test_name=test_100_960_480 reduce=f0_max_4 out_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_100_960_var_json @slide size=480
+CUDA_VISIBLE_DEVICES=0 python3 tools/extract_features.py config=configs/swin/mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_100_960_var batch_size=48 test_name=test_100_960_480 reduce=f0_max_4 out_dir=/data_ssd/MNIST_MOT_RGB_512x512_1_100_960_var @slide size=480
 
 <a id="n_3___mnist_mo_t_"></a>
 ## n-3       @ mnist_mot-->swin_det
