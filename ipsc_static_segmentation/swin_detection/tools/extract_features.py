@@ -33,18 +33,24 @@ import numpy as np
 
 import paramparse
 
-flatten = torch.nn.Flatten()
-avg_pool_8 = torch.nn.AdaptiveAvgPool2d(output_size=(8, 8))
-avg_pool_4 = torch.nn.AdaptiveAvgPool2d(output_size=(4, 4))
-avg_pool_2 = torch.nn.AdaptiveAvgPool2d(output_size=(2, 2))
-max_pool_2 = torch.nn.MaxPool2d(2, stride=2, return_indices=True)
-max_unpool_2 = torch.nn.MaxUnpool2d(2, stride=2)
-max_pool_4 = torch.nn.MaxPool2d(4, stride=4, return_indices=True)
-max_unpool_4 = torch.nn.MaxUnpool2d(4, stride=4)
-max_pool_8 = torch.nn.MaxPool2d(8, stride=8, return_indices=True)
-max_unpool_8 = torch.nn.MaxUnpool2d(8, stride=8)
-max_pool_16 = torch.nn.MaxPool2d(16, stride=16, return_indices=True)
-max_unpool_16 = torch.nn.MaxUnpool2d(16, stride=16)
+reductions = dict(
+    flat=torch.nn.Flatten(),
+    avg_8=torch.nn.AdaptiveAvgPool2d(output_size=(8, 8)),
+    avg_4=torch.nn.AdaptiveAvgPool2d(output_size=(4, 4)),
+    avg_2=torch.nn.AdaptiveAvgPool2d(output_size=(2, 2)),
+    max_2=torch.nn.MaxPool2d(2, stride=2, return_indices=True),
+    max_2_inv=torch.nn.MaxUnpool2d(2, stride=2),
+    max_4=torch.nn.MaxPool2d(4, stride=4, return_indices=True),
+    max_4_inv=torch.nn.MaxUnpool2d(4, stride=4),
+    max_8=torch.nn.MaxPool2d(8, stride=8, return_indices=True),
+    max_8_inv=torch.nn.MaxUnpool2d(8, stride=8),
+    max_16=torch.nn.MaxPool2d(16, stride=16, return_indices=True),
+    max_16_inv=torch.nn.MaxUnpool2d(16, stride=16),
+    f0=lambda x: x[0],
+    f1=lambda x: x[1],
+    f2=lambda x: x[2],
+    f3=lambda x: x[3],
+)
 
 
 class Params:
@@ -93,7 +99,7 @@ class Params:
 
         self.test_name = 'val'
         self.feat_name = 'neck'
-        self.reduce = 'f0_max_16'
+        self.reduce = ['f0', 'max_16']
 
         self.vis = 0
         self.raw = 0
@@ -275,6 +281,8 @@ def run(seq_info,
                 if k == 27:
                     exit()
                 # print(f'img_show: {img_id}')
+
+
         else:
             with torch.no_grad():
                 final_feat = model.extract_feat(img_tensor)
@@ -284,26 +292,15 @@ def run(seq_info,
                 continue
 
             feat_list = model.features[feat_name]
+            reduced_feat = feat_list
+            for r in params.reduce:
+                try:
+                    reduced_feat = reductions[r](reduced_feat)
+                except KeyError:
+                    raise AssertionError(f'invalid reduction type: {r}')
 
-            if params.reduce == 'f3':
-                reduced_feat = f3(feat_list)
-            elif params.reduce == 'f0_max_2':
-                reduced_feat = f0_max_2(feat_list)
-            elif params.reduce == 'f0_max_4':
-                reduced_feat = f0_max_4(feat_list)
-            elif params.reduce == 'f0_max_8':
-                reduced_feat = f0_max_8(feat_list)
-
-            elif params.reduce == 'f0_max_16':
-                reduced_feat = f0_max_16(feat_list)
-            elif params.reduce == 'f3_max_8':
-                reduced_feat = f3_max_8(feat_list)
-            elif params.reduce == 'f3_avg_8':
-                reduced_feat = f3_avg_8(feat_list)
-            elif params.reduce == 'avg_all':
-                reduced_feat = avg_all(feat_list)
-            else:
-                raise AssertionError(f'invalid reduce type: {params.reduce}')
+                if isinstance(reduced_feat, (tuple, list)):
+                    reduced_feat = reduced_feat[0]
 
             reduced_feat_np = reduced_feat.cpu().numpy()
             reduced_feat_list.append(reduced_feat_np)
@@ -337,13 +334,13 @@ def load_raw(out_path, pool):
             feat_pooled = torch.from_numpy(feat_pooled).float().cuda()
             indices = torch.from_numpy(indices).cuda()
             if pool == 2:
-                feat_unpooled = max_unpool_2(feat_pooled, indices)
+                feat_unpooled = max_2_inv(feat_pooled, indices)
             elif pool == 4:
-                feat_unpooled = max_unpool_4(feat_pooled, indices)
+                feat_unpooled = max_4_inv(feat_pooled, indices)
             elif pool == 8:
-                feat_unpooled = max_unpool_8(feat_pooled, indices)
+                feat_unpooled = max_8_inv(feat_pooled, indices)
             elif pool == 16:
-                feat_unpooled = max_unpool_16(feat_pooled, indices)
+                feat_unpooled = max_16_inv(feat_pooled, indices)
             else:
                 raise AssertionError(f'invalid pool: {pool}')
 
@@ -374,13 +371,13 @@ def save_raw(feat_list, raw_feat, batch_id, pool):
             feat_np = feat.cpu().numpy()
         else:
             if pool == 2:
-                feat_pooled, indices = max_pool_2(feat)
+                feat_pooled, indices = max_2(feat)
             elif pool == 4:
-                feat_pooled, indices = max_pool_4(feat)
+                feat_pooled, indices = max_4(feat)
             elif pool == 8:
-                feat_pooled, indices = max_pool_8(feat)
+                feat_pooled, indices = max_8(feat)
             elif pool == 16:
-                feat_pooled, indices = max_pool_16(feat)
+                feat_pooled, indices = max_16(feat)
             else:
                 raise AssertionError(f'invalid pool: {pool}')
 
@@ -395,62 +392,11 @@ def save_raw(feat_list, raw_feat, batch_id, pool):
 def avg_all(feat_list):
     avg_pool_feats = []
     for feat in feat_list:
-        avg_pool_feat = avg_pool_2(feat, (2, 2))
+        avg_pool_feat = reductions['avg_2'](feat, (2, 2))
         # avg_pool_feat_flat = torch.flatten(avg_pool_feat)
         avg_pool_feats.append(avg_pool_feat)
     print()
     return avg_pool_feats
-
-
-def f0_max_16(feat_list):
-    feat = feat_list[0]
-    feat_pooled, _ = max_pool_16(feat)
-    # feat_flat = flatten(feat_pooled)
-    return feat_pooled
-
-
-def f0_max_8(feat_list):
-    feat = feat_list[0]
-    feat_pooled, _ = max_pool_8(feat)
-    # feat_flat = flatten(feat_pooled)
-    return feat_pooled
-
-
-def f0_max_2(feat_list):
-    feat = feat_list[0]
-    feat_pooled, _ = max_pool_2(feat)
-    # feat_flat = flatten(feat_pooled)
-    return feat_pooled
-
-
-def f0_max_4(feat_list):
-    feat = feat_list[0]
-    feat_pooled, _ = max_pool_4(feat)
-    # feat_flat = flatten(feat_pooled)
-    return feat_pooled
-
-
-def f3_max_8(feat_list):
-    feat = feat_list[3]
-    feat_pooled, _ = max_pool_8(feat)
-    # feat_flat = flatten(feat_pooled)
-    return feat_pooled
-
-
-def f3_avg_8(feat_list):
-    flatten = torch.nn.Flatten()
-    feat = feat_list[3]
-    feat_pooled = avg_pool_8(feat)
-    feat_flat = flatten(feat_pooled)
-    return feat_flat
-
-
-def f3(feat_list):
-    # avg_pool = torch.nn.AdaptiveAvgPool2d(output_size=(8, 8))
-    feat = feat_list[3]
-    # feat_pooled = avg_pool(feat)
-    feat_flat = flatten(feat)
-    return feat_flat
 
 
 def main():
@@ -570,7 +516,8 @@ def main():
             if params.pool > 0:
                 params.out_suffix = f'{params.out_suffix}_{params.pool}'
         else:
-            params.out_suffix = f'{params.feat_name}_{params.reduce}'
+            reduce_str = '_'.join(params.reduce)
+            params.out_suffix = f'{params.feat_name}_{reduce_str}'
 
     params.out_name = f'{params.out_name}_{params.out_suffix}'
 

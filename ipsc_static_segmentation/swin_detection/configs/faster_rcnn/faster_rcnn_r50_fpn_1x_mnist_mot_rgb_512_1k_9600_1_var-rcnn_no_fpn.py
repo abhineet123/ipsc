@@ -49,6 +49,24 @@ data = dict(
         ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_1_var-val.json',
         img_prefix=data_root,
         pipeline=test_pipeline),
+
+    test=dict(
+        type=dataset_type,
+        ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_1_var-test.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline),
+
+    test_dummy=dict(
+        type=dataset_type,
+        ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_1_var-test_dummy.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline),
+
+    test_1_10=dict(
+        type=dataset_type,
+        ann_file=data_root + 'mnist_mot_rgb_512_1k_9600_1_var-test_1_10.json',
+        img_prefix=data_root,
+        pipeline=test_pipeline),
 )
 
 runner = dict(type='EpochBasedRunnerAmp', max_epochs=10000)

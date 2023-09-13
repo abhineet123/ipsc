@@ -14,6 +14,8 @@
         - [cc       @ mmcv/install](#cc___mmcv_install_)
             - [from_source       @ cc/mmcv/install](#from_source___cc_mmcv_instal_l_)
         - [cu111       @ mmcv/install](#cu111___mmcv_install_)
+            - [torch1.9.0       @ cu111/mmcv/install](#torch1_9_0___cu111_mmcv_install_)
+            - [torch1.8.0       @ cu111/mmcv/install](#torch1_8_0___cu111_mmcv_install_)
         - [cu102       @ mmcv/install](#cu102___mmcv_install_)
         - [cu113       @ mmcv/install](#cu113___mmcv_install_)
             - [torch1.10.0       @ cu113/mmcv/install](#torch1_10_0___cu113_mmcv_install_)
@@ -122,12 +124,11 @@ pip install torch==1.12.0+cu116 torchvision==0.13.0+cu116 torchaudio==0.12.0 --e
 
 <a id="mmcv___instal_l_"></a>
 ## mmcv       @ install-->swin_det_setup
+python -c 'import torch;print(torch.__version__);print(torch.version.cuda)'
+https://mmcv.readthedocs.io/en/latest/get_started/installation.html
 
 <a id="cc___mmcv_install_"></a>
 ### cc       @ mmcv/install-->swin_det_setup
-https://mmcv.readthedocs.io/en/latest/get_started/installation.html
-
-python -c 'import torch;print(torch.__version__);print(torch.version.cuda)'
 pip install mmcv-full==1.7.0 -f https://download.openmmlab.com/mmcv/dist/cu117/torch1.13/index.html
 
 <a id="from_source___cc_mmcv_instal_l_"></a>
@@ -137,7 +138,13 @@ MMCV_WITH_OPS=1 pip install -e . -v
 
 <a id="cu111___mmcv_install_"></a>
 ### cu111       @ mmcv/install-->swin_det_setup
+<a id="torch1_9_0___cu111_mmcv_install_"></a>
+#### torch1.9.0       @ cu111/mmcv/install-->swin_det_setup
 python -m pip install mmcv-full==1.3.9 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
+
+<a id="torch1_8_0___cu111_mmcv_install_"></a>
+#### torch1.8.0       @ cu111/mmcv/install-->swin_det_setup
+python -m pip install mmcv-full==1.3.9 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.8.0/index.html
 
 <a id="cu102___mmcv_install_"></a>
 ### cu102       @ mmcv/install-->swin_det_setup
