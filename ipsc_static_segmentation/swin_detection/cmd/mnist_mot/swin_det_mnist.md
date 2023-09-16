@@ -3,20 +3,7 @@
 - [mnist_mot-r50](#mnist_mot_r50_)
     - [n-1       @ mnist_mot-r50](#n_1___mnist_mot_r5_0_)
     - [n-1-no_fpn       @ mnist_mot-r50](#n_1_no_fpn___mnist_mot_r5_0_)
-        - [test       @ n-1-no_fpn/mnist_mot-r50](#test___n_1_no_fpn_mnist_mot_r50_)
-            - [pool-0       @ test/n-1-no_fpn/mnist_mot-r50](#pool_0___test_n_1_no_fpn_mnist_mot_r5_0_)
-            - [pool-2       @ test/n-1-no_fpn/mnist_mot-r50](#pool_2___test_n_1_no_fpn_mnist_mot_r5_0_)
-            - [pool-4       @ test/n-1-no_fpn/mnist_mot-r50](#pool_4___test_n_1_no_fpn_mnist_mot_r5_0_)
-            - [pool-8       @ test/n-1-no_fpn/mnist_mot-r50](#pool_8___test_n_1_no_fpn_mnist_mot_r5_0_)
-            - [pool-16       @ test/n-1-no_fpn/mnist_mot-r50](#pool_16___test_n_1_no_fpn_mnist_mot_r5_0_)
-            - [set_zero       @ test/n-1-no_fpn/mnist_mot-r50](#set_zero___test_n_1_no_fpn_mnist_mot_r5_0_)
-                - [0,1,2       @ set_zero/test/n-1-no_fpn/mnist_mot-r50](#0_1_2___set_zero_test_n_1_no_fpn_mnist_mot_r50_)
-                - [0,1       @ set_zero/test/n-1-no_fpn/mnist_mot-r50](#0_1___set_zero_test_n_1_no_fpn_mnist_mot_r50_)
-                - [0       @ set_zero/test/n-1-no_fpn/mnist_mot-r50](#0___set_zero_test_n_1_no_fpn_mnist_mot_r50_)
-                - [3       @ set_zero/test/n-1-no_fpn/mnist_mot-r50](#3___set_zero_test_n_1_no_fpn_mnist_mot_r50_)
-                - [1,2,3       @ set_zero/test/n-1-no_fpn/mnist_mot-r50](#1_2_3___set_zero_test_n_1_no_fpn_mnist_mot_r50_)
-                - [pool       @ set_zero/test/n-1-no_fpn/mnist_mot-r50](#pool___set_zero_test_n_1_no_fpn_mnist_mot_r50_)
-                - [2,3       @ set_zero/test/n-1-no_fpn/mnist_mot-r50](#2_3___set_zero_test_n_1_no_fpn_mnist_mot_r50_)
+        - [test_1_10       @ n-1-no_fpn/mnist_mot-r50](#test_1_10___n_1_no_fpn_mnist_mot_r50_)
     - [n-3       @ mnist_mot-r50](#n_3___mnist_mot_r5_0_)
 - [mnist_mot](#mnist_mot_)
     - [n-1       @ mnist_mot](#n_1___mnist_mo_t_)
@@ -54,56 +41,13 @@ CUDA_VISIBLE_DEVICES=0 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_f
 PORT=29502 CUDA_VISIBLE_DEVICES=1 tools/dist_train.sh configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py 1 --cfg-options model.pretrained=pretrained/resnet50-19c8e357.pth model.backbone.use_ckpt=True data.samples_per_gpu=48 data.workers_per_gpu=6
 
 python3 tools/extract_features.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth set=MNIST_MOT_RGB_512x512_1_1000_9600_var seq=0
+<a id="test_1_10___n_1_no_fpn_mnist_mot_r50_"></a>
+### test_1_10       @ n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
+CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8
 
-<a id="test___n_1_no_fpn_mnist_mot_r50_"></a>
-### test       @ n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-<a id="pool_0___test_n_1_no_fpn_mnist_mot_r5_0_"></a>
-#### pool-0       @ test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 pool=0
-<a id="pool_2___test_n_1_no_fpn_mnist_mot_r5_0_"></a>
-#### pool-2       @ test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 pool=2
-<a id="pool_4___test_n_1_no_fpn_mnist_mot_r5_0_"></a>
-#### pool-4       @ test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 pool=4
-<a id="pool_8___test_n_1_no_fpn_mnist_mot_r5_0_"></a>
-#### pool-8       @ test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 pool=8
-<a id="pool_16___test_n_1_no_fpn_mnist_mot_r5_0_"></a>
-#### pool-16       @ test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 pool=16
+[pool](batch/pool___test_n_1_no_fpn_mnist_mot_r5_0_.bsh)    
 
-<a id="set_zero___test_n_1_no_fpn_mnist_mot_r5_0_"></a>
-#### set_zero       @ test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-<a id="0_1_2___set_zero_test_n_1_no_fpn_mnist_mot_r50_"></a>
-##### 0,1,2       @ set_zero/test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=0,1,2
-<a id="0_1___set_zero_test_n_1_no_fpn_mnist_mot_r50_"></a>
-##### 0,1       @ set_zero/test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=0,1
-<a id="0___set_zero_test_n_1_no_fpn_mnist_mot_r50_"></a>
-##### 0       @ set_zero/test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=0
-<a id="3___set_zero_test_n_1_no_fpn_mnist_mot_r50_"></a>
-##### 3       @ set_zero/test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=3
-<a id="1_2_3___set_zero_test_n_1_no_fpn_mnist_mot_r50_"></a>
-##### 1,2,3       @ set_zero/test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3
-
-<a id="pool___set_zero_test_n_1_no_fpn_mnist_mot_r50_"></a>
-##### pool       @ set_zero/test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=2
-
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=4
-
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=8
-
-CUDA_VISIBLE_DEVICES=1 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=1,2,3 pool=16
-
-<a id="2_3___set_zero_test_n_1_no_fpn_mnist_mot_r50_"></a>
-##### 2,3       @ set_zero/test/n-1-no_fpn/mnist_mot-r50-->swin_det_mnist
-CUDA_VISIBLE_DEVICES=0 python3 tools/test.py config=configs/faster_rcnn/faster_rcnn_r50_fpn_1x_mnist_mot_rgb_512_1k_9600_1_var-rcnn_no_fpn.py ckpt_name=best_bbox_mAP.pth eval=bbox test_name=test_1_10 batch_size=8 set_zero=2,3
+[set_zero](batch/1_2_3___set_zero_test_n_1_no_fpn_mnist_mot_r50_.bsh)
 
 <a id="n_3___mnist_mot_r5_0_"></a>
 ## n-3       @ mnist_mot-r50-->swin_det_mnist
