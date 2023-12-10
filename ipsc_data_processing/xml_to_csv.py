@@ -8,6 +8,7 @@ from tqdm import tqdm
 from pascal_voc_io import PascalVocReader
 from eval_utils import sortKey, add_suffix, linux_path
 
+
 class Params:
     def __init__(self):
         self.cfg = ()

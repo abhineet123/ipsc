@@ -1,5 +1,8 @@
 <!-- MarkdownTOC -->
 
+- [p2s](#p2s_)
+    - [ext_reorg_roi_0_1       @ p2s](#ext_reorg_roi_0_1___p2_s_)
+    - [ext_reorg_roi_16_53       @ p2s](#ext_reorg_roi_16_53___p2_s_)
 - [all_frames_roi](#all_frames_ro_i_)
     - [swi       @ all_frames_roi](#swi___all_frames_roi_)
 - [ext_reorg_roi_0_37](#ext_reorg_roi_0_3_7_)
@@ -19,32 +22,32 @@
         - [seq-inc-probs       @ seq/ext_reorg_roi_0_37](#seq_inc_probs___seq_ext_reorg_roi_0_37_)
     - [vita-swin-inc       @ ext_reorg_roi_0_37](#vita_swin_inc___ext_reorg_roi_0_37_)
     - [vita-r50       @ ext_reorg_roi_0_37](#vita_r50___ext_reorg_roi_0_37_)
-- [ext_reorg_roi_16_53](#ext_reorg_roi_16_53_)
-    - [yl8       @ ext_reorg_roi_16_53](#yl8___ext_reorg_roi_16_5_3_)
-        - [val       @ yl8/ext_reorg_roi_16_53](#val___yl8_ext_reorg_roi_16_5_3_)
-        - [seq-val       @ yl8/ext_reorg_roi_16_53](#seq_val___yl8_ext_reorg_roi_16_5_3_)
-    - [swi       @ ext_reorg_roi_16_53](#swi___ext_reorg_roi_16_5_3_)
-    - [swi-rcnn       @ ext_reorg_roi_16_53](#swi_rcnn___ext_reorg_roi_16_5_3_)
-    - [cvnxt-large       @ ext_reorg_roi_16_53](#cvnxt_large___ext_reorg_roi_16_5_3_)
-    - [idol       @ ext_reorg_roi_16_53](#idol___ext_reorg_roi_16_5_3_)
-        - [probs       @ idol/ext_reorg_roi_16_53](#probs___idol_ext_reorg_roi_16_53_)
-    - [idol-inc       @ ext_reorg_roi_16_53](#idol_inc___ext_reorg_roi_16_5_3_)
-        - [probs       @ idol-inc/ext_reorg_roi_16_53](#probs___idol_inc_ext_reorg_roi_16_53_)
-            - [nms-01       @ probs/idol-inc/ext_reorg_roi_16_53](#nms_01___probs_idol_inc_ext_reorg_roi_16_53_)
-    - [seq       @ ext_reorg_roi_16_53](#seq___ext_reorg_roi_16_5_3_)
-        - [probs       @ seq/ext_reorg_roi_16_53](#probs___seq_ext_reorg_roi_16_5_3_)
-    - [seq-inc       @ ext_reorg_roi_16_53](#seq_inc___ext_reorg_roi_16_5_3_)
-        - [probs       @ seq-inc/ext_reorg_roi_16_53](#probs___seq_inc_ext_reorg_roi_16_5_3_)
-    - [vita       @ ext_reorg_roi_16_53](#vita___ext_reorg_roi_16_5_3_)
-        - [0119999       @ vita/ext_reorg_roi_16_53](#0119999___vita_ext_reorg_roi_16_53_)
-        - [0329999       @ vita/ext_reorg_roi_16_53](#0329999___vita_ext_reorg_roi_16_53_)
-    - [vita-inc       @ ext_reorg_roi_16_53](#vita_inc___ext_reorg_roi_16_5_3_)
-        - [0119999       @ vita-inc/ext_reorg_roi_16_53](#0119999___vita_inc_ext_reorg_roi_16_53_)
-        - [0329999       @ vita-inc/ext_reorg_roi_16_53](#0329999___vita_inc_ext_reorg_roi_16_53_)
-    - [vita-retrain-inc       @ ext_reorg_roi_16_53](#vita_retrain_inc___ext_reorg_roi_16_5_3_)
-        - [0004999       @ vita-retrain-inc/ext_reorg_roi_16_53](#0004999___vita_retrain_inc_ext_reorg_roi_16_53_)
-        - [0079999       @ vita-retrain-inc/ext_reorg_roi_16_53](#0079999___vita_retrain_inc_ext_reorg_roi_16_53_)
-        - [0104999       @ vita-retrain-inc/ext_reorg_roi_16_53](#0104999___vita_retrain_inc_ext_reorg_roi_16_53_)
+- [ext_reorg_roi_g2_16_53](#ext_reorg_roi_g2_16_5_3_)
+    - [yl8       @ ext_reorg_roi_g2_16_53](#yl8___ext_reorg_roi_g2_16_53_)
+        - [val       @ yl8/ext_reorg_roi_g2_16_53](#val___yl8_ext_reorg_roi_g2_16_53_)
+        - [seq-val       @ yl8/ext_reorg_roi_g2_16_53](#seq_val___yl8_ext_reorg_roi_g2_16_53_)
+    - [swi       @ ext_reorg_roi_g2_16_53](#swi___ext_reorg_roi_g2_16_53_)
+    - [swi-rcnn       @ ext_reorg_roi_g2_16_53](#swi_rcnn___ext_reorg_roi_g2_16_53_)
+    - [cvnxt-large       @ ext_reorg_roi_g2_16_53](#cvnxt_large___ext_reorg_roi_g2_16_53_)
+    - [idol       @ ext_reorg_roi_g2_16_53](#idol___ext_reorg_roi_g2_16_53_)
+        - [probs       @ idol/ext_reorg_roi_g2_16_53](#probs___idol_ext_reorg_roi_g2_16_5_3_)
+    - [idol-inc       @ ext_reorg_roi_g2_16_53](#idol_inc___ext_reorg_roi_g2_16_53_)
+        - [probs       @ idol-inc/ext_reorg_roi_g2_16_53](#probs___idol_inc_ext_reorg_roi_g2_16_5_3_)
+            - [nms-01       @ probs/idol-inc/ext_reorg_roi_g2_16_53](#nms_01___probs_idol_inc_ext_reorg_roi_g2_16_5_3_)
+    - [seq       @ ext_reorg_roi_g2_16_53](#seq___ext_reorg_roi_g2_16_53_)
+        - [probs       @ seq/ext_reorg_roi_g2_16_53](#probs___seq_ext_reorg_roi_g2_16_53_)
+    - [seq-inc       @ ext_reorg_roi_g2_16_53](#seq_inc___ext_reorg_roi_g2_16_53_)
+        - [probs       @ seq-inc/ext_reorg_roi_g2_16_53](#probs___seq_inc_ext_reorg_roi_g2_16_53_)
+    - [vita       @ ext_reorg_roi_g2_16_53](#vita___ext_reorg_roi_g2_16_53_)
+        - [0119999       @ vita/ext_reorg_roi_g2_16_53](#0119999___vita_ext_reorg_roi_g2_16_5_3_)
+        - [0329999       @ vita/ext_reorg_roi_g2_16_53](#0329999___vita_ext_reorg_roi_g2_16_5_3_)
+    - [vita-inc       @ ext_reorg_roi_g2_16_53](#vita_inc___ext_reorg_roi_g2_16_53_)
+        - [0119999       @ vita-inc/ext_reorg_roi_g2_16_53](#0119999___vita_inc_ext_reorg_roi_g2_16_5_3_)
+        - [0329999       @ vita-inc/ext_reorg_roi_g2_16_53](#0329999___vita_inc_ext_reorg_roi_g2_16_5_3_)
+    - [vita-retrain-inc       @ ext_reorg_roi_g2_16_53](#vita_retrain_inc___ext_reorg_roi_g2_16_53_)
+        - [0004999       @ vita-retrain-inc/ext_reorg_roi_g2_16_53](#0004999___vita_retrain_inc_ext_reorg_roi_g2_16_5_3_)
+        - [0079999       @ vita-retrain-inc/ext_reorg_roi_g2_16_53](#0079999___vita_retrain_inc_ext_reorg_roi_g2_16_5_3_)
+        - [0104999       @ vita-retrain-inc/ext_reorg_roi_g2_16_53](#0104999___vita_retrain_inc_ext_reorg_roi_g2_16_5_3_)
 - [ext_reorg_roi_54_126](#ext_reorg_roi_54_12_6_)
     - [yl8       @ ext_reorg_roi_54_126](#yl8___ext_reorg_roi_54_126_)
         - [val       @ yl8/ext_reorg_roi_54_126](#val___yl8_ext_reorg_roi_54_126_)
@@ -73,6 +76,16 @@
         - [g2_0_15       @ vita-inc/ext_reorg_roi_54_126](#g2_0_15___vita_inc_ext_reorg_roi_54_12_6_)
 
 <!-- /MarkdownTOC -->
+
+<a id="p2s_"></a>
+# p2s 
+<a id="ext_reorg_roi_0_1___p2_s_"></a>
+## ext_reorg_roi_0_1       @ p2s-->eval_det
+python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/p2s/pretrained/resnet_640x640/ckpt-ckpt-74844-ext_reorg_roi_g2_0_1/csv_batch_2 gt_csv_name=annotations_0_1.csv save_suffix=p2s-resnet_640-0_1 gt_pkl=g2_0_1.pkl iw=0 nms_thresh=0 n_proc=12 class_agnostic=1 enable_mask=0
+
+<a id="ext_reorg_roi_16_53___p2_s_"></a>
+## ext_reorg_roi_16_53       @ p2s-->eval_det
+python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/p2s/pretrained/resnet_640x640/ckpt-74844-ext_reorg_roi_g2_16_53/csv_batch_2 gt_csv_name=annotations_16_53.csv save_suffix=p2s-resnet_640-16_53 gt_pkl=g2_16_53.pkl iw=0 nms_thresh=0 n_proc=12 class_agnostic=1 enable_mask=0
 
 <a id="all_frames_ro_i_"></a>
 # all_frames_roi
@@ -161,43 +174,44 @@ python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths
 ## vita-r50       @ ext_reorg_roi_0_37-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_0_37_r50/inference/csv gt_csv_name=annotations_38_53.csv save_suffix=vita-r50 gt_pkl=g2_38_53.pkl
 
-<a id="ext_reorg_roi_16_53_"></a>
-# ext_reorg_roi_16_53
-<a id="yl8___ext_reorg_roi_16_5_3_"></a>
-## yl8       @ ext_reorg_roi_16_53-->eval_det
+<a id="ext_reorg_roi_g2_16_5_3_"></a>
+# ext_reorg_roi_g2_16_53
+section header __ext_reorg_roi_g2_16_53__ refers to the training set so the test set is its inverse, i.e. __ext_reorg_roi_0_15__, hence the __annotations_0_15.csv__
+<a id="yl8___ext_reorg_roi_g2_16_53_"></a>
+## yl8       @ ext_reorg_roi_g2_16_53-->eval_det
 __last__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/yl8/ext_reorg_roi_g2_16_53/last/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-yl8-last gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0:0.9:0.1 n_proc=12
 __best__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/yl8/ext_reorg_roi_g2_16_53/best/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-yl8-best gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0:0.9:0.1 n_proc=12
-<a id="val___yl8_ext_reorg_roi_16_5_3_"></a>
-### val       @ yl8/ext_reorg_roi_16_53-->eval_det
+<a id="val___yl8_ext_reorg_roi_g2_16_53_"></a>
+### val       @ yl8/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/yl8/ext_reorg_roi_g2_16_53-val/last/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-yl8-val-last gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0:0.9:0.1 n_proc=12
 
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/yl8/ext_reorg_roi_g2_16_53-val/best/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-yl8-val-best gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0:0.9:0.1 n_proc=12
-<a id="seq_val___yl8_ext_reorg_roi_16_5_3_"></a>
-### seq-val       @ yl8/ext_reorg_roi_16_53-->eval_det
+<a id="seq_val___yl8_ext_reorg_roi_g2_16_53_"></a>
+### seq-val       @ yl8/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/yl8/ext_reorg_roi_g2_16_53-seq-val/last/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-yl8-seq-val-last gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0.1 n_proc=1
 
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/yl8/ext_reorg_roi_g2_16_53-seq-val/best/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-yl8-seq-val-best gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0:0.9:0.1 n_proc=12
 
-<a id="swi___ext_reorg_roi_16_5_3_"></a>
-## swi       @ ext_reorg_roi_16_53-->eval_det
+<a id="swi___ext_reorg_roi_g2_16_53_"></a>
+## swi       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-swi gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0.1 n_proc=12
 __iw__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-swi gt_pkl=g2_0_15.pkl iw=0 n_proc=12 iw=1
 
-<a id="swi_rcnn___ext_reorg_roi_16_5_3_"></a>
-## swi-rcnn       @ ext_reorg_roi_16_53-->eval_det
+<a id="swi_rcnn___ext_reorg_roi_g2_16_53_"></a>
+## swi-rcnn       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate-rcnn/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-swi-rcnn gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0:0.9:0.1 n_proc=12 enable_mask=0
 
-<a id="cvnxt_large___ext_reorg_roi_16_5_3_"></a>
-## cvnxt-large       @ ext_reorg_roi_16_53-->eval_det
+<a id="cvnxt_large___ext_reorg_roi_g2_16_53_"></a>
+## cvnxt-large       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-cvnxt-large gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0.9 n_proc=12
 __iw__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-convnext_large_in22k/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-cvnxt-large gt_pkl=g2_0_15.pkl iw=0 n_proc=12 iw=1
 
-<a id="idol___ext_reorg_roi_16_5_3_"></a>
-## idol       @ ext_reorg_roi_16_53-->eval_det
+<a id="idol___ext_reorg_roi_g2_16_53_"></a>
+## idol       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-idol gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2 
 __-max_length-1-__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_max_length-1/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-max_length-1 gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2 
@@ -209,28 +223,28 @@ __-max_length-8-__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_max_length-8/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-max_length-8 gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2 
 
 
-<a id="probs___idol_ext_reorg_roi_16_53_"></a>
-### probs       @ idol/ext_reorg_roi_16_53-->eval_det
+<a id="probs___idol_ext_reorg_roi_g2_16_5_3_"></a>
+### probs       @ idol/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_probs/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-probs gt_pkl=g2_0_15.pkl
 
-<a id="idol_inc___ext_reorg_roi_16_5_3_"></a>
-## idol-inc       @ ext_reorg_roi_16_53-->eval_det
+<a id="idol_inc___ext_reorg_roi_g2_16_53_"></a>
+## idol-inc       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-inc gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=12
 __iw__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-inc iw=0 n_proc=1 iw=1 gt_pkl=g2_0_15.pkl
 
-<a id="probs___idol_inc_ext_reorg_roi_16_53_"></a>
-### probs       @ idol-inc/ext_reorg_roi_16_53-->eval_det
+<a id="probs___idol_inc_ext_reorg_roi_g2_16_5_3_"></a>
+### probs       @ idol-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_incremental_probs/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-inc-probs gt_pkl=g2_0_15.pkl nms_thresh=0.1 n_proc=12
 __iw__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_incremental_probs/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-inc-probs gt_pkl=g2_0_15.pkl iw=1
 
-<a id="nms_01___probs_idol_inc_ext_reorg_roi_16_53_"></a>
-#### nms-01       @ probs/idol-inc/ext_reorg_roi_16_53-->eval_det
+<a id="nms_01___probs_idol_inc_ext_reorg_roi_g2_16_5_3_"></a>
+#### nms-01       @ probs/idol-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_16_53/inference_model_0254999_incremental_probs/csv_incremental_nms_01 gt_csv_name=annotations_0_15.csv save_suffix=inv-idol-inc-probs-nms-01 gt_pkl=g2_0_15.pkl iw=0 vid_fmt=H264,2,jpg
 
-<a id="seq___ext_reorg_roi_16_5_3_"></a>
-## seq       @ ext_reorg_roi_16_53-->eval_det
+<a id="seq___ext_reorg_roi_g2_16_53_"></a>
+## seq       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_16_53/inference_model_0241999/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-seq gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2 
 __-max_length-1-__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_16_53/inference_model_0241999_max_length-1/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-seq-max_length-1 gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2 
@@ -241,27 +255,27 @@ python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths
 __-max_length-8-__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_16_53/inference_model_0241999_max_length-8/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-seq-max_length-8 gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2 
 
-<a id="probs___seq_ext_reorg_roi_16_5_3_"></a>
-### probs       @ seq/ext_reorg_roi_16_53-->eval_det
+<a id="probs___seq_ext_reorg_roi_g2_16_53_"></a>
+### probs       @ seq/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_16_53/inference_model_0241999_probs/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-seq-probs gt_pkl=g2_0_15.pkl
 
-<a id="seq_inc___ext_reorg_roi_16_5_3_"></a>
-## seq-inc       @ ext_reorg_roi_16_53-->eval_det
+<a id="seq_inc___ext_reorg_roi_g2_16_53_"></a>
+## seq-inc       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_16_53/inference_model_0241999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-seq-inc gt_pkl=g2_0_15.pkl nms_thresh=0.1 n_proc=12
 __iw__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_16_53/inference_model_0241999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-seq-inc iw=1 gt_pkl=g2_0_15.pkl
 
-<a id="probs___seq_inc_ext_reorg_roi_16_5_3_"></a>
-### probs       @ seq-inc/ext_reorg_roi_16_53-->eval_det
+<a id="probs___seq_inc_ext_reorg_roi_g2_16_53_"></a>
+### probs       @ seq-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_16_53/inference_model_0241999_incremental_probs/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-seq-inc-probs gt_pkl=g2_0_15.pkl
 
-<a id="vita___ext_reorg_roi_16_5_3_"></a>
-## vita       @ ext_reorg_roi_16_53-->eval_det
-<a id="0119999___vita_ext_reorg_roi_16_53_"></a>
-### 0119999       @ vita/ext_reorg_roi_16_53-->eval_det
+<a id="vita___ext_reorg_roi_g2_16_53_"></a>
+## vita       @ ext_reorg_roi_g2_16_53-->eval_det
+<a id="0119999___vita_ext_reorg_roi_g2_16_5_3_"></a>
+### 0119999       @ vita/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0119999/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-swin-0119999 gt_pkl=g2_0_15.pkl
-<a id="0329999___vita_ext_reorg_roi_16_53_"></a>
-### 0329999       @ vita/ext_reorg_roi_16_53-->eval_det
+<a id="0329999___vita_ext_reorg_roi_g2_16_5_3_"></a>
+### 0329999       @ vita/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-vita gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2
 __-max_length-1-__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999_max_length-1/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-max_length-1 gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2
@@ -272,32 +286,33 @@ python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths
 __-max_length-8-__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999_max_length-8/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-max_length-8 gt_pkl=g2_0_15.pkl nms_thresh=0:0.9:0.1 n_proc=2
 
-<a id="vita_inc___ext_reorg_roi_16_5_3_"></a>
-## vita-inc       @ ext_reorg_roi_16_53-->eval_det
-<a id="0119999___vita_inc_ext_reorg_roi_16_53_"></a>
-### 0119999       @ vita-inc/ext_reorg_roi_16_53-->eval_det
+<a id="vita_inc___ext_reorg_roi_g2_16_53_"></a>
+## vita-inc       @ ext_reorg_roi_g2_16_53-->eval_det
+<a id="0119999___vita_inc_ext_reorg_roi_g2_16_5_3_"></a>
+### 0119999       @ vita-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0119999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-inc-0119999 gt_pkl=g2_0_15.pkl
-<a id="0329999___vita_inc_ext_reorg_roi_16_53_"></a>
-### 0329999       @ vita-inc/ext_reorg_roi_16_53-->eval_det
+<a id="0329999___vita_inc_ext_reorg_roi_g2_16_5_3_"></a>
+### 0329999       @ vita-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-inc gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0.1 n_proc=12
 __iw__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin/inference_model_0329999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-inc gt_pkl=g2_0_15.pkl iw=0 n_proc=12 iw=1
 
 
-<a id="vita_retrain_inc___ext_reorg_roi_16_5_3_"></a>
-## vita-retrain-inc       @ ext_reorg_roi_16_53-->eval_det
-<a id="0004999___vita_retrain_inc_ext_reorg_roi_16_53_"></a>
-### 0004999       @ vita-retrain-inc/ext_reorg_roi_16_53-->eval_det
+<a id="vita_retrain_inc___ext_reorg_roi_g2_16_53_"></a>
+## vita-retrain-inc       @ ext_reorg_roi_g2_16_53-->eval_det
+<a id="0004999___vita_retrain_inc_ext_reorg_roi_g2_16_5_3_"></a>
+### 0004999       @ vita-retrain-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin_retrain/inference_model_0004999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-retrain-inc-0004999 gt_pkl=g2_0_15.pkl
-<a id="0079999___vita_retrain_inc_ext_reorg_roi_16_53_"></a>
-### 0079999       @ vita-retrain-inc/ext_reorg_roi_16_53-->eval_det
+<a id="0079999___vita_retrain_inc_ext_reorg_roi_g2_16_5_3_"></a>
+### 0079999       @ vita-retrain-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin_retrain/inference_model_0079999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-retrain-inc-0079999 gt_pkl=g2_0_15.pkl
-<a id="0104999___vita_retrain_inc_ext_reorg_roi_16_53_"></a>
-### 0104999       @ vita-retrain-inc/ext_reorg_roi_16_53-->eval_det
+<a id="0104999___vita_retrain_inc_ext_reorg_roi_g2_16_5_3_"></a>
+### 0104999       @ vita-retrain-inc/ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_16_53_swin_retrain/inference_model_0104999_incremental/csv_incremental gt_csv_name=annotations_0_15.csv save_suffix=inv-vita-retrain-inc-0104999 gt_pkl=g2_0_15.pkl
 
 <a id="ext_reorg_roi_54_12_6_"></a>
 # ext_reorg_roi_54_126
+section header __ext_reorg_roi_54_126__ refers to the training set so the test set is its inverse, i.e. __ext_reorg_roi_0_53__, hence the __annotations_0_53.csv__
 <a id="yl8___ext_reorg_roi_54_126_"></a>
 ## yl8       @ ext_reorg_roi_54_126-->eval_det
 __last__

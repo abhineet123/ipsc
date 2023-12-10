@@ -1542,9 +1542,9 @@ def get_intersection(val1, val2, conf_class, score_thresh, name1, name2):
     _diff = val1 - val2
 
     idx = np.argwhere(np.diff(np.sign(_diff))).flatten()
+
     if not idx.size:
         # print('rec/prec: {}'.format(pformat(np.vstack((conf_class, rec, prec)).T)))
-
         if _diff.size:
             idx = np.argmin(np.abs(_diff))
 
@@ -1555,8 +1555,11 @@ def get_intersection(val1, val2, conf_class, score_thresh, name1, name2):
             f'min_difference: {_diff[idx]} at {(val1[idx], val2[idx])} ' \
             f'for confidence: {conf_class[idx]}'
         print(_txt)
-        _rec_prec = (val1[idx] + val2[idx]) / 2.0
-        _score = conf_class[idx]
+        if not idx.size:
+            _rec_prec = _score = 0
+        else:
+            _rec_prec = (val1[idx] + val2[idx]) / 2.0
+            _score = conf_class[idx]
     else:
         _txt = f'Intersection at {val1[idx]} for confidence: {conf_class[idx]} with idx: {idx}'
         print(_txt)

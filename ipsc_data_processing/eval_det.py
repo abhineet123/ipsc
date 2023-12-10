@@ -123,7 +123,8 @@ class Params:
         self.fix_gt_cols = 0
         self.fix_det_cols = 1
 
-        self.ignore_invalid_class = 1
+        self.class_agnostic = 0
+        self.ignore_invalid_class = 0
         self.enable_mask = 1
 
         self.start_id = 0
@@ -480,6 +481,13 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
             gt_path = _gt_path
             if not os.path.isfile(gt_path):
+                # os.system('ls /data/ipsc')
+                # os.system(f'ls {gt_path}')
+                # os.system(f'ls {os.path.dirname(gt_path)}')
+
+                print(os.listdir('/'))
+                print(os.listdir(os.path.dirname(gt_path)))
+
                 raise IOError(f'GT file: {gt_path} does not exist')
 
             print(f'\ngt_path: {gt_path:s}')
@@ -490,6 +498,9 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 gt_class_data_dict[gt_class][seq_path] = []
 
             df_gt = pd.read_csv(gt_path)
+
+            if params.class_agnostic:
+                df_gt['class'] = 'agnostic'
 
             df_gt = df_gt.dropna(axis=0)
 
@@ -653,11 +664,16 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                 df_det = pd.read_csv(_det_path)
 
+
+
                 # df_dets.append(_df_det)
 
                 # df_det = pd.concat(df_dets, axis=0)
                 if fix_det_cols:
                     df_det = df_det.rename(columns=csv_rename_dict)
+
+                if params.class_agnostic:
+                    df_det['class'] = 'agnostic'
 
                 df_det["filename"] = df_det["filename"].apply(lambda x: seq_img_name_to_path[os.path.basename(x)])
 
@@ -3120,6 +3136,11 @@ def run(params, *argv):
 
     class_info = open(labels_path, 'r').read().splitlines()
     gt_classes, gt_class_cols = zip(*[k.split('\t') for k in class_info if k])
+
+    if params.class_agnostic:
+        gt_classes = ['agnostic', ]
+        gt_class_cols = [gt_class_cols[0], ]
+
     class_name_to_col = {
         x.strip(): col
         for x, col in zip(gt_classes, gt_class_cols)
@@ -3154,9 +3175,12 @@ def run(params, *argv):
         assert n_seq == n_dets, f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}"
 
         det_path_list = det_path_list[start_id:end_id + 1]
+
+        print(f'det_path_list: {det_path_list}')
+
         # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
         out_root_dir = linux_path(params.out_root_dir, f'{out_dir_name}')
-        os.makedirs(out_root_dir, exist_ok=1)
+        os.makedirs(out_root_dir, exist_ok=True)
 
         """FP threshold vs AUC for all image IDs"""
         roc_auc_metrics = [
