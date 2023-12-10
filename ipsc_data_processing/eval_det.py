@@ -34,10 +34,7 @@ from tabulate import tabulate
 from collections import OrderedDict
 import itertools
 
-from eval_utils import mask_str_to_img, perform_global_association, draw_text_in_image, get_max_iou_obj, \
-    compute_thresh_rec_prec, voc_ap, get_intersection, binary_cls_metrics, file_lines_to_list, \
-    arr_to_csv, draw_objs, norm_auc, resize_ar_tf_api, sortKey, linux_path, add_suffix, ImageSequenceWriter, \
-    mask_rle_to_pts
+import eval_utils as utils
 
 
 class Params:
@@ -184,7 +181,7 @@ class Params:
 
 def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
     temp_vis = np.concatenate((src_img,) * mult, axis=1)
-    temp_vis_res = resize_ar_tf_api(temp_vis, save_w, save_h - bottom_border, crop=1)
+    temp_vis_res = utils.resize_ar_tf_api(temp_vis, save_w, save_h - bottom_border, crop=1)
     temp_vis_h, temp_vis_w = temp_vis_res.shape[:2]
 
     vis_h, vis_w = temp_vis_h, int(temp_vis_w / mult)
@@ -193,20 +190,6 @@ def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
         f"vis size {vis_w} x {vis_h} > save size {save_w} x {save_h}"
 
     return vis_h, vis_w
-
-
-def draw_and_concat(src_img, frame_det_data, frame_gt_data, class_name_to_col, vis_alpha, vis_w, vis_h,
-                    vert_stack, check_det, mask=True):
-    dets_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1)
-    gt_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1)
-
-    dets_vis_img = draw_objs(dets_vis_img, frame_det_data, vis_alpha, class_name_to_col, check_bb=check_det,
-                             thickness=1, mask=mask)
-    gt_vis_img = draw_objs(gt_vis_img, frame_gt_data, vis_alpha, class_name_to_col, thickness=1, mask=mask)
-
-    cat_img_vis = np.concatenate((gt_vis_img, dets_vis_img), axis=0 if vert_stack else 1)
-
-    return cat_img_vis
 
 
 def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_root_dir, class_name_to_col,
@@ -329,7 +312,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
         out_root_name = os.path.basename(out_root_dir)
 
-        plots_out_dir = linux_path(out_root_dir, 'plots')
+        plots_out_dir = utils.linux_path(out_root_dir, 'plots')
         if draw_plot:
             print('Saving plots to: {}'.format(plots_out_dir))
             os.makedirs(plots_out_dir, exist_ok=1)
@@ -343,13 +326,13 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         det_pkl = params.det_pkl
         if not det_pkl:
             det_pkl = "raw_det_data_dict.pkl"
-        det_pkl = linux_path(det_pkl_dir, det_pkl)
+        det_pkl = utils.linux_path(det_pkl_dir, det_pkl)
 
         gt_pkl = params.gt_pkl
         if not gt_pkl:
             gt_pkl = f"{out_root_name}.pkl"
 
-        gt_pkl = linux_path(gt_pkl_dir, gt_pkl)
+        gt_pkl = utils.linux_path(gt_pkl_dir, gt_pkl)
 
         if img_start_id >= 0 and img_end_id >= 0:
             assert img_end_id >= img_start_id, "img_end_id must be >= img_start_id"
@@ -358,8 +341,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
             if img_start_id != img_end_id:
                 img_suffix = f'{img_suffix}_{img_end_id}'
 
-            gt_pkl = add_suffix(gt_pkl, img_suffix)
-            det_pkl = add_suffix(det_pkl, img_suffix)
+            gt_pkl = utils.add_suffix(gt_pkl, img_suffix)
+            det_pkl = utils.add_suffix(det_pkl, img_suffix)
 
         gt_class_data_dict = {
             gt_class: {} for gt_class in gt_classes
@@ -455,7 +438,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         seq_path = seq_paths[seq_idx]
 
         if img_dir_name:
-            seq_img_dir = linux_path(seq_path, img_dir_name)
+            seq_img_dir = utils.linux_path(seq_path, img_dir_name)
         else:
             seq_img_dir = seq_path
 
@@ -531,7 +514,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 n_gt_filenames = len(gt_filenames)
                 print(f'selecting {n_gt_filenames} image(s) from ID {img_start_id} to {img_end_id}')
 
-            # gt_file_paths = [linux_path(seq_path, gt_filename) for gt_filename in gt_filenames]
+            # gt_file_paths = [utils.linux_path(seq_path, gt_filename) for gt_filename in gt_filenames]
             gt_pbar = tqdm(gt_filenames, total=n_gt_filenames, ncols=100)
 
             valid_rows = 0
@@ -602,7 +585,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     }
                     if enable_mask:
                         try:
-                            mask_rle = mask_str_to_img(
+                            mask_rle = utils.mask_str_to_img(
                                 row["mask"], gt_img_h, gt_img_w, to_rle=1)
                         except KeyError:
                             mask_w = int(row["mask_w"])
@@ -663,8 +646,6 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 _det_name = os.path.basename(_det_path)
 
                 df_det = pd.read_csv(_det_path)
-
-
 
                 # df_dets.append(_df_det)
 
@@ -749,7 +730,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                         if enable_mask:
                             try:
-                                mask_rle = mask_str_to_img(row["mask"], det_img_h, det_img_w, to_rle=1)
+                                mask_rle = utils.mask_str_to_img(row["mask"], det_img_h, det_img_w, to_rle=1)
                             except KeyError:
                                 mask_w = int(row["mask_w"])
                                 mask_h = int(row["mask_h"])
@@ -940,7 +921,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 #             print('file_path: {}'.format(file_path))
                 #
                 #             time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
-                #             log_path = linux_path('map_pprint_log', 'map_pprint_log_{}.txt'.format(time_stamp))
+                #             log_path = utils.linux_path('map_pprint_log', 'map_pprint_log_{}.txt'.format(time_stamp))
                 #
                 #             with open(log_path, 'w') as _fid:
                 #                 pprint(('seq_det', seq_det), _fid)
@@ -1010,10 +991,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         class_stats = [None, ] * n_classes
 
         if write_summary:
-            summary_path = linux_path(out_root_dir, "summary.txt")
+            summary_path = utils.linux_path(out_root_dir, "summary.txt")
             print('Writing result summary to {}'.format(summary_path))
 
-        out_template = linux_path(out_root_dir).replace('/', '_')
+        out_template = utils.linux_path(out_root_dir).replace('/', '_')
         out_text = out_template
         text = 'class\tAP(%)\tPrecision(%)\tRecall(%)\tR=P(%)\tScore(%)\t' \
                'TP\tFN\tFN_DET\tFN_CLS\tFP\tFP_DUP\tFP_NEX\tFP_CLS\tGT\tDETS'
@@ -1050,7 +1031,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
         os.makedirs(out_root_dir, exist_ok=1)
 
-        misc_out_root_dir = linux_path(out_root_dir, 'misc')
+        misc_out_root_dir = utils.linux_path(out_root_dir, 'misc')
         os.makedirs(misc_out_root_dir, exist_ok=1)
 
         if vid_ext in img_exts:
@@ -1072,6 +1053,14 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
     n_all_gt_objs = n_all_fp_nex_whole_dets = 0
 
     json_category_name_to_id = {}
+    video_out_dict = ground_truth_img = vis_out_fnames = None
+
+    all_class_dets = all_class_gt = None
+    src_img = frame_det_data = frame_gt_data = None
+    vis_w = vis_h = None
+    vert_stack = 0
+    vis_w_all = vis_h_all = None
+    cat_img_vis_list = None
 
     for gt_class_idx, gt_class in enumerate(gt_classes):
         category_info = {'supercategory': 'none', 'id': gt_class_idx, 'name': gt_class}
@@ -1134,7 +1123,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
         if save_vis:
             if not vis_video or len(save_classes) > 1:
-                vis_root_dir = linux_path(out_root_dir, 'vis', gt_class)
+                vis_root_dir = utils.linux_path(out_root_dir, 'vis', gt_class)
             else:
                 vis_root_dir = out_root_dir
 
@@ -1142,7 +1131,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
             print(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
 
             vis_out_fnames = {
-                cat: linux_path(vis_root_dir, f'{cat}.{vid_ext}')
+                cat: utils.linux_path(vis_root_dir, f'{cat}.{vid_ext}')
                 for cat in cls_cat_types
             }
 
@@ -1201,7 +1190,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 so there is no risk of key error when trying to access GT data for those images
                 """
                 msg = f'{seq_name} : no GT found for {len(missing_gt_file_ids)} images ' \
-                    f'with {gt_class} detections'
+                      f'with {gt_class} detections'
                 if not allow_missing_gt:
                     raise AssertionError(msg)
 
@@ -1259,7 +1248,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
             all_ovmax = [-1] * n_seq_class_dets
 
             if assoc_method == 0:
-                cum_tp_sum, cum_fp_sum = perform_global_association(
+                cum_tp_sum, cum_fp_sum = utils.perform_global_association(
                     seq_class_det_data, seq_gt_data_dict, gt_class,
                     show_sim, tp, fp, all_status, all_ovmax,
                     iou_thresh, count_true_positives,
@@ -1293,52 +1282,52 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     if vis_file_id is None or file_id != vis_file_id:
                         vis_file_id = file_id
                         # vis_frames[file_id] = img
+                        img_id = os.path.basename(file_id)
+                        cat_img_vis_list = utils.draw_and_concat(
+                            src_img, frame_det_data, frame_gt_data, class_name_to_col, params.vis_alpha, vis_w, vis_h,
+                            vert_stack, params.check_det, img_id, mask=enable_mask, return_list=True)
 
-                        cat_img_vis = draw_and_concat(src_img, frame_det_data, frame_gt_data,
-                                                      class_name_to_col, params.vis_alpha, vis_w, vis_h, vert_stack,
-                                                      params.check_det, mask=enable_mask)
-
-                        cat_img_vis_all = draw_and_concat(src_img, frame_det_data, frame_gt_data,
-                                                          class_name_to_col, params.vis_alpha, vis_w_all, vis_h_all,
-                                                          vert_stack, params.check_det, mask=enable_mask)
+                        cat_img_vis_all = utils.draw_and_concat(
+                            src_img, frame_det_data, frame_gt_data, class_name_to_col, params.vis_alpha, vis_w_all,
+                            vis_h_all, vert_stack, params.check_det, img_id, mask=enable_mask)
 
                         cat_img_h, cat_img_w = cat_img_vis_all.shape[:2]
-
                         all_text_img = np.zeros((bottom_border, cat_img_w, 3), dtype=np.uint8)
                         text = f"{seq_idx + 1}/{n_seq} {seq_name}: {ground_truth_img} "
-                        all_text_img, _ = draw_text_in_image(all_text_img, text, (20, 20), 'white', 0)
+                        all_text_img, _ = utils.draw_text_in_image(all_text_img, text, (20, 20), 'white', 0)
 
                         all_out_img = np.concatenate((cat_img_vis_all, all_text_img), axis=0)
 
-                        all_video_out = video_out_dict["all"]
-                        if all_video_out is None:
-                            vis_out_fname = vis_out_fnames["all"]
-                            _save_dir = os.path.dirname(vis_out_fname)
+                        if save_vis:
+                            all_video_out = video_out_dict["all"]
+                            if all_video_out is None:
+                                vis_out_fname = vis_out_fnames["all"]
+                                _save_dir = os.path.dirname(vis_out_fname)
 
-                            if _save_dir and not os.path.isdir(_save_dir):
-                                os.makedirs(_save_dir)
+                                if _save_dir and not os.path.isdir(_save_dir):
+                                    os.makedirs(_save_dir)
+
+                                if vis_video:
+                                    video_h, video_w = save_h, save_w
+                                    all_video_out = cv2.VideoWriter(vis_out_fname, fourcc, fps, (video_w, video_h))
+                                else:
+                                    all_video_out = utils.ImageSequenceWriter(vis_out_fname, verbose=0)
+
+                                if not all_video_out:
+                                    raise AssertionError(
+                                        f'video file: {vis_out_fname} could not be opened for writing')
+
+                                video_out_dict["all"] = all_video_out
 
                             if vis_video:
-                                video_h, video_w = save_h, save_w
-                                all_video_out = cv2.VideoWriter(vis_out_fname, fourcc, fps, (video_w, video_h))
-                            else:
-                                all_video_out = ImageSequenceWriter(vis_out_fname, verbose=0)
+                                all_out_img = utils.resize_ar_tf_api(all_out_img, video_w, video_h, add_border=2)
 
-                            if not all_video_out:
-                                raise AssertionError(
-                                    f'video file: {vis_out_fname} could not be opened for writing')
+                            # cv2.imshow('all_out_img', all_out_img)
+                            # cv2.waitKey(0)
 
-                            video_out_dict["all"] = all_video_out
+                            all_video_out.write(all_out_img)
 
-                        if vis_video:
-                            all_out_img = resize_ar_tf_api(all_out_img, video_w, video_h, add_border=2)
-
-                        # cv2.imshow('all_out_img', all_out_img)
-                        # cv2.waitKey(0)
-
-                        all_video_out.write(all_out_img)
-
-                        # cat_img_vis = resize_ar_tf_api(cat_img_vis, save_w, save_h)
+                            # cat_img_vis_list = utils.resize_ar_tf_api(cat_img_vis_list, save_w, save_h)
 
                     if isinstance(img, list):
                         assert isinstance(cls_cat, list), "cls_cat must be a list"
@@ -1364,10 +1353,14 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             assert _text_img is None, "_img is None but _text_img isn't"
                             continue
 
-                        # img = resize_ar_tf_api(img, save_w, save_h)
-                        out_img = np.concatenate((cat_img_vis, _img), axis=0 if vert_stack else 1)
+                        # img = utils.resize_ar_tf_api(img, save_w, save_h)
+                        cat_img_vis_list.append(_img)
+                        # out_img = np.concatenate((cat_img_vis_list, _img), axis=0 if vert_stack else 1)
+                        out_img = utils.annotate(cat_img_vis_list, text=f'{img_id}',
+                                                 img_labels=['GT', 'Detections', 'Detection Failure'],
+                                                 grid_size=(-1, 1) if vert_stack else (1, -1))
 
-                        # out_img = resize_ar_tf_api(out_img, save_w, save_h)
+                        # out_img = utils.resize_ar_tf_api(out_img, save_w, save_h)
                         out_img = np.concatenate((out_img, _text_img), axis=0)
 
                         # cv2.imshow('text_img', text_img)
@@ -1393,7 +1386,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                     #     video_h += bottom_border
                                     video_out = cv2.VideoWriter(vis_out_fname, fourcc, fps, (video_w, video_h))
                                 else:
-                                    video_out = ImageSequenceWriter(vis_out_fname, verbose=0)
+                                    video_out = utils.ImageSequenceWriter(vis_out_fname, verbose=0)
 
                                 if not video_out:
                                     raise AssertionError(
@@ -1402,7 +1395,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 video_out_dict[_cls_cat] = video_out
 
                             if vis_video:
-                                out_img = resize_ar_tf_api(out_img, video_w, video_h, add_border=2)
+                                out_img = utils.resize_ar_tf_api(out_img, video_w, video_h, add_border=2)
 
                             video_out.write(out_img)
                             cat_to_vis_count[_cls_cat] += 1
@@ -1423,7 +1416,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                                  f'')
 
                         if show_vis:
-                            # cv2.imshow('cat_img_vis', cat_img_vis)
+                            # cv2.imshow('cat_img_vis_list', cat_img_vis_list)
                             cv2.imshow(win_name, out_img)
                             k = cv2.waitKey(1 - _pause)
                             if k == ord('q') or k == 27:
@@ -1490,8 +1483,6 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                         vis_h_all, vis_w_all = get_vis_size(src_img, 2, save_w, save_h, bottom_border)
 
-                        vert_stack = 0
-
                         # vert_ar = src_w / (src_h * 3)
                         # horz_ar = (src_w * 3) / src_h
                         #
@@ -1504,7 +1495,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         if src_img is None:
                             raise IOError(f'Image could not be read: {img_full_path}')
 
-                    img, resize_factor, _, _ = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
+                    img, resize_factor, _, _ = utils.resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
 
                     if vert_stack:
                         text_img_w = img.shape[1]
@@ -1540,23 +1531,23 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             else:
                                 fn_img = img_copy.copy()
 
-                                fn_img = draw_objs(fn_img, cat_fn_gts, col='cyan',
-                                                   in_place=True, thickness=2, mask=0)
+                                fn_img = utils.draw_objs(fn_img, cat_fn_gts, col='cyan',
+                                                         in_place=True, thickness=2, mask=0)
                                 fn_text_img = np.zeros((bottom_border, text_img_w, 3), dtype=np.uint8)
 
                                 v_pos = margin
                                 text = f"{seq_idx + 1}/{n_seq} {seq_name}: {ground_truth_img} "
-                                fn_text_img, line_width = draw_text_in_image(fn_text_img, text, (margin, v_pos),
-                                                                             'white', 0)
+                                fn_text_img, line_width = utils.draw_text_in_image(fn_text_img, text, (margin, v_pos),
+                                                                                   'white', 0)
                                 text = "Class [" + str(gt_class_idx + 1) + "/" + str(n_classes) + "]: " + gt_class + " "
-                                fn_text_img, line_width = draw_text_in_image(fn_text_img, text,
-                                                                             (margin + line_width, v_pos), 'cyan',
-                                                                             line_width)
+                                fn_text_img, line_width = utils.draw_text_in_image(fn_text_img, text,
+                                                                                   (margin + line_width, v_pos), 'cyan',
+                                                                                   line_width)
 
                                 text = "Result: {}".format(fn_cat.upper())
-                                fn_text_img, line_width = draw_text_in_image(fn_text_img, text,
-                                                                             (margin + line_width, v_pos), color,
-                                                                             line_width)
+                                fn_text_img, line_width = utils.draw_text_in_image(fn_text_img, text,
+                                                                                   (margin + line_width, v_pos), color,
+                                                                                   line_width)
 
                                 if show_stats:
                                     v_pos += int(bottom_border / 2)
@@ -1569,13 +1560,14 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                     except ZeroDivisionError:
                                         _prec = 0
                                     text = f'gts: {n_all_frame_gt:d} dets: {n_all_frame_dets:d} ' \
-                                        f'tp: {tp_sum:d} fn: {fn_sum:d} ' \
-                                        f'fp: {fp_sum:d} fp_dup: {fp_dup_sum:d} fp_nex: {fp_nex_sum:d} ' \
-                                        f'recall: {_recall:5.2f}% prec: {_prec:5.2f} '
+                                           f'tp: {tp_sum:d} fn: {fn_sum:d} ' \
+                                           f'fp: {fp_sum:d} fp_dup: {fp_dup_sum:d} fp_nex: {fp_nex_sum:d} ' \
+                                           f'recall: {_recall:5.2f}% prec: {_prec:5.2f} '
 
-                                    fn_text_img, line_width = draw_text_in_image(fn_text_img, text, (margin, v_pos),
-                                                                                 'white',
-                                                                                 line_width)
+                                    fn_text_img, line_width = utils.draw_text_in_image(fn_text_img, text,
+                                                                                       (margin, v_pos),
+                                                                                       'white',
+                                                                                       line_width)
 
                             cls_cat.append(fn_cat)
                             img.append(fn_img)
@@ -1634,8 +1626,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     fn_cats = [None, ] * n_fn_gts
                     """find which of the GTs have corresponding detections from other classes"""
                     for gt_obj_id, gt_obj in enumerate(all_class_gt):
-                        ovmax_, det_match_ = get_max_iou_obj(frame_det_data, gt_classes,
-                                                             gt_obj["bbox"], gt_obj["mask"], enable_mask)
+                        ovmax_, det_match_ = utils.get_max_iou_obj(frame_det_data, gt_classes,
+                                                                   gt_obj["bbox"], gt_obj["mask"], enable_mask)
                         if ovmax_ > min_overlap:
                             """misclassification"""
                             assert det_match_["class"] != gt_class, \
@@ -1688,7 +1680,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                 if assoc_method == 1:
                     """find the maximally overlapping GT of the same class"""
-                    ovmax, gt_match = get_max_iou_obj(frame_gt_data, [gt_class, ], bb_det, mask_det, enable_mask)
+                    ovmax, gt_match = utils.get_max_iou_obj(frame_gt_data, [gt_class, ], bb_det, mask_det, enable_mask)
 
                     """assign curr_det_data as true positive or false positive"""
                     if ovmax >= min_overlap:
@@ -1711,8 +1703,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         """false positive"""
                         fp[det_idx] = 1
 
-                        ovmax_, gt_match_ = get_max_iou_obj(frame_gt_data, other_classes, bb_det, mask_det,
-                                                            enable_mask)
+                        ovmax_, gt_match_ = utils.get_max_iou_obj(frame_gt_data, other_classes, bb_det, mask_det,
+                                                                  enable_mask)
                         if ovmax_ >= min_overlap:
                             assert gt_match_['class'] != gt_class, "FP match has current GT class"
 
@@ -1756,7 +1748,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         fp_sum = 0
 
                 if enable_vis:
-                    img, resize_factor, _, _ = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
+                    img, resize_factor, _, _ = utils.resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
 
                     color = 'hot_pink'
                     if cls_cat == "tp":
@@ -1767,13 +1759,13 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     # cv2.rectangle(img, (int(bb_det[0]), int(bb_det[1])), (int(bb_det[2]), int(bb_det[3])), color, 2)
                     # if there is intersections between the det and GT
                     if show_gt and cls_cat in ("fp_nex-part", "tp"):
-                        img = draw_objs(img, [gt_match, ], col='cyan', in_place=True, mask=0, thickness=2)
+                        img = utils.draw_objs(img, [gt_match, ], col='cyan', in_place=True, mask=0, thickness=2)
 
                         # bb_gt = gt_match["bbox"]
                         # bb_gt = [float(x) for x in gt_match["bbox"].split()]
                         # cv2.rectangle(img, (int(bb_gt[0]), int(bb_gt[1])), (int(bb_gt[2]), int(bb_gt[3])),
                         # light_blue, 2)
-                    img = draw_objs(img, [curr_det_data, ], col=color, in_place=True, mask=0, thickness=2)
+                    img = utils.draw_objs(img, [curr_det_data, ], col=color, in_place=True, mask=0, thickness=2)
 
                     if not show_text:
                         _xmin = bb_det[0] * resize_factor
@@ -1794,17 +1786,19 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         # height, _ = img.shape[:2]
                         v_pos = margin
                         text = "{}: {} ".format(seq_name, ground_truth_img)
-                        text_img, line_width = draw_text_in_image(text_img, text, (margin, v_pos), 'white', 0)
+                        text_img, line_width = utils.draw_text_in_image(text_img, text, (margin, v_pos), 'white', 0)
                         text = "Class [" + str(gt_class_idx + 1) + "/" + str(n_classes) + "]: " + gt_class + " "
-                        text_img, line_width = draw_text_in_image(text_img, text, (margin + line_width, v_pos), 'cyan',
-                                                                  line_width)
+                        text_img, line_width = utils.draw_text_in_image(text_img, text, (margin + line_width, v_pos),
+                                                                        'cyan',
+                                                                        line_width)
 
                         text = "Result: " + cls_cat.upper()
                         if ovmax != -1:
                             text = text + " IOU {:.2f}".format(ovmax)
 
-                        text_img, line_width = draw_text_in_image(text_img, text, (margin + line_width, v_pos), color,
-                                                                  line_width)
+                        text_img, line_width = utils.draw_text_in_image(text_img, text, (margin + line_width, v_pos),
+                                                                        color,
+                                                                        line_width)
 
                         v_pos += int(bottom_border / 2)
                         # rank_pos = str(idx + 1)  # rank position (idx starts at 0)
@@ -1823,12 +1817,12 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 _prec = 0
 
                             text = f'gts: {n_all_frame_gt:d} dets: {n_all_frame_dets:d} ' \
-                                f'tp: {tp_sum:d} fn: {fn_sum:d} ' \
-                                f'fp: {fp_sum:d} fp_dup: {fp_dup_sum:d} fp_nex: {fp_nex_sum:d} ' \
-                                f'recall: {_recall:5.2f}% prec: {_prec:5.2f} '
+                                   f'tp: {tp_sum:d} fn: {fn_sum:d} ' \
+                                   f'fp: {fp_sum:d} fp_dup: {fp_dup_sum:d} fp_nex: {fp_nex_sum:d} ' \
+                                   f'recall: {_recall:5.2f}% prec: {_prec:5.2f} '
 
                         text += "conf: {0:.2f}% ".format(float(curr_det_data["confidence"]) * 100)
-                        text_img, line_width = draw_text_in_image(text_img, text, (margin, v_pos), 'white', 0)
+                        text_img, line_width = utils.draw_text_in_image(text_img, text, (margin, v_pos), 'white', 0)
 
                         if ovmax != -1:
                             color = 'pale_violet_red'
@@ -1837,9 +1831,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             else:
                                 text = "IoU: {0:.2f}% ".format(ovmax * 100) + ">= {0:.2f}% ".format(min_overlap * 100)
                                 color = 'green'
-                            text_img, line_width = draw_text_in_image(text_img, text, (margin + line_width, v_pos),
-                                                                      color,
-                                                                      line_width)
+                            text_img, line_width = utils.draw_text_in_image(text_img, text,
+                                                                            (margin + line_width, v_pos),
+                                                                            color,
+                                                                            line_width)
 
                 if is_last_in_frame:
                     """last detection in this frame assuming detections are ordered by frame"""
@@ -1871,7 +1866,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                     """check which of the unused GTs have corresponding detections of other classes"""
                     for gt_obj_id, gt_obj in enumerate(unused_gt):
-                        ovmax_, det_match_ = get_max_iou_obj(
+                        ovmax_, det_match_ = utils.get_max_iou_obj(
                             frame_det_data, other_classes,
                             gt_obj["bbox"], gt_obj["mask"], enable_mask)
 
@@ -1995,7 +1990,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 'category_id': _gt_class_id,
                                 'ignore': 0,
                             }
-                            bnd_id +=1
+                            bnd_id += 1
 
                             if enable_mask:
                                 mask_rle = _frame_gt_datum["mask"]
@@ -2006,7 +2001,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                     "mask_w": mask_w,
                                     "mask_counts": mask_counts,
                                 })
-                                mask_pts, bbox, is_multi = mask_rle_to_pts(mask_rle)
+                                mask_pts, bbox, is_multi = utils.mask_rle_to_pts(mask_rle)
                                 mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
                                 _gt_json_ann.update({
                                     'segmentation': [mask_pts_flat, ],
@@ -2096,7 +2091,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             "mask_w": mask_w,
                             "mask_counts": mask_counts,
                         })
-                        mask_pts, bbox, is_multi = mask_rle_to_pts(mask_rle)
+                        mask_pts, bbox, is_multi = utils.mask_rle_to_pts(mask_rle)
                         mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
                         _det_json_ann.update({
                             'segmentation': [mask_pts_flat, ],
@@ -2173,7 +2168,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 _start_t = time.time()
                 _rec_prec_list = []
                 for __thresh_idx in range(n_score_thresholds):
-                    __temp = compute_thresh_rec_prec(
+                    __temp = utils.compute_thresh_rec_prec(
                         __thresh_idx,
                         score_thresholds=score_thresholds,
                         conf_class=conf_class,
@@ -2194,7 +2189,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 _start_t = time.time()
                 with closing(ThreadPool(n_threads)) as pool:
                     _rec_prec_list = pool.map(functools.partial(
-                        compute_thresh_rec_prec,
+                        utils.compute_thresh_rec_prec,
                         score_thresholds=score_thresholds,
                         conf_class=conf_class,
                         fp_class=fp_class,
@@ -2251,7 +2246,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
             # print(prec)
 
-            ap, mrec, mprec = voc_ap(rec, prec)
+            ap, mrec, mprec = utils.voc_ap(rec, prec)
 
             if draw_plot:
                 fig1 = plt.figure(figsize=(18, 9), dpi=80)
@@ -2299,14 +2294,14 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 # plt.show()
 
                 # save the plot
-                plot_out_fname = linux_path(plots_out_dir, gt_class + ".png")
+                plot_out_fname = utils.linux_path(plots_out_dir, gt_class + ".png")
                 print('Saving plot to: {}'.format(plot_out_fname))
                 fig1.savefig(plot_out_fname)
 
                 plt.close(fig1)
 
-            _rec_prec, _score, _txt = get_intersection(rec, prec, conf_class, score_thresh,
-                                                       "recall", "precision")
+            _rec_prec, _score, _txt = utils.get_intersection(rec, prec, conf_class, score_thresh,
+                                                             "recall", "precision")
 
             if draw_plot:
                 out_text_class = _txt + '\n'
@@ -2359,10 +2354,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
             csv_df = pd.DataFrame(
                 data=np.vstack((score_thresholds, _class_rec, _class_prec)).T,
                 columns=csv_columns_rec_prec)
-            out_fname_csv = linux_path(misc_out_root_dir, f'{gt_class}-rec_prec.csv')
+            out_fname_csv = utils.linux_path(misc_out_root_dir, f'{gt_class}-rec_prec.csv')
             csv_df.to_csv(out_fname_csv, columns=csv_columns_rec_prec, index=False, sep='\t')
 
-            _class_auc_rec_prec = norm_auc(_class_rec, _class_prec)
+            _class_auc_rec_prec = utils.norm_auc(_class_rec, _class_prec)
 
         if gt_check:
             all_class_gt = []
@@ -2422,7 +2417,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
             assert n_total_gt == tp_sum + fn_sum, \
                 f'{gt_class} :: Mismatch between n_total_gt: {n_total_gt} and tp_sum+fn_sum: {tp_sum + fn_sum}, ' \
-                    f'n_used_gt: {n_used_gt}'
+                f'n_used_gt: {n_used_gt}'
 
             assert tp_sum + fn_sum == n_class_gt, f"mismatch between tp + fn {tp_sum + fn_sum} and gt {n_class_gt}"
 
@@ -2432,13 +2427,13 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         assert fp_nex_sum == fp_nex_part_sum + fp_nex_whole_sum, "fp_nex_sum mismatch"
 
         text = f"{gt_class:s}\t" \
-            f"{ap * 100:.2f}\t" \
-            f"{_prec * 100:.2f}\t{_rec * 100:.2f}\t{_rec_prec * 100:.2f}\t" \
-            f"{_score * 100:.2f}" \
-            f"\t{tp_sum:d}\t" \
-            f"{fn_sum:d}\t{fn_det_sum:d}\t{fn_cls_sum:d}\t" \
-            f"{fp_sum:d}\t{fp_dup_sum:d}\t{fp_nex_sum:d}\t{fp_cls_sum:d}\t" \
-            f"{n_class_gt:d}\t{n_class_dets:d}"
+               f"{ap * 100:.2f}\t" \
+               f"{_prec * 100:.2f}\t{_rec * 100:.2f}\t{_rec_prec * 100:.2f}\t" \
+               f"{_score * 100:.2f}" \
+               f"\t{tp_sum:d}\t" \
+               f"{fn_sum:d}\t{fn_det_sum:d}\t{fn_cls_sum:d}\t" \
+               f"{fp_sum:d}\t{fp_dup_sum:d}\t{fp_nex_sum:d}\t{fp_cls_sum:d}\t" \
+               f"{n_class_gt:d}\t{n_class_dets:d}"
 
         if n_class_gt == 0:
             assert fn_det_sum == 0, "fn_det_sum > 0 but n_class_gt is 0"
@@ -2554,7 +2549,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         assert fn_sum_overall == fn_det_sum_overall + fn_cls_sum_overall, "fn_sum_overall mismatch"
 
         if n_classes == 2:
-            binary_cls_metrics(
+            utils.utils.utils.binary_cls_metrics(
                 class_stats,
                 tp_sum_thresh_all,
                 fp_sum_thresh_all,
@@ -2596,21 +2591,21 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         # text_table.add_row(text.split('\t') + [''] * 5)
 
         text = f'avg\t{mAP * 100:.2f}\t' \
-            f'{m_prec * 100:.2f}\t{m_rec * 100:.2f}\t{m_rec_prec * 100:.2f}\t' \
-            f'{m_score * 100:.2f}\t{tp_sum_overall:d}\t' \
-            f'{fn_sum_overall:d}\t{fn_det_sum_overall:d}\t{fn_cls_sum_overall:d}\t' \
-            f'{fp_sum_overall:d}\t{fp_dup_sum_overall:d}\t{fp_nex_sum_overall:d}\t{fp_cls_sum_overall:d}\t' \
-            f'{gt_overall:d}\t{dets_overall:d}'
+               f'{m_prec * 100:.2f}\t{m_rec * 100:.2f}\t{m_rec_prec * 100:.2f}\t' \
+               f'{m_score * 100:.2f}\t{tp_sum_overall:d}\t' \
+               f'{fn_sum_overall:d}\t{fn_det_sum_overall:d}\t{fn_cls_sum_overall:d}\t' \
+               f'{fp_sum_overall:d}\t{fp_dup_sum_overall:d}\t{fp_nex_sum_overall:d}\t{fp_cls_sum_overall:d}\t' \
+               f'{gt_overall:d}\t{dets_overall:d}'
 
         text_table.add_row(text.split('\t'))
         out_text += text + '\n'
 
         text = f'wt_avg\t{wmAP * 100:.2f}\t' \
-            f'{wm_prec * 100:.2f}\t{wm_rec * 100:.2f}\t{wm_rec_prec * 100:.2f}\t' \
-            f'{wm_score * 100:.2f}\t{tp_sum_overall:d}\t' \
-            f'{fn_sum_overall:d}\t{fn_det_sum_overall:d}\t{fn_cls_sum_overall:d}\t' \
-            f'{fp_sum_overall:d}\t{fp_dup_sum_overall:d}\t{fp_nex_sum_overall:d}\t{fp_cls_sum_overall:d}\t' \
-            f'{gt_overall:d}\t{dets_overall:d}'
+               f'{wm_prec * 100:.2f}\t{wm_rec * 100:.2f}\t{wm_rec_prec * 100:.2f}\t' \
+               f'{wm_score * 100:.2f}\t{tp_sum_overall:d}\t' \
+               f'{fn_sum_overall:d}\t{fn_det_sum_overall:d}\t{fn_cls_sum_overall:d}\t' \
+               f'{fp_sum_overall:d}\t{fp_dup_sum_overall:d}\t{fp_nex_sum_overall:d}\t{fp_cls_sum_overall:d}\t' \
+               f'{gt_overall:d}\t{dets_overall:d}'
 
         text_table.add_row(text.split('\t'))
         out_text += text + '\n'
@@ -2645,12 +2640,12 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
             for thresh_idx, _thresh in enumerate(score_thresholds):
                 _rec_thresh, _prec_thresh = rec_thresh_all[thresh_idx, :].squeeze(), \
-                                            prec_thresh_all[thresh_idx, :].squeeze()
+                    prec_thresh_all[thresh_idx, :].squeeze()
 
                 wm_rec_thresh[thresh_idx] = np.average(_rec_thresh, weights=avg_wts)
                 wm_prec_thresh[thresh_idx] = np.average(_prec_thresh, weights=avg_wts)
 
-            overall_ap_thresh, _, _ = voc_ap(wm_rec_thresh[::-1], wm_prec_thresh[::-1])
+            overall_ap_thresh, _, _ = utils.voc_ap(wm_rec_thresh[::-1], wm_prec_thresh[::-1])
             wm_diff_thresh = wm_rec_thresh - wm_prec_thresh
 
             itsc_idx = np.argwhere(np.diff(np.sign(wm_rec_thresh - wm_prec_thresh))).flatten()
@@ -2716,7 +2711,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 # plt.show()
 
                 # save the plot
-                plot_out_fname = linux_path(plots_out_dir, "overall.png")
+                plot_out_fname = utils.linux_path(plots_out_dir, "overall.png")
                 print('Saving plot to: {}'.format(plot_out_fname))
                 fig1.savefig(plot_out_fname)
 
@@ -2762,7 +2757,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     opt_idx = curr_idx
 
                 opt_score_thresh, opt_wm_rec, opt_wm_prec = score_thresholds[opt_idx], wm_rec_thresh[opt_idx], \
-                                                            wm_prec_thresh[opt_idx]
+                    wm_prec_thresh[opt_idx]
 
                 opt_data = np.asarray(opt_data)
                 opt_headers = ['score_thresh', 'recall', 'precision', 'inc_rec', 'dec_prec', 'diff_rec_prec']
@@ -2801,7 +2796,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     class_fp_dup = fp_dup_thresh_all[:, _class_id].squeeze()
                     class_fp_nex = fp_nex_thresh_all[:, _class_id].squeeze()
 
-                    class_ap, _, _ = voc_ap(class_rec[_idx:][::-1], class_prec[_idx:][::-1])
+                    class_ap, _, _ = utils.voc_ap(class_rec[_idx:][::-1], class_prec[_idx:][::-1])
                     class_ap *= 100
                     # print('score_threshold {} :: {} ap: {}'.format(_score_threshold, _class_name, class_ap))
 
@@ -2828,11 +2823,11 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         'Score': _score_threshold,
                     }
                     text = f'{_header:s}\t' \
-                        f'{class_ap:.2f}\t' \
-                        f'{_curr_prec:.2f}\t' \
-                        f'{_curr_rec:.2f}\t' \
-                        f'{_curr_rec_prec:.2f}\t' \
-                        f'{_score_threshold:.2f}'
+                           f'{class_ap:.2f}\t' \
+                           f'{_curr_prec:.2f}\t' \
+                           f'{_curr_rec:.2f}\t' \
+                           f'{_curr_rec_prec:.2f}\t' \
+                           f'{_score_threshold:.2f}'
                     out_text += text + '\n'
 
                     row_list = list(text.split('\t'))
@@ -2848,7 +2843,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             _curr_rec, _curr_prec, _curr_rec_prec, __gt
                         )
 
-                overall_ap, _, _ = voc_ap(wm_rec_thresh[_idx:][::-1], wm_prec_thresh[_idx:][::-1])
+                overall_ap, _, _ = utils.voc_ap(wm_rec_thresh[_idx:][::-1], wm_prec_thresh[_idx:][::-1])
                 overall_ap *= 100
                 # print('score_threshold {} :: overall ap: {}'.format(_score_threshold, overall_ap))
 
@@ -2864,11 +2859,11 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                 }
 
                 text = f'{_header:s}\t' \
-                    f'{overall_ap:.2f}\t' \
-                    f'{_wm_prec:.2f}\t' \
-                    f'{_wm_rec:.2f}\t' \
-                    f'{_wm_rec_prec:.2f}\t' \
-                    f'{_score_threshold:.2f}'
+                       f'{overall_ap:.2f}\t' \
+                       f'{_wm_prec:.2f}\t' \
+                       f'{_wm_rec:.2f}\t' \
+                       f'{_wm_rec_prec:.2f}\t' \
+                       f'{_score_threshold:.2f}'
 
                 out_text += text + '\n'
 
@@ -2902,7 +2897,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 wm_rec_thresh * 100,
                                 wm_prec_thresh * 100)).T,
                 columns=csv_columns_rec_prec)
-            out_fname_csv = linux_path(misc_out_root_dir, f'rec_prec.csv')
+            out_fname_csv = utils.linux_path(misc_out_root_dir, f'rec_prec.csv')
             csv_df.to_csv(out_fname_csv, columns=csv_columns_rec_prec, index=False, sep='\t')
 
             csv_txt = csv_df.to_csv(sep='\t', index=False)
@@ -2989,7 +2984,7 @@ def run(params, *argv):
     labels_path = params.labels_path
 
     if params.labels_root:
-        labels_path = linux_path(params.labels_root, labels_path)
+        labels_path = utils.linux_path(params.labels_root, labels_path)
 
     assert labels_path, f"labels_path must be provided"
     assert os.path.isfile(labels_path), f"invalid labels_path: {labels_path}"
@@ -3040,14 +3035,15 @@ def run(params, *argv):
 
     img_path_list_file_temp = img_path_list_file
     if params.img_root_dir:
-        img_path_list_file_temp = linux_path(params.img_root_dir, img_path_list_file_temp)
+        img_path_list_file_temp = utils.linux_path(params.img_root_dir, img_path_list_file_temp)
 
     if os.path.isdir(img_path_list_file_temp):
         if params.all_img_dirs:
-            img_path_list = [linux_path(img_path_list_file_temp, name) for name in os.listdir(img_path_list_file_temp)
+            img_path_list = [utils.linux_path(img_path_list_file_temp, name) for name in
+                             os.listdir(img_path_list_file_temp)
                              if
-                             os.path.isdir(linux_path(img_path_list_file_temp, name))]
-            img_path_list.sort(key=sortKey)
+                             os.path.isdir(utils.linux_path(img_path_list_file_temp, name))]
+            img_path_list.sort(key=utils.sortKey)
         else:
             img_path_list = [img_path_list_file_temp, ]
         img_path_list_file_temp = os.path.abspath(img_path_list_file_temp)
@@ -3058,9 +3054,9 @@ def run(params, *argv):
             out_dir_name = f'{out_dir_name}_{db_root_name}_{db_name}'
 
     elif os.path.isfile(img_path_list_file):
-        img_path_list = file_lines_to_list(img_path_list_file)
+        img_path_list = utils.file_lines_to_list(img_path_list_file)
         if img_root_dir:
-            img_path_list = [linux_path(img_root_dir, name) for name in img_path_list]
+            img_path_list = [utils.linux_path(img_root_dir, name) for name in img_path_list]
         if params.auto_suffix:
             db_name = os.path.splitext(os.path.basename(img_path_list_file))[0]
             out_dir_name = f'{out_dir_name}_{db_name}'
@@ -3071,31 +3067,31 @@ def run(params, *argv):
     print(f'img_path_list: {img_path_list}')
 
     if params.gt_csv_suffix:
-        params.gt_csv_name = add_suffix(params.gt_csv_name, params.gt_csv_suffix)
+        params.gt_csv_name = utils.add_suffix(params.gt_csv_name, params.gt_csv_suffix)
 
     if not gt_paths:
-        gt_path_list = [linux_path(img_path, params.gt_csv_name) for img_path in img_path_list]
+        gt_path_list = [utils.linux_path(img_path, params.gt_csv_name) for img_path in img_path_list]
     elif gt_paths.endswith('.csv'):
         if not os.path.isfile(gt_paths) and gt_root_dir:
-            gt_paths = linux_path(gt_root_dir, gt_paths)
+            gt_paths = utils.linux_path(gt_root_dir, gt_paths)
 
         assert os.path.isfile(gt_paths), f"invalid gt_paths csv: {gt_paths}"
 
         gt_path_list = [gt_paths, ]
     elif os.path.isfile(gt_paths):
-        gt_path_list = file_lines_to_list(gt_paths)
-        # gt_path_list = [linux_path(name, 'annotations.csv') for name in gt_path_list]
+        gt_path_list = utils.file_lines_to_list(gt_paths)
+        # gt_path_list = [utils.linux_path(name, 'annotations.csv') for name in gt_path_list]
         if gt_root_dir:
-            gt_path_list = [linux_path(gt_root_dir, name) for name in gt_path_list]
+            gt_path_list = [utils.linux_path(gt_root_dir, name) for name in gt_path_list]
     else:
         if not os.path.isdir(gt_paths) and gt_root_dir:
-            gt_paths = linux_path(gt_root_dir, gt_paths)
+            gt_paths = utils.linux_path(gt_root_dir, gt_paths)
 
         assert os.path.isdir(gt_paths), f'invalid gt_paths: {gt_paths}'
 
-        gt_path_list = [linux_path(gt_paths, name) for name in os.listdir(gt_paths)
-                        if os.path.isdir(linux_path(gt_paths, name))]
-        gt_path_list.sort(key=sortKey)
+        gt_path_list = [utils.linux_path(gt_paths, name) for name in os.listdir(gt_paths)
+                        if os.path.isdir(utils.linux_path(gt_paths, name))]
+        gt_path_list.sort(key=utils.sortKey)
 
     print(f'gt_path_list: {gt_path_list}')
 
@@ -3153,16 +3149,16 @@ def run(params, *argv):
         det_path_list_file = _det_path_list_file
 
         if not det_path_list_file:
-            det_path_list = [[linux_path(img_path, detection_name) for detection_name in _detection_names]
+            det_path_list = [[utils.linux_path(img_path, detection_name) for detection_name in _detection_names]
                              for img_path in img_path_list]
         elif det_path_list_file.endswith('.csv'):
             det_path_list = [det_path_list_file, ]
         elif os.path.isdir(det_path_list_file):
-            det_path_list = [linux_path(det_path_list_file, name) for name in os.listdir(det_path_list_file) if
-                             os.path.isfile(linux_path(det_path_list_file, name)) and name.endswith('.csv')]
-            det_path_list.sort(key=sortKey)
+            det_path_list = [utils.linux_path(det_path_list_file, name) for name in os.listdir(det_path_list_file) if
+                             os.path.isfile(utils.linux_path(det_path_list_file, name)) and name.endswith('.csv')]
+            det_path_list.sort(key=utils.sortKey)
         elif os.path.isfile(det_path_list_file):
-            det_path_list = file_lines_to_list(det_path_list_file)
+            det_path_list = utils.file_lines_to_list(det_path_list_file)
             # det_path_list = [name + '.csv' for name in det_path_list]
         else:
             raise IOError('invalid det_path_list_file: {}'.format(det_path_list_file))
@@ -3179,7 +3175,7 @@ def run(params, *argv):
         print(f'det_path_list: {det_path_list}')
 
         # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
-        out_root_dir = linux_path(params.out_root_dir, f'{out_dir_name}')
+        out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
         os.makedirs(out_root_dir, exist_ok=True)
 
         """FP threshold vs AUC for all image IDs"""
@@ -3247,7 +3243,7 @@ def run(params, *argv):
             while True:
                 img_id += 1
 
-                img_out_root_dir = linux_path(out_root_dir, f'img_{img_id}')
+                img_out_root_dir = utils.linux_path(out_root_dir, f'img_{img_id}')
 
                 if not params.gt_pkl:
                     params.gt_pkl_dir = out_root_dir
@@ -3303,10 +3299,10 @@ def run(params, *argv):
                     del eval_0[metric]
                     del eval_1[metric]
 
-                img_eval_dict_path = linux_path(img_out_root_dir, 'eval_dict.json')
+                img_eval_dict_path = utils.linux_path(img_out_root_dir, 'eval_dict.json')
                 open(img_eval_dict_path, 'w').write(json.dumps(img_eval_dict, indent=4))
 
-            eval_dicts_path = linux_path(out_root_dir, 'eval_dict.json')
+            eval_dicts_path = utils.linux_path(out_root_dir, 'eval_dict.json')
             print(f'saving eval_dict to {eval_dicts_path}')
             with open(eval_dicts_path, 'w') as f:
                 output_json_data = json.dumps(eval_dicts, indent=4)
@@ -3317,16 +3313,16 @@ def run(params, *argv):
                 metric_list = metrics_dict[metric]
                 metric_arr = np.stack((img_end_ids, metric_list), axis=1)
 
-                arr_to_csv(metric_arr, csv_columns_metric, out_root_dir, f'{metric}-iw.csv')
+                utils.arr_to_csv(metric_arr, csv_columns_metric, out_root_dir, f'{metric}-iw.csv')
 
             for metric in roc_auc_metrics + max_tp_metrics:
                 metric_list = metrics_dict[metric]
                 metric_df = pd.concat(metric_list, axis=0)
 
-                out_fname_csv = linux_path(out_root_dir, f'{metric}-iw.csv')
+                out_fname_csv = utils.linux_path(out_root_dir, f'{metric}-iw.csv')
                 metric_df.to_csv(out_fname_csv, index=False, sep='\t')
         else:
-            # out_root_dir = linux_path(f'results', f'{out_dir_name}', time_stamp)
+            # out_root_dir = utils.linux_path(f'results', f'{out_dir_name}', time_stamp)
 
             eval_dict = evaluate(
                 params=params,
@@ -3354,7 +3350,7 @@ def run(params, *argv):
                 except KeyError:
                     pass
 
-            eval_dict_path = linux_path(out_root_dir, 'eval_dict.json')
+            eval_dict_path = utils.linux_path(out_root_dir, 'eval_dict.json')
             print(f'saving eval_dict to {eval_dict_path}')
             with open(eval_dict_path, 'w') as f:
                 output_json_data = json.dumps(eval_dict, indent=4)

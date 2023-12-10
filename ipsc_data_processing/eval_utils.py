@@ -1,9 +1,9 @@
 import operator
 import os
-import sys
 import traceback
 import logging
 
+import random
 import cv2
 import numpy as np
 import pandas as pd
@@ -16,7 +16,7 @@ from io import StringIO
 from PIL import Image
 
 import matplotlib.pyplot as plt
-from sklearn.metrics import auc, roc_auc_score, roc_curve
+from sklearn.metrics import auc, roc_curve
 from tabulate import tabulate
 
 import pycocotools.mask as mask_util
@@ -221,7 +221,6 @@ def clamp(_vals, min_val, max_val):
 
 
 def drawBox(image, xmin, ymin, xmax, ymax, box_color=(0, 255, 0), label=None, font_size=0.3, mask=None):
-
     image_float = image.astype(np.float32)
 
     if mask is not None:
@@ -323,6 +322,257 @@ def resize_ar_tf_api(src_img, width=0, height=0, return_factors=0, add_border=1,
             return dst_img, resize_factor, start_row, start_col
         else:
             return dst_img
+
+
+def annotate(img_list,
+             img_labels,
+             text,
+             fmt=None,
+             grid_size=(-1, 1),
+             ):
+    """
+
+    :param np.ndarray | list | tuple img_list:
+    :param str text:
+    :param CVText fmt:
+    :param tuple(int) grid_size:
+    :return:
+    """
+
+    if not isinstance(img_list, (list, tuple)):
+        img_list = [img_list, ]
+
+    assert len(img_labels) == len(img_list), "img_labels and img_list must have same length"
+
+    if fmt is None:
+        """use default format"""
+        fmt = CVText()
+
+    size = fmt.size
+
+    color = col_bgr[fmt.color]
+    font = CVConstants.fonts[fmt.font]
+    line_type = CVConstants.line_types[fmt.line_type]
+
+    out_img_list = []
+
+    for _id, _img in enumerate(img_list):
+        if len(_img.shape) == 2:
+            _img = np.stack([_img, ] * 3, axis=2)
+
+        img_label = img_labels[_id]
+        (text_width, text_height) = cv2.getTextSize(
+            img_label, font,
+            fontScale=fmt.size,
+            thickness=fmt.thickness)[0]
+
+        text_height += fmt.offset[1]
+        text_width += fmt.offset[0]
+        label_img = np.zeros((text_height, text_width), dtype=np.uint8)
+        cv2.putText(label_img, img_label, tuple(fmt.offset),
+                    font, size, color, fmt.thickness, line_type)
+
+        if len(_img.shape) == 3:
+            label_img = np.stack([label_img, ] * 3, axis=2)
+
+        if text_width < _img.shape[1]:
+            label_img = resize_ar(label_img, width=_img.shape[1], height=text_height,
+                                  only_border=2, placement_type=1)
+
+        # border_img = np.full((5, _img.shape[0], 3), 255, dtype=np.uint8)
+        img_list_label = [label_img,
+                          # border_img,
+                          _img]
+
+        _img = stack_images(img_list_label, grid_size=(-1, 1), preserve_order=1)
+
+        # border_img = np.full((_img.shape[1], 5, 3), 255, dtype=np.uint8)
+        # _img = stack_images([_img, border_img], grid_size=(1, -1), preserve_order=1)
+
+        out_img_list.append(_img)
+
+    img_stacked = stack_images(out_img_list, grid_size=grid_size, preserve_order=1)
+
+    if text is not None:
+        if '\n' in text:
+            text_list = text.split('\n')
+        else:
+            text_list = [text, ]
+
+        max_text_width = 0
+        text_height = 0
+        text_heights = []
+
+        for _text in text_list:
+            (_text_width, _text_height) = cv2.getTextSize(_text, font, fontScale=fmt.size, thickness=fmt.thickness)[0]
+            if _text_width > max_text_width:
+                max_text_width = _text_width
+            text_height += _text_height + 5
+            text_heights.append(_text_height)
+
+        text_width = max_text_width + 10
+        text_height += 30
+
+        text_img = np.zeros((text_height, text_width, 3), dtype=np.uint8)
+        location = list(fmt.offset)
+
+        for _id, _text in enumerate(text_list):
+            cv2.putText(text_img, _text, tuple(location), font, size, color, fmt.thickness, line_type)
+            location[1] += text_heights[_id] + 5
+
+        if text_width < img_stacked.shape[1]:
+            text_img = resize_ar(text_img, width=img_stacked.shape[1], height=text_height,
+                                 only_border=2, placement_type=1)
+
+        border_img = np.full((5, img_stacked.shape[1], 3), 255, dtype=np.uint8)
+
+        img_list_txt = [text_img, border_img, img_stacked]
+
+        img_stacked = stack_images_with_resize(img_list_txt, grid_size=(-1, 1), preserve_order=1)
+
+    return img_stacked
+
+
+def draw_and_concat(src_img, frame_det_data, frame_gt_data, class_name_to_col, vis_alpha, vis_w, vis_h,
+                    vert_stack, check_det, img_id, mask=True, return_list=False):
+    dets_vis_img, resize_factor, _, _ = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
+    gt_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=0)
+
+    dets_vis_img = draw_objs(dets_vis_img, frame_det_data, vis_alpha, class_name_to_col, check_bb=check_det,
+                             thickness=1, mask=mask, bb_resize=resize_factor)
+    gt_vis_img = draw_objs(gt_vis_img, frame_gt_data, vis_alpha, class_name_to_col, thickness=1, mask=mask,
+                           bb_resize=resize_factor)
+
+    if return_list:
+        return [gt_vis_img, dets_vis_img]
+
+    cat_img_vis = annotate((gt_vis_img, dets_vis_img), text=f'{img_id}', img_labels=['GT', 'Detections'],
+                           grid_size=(-1, 1) if vert_stack else (1, -1))
+
+    # cv2.imshow('dets_vis_img', dets_vis_img)
+    # cv2.imshow('gt_vis_img', gt_vis_img)
+    # cv2.imshow('cat_img_vis', cat_img_vis)
+    # cv2.waitKey(0)
+
+    # cat_img_vis = np.concatenate((gt_vis_img, dets_vis_img), axis=0 if vert_stack else 1)
+
+    return cat_img_vis
+
+
+def stack_images(img_list, grid_size=None, stack_order=0, borderless=1,
+                 preserve_order=0, return_idx=0,
+                 only_height=0, placement_type=0):
+    n_images = len(img_list)
+
+    if grid_size is None or not grid_size:
+        n_cols = n_rows = int(np.ceil(np.sqrt(n_images)))
+    else:
+        n_rows, n_cols = grid_size
+
+        if n_rows < 0:
+            n_rows = int(np.ceil(n_images / n_cols))
+        elif n_cols < 0:
+            n_cols = int(np.ceil(n_images / n_rows))
+
+    target_ar = 1920.0 / 1080.0
+    if n_cols <= n_rows:
+        target_ar /= 2.0
+    shape_img_id = 0
+    min_ar_diff = np.inf
+    img_heights = np.zeros((n_images,), dtype=np.int32)
+    for _img_id in range(n_images):
+        height, width = img_list[_img_id].shape[:2]
+        img_heights[_img_id] = height
+        img_ar = float(n_cols * width) / float(n_rows * height)
+        ar_diff = abs(img_ar - target_ar)
+        if ar_diff < min_ar_diff:
+            min_ar_diff = ar_diff
+            shape_img_id = _img_id
+
+    img_heights_sort_idx = np.argsort(-img_heights)
+    row_start_idx = img_heights_sort_idx[:n_rows]
+    img_idx = img_heights_sort_idx[n_rows:]
+    img_size = img_list[shape_img_id].shape
+    height, width = img_size[:2]
+
+    if only_height:
+        width = 0
+
+    stacked_img = None
+    list_ended = False
+    img_idx_id = 0
+    inner_axis = 1 - stack_order
+    stack_idx = []
+    stack_locations = []
+    start_row = 0
+    # curr_ann = ''
+    for row_id in range(n_rows):
+        start_id = n_cols * row_id
+        curr_row = None
+        start_col = 0
+        for col_id in range(n_cols):
+            img_id = start_id + col_id
+            if img_id >= n_images:
+                curr_img = np.zeros(img_size, dtype=np.uint8)
+                list_ended = True
+            else:
+                if preserve_order:
+                    _curr_img_id = img_id
+                elif col_id == 0:
+                    _curr_img_id = row_start_idx[row_id]
+                else:
+                    _curr_img_id = img_idx[img_idx_id]
+                    img_idx_id += 1
+
+                curr_img = img_list[_curr_img_id]
+                stack_idx.append(_curr_img_id)
+                if not borderless:
+                    curr_img = resize_ar(curr_img, width, height)
+                if img_id == n_images - 1:
+                    list_ended = True
+            if curr_row is None:
+                curr_row = curr_img
+            else:
+                if borderless:
+                    if curr_row.shape[0] < curr_img.shape[0]:
+                        curr_row = resize_ar(curr_row, 0, curr_img.shape[0])
+                    elif curr_img.shape[0] < curr_row.shape[0]:
+                        curr_img = resize_ar(curr_img, 0, curr_row.shape[0])
+                curr_row = np.concatenate((curr_row, curr_img), axis=inner_axis)
+
+            curr_h, curr_w = curr_img.shape[:2]
+            stack_locations.append((start_row, start_col, start_row + curr_h, start_col + curr_w))
+            start_col += curr_w
+
+        if stacked_img is None:
+            stacked_img = curr_row
+        else:
+            if borderless:
+                resize_factor = float(curr_row.shape[1]) / float(stacked_img.shape[1])
+                if curr_row.shape[1] < stacked_img.shape[1]:
+                    curr_row = resize_ar(curr_row, stacked_img.shape[1], 0, placement_type=placement_type)
+                elif curr_row.shape[1] > stacked_img.shape[1]:
+                    stacked_img = resize_ar(stacked_img, curr_row.shape[1], 0)
+
+                new_start_col = 0
+                for _i in range(n_cols):
+                    _start_row, _start_col, _end_row, _end_col = stack_locations[_i - n_cols]
+                    _w, _h = _end_col - _start_col, _end_row - _start_row
+                    w_resized, h_resized = _w / resize_factor, _h / resize_factor
+                    stack_locations[_i - n_cols] = (
+                        _start_row, new_start_col, _start_row + h_resized, new_start_col + w_resized)
+                    new_start_col += w_resized
+            stacked_img = np.concatenate((stacked_img, curr_row), axis=stack_order)
+
+        curr_h, curr_w = curr_row.shape[:2]
+        start_row += curr_h
+
+        if list_ended:
+            break
+    if return_idx:
+        return stacked_img, stack_idx, stack_locations
+    else:
+        return stacked_img
 
 
 def resize_ar(src_img, width=0, height=0, return_factors=False,
@@ -1078,8 +1328,8 @@ def binary_cls_metrics(
         max_tp_out_root_dir = linux_path(out_root_dir, 'max_tp')
         roc_auc_out_root_dir = linux_path(out_root_dir, 'roc_auc')
 
-        os.makedirs(max_tp_out_root_dir, exist_ok=1)
-        os.makedirs(roc_auc_out_root_dir, exist_ok=1)
+        os.makedirs(max_tp_out_root_dir, exist_ok=True)
+        os.makedirs(roc_auc_out_root_dir, exist_ok=True)
 
         stats_0 = class_stats[0]
         stats_1 = class_stats[1]
@@ -1552,8 +1802,8 @@ def get_intersection(val1, val2, conf_class, score_thresh, name1, name2):
             idx = idx[0]
 
         _txt = f'No intersection between {name1} and {name2} found; ' \
-            f'min_difference: {_diff[idx]} at {(val1[idx], val2[idx])} ' \
-            f'for confidence: {conf_class[idx]}'
+               f'min_difference: {_diff[idx]} at {(val1[idx], val2[idx])} ' \
+               f'for confidence: {conf_class[idx]}'
         print(_txt)
         if not idx.size:
             _rec_prec = _score = 0
@@ -1612,7 +1862,7 @@ def compute_thresh_rec_prec(thresh_idx, score_thresholds,
 
 
 def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
-              in_place=False, bbox=True, mask=False, thickness=2, check_bb=0):
+              in_place=False, bbox=True, mask=False, thickness=2, check_bb=0, bb_resize=None):
     if in_place:
         vis_img = img
     else:
@@ -1650,7 +1900,7 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
 
             if check_bb:
                 log_dir = 'log/masks'
-                os.makedirs(log_dir, exist_ok=1)
+                os.makedirs(log_dir, exist_ok=True)
 
                 time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
 
@@ -1720,6 +1970,9 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
                         continue
 
                     xmin, ymin, xmax, ymax = mask_bb
+
+            if bb_resize is not None:
+                resize_factor = bb_resize
 
             if resize_factor != 1.0:
                 xmin *= resize_factor
@@ -2757,7 +3010,7 @@ def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, out
                 adjust_axes(r, t, fig, axes)
     # set window title
     fig.canvas.set_window_title(window_title)
-    # write classes in y axis
+    # write classes in y-axis
     tick_font_size = 12
     plt.yticks(range(n_classes), sorted_keys, fontsize=tick_font_size)
     """
@@ -2792,43 +3045,174 @@ def draw_plot_func(dictionary, n_classes, window_title, plot_title, x_label, out
     plt.close()
 
 
-def get_shifted_boxes(anchor_box, img, n_samples,
-                      min_anchor_iou, max_anchor_iou,
-                      min_shift_ratio, max_shift_ratio,
-                      min_resize_ratio=None, max_resize_ratio=None,
-                      min_size=20, max_size_ratio=0.8,
-                      gt_boxes=None,
-                      max_gt_iou=None,
-                      sampled_boxes=None,
-                      max_sampled_iou=0.5,
-                      max_iters=100,
-                      name='',
-                      vis=0):
+def draw_dotted_line(img, pt1, pt2, color, thickness=1, gap=7):
+    dist = ((pt1[0] - pt2[0]) ** 2 + (pt1[1] - pt2[1]) ** 2) ** .5
+    pts = []
+    for i in np.arange(0, dist, gap):
+        r = i / dist
+        x = int((pt1[0] * (1 - r) + pt2[0] * r) + .5)
+        y = int((pt1[1] * (1 - r) + pt2[1] * r) + .5)
+        p = (x, y)
+        pts.append(p)
+
+    for p in pts:
+        cv2.circle(img, p, thickness, color, -1)
+
+
+def draw_dotted_poly(img, pts, color, thickness=1):
+    s = pts[0]
+    e = pts[0]
+    pts.append(pts.pop(0))
+    for p in pts:
+        s = e
+        e = p
+        draw_dotted_line(img, s, e, color, thickness)
+
+
+def draw_dotted_rect(img, pt1, pt2, color, thickness=1):
+    pts = [pt1, (pt2[0], pt1[1]), pt2, (pt1[0], pt2[1])]
+    draw_dotted_poly(img, pts, color, thickness)
+
+
+def draw_box(frame, box, _id=None, color='black', thickness=2,
+             is_dotted=0, transparency=0.):
+    """
+    :type frame: np.ndarray
+    :type box: np.ndarray
+    :type _id: int | str | None
+    :param color: indexes into col_bgr
+    :type color: str
+    :type thickness: int
+    :type is_dotted: int
+    :type transparency: float
+    :rtype: None
+    """
+    if np.any(np.isnan(box)):
+        print('invalid location provided: {}'.format(box))
+        return
+
+    box = box.squeeze()
+    pt1 = (int(box[0]), int(box[1]))
+    pt2 = (int(box[0] + box[2]),
+           int(box[1] + box[3]))
+
+    if transparency > 0:
+        _frame = np.copy(frame)
+    else:
+        _frame = frame
+
+    if is_dotted:
+        draw_dotted_rect(_frame, pt1, pt2, col_bgr[color], thickness=thickness)
+    else:
+        cv2.rectangle(_frame, pt1, pt2, col_bgr[color], thickness=thickness)
+
+    if transparency > 0:
+        frame[pt1[1]:pt2[1], pt1[0]:pt2[0], ...] = (
+                frame[pt1[1]:pt2[1], pt1[0]:pt2[0], ...].astype(np.float32) * (1 - transparency) +
+                _frame[pt1[1]:pt2[1], pt1[0]:pt2[0], ...].astype(np.float32) * transparency
+        ).astype(frame.dtype)
+
+    if _id is not None:
+        font_line_type = cv2.LINE_AA
+        cv2.putText(frame, str(_id), (int(box[0] - 1), int(box[1] - 1)), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, col_bgr[color], 1, font_line_type)
+
+
+def draw_boxes(frame, boxes, _id=None, color='black', thickness=2,
+               is_dotted=0, transparency=0.):
+    if len(boxes.shape) == 1:
+        boxes = np.expand_dims(boxes, axis=0)
+    for box in boxes:
+        draw_box(frame, box, _id, color, thickness,
+                 is_dotted, transparency)
+
+
+def compute_overlap(iou, ioa_1, ioa_2, object_1, objects_2):
     """
 
-    :param anchor_box:
-    :param img:
-    :param n_samples:
-    :param min_anchor_iou:
-    :param max_anchor_iou:
-    :param min_shift_ratio:
-    :param max_shift_ratio:
-    :param min_resize_ratio:
-    :param max_resize_ratio:
-    :param min_size:
-    :param max_size_ratio:
-    :param gt_boxes:
-    :param max_gt_iou:
-    :param sampled_boxes:
-    :param max_sampled_iou:
-    :param max_iters:
-    :param name:
-    :param vis:
-    :return:
+    compute overlap of a single object with one or more objects
+    specialized version for greater speed
+
+    :type iou: np.ndarray | None
+    :type ioa_1: np.ndarray | None
+    :type ioa_2: np.ndarray | None
+    :type object_1: np.ndarray
+    :type objects_2: np.ndarray
+    :rtype: None
     """
 
-    # vis = 1
+    n1 = object_1.shape[0]
 
+    assert n1 == 1, "object_1 should be a single object"
+
+    n = objects_2.shape[0]
+
+    ul_coord_1 = object_1[0, :2].reshape((1, 2))
+    ul_coords_2 = objects_2[:, :2]  # n x 2
+    ul_coords_inter = np.maximum(ul_coord_1, ul_coords_2)  # n x 2
+
+    size_1 = object_1[0, 2:].reshape((1, 2))
+    sizes_2 = objects_2[:, 2:]  # n x 2
+
+    br_coord_1 = ul_coord_1 + size_1 - 1
+    br_coords_2 = ul_coords_2 + sizes_2 - 1  # n x 2
+    br_coords_inter = np.minimum(br_coord_1, br_coords_2)  # n x 2
+
+    sizes_inter = br_coords_inter - ul_coords_inter + 1
+    sizes_inter[sizes_inter < 0] = 0
+    areas_inter = np.multiply(sizes_inter[:, 0], sizes_inter[:, 1]).reshape((n, 1))  # n x 1
+
+    areas_2 = None
+    if iou is not None:
+        areas_2 = np.multiply(sizes_2[:, 0], sizes_2[:, 1]).reshape((n, 1))  # n x 1
+        area_union = size_1[0, 0] * size_1[0, 1] + areas_2 - areas_inter
+        iou[:] = np.divide(areas_inter, area_union)
+    if ioa_1 is not None:
+        """intersection / area of object 1"""
+        ioa_1[:] = np.divide(areas_inter, size_1[0, 0] * size_1[0, 1])
+    if ioa_2 is not None:
+        """intersection / area of object 2"""
+        if areas_2 is None:
+            areas_2 = np.multiply(sizes_2[:, 0], sizes_2[:, 1])
+        ioa_2[:] = np.divide(areas_inter, areas_2)
+
+
+def compute_iou_single(bb1, bb2):
+    x1, y1, w1, h1 = bb1
+    x2, y2, w2, h2 = bb2
+
+    # bb1 = [bb1[0], bb1[1], bb1[0] + bb1[2], bb1[1] + bb1[3]]
+    # bb2 = [bb2[0], bb2[1], bb2[0] + bb2[2], bb2[1] + bb2[3]]
+
+    bb_intersect = [max(x1, x2),
+                    max(y1, y2),
+                    min(x1 + w1, x2 + w2),
+                    min(y1 + h1, y2 + h2)]
+
+    iw = bb_intersect[2] - bb_intersect[0] + 1
+    ih = bb_intersect[3] - bb_intersect[1] + 1
+
+    if iw <= 0 or ih <= 0:
+        return 0
+    area_intersect = (iw * ih)
+    area_union = (w1 + 1) * (h1 + 1) + (w2 + 1) * (h2 + 1) - area_intersect
+    iou = area_intersect / area_union
+    return iou
+
+
+def get_shifted_boxes(
+        anchor_box, img, n_samples,
+        min_anchor_iou, max_anchor_iou,
+        min_shift_ratio, max_shift_ratio,
+        min_resize_ratio=None, max_resize_ratio=None,
+        min_size=20, max_size_ratio=0.8,
+        gt_boxes=None,
+        max_gt_iou=None,
+        sampled_boxes=None,
+        max_sampled_iou=0.5,
+        max_iters=100,
+        name='',
+        vis=0):
     if not name:
         name = 'get_shifted_boxes'
 
