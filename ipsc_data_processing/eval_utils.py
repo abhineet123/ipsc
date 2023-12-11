@@ -1972,6 +1972,9 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
                     xmin, ymin, xmax, ymax = mask_bb
 
             if bb_resize is not None:
+                if mask:
+                    assert bb_resize == resize_factor, \
+                        f"mismatch between bb_resize: {bb_resize} and resize_factor from mask: {resize_factor}"
                 resize_factor = bb_resize
 
             if resize_factor != 1.0:

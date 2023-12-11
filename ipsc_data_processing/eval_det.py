@@ -174,6 +174,8 @@ class Params:
 
         self.fps_to_gt = 0
 
+        self.monitor_scale = 1.25
+
         self._sweep_params = [
             'nms_thresh',
         ]
@@ -1354,10 +1356,9 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                             continue
 
                         # img = utils.resize_ar_tf_api(img, save_w, save_h)
-                        cat_img_vis_list.append(_img)
                         # out_img = np.concatenate((cat_img_vis_list, _img), axis=0 if vert_stack else 1)
-                        out_img = utils.annotate(cat_img_vis_list, text=f'{img_id}',
-                                                 img_labels=['GT', 'Detections', 'Detection Failure'],
+                        out_img = utils.annotate(cat_img_vis_list + [_img, ], text=f'{img_id}',
+                                                 img_labels=['GT', 'All Detections', 'Current Detection'],
                                                  grid_size=(-1, 1) if vert_stack else (1, -1))
 
                         # out_img = utils.resize_ar_tf_api(out_img, save_w, save_h)
@@ -1417,6 +1418,9 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                         if show_vis:
                             # cv2.imshow('cat_img_vis_list', cat_img_vis_list)
+                            if params.monitor_scale != 1.0:
+                                out_img = utils.resize_ar(out_img, width=int(1920/params.monitor_scale))
+
                             cv2.imshow(win_name, out_img)
                             k = cv2.waitKey(1 - _pause)
                             if k == ord('q') or k == 27:
@@ -1532,7 +1536,8 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                                 fn_img = img_copy.copy()
 
                                 fn_img = utils.draw_objs(fn_img, cat_fn_gts, col='cyan',
-                                                         in_place=True, thickness=2, mask=0)
+                                                         in_place=True, thickness=2, mask=0,
+                                                         bb_resize=resize_factor)
                                 fn_text_img = np.zeros((bottom_border, text_img_w, 3), dtype=np.uint8)
 
                                 v_pos = margin
@@ -1759,13 +1764,15 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                     # cv2.rectangle(img, (int(bb_det[0]), int(bb_det[1])), (int(bb_det[2]), int(bb_det[3])), color, 2)
                     # if there is intersections between the det and GT
                     if show_gt and cls_cat in ("fp_nex-part", "tp"):
-                        img = utils.draw_objs(img, [gt_match, ], col='cyan', in_place=True, mask=0, thickness=2)
+                        img = utils.draw_objs(img, [gt_match, ], col='cyan', in_place=True, mask=0, thickness=2,
+                                              bb_resize=resize_factor)
 
                         # bb_gt = gt_match["bbox"]
                         # bb_gt = [float(x) for x in gt_match["bbox"].split()]
                         # cv2.rectangle(img, (int(bb_gt[0]), int(bb_gt[1])), (int(bb_gt[2]), int(bb_gt[3])),
                         # light_blue, 2)
-                    img = utils.draw_objs(img, [curr_det_data, ], col=color, in_place=True, mask=0, thickness=2)
+                    img = utils.draw_objs(img, [curr_det_data, ], col=color, in_place=True, mask=0, thickness=2,
+                                          bb_resize=resize_factor)
 
                     if not show_text:
                         _xmin = bb_det[0] * resize_factor
