@@ -80,6 +80,7 @@ class Params:
         self.cfg = ''
         self.check_seq_name = 1
         self.delete_tmp_files = 0
+        self.det_root_dir = ''
         self.det_paths = ''
         self.combine_dets = 0
         self.draw_plot = 0
@@ -647,7 +648,10 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
 
                 _det_name = os.path.basename(_det_path)
 
-                df_det = pd.read_csv(_det_path)
+                try:
+                    df_det = pd.read_csv(_det_path)
+                except pd.errors.EmptyDataError:
+                    continue
 
                 # df_dets.append(_df_det)
 
@@ -730,19 +734,6 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         except KeyError:
                             confidence = 1.0
 
-                        if enable_mask:
-                            try:
-                                mask_rle = utils.mask_str_to_img(row["mask"], det_img_h, det_img_w, to_rle=1)
-                            except KeyError:
-                                mask_w = int(row["mask_w"])
-                                mask_h = int(row["mask_h"])
-                                mask_counts = str(row["mask_counts"])
-
-                                mask_rle = dict(
-                                    size=(mask_h, mask_w),
-                                    counts=mask_counts
-                                )
-
                         if det_class not in gt_classes:
                             msg = f'{det_seq_name}: {det_filename} :: invalid det_class: {det_class}'
                             if ignore_invalid_class:
@@ -773,6 +764,17 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         }
 
                         if enable_mask:
+                            try:
+                                mask_rle = utils.mask_str_to_img(row["mask"], det_img_h, det_img_w, to_rle=1)
+                            except KeyError:
+                                mask_w = int(row["mask_w"])
+                                mask_h = int(row["mask_h"])
+                                mask_counts = str(row["mask_counts"])
+
+                                mask_rle = dict(
+                                    size=(mask_h, mask_w),
+                                    counts=mask_counts
+                                )
                             bbox_dict["mask"] = mask_rle
 
                         seq_det_bounding_boxes.append(bbox_dict)
@@ -3002,6 +3004,9 @@ def run(params, *argv):
     _det_path_list_file = params.det_paths
     if nms_thresh > 0:
         _det_path_list_file = f'{_det_path_list_file}_nms_{int(nms_thresh * 100):02d}'
+
+    if params.det_root_dir:
+        _det_path_list_file = os.path.join(params.det_root_dir, _det_path_list_file)
 
     img_root_dir = params.img_root_dir
     gt_root_dir = params.gt_root_dir
