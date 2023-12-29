@@ -1069,6 +1069,10 @@ def annotate_and_show(title, img_list, text=None, pause=1,
     return pause
 
 
+def to_str(iter_, sep='\n'):
+    return sep.join(iter_)
+
+
 def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
 

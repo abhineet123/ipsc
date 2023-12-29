@@ -2558,7 +2558,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
         assert fn_sum_overall == fn_det_sum_overall + fn_cls_sum_overall, "fn_sum_overall mismatch"
 
         if n_classes == 2:
-            utils.utils.utils.binary_cls_metrics(
+            utils.binary_cls_metrics(
                 class_stats,
                 tp_sum_thresh_all,
                 fp_sum_thresh_all,
@@ -3076,7 +3076,7 @@ def run(params, *argv):
     else:
         raise IOError('invalid img_path_list_file: {}'.format(img_path_list_file))
 
-    print(f'img_path_list: {img_path_list}')
+    print(f'img_path_list:\n{utils.to_str(img_path_list)}\n')
 
     if params.gt_csv_suffix:
         params.gt_csv_name = utils.add_suffix(params.gt_csv_name, params.gt_csv_suffix)
@@ -3105,7 +3105,7 @@ def run(params, *argv):
                         if os.path.isdir(utils.linux_path(gt_paths, name))]
         gt_path_list.sort(key=utils.sortKey)
 
-    print(f'gt_path_list: {gt_path_list}')
+    print(f'gt_path_list:\n{utils.to_str(gt_path_list)}\n')
 
     if not detection_names:
         detection_names = ['detections.csv', ]
@@ -3184,7 +3184,7 @@ def run(params, *argv):
 
         det_path_list = det_path_list[start_id:end_id + 1]
 
-        print(f'det_path_list: {det_path_list}')
+        print(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
 
         # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
         out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
