@@ -256,6 +256,8 @@ python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths
 <a id="swi___ext_reorg_roi_g2_16_53_"></a>
 ## swi       @ ext_reorg_roi_g2_16_53-->eval_det
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-swi gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0.1 n_proc=12
+
+python3 eval_det.py cfg=ipsc_2_class-agn img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-swi-agn gt_pkl=g2_0_15.pkl iw=0 nms_thresh=0.1 n_proc=12
 __iw__
 python3 eval_det.py cfg=ipsc_2_class img_paths=lists/ext_reorg_roi.txt det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_16_53-no_validate/g2_0_15/csv gt_csv_name=annotations_0_15.csv save_suffix=inv-swi gt_pkl=g2_0_15.pkl iw=0 n_proc=12 iw=1
 
