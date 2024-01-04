@@ -82,6 +82,7 @@ class Params:
         self.delete_tmp_files = 0
         self.det_root_dir = ''
         self.det_paths = ''
+        self.allow_missing_dets = 0
         self.combine_dets = 0
         self.draw_plot = 0
         self.gt_paths = ''
@@ -3180,7 +3181,26 @@ def run(params, *argv):
             det_path_list = [det_path_list, ]
             n_dets = 1
 
-        assert n_seq == n_dets, f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}"
+        if n_seq != n_dets:
+            if 0 < n_dets < n_seq and params.allow_missing_dets and not params.combine_dets:
+                det_seq_names = [os.path.splitext(os.path.basename(k))[0]
+                                 for k in det_path_list]
+                det_seq_names = list(set(det_seq_names))
+                assert len(det_seq_names) == n_dets, "missing dets can only be handled when det file names " \
+                                                     "are sequence names"
+
+                img_seq_names = [os.path.basename(k) for k in det_path_list]
+                missing_det_seq = list(set(img_seq_names) - set(det_seq_names))
+                print(f"creating empty det files for {len(missing_det_seq)} missing sequences: {missing_det_seq}")
+                for missing_seq in missing_det_seq:
+                    missing_det_path = det_path_list[0].replace(det_seq_names[0], missing_seq)
+                    assert not os.path.exists(missing_det_path), \
+                        f"something we are going on since missing_det_path exists: {missing_det_path}"
+                    open(missing_det_path, 'w').close()
+            else:
+                raise AssertionError(f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}")
+
+
 
         det_path_list = det_path_list[start_id:end_id + 1]
 
