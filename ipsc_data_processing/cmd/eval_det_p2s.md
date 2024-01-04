@@ -58,9 +58,9 @@ python3 eval_det.py cfg=ipsc_2_class:ext:g2_54_126,p2s:640 det_paths=ckpt-74844-
 #### ckpt-1975       @ batch_48/g2_16_53/resnet-640-->eval_det_p2s
 <a id="on_g2_0_15___ckpt_1975_batch_48_g2_16_53_resnet_640_"></a>
 ##### on-g2_0_15       @ ckpt-1975/batch_48/g2_16_53/resnet-640-->eval_det_p2s
-python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15-agn,p2s det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-1975-ext_reorg_roi_g2_0_15/csv-batch_16 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48 iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=1
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15-agn,p2s det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-1975-ext_reorg_roi_g2_0_15/csv-batch_16 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48-1975 iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=0
 ``cls``
-python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15,p2s:cls det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-1975-ext_reorg_roi_g2_0_15/csv-batch_16 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48-cls iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=1
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15,p2s:cls det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-1975-ext_reorg_roi_g2_0_15/csv-batch_16 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48-1975-cls iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=0
 <a id="on_g2_54_126___ckpt_1975_batch_48_g2_16_53_resnet_640_"></a>
 ##### on-g2_54_126       @ ckpt-1975/batch_48/g2_16_53/resnet-640-->eval_det_p2s
 python3 eval_det.py cfg=ipsc_2_class:ext:g2_54_126-agn,p2s det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-1975-ext_reorg_roi_g2_54_126/csv-batch_32 save_suffix=p2s-resnet_640-g2_16_53-g2_54_126-batch_48 iw=0 nms_thresh=0 n_proc=12 show_vis=0
@@ -70,9 +70,9 @@ python3 eval_det.py cfg=ipsc_2_class:ext:g2_54_126,p2s:cls det_paths=resnet_640_
 #### ckpt-12275       @ batch_48/g2_16_53/resnet-640-->eval_det_p2s
 <a id="on_g2_0_15___ckpt_12275_batch_48_g2_16_53_resnet_64_0_"></a>
 ##### on-g2_0_15       @ ckpt-12275/batch_48/g2_16_53/resnet-640-->eval_det_p2s
-python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15-agn,p2s:fill det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-12275-ext_reorg_roi_g2_0_15/csv-batch_32 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48 iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=0
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15-agn,p2s:fill det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-12275-ext_reorg_roi_g2_0_15/csv-batch_32 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48-12275 iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=0
 ``cls``
-python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15,p2s:cls:fill det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-12275-ext_reorg_roi_g2_0_15/csv-batch_32 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48-cls iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=0
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15,p2s:cls:fill det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_48-gxe/ckpt-12275-ext_reorg_roi_g2_0_15/csv-batch_32 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_48-12275-cls iw=0 nms_thresh=0 n_proc=12 show_vis=0 load_gt=0
 <a id="batch_6___g2_16_53_resnet_64_0_"></a>
 ### batch_6       @ g2_16_53/resnet-640-->eval_det_p2s
 <a id="on_g2_0_15___batch_6_g2_16_53_resnet_64_0_"></a>
