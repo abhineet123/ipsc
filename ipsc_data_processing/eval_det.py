@@ -1422,7 +1422,7 @@ def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_roo
                         if show_vis:
                             # cv2.imshow('cat_img_vis_list', cat_img_vis_list)
                             if params.monitor_scale != 1.0:
-                                out_img = utils.resize_ar(out_img, width=int(1920/params.monitor_scale))
+                                out_img = utils.resize_ar(out_img, width=int(1920 / params.monitor_scale))
 
                             cv2.imshow(win_name, out_img)
                             k = cv2.waitKey(1 - _pause)
@@ -3185,22 +3185,24 @@ def run(params, *argv):
             if 0 < n_dets < n_seq and params.allow_missing_dets and not params.combine_dets:
                 det_seq_names = [os.path.splitext(os.path.basename(k))[0]
                                  for k in det_path_list]
-                det_seq_names = list(set(det_seq_names))
-                assert len(det_seq_names) == n_dets, "missing dets can only be handled when det file names " \
-                                                     "are sequence names"
+                assert len(set(det_seq_names)) == n_dets, "missing dets can only be handled when det file names " \
+                                                          "are sequence names"
 
-                img_seq_names = [os.path.basename(k) for k in det_path_list]
-                missing_det_seq = list(set(img_seq_names) - set(det_seq_names))
-                print(f"creating empty det files for {len(missing_det_seq)} missing sequences: {missing_det_seq}")
-                for missing_seq in missing_det_seq:
-                    missing_det_path = det_path_list[0].replace(det_seq_names[0], missing_seq)
+                img_seq_names = [os.path.basename(k) for k in img_path_list]
+                missing_det_seq_names = list(set(img_seq_names) - set(det_seq_names))
+                print(
+                    f"\n\ncreating empty det files for {len(missing_det_seq_names)} missing sequences:\n"
+                    f"{missing_det_seq_names}\n\n")
+                for missing_det_seq_name in missing_det_seq_names:
+                    missing_det_path = det_path_list[0].replace(det_seq_names[0], missing_det_seq_name)
                     assert not os.path.exists(missing_det_path), \
-                        f"something we are going on since missing_det_path exists: {missing_det_path}"
+                        f"missing_det_path exists: {missing_det_path}"
                     open(missing_det_path, 'w').close()
+                    det_path_list.append(missing_det_path)
+                det_path_list.sort(key=utils.sortKey)
+                n_dets = len(det_path_list)
             else:
                 raise AssertionError(f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}")
-
-
 
         det_path_list = det_path_list[start_id:end_id + 1]
 
