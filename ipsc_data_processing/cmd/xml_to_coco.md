@@ -2,8 +2,8 @@
 <!-- MarkdownTOC -->
 
 - [mnist_mot       @ xml_to_coco](#mnist_mot___xml_to_coc_o_)
-    - [all_frames_roi       @ mnist_mot](#all_frames_roi___mnist_mo_t_)
-        - [g2_0_37       @ all_frames_roi/mnist_mot](#g2_0_37___all_frames_roi_mnist_mot_)
+- [all_frames_roi](#all_frames_ro_i_)
+    - [g2_0_37       @ all_frames_roi](#g2_0_37___all_frames_roi_)
 - [ipsc_2_class       @ xml_to_coco](#ipsc_2_class___xml_to_coc_o_)
     - [all_frames_roi       @ ipsc_2_class](#all_frames_roi___ipsc_2_class_)
         - [g2_0_37       @ all_frames_roi/ipsc_2_class](#g2_0_37___all_frames_roi_ipsc_2_clas_s_)
@@ -77,10 +77,10 @@ python xml_to_coco.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Image
 __val__
 python xml_to_coco.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images seq_paths=lists/mnist_mot_rgb_512_1k_9600_3_var.txt class_names_path=lists/classes/mnist_mot.txt output_json=mnist_mot_rgb_512_1k_9600_3_var.json ignore_invalid_label=0 val_ratio=1 start_id=1000 end_id=-1 skip_invalid=0 enable_mask=0 samples_per_seq=0.01
 
-<a id="all_frames_roi___mnist_mo_t_"></a>
-## all_frames_roi       @ mnist_mot-->xml_to_coco
-<a id="g2_0_37___all_frames_roi_mnist_mot_"></a>
-### g2_0_37       @ all_frames_roi/mnist_mot-->xml_to_coco
+<a id="all_frames_ro_i_"></a>
+# all_frames_roi       
+<a id="g2_0_37___all_frames_roi_"></a>
+## g2_0_37       @ all_frames_roi-->xml_to_coco
 python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/all_frames_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=all_frames_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0.3
 
 <a id="ipsc_2_class___xml_to_coc_o_"></a>

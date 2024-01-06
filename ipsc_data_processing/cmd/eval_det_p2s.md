@@ -83,7 +83,7 @@ python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15,p2s:cls:fill det_paths=resnet_6
 #### on-g2_0_15       @ batch_32/g2_16_53/resnet-640-->eval_det_p2s
 python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15-agn,p2s:fill det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_32-xe/ckpt-2960-ext_reorg_roi_g2_0_15/csv-batch_64 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_32 show_vis=0 load_gt=0
 ``cls``
-python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15,p2s:cls:fill det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_32-xe/ckpt-2960-ext_reorg_roi_g2_0_15/csv-batch_64 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_32 show_vis=0 load_gt=0
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_15,p2s:cls:fill det_paths=resnet_640_ext_reorg_roi_g2_16_53-batch_32-xe/ckpt-2960-ext_reorg_roi_g2_0_15/csv-batch_64 save_suffix=p2s-resnet_640-g2_16_53-g2_0_15-batch_32-cls show_vis=0 load_gt=0
 
 <a id="batch_6___g2_16_53_resnet_64_0_"></a>
 ### batch_6       @ g2_16_53/resnet-640-->eval_det_p2s
