@@ -30,11 +30,12 @@ import multiprocessing
 
 class Params:
     def __init__(self):
+        self.cfg_root = 'cfg/xml_to_ytvis'
         self.cfg = ()
         self.batch_size = 1
         self.description = ''
         self.excluded_images_list = ''
-        self.class_names_path = 'lists/classes///predefined_classes_orig.txt'
+        self.class_names_path = ''
         self.codec = 'H264'
         self.csv_file_name = ''
         self.fps = 20
@@ -73,6 +74,8 @@ class Params:
         self.ignore_invalid_label = 0
         self.start_frame_id = 0
         self.end_frame_id = -1
+        self.length = 0
+        self.stride = 0
         self.max_length = 0
         self.min_length = 0
         self.coco_rle = 0
@@ -279,53 +282,44 @@ def save_annotations_ytvis(
 
     n_valid_images = 0
     n_images = 0
-
     n_objs = 0
-
     label_to_n_objs = {
         label: 0 for label in class_to_id
     }
-
     vid_size = None
-
     file_names = []
-
     ann_objs = {}
     sec_ann_objs = {}
-
     n_files = len(xml_files)
-
     if use_tqdm:
         pbar = tqdm(xml_files, ncols=100)
     else:
         pbar = xml_files
-
     vid_seq_path = vid_seq_name = None
     next_target_id = 0
-
     target_ids = []
 
     for frame_id, (xml_path, seq_path, seq_name) in enumerate(pbar):
 
         xml_data = xml_data_dict[xml_path]
 
-        if frame_id > 0 and ann_objs:
-            max_target_id = max(list(ann_objs.keys()))
-            prev_objs = [
-                [
-                    _id,
-                    ann_obj['category_id'],
-                    ann_obj['bboxes'][frame_id - 1],
-                    ann_obj['bin_mask_rle'][frame_id - 1],
-                    ann_obj['bin_mask'][frame_id - 1],
-                    True,
-                ]
-                for _id, ann_obj in sec_ann_objs.items() if ann_obj['bboxes'][frame_id - 1] is not None]
-        else:
-            prev_objs = []
-            max_target_id = 0
-
-        next_target_id = max(max_target_id + 1, next_target_id)
+        if infer_target_id:
+            if frame_id > 0 and ann_objs:
+                max_target_id = max(list(ann_objs.keys()))
+                prev_objs = [
+                    [
+                        _id,
+                        ann_obj['category_id'],
+                        ann_obj['bboxes'][frame_id - 1],
+                        ann_obj['bin_mask_rle'][frame_id - 1],
+                        ann_obj['bin_mask'][frame_id - 1],
+                        True,
+                    ]
+                    for _id, ann_obj in sec_ann_objs.items() if ann_obj['bboxes'][frame_id - 1] is not None]
+            else:
+                prev_objs = []
+                max_target_id = 0
+            next_target_id = max(max_target_id + 1, next_target_id)
 
         if vid_seq_path is None:
             vid_seq_path = seq_path
@@ -583,7 +577,7 @@ def get_xml_files(
 
         for subseq_id, (start_id, end_id) in enumerate(pbar):
             assert end_id < n_all_files, f"invalid end_id: {end_id} for n_files: {n_all_files}" \
-                f" in subseq_id {subseq_id} of {xml_dir_path}"
+                                         f" in subseq_id {subseq_id} of {xml_dir_path}"
 
             subseq_xml_files = all_xml_files[start_id:end_id + 1]
             n_subseq_xml_files = len(subseq_xml_files)
@@ -592,9 +586,13 @@ def get_xml_files(
                       f' with length {n_subseq_xml_files} < {params.min_length}')
                 continue
             elif n_subseq_xml_files > params.max_length > 0:
-                n_subsubseq = int(round(float(n_subseq_xml_files) / params.max_length))
-                subsubseq_start_id = 0
-                for subsubseq_id in range(n_subsubseq):
+                # n_subsubseq = int(round(float(n_subseq_xml_files) / params.max_length))
+                # subsubseq_start_id = 0
+
+                subsubseq_start_ids = list(range(0, n_subseq_xml_files, params.stride))
+                n_subsubseq = len(subsubseq_start_ids)
+
+                for subsubseq_id, subsubseq_start_id in enumerate(subsubseq_start_ids):
 
                     subsubseq_end_id = min(subsubseq_start_id + params.max_length - 1, n_subseq_xml_files - 1)
 
@@ -605,6 +603,10 @@ def get_xml_files(
 
                     n_subsubseq_xml_files = len(subsubseq_xml_files)
 
+                    if n_subsubseq_xml_files < params.min_length:
+                        print(f'skipping {subseq_id + 1} - {subsubseq_id + 1} with length {n_subsubseq_xml_files}')
+                        continue
+
                     print(f'\t{seq_name} :: subseq {global_subseq_id + 1} '
                           f'({subseq_id + 1} - {subsubseq_id + 1} / {n_subsubseq})  length {n_subsubseq_xml_files} '
                           f'({start_id + subsubseq_start_id} -> {start_id + subsubseq_end_id})')
@@ -613,7 +615,7 @@ def get_xml_files(
 
                     all_subseq_xml_files.append(subsubseq_xml_files)
 
-                    subsubseq_start_id = subsubseq_end_id + 1
+                    # subsubseq_start_id = subsubseq_end_id + 1
 
                     global_subseq_id += 1
             else:
@@ -712,9 +714,30 @@ def main():
         print(f'dir_suffix: {params.dir_suffix}')
         description = f'{description}-{params.dir_suffix}'
 
-    if params.max_length:
-        print(f'max_length: {params.max_length}')
-        description = f'{description}-max_length-{params.max_length}'
+    if params.length:
+        print(f'setting max_length and min_length to {params.length}')
+        params.max_length = params.min_length = params.length
+        description = f'{description}-length-{params.length}'
+        if not params.stride:
+            print('setting stride to be equal to length')
+            params.stride = params.length
+    else:
+        if params.max_length:
+            print(f'max_length: {params.max_length}')
+            description = f'{description}-max_length-{params.max_length}'
+            if not params.stride:
+                print('setting stride to be equal to max_length')
+                params.stride = params.max_length
+
+        if params.min_length:
+            print(f'min_length: {params.min_length}')
+            description = f'{description}-min_length-{params.max_length}'
+            if not params.stride:
+                print('setting stride to be equal to min_length')
+                params.stride = params.min_length
+    if params.stride:
+        print(f'stride: {params.stride}')
+        description = f'{description}-stride-{params.stride}'
 
     if params.incremental:
         print(f'saving incremental clips')

@@ -86,7 +86,9 @@ python3 eval_det.py cfg=ipsc_2_class img_paths=lists/all_frames_roi.txt det_path
 ## swi       @ ext_reorg_roi_0_37-->eval_det
 python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=swi gt_pkl=g2_38_53.pkl nms_thresh=0 n_proc=12
 ``iw``  
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/g2_38_53/csv gt_csv_name=annotations_38_53.csv  save_suffix=swi gt_pkl=g2_38_53.pkl n_proc=12 iw=1
+python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=swi gt_pkl=g2_38_53.pkl n_proc=12 iw=1
+``agn``  
+python3 eval_det.py cfg=ipsc_2_class:g2_38_53-agn det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/g2_38_53/csv save_suffix=swi-agn   nms_thresh=0 n_proc=12
 
 python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-no_validate/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=swi gt_pkl=g2_38_53.pkl n_proc=12 iw=1 nms_thresh=0.1
 
@@ -104,9 +106,12 @@ python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_ro
 
 <a id="cvnxt_large___ext_reorg_roi_0_37_"></a>
 ## cvnxt-large       @ ext_reorg_roi_0_37-->eval_det
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-convnext_large_in22k/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=cvnxt-large gt_pkl=g2_38_53.pkl nms_thresh=0:0.9:0.1 
+python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-convnext_large_in22k/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=fwd-cvnxt-large gt_pkl=g2_38_53.pkl nms_thresh=0:0.9:0.1 
+``agn`` 
+python3 eval_det.py cfg=ipsc_2_class:g2_38_53-agn det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-convnext_large_in22k/g2_38_53/csv save_suffix=fwd-cvnxt-large-agn nms_thresh=0.1
 ``iw``  
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-convnext_large_in22k/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=cvnxt-large gt_pkl=g2_38_53.pkl iw=1
+python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-convnext_large_in22k/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=fwd-cvnxt-large gt_pkl=g2_38_53.pkl iw=1
+ 
 
 python3 eval_det.py cfg=ipsc_2_class det_paths=log/swi/ipsc_2_class_ext_reorg_roi_g2_0_37-convnext_large_in22k/g2_38_53/csv gt_csv_name=annotations_38_53.csv save_suffix=cvnxt-large gt_pkl=g2_38_53.pkl iw=1 nms_thresh=0.9
 
@@ -128,9 +133,11 @@ python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_
 
 <a id="idol_inc_probs___idol_ext_reorg_roi_0_3_7_"></a>
 ### idol-inc-probs       @ idol/ext_reorg_roi_0_37-->eval_det
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_0_37/inference_probs/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=idol-inc-probs iw=0 gt_pkl=g2_38_53.pkl nms_thresh=0:0.9:0.1
+python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_0_37/inference_probs/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=fwd-idol-inc-probs iw=0 gt_pkl=g2_38_53.pkl nms_thresh=0:0.9:0.1
+``agn`` 
+python3 eval_det.py cfg=ipsc_2_class:g2_38_53-agn det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_0_37/inference_probs/csv_incremental save_suffix=fwd-idol-inc-probs-agn iw=0 nms_thresh=0.1
 ``iw``  
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_0_37/inference_probs/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=idol-inc-probs gt_pkl=g2_38_53.pkl iw=1
+python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/idol-ipsc-ext_reorg_roi_g2_0_37/inference_probs/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=fwd-idol-inc-probs gt_pkl=g2_38_53.pkl iw=1
 
 <a id="idol_inc_all___idol_ext_reorg_roi_0_3_7_"></a>
 ### idol-inc-all       @ idol/ext_reorg_roi_0_37-->eval_det
@@ -142,7 +149,9 @@ python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/seqformer-ipsc-ext_reorg
 
 <a id="seq_inc_sigma___seq_ext_reorg_roi_0_37_"></a>
 ### seq-inc-sigma       @ seq/ext_reorg_roi_0_37-->eval_det
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_0_37/inference_38_53-incremental/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=seq-inc gt_pkl=g2_38_53.pkl nms_thresh=0:0.9:0.1 n_proc=12
+python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_0_37/inference_38_53-incremental/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=fwd-seq-inc gt_pkl=g2_38_53.pkl nms_thresh=0:0.9:0.1 n_proc=12
+``agn`` 
+python3 eval_det.py cfg=ipsc_2_class:g2_38_53-agn det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_0_37/inference_38_53-incremental/csv_incremental save_suffix=fwd-seq-inc-agn nms_thresh=0.1 n_proc=12
 ``iw``  
 python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/seqformer-ipsc-ext_reorg_roi_g2_0_37/inference_38_53-incremental/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=seq-inc n_proc=12 iw=1
 
@@ -152,9 +161,11 @@ python3 eval_det.py cfg=ipsc_2_class det_paths=log/vnxt/seqformer-ipsc-ext_reorg
 
 <a id="vita_swin_inc___ext_reorg_roi_0_37_"></a>
 ## vita-swin-inc       @ ext_reorg_roi_0_37-->eval_det
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_0_37_swin/inference_38_53-incremental/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=vita-swin-inc gt_pkl=g2_38_53.pkl nms_thresh=0:0.9:0.1 n_proc=12
+python3 eval_det.py cfg=ipsc_2_class:g2_38_53 det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_0_37_swin/inference_38_53-incremental/csv_incremental save_suffix=fwd-vita-swin-inc nms_thresh=0:0.9:0.1 n_proc=12
+``agn`` 
+python3 eval_det.py cfg=ipsc_2_class det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_0_37_swin/inference_38_53-incremental/csv_incremental save_suffix=fwd-vita-swin-inc-agn nms_thresh=0.1 n_proc=12
 ``iw``  
-python3 eval_det.py cfg=ipsc_2_class det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_0_37_swin/inference_38_53-incremental/csv_incremental gt_csv_name=annotations_38_53.csv save_suffix=vita-swin-inc gt_pkl=g2_38_53.pkl n_proc=12 iw=1
+python3 eval_det.py cfg=ipsc_2_class:g2_38_53 det_paths=log/vita/vita-ipsc-ext_reorg_roi_g2_0_37_swin/inference_38_53-incremental/csv_incremental g save_suffix=fwd-vita-swin-inc n_proc=12 iw=1
 
 <a id="vita_r50___ext_reorg_roi_0_37_"></a>
 ## vita-r50       @ ext_reorg_roi_0_37-->eval_det

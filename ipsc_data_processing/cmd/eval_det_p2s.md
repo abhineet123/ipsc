@@ -23,6 +23,7 @@
             - [on-g2_54_126       @ batch_4-scratch/g2_16_53/resnet-640](#on_g2_54_126___batch_4_scratch_g2_16_53_resnet_64_0_)
     - [g2_0_37       @ resnet-640](#g2_0_37___resnet_640_)
         - [on-g2_38_53       @ g2_0_37/resnet-640](#on_g2_38_53___g2_0_37_resnet_640_)
+        - [on-g2_38_53-conf_0       @ g2_0_37/resnet-640](#on_g2_38_53_conf_0___g2_0_37_resnet_640_)
 - [resnet_1333       @ p2s](#resnet_1333___p2_s_)
     - [g2_16_53       @ resnet_1333](#g2_16_53___resnet_133_3_)
 - [resnet-c4-640       @ p2s](#resnet_c4_640___p2_s_)
@@ -119,8 +120,11 @@ python3 eval_det.py cfg=ipsc_2_class:ext:g2_54_126,p2s:cls det_paths=resnet_640_
 python3 eval_det.py cfg=ipsc_2_class:ext:g2_38_53-agn,p2s det_paths=resnet_640_ext_reorg_roi_g2_0_37-batch_48-gxe/ckpt-98175-ext_reorg_roi_g2_38_53/csv-batch_16 save_suffix=p2s-resnet_640-g2_0_37-g2_38_53-batch_48-98175 show_vis=0 load_gt=0
 ``cls``
 python3 eval_det.py cfg=ipsc_2_class:ext:g2_38_53-agn,p2s:cls det_paths=resnet_640_ext_reorg_roi_g2_0_37-batch_48-gxe/ckpt-98175-ext_reorg_roi_g2_38_53/csv-batch_16 save_suffix=p2s-resnet_640-g2_0_37-g2_38_53-batch_48-98175-cls show_vis=0 load_gt=0
-
-
+<a id="on_g2_38_53_conf_0___g2_0_37_resnet_640_"></a>
+### on-g2_38_53-conf_0       @ g2_0_37/resnet-640-->eval_det_p2s
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_38_53-agn,p2s det_paths=resnet_640_ext_reorg_roi_g2_0_37-batch_48-gxe/ckpt-98175-ext_reorg_roi_g2_38_53/csv-batch_16-conf_0 save_suffix=p2s-resnet_640-g2_0_37-g2_38_53-batch_48-98175-conf_0 show_vis=0 load_gt=0
+``cls``
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_38_53-agn,p2s:cls det_paths=resnet_640_ext_reorg_roi_g2_0_37-batch_48-gxe/ckpt-98175-ext_reorg_roi_g2_38_53/csv-batch_16-conf_0 save_suffix=p2s-resnet_640-g2_0_37-g2_38_53-batch_48-98175-conf_0-cls show_vis=0 load_gt=0
 
 <a id="resnet_1333___p2_s_"></a>
 # resnet_1333       @ p2s-->eval_det_p2s
