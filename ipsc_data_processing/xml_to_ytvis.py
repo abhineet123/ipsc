@@ -28,10 +28,11 @@ import multiprocessing
 # from multiprocessing.pool import ThreadPool
 
 
-class Params:
+class Params(paramparse.CFG):
     def __init__(self):
+        paramparse.CFG.__init__(self)
         self.cfg_root = 'cfg/xml_to_ytvis'
-        self.cfg = ()
+
         self.batch_size = 1
         self.description = ''
         self.excluded_images_list = ''
@@ -581,6 +582,7 @@ def get_xml_files(
 
             subseq_xml_files = all_xml_files[start_id:end_id + 1]
             n_subseq_xml_files = len(subseq_xml_files)
+
             if n_subseq_xml_files < params.min_length:
                 print(f'skipping {seq_name} subseq {subseq_id + 1} ({start_id} -> {end_id})'
                       f' with length {n_subseq_xml_files} < {params.min_length}')
@@ -629,9 +631,12 @@ def get_xml_files(
             print(f'skipping {seq_name} with length {n_all_files} < {params.min_length}')
             return
         elif n_all_files > params.max_length > 0:
-            n_subseq = int(round(float(n_all_files) / params.max_length))
-            subseq_start_id = 0
-            for subseq_id in range(n_subseq):
+            # n_subseq = int(round(float(n_all_files) / params.max_length))
+            subseq_start_ids = list(range(0, n_all_files, params.stride))
+            # n_subseq = len(subseq_start_ids)
+
+            # subseq_start_id = 0
+            for subseq_id, subseq_start_id in enumerate(subseq_start_ids):
 
                 subseq_end_id = min(subseq_start_id + params.max_length - 1, n_all_files - 1)
 
@@ -642,6 +647,10 @@ def get_xml_files(
 
                 n_subseq_xml_files = len(subseq_xml_files)
 
+                if n_subseq_xml_files < params.min_length:
+                    print(f'skipping {subseq_id + 1} - with length {n_subseq_xml_files}')
+                    continue
+
                 print(f'{seq_name} :: subseq {subseq_id + 1} length {n_subseq_xml_files} '
                       f'({subseq_start_id} -> {subseq_end_id})')
 
@@ -649,7 +658,7 @@ def get_xml_files(
 
                 all_subseq_xml_files.append(subseq_xml_files)
 
-                subseq_start_id = subseq_end_id + 1
+                # subseq_start_id = subseq_end_id + 1
 
         else:
             assert n_all_files > 0, "no xml_files found for seq_name"

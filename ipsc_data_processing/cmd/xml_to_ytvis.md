@@ -10,6 +10,7 @@
     - [incremental       @ ext_reorg_roi_g2_38_53](#incremental___ext_reorg_roi_g2_38_53_)
 - [ext_reorg_roi_g2_16_53       @ xml_to_ytvis](#ext_reorg_roi_g2_16_53___xml_to_ytvis_)
 - [ext_reorg_roi_g2_0_1       @ xml_to_ytvis](#ext_reorg_roi_g2_0_1___xml_to_ytvis_)
+- [ext_reorg_roi_g2_0_4       @ xml_to_ytvis](#ext_reorg_roi_g2_0_4___xml_to_ytvis_)
 - [ext_reorg_roi_g2_0_15       @ xml_to_ytvis](#ext_reorg_roi_g2_0_15___xml_to_ytvis_)
     - [incremental       @ ext_reorg_roi_g2_0_15](#incremental___ext_reorg_roi_g2_0_1_5_)
 - [ext_reorg_roi_g2_54_126       @ xml_to_ytvis](#ext_reorg_roi_g2_54_126___xml_to_ytvis_)
@@ -59,6 +60,9 @@ python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists
 <a id="ext_reorg_roi_g2_0_1___xml_to_ytvis_"></a>
 # ext_reorg_roi_g2_0_1       @ xml_to_ytvis-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=1 description=ipsc-ext_reorg_roi_g2_0_1 save_masks=0 n_proc=12
+<a id="ext_reorg_roi_g2_0_4___xml_to_ytvis_"></a>
+# ext_reorg_roi_g2_0_4       @ xml_to_ytvis-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=4 description=ipsc-ext_reorg_roi_g2_0_4 save_masks=0 n_proc=12 length=2 stride=1
 <a id="ext_reorg_roi_g2_0_15___xml_to_ytvis_"></a>
 # ext_reorg_roi_g2_0_15       @ xml_to_ytvis-->xml_to_ytvis
 python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt start_frame_id=0 end_frame_id=15 ignore_invalid_label=1 val_ratio=0 allow_missing_images=0 get_img_stats=0 description=ipsc-ext_reorg_roi_g2_0_15 save_masks=0 n_proc=12
