@@ -9,7 +9,6 @@ import cv2
 
 from pprint import pformat
 
-import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from tqdm import tqdm
@@ -81,6 +80,7 @@ class Params(paramparse.CFG):
         self.min_length = 0
         self.coco_rle = 0
         self.n_proc = 1
+        self.compressed = 0
 
 
 def offset_target_ids(vid_to_target_ids, annotations, set_type):
@@ -904,7 +904,7 @@ def main():
 
     info = {
         "version": "1.0",
-        "year": 2022,
+        "year": datetime.now().strftime("%y"),
         "contributor": "asingh1",
         "date_created": time_stamp
     }
@@ -1023,6 +1023,10 @@ def main():
 
         offset_target_ids(vid_to_target_ids, annotations, f'{div_type}')
         info["description"] = description + f'-{div_type}'
+        info["counts"] = dict(
+            videos=len(videos),
+            annotations=len(annotations),
+        ),
         json_dict = {
             "info": info,
             "licenses": licenses,
@@ -1037,15 +1041,27 @@ def main():
         else:
             json_name = f'{out_json_name}.json'
 
+        if params.compressed:
+            json_name += '.gz'
+
         json_path = linux_path(db_root_dir, out_dir_name, json_name)
 
         json_dir = os.path.dirname(json_path)
-        os.makedirs(json_dir, exist_ok=1)
+        os.makedirs(json_dir, exist_ok=True)
 
+        json_kwargs = dict(
+            indent=4
+        )
         print(f'saving json for {n_xml} {div_type} images to: {json_path}')
-        with open(json_path, 'w') as f:
-            output_json = json.dumps(json_dict, indent=4)
-            f.write(output_json)
+
+        if params.compressed:
+            import compress_json
+            compress_json.dump(json_dict, json_path, json_kwargs=json_kwargs)
+        else:
+            import json
+            output_json = json.dumps(json_dict, **json_kwargs)
+            with open(json_path, 'w') as f:
+                f.write(output_json)
 
         if params.get_img_stats:
             pix_vals_mean = list(np.mean(all_pix_vals_mean, axis=0))
