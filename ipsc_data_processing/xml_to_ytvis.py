@@ -74,6 +74,7 @@ class Params(paramparse.CFG):
         self.ignore_invalid_label = 0
         self.start_frame_id = 0
         self.end_frame_id = -1
+        self.frame_gap = 1
         self.length = 0
         self.stride = 0
         self.max_length = 0
@@ -125,7 +126,7 @@ def binary_mask_to_rle(binary_mask):
 
 def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
                   get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_data):
-    xml_path, seq_path, seq_name = xml_data
+    xml_path, xml_path_id, seq_path, seq_name = xml_data
 
     all_pix_vals_mean = []
     all_pix_vals_std = []
@@ -203,6 +204,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
     xml_dict = dict(
         img_path=img_path,
+        img_id=xml_path_id,
         img_rel_path=img_rel_path,
         filename=filename,
         src_shape=src_shape,
@@ -289,18 +291,17 @@ def save_annotations_ytvis(
     }
     vid_size = None
     file_names = []
+    file_ids = []
     ann_objs = {}
     sec_ann_objs = {}
     n_files = len(xml_files)
-    if use_tqdm:
-        pbar = tqdm(xml_files, ncols=100)
-    else:
-        pbar = xml_files
+
     vid_seq_path = vid_seq_name = None
     next_target_id = 0
     target_ids = []
 
-    for frame_id, (xml_path, seq_path, seq_name) in enumerate(pbar):
+    pbar = tqdm(xml_files, ncols=100) if use_tqdm else xml_files
+    for frame_id, (xml_path, xml_id, seq_path, seq_name) in enumerate(pbar):
 
         xml_data = xml_data_dict[xml_path]
 
@@ -336,6 +337,11 @@ def save_annotations_ytvis(
 
         img_rel_path = xml_data['img_rel_path']
         # img_path = xml_data['img_path']
+
+        img_id = xml_data['img_id']
+
+        assert img_id == xml_id, f"mismatch between img_id {img_id} and xml_id: {xml_id}"
+
         src_shape = xml_data['src_shape']
 
         h, w = src_shape
@@ -346,6 +352,7 @@ def save_annotations_ytvis(
             assert vid_size == (w, h), f"mismatch between size of image: {(w, h)} and video: {vid_size}"
 
         file_names.append(img_rel_path)
+        file_ids.append(img_id)
 
         objs = xml_data['objs']
 
@@ -502,6 +509,7 @@ def save_annotations_ytvis(
         "license": 1,
         "flickr_url": "",
         "file_names": file_names,
+        "file_ids": file_ids,
         "id": vid_id,
         "coco_url": "",
     }
@@ -596,17 +604,19 @@ def get_xml_files(
 
                 for subsubseq_id, subsubseq_start_id in enumerate(subsubseq_start_ids):
 
-                    subsubseq_end_id = min(subsubseq_start_id + params.max_length - 1, n_subseq_xml_files - 1)
+                    subsubseq_end_id = min(subsubseq_start_id + (params.max_length - 1) * params.frame_gap,
+                                           n_subseq_xml_files - 1)
 
                     if subsubseq_start_id > subsubseq_end_id:
                         break
 
-                    subsubseq_xml_files = subseq_xml_files[subsubseq_start_id:subsubseq_end_id + 1]
+                    subsubseq_xml_files = subseq_xml_files[subsubseq_start_id:subsubseq_end_id + 1:params.frame_gap]
 
                     n_subsubseq_xml_files = len(subsubseq_xml_files)
 
                     if n_subsubseq_xml_files < params.min_length:
-                        print(f'skipping {subseq_id + 1} - {subsubseq_id + 1} with length {n_subsubseq_xml_files}')
+                        print(
+                            f'skipping subseq {subseq_id + 1} - {subsubseq_id + 1} with length {n_subsubseq_xml_files}')
                         continue
 
                     print(f'\t{seq_name} :: subseq {global_subseq_id + 1} '
@@ -628,7 +638,7 @@ def get_xml_files(
                 global_subseq_id += 1
     else:
         if n_all_files < params.min_length:
-            print(f'skipping {seq_name} with length {n_all_files} < {params.min_length}')
+            print(f'skipping seq {seq_name} with length {n_all_files} < {params.min_length}')
             return
         elif n_all_files > params.max_length > 0:
             # n_subseq = int(round(float(n_all_files) / params.max_length))
@@ -638,17 +648,17 @@ def get_xml_files(
             # subseq_start_id = 0
             for subseq_id, subseq_start_id in enumerate(subseq_start_ids):
 
-                subseq_end_id = min(subseq_start_id + params.max_length - 1, n_all_files - 1)
+                subseq_end_id = min(subseq_start_id + (params.max_length - 1) * params.frame_gap, n_all_files - 1)
 
                 if subseq_start_id > subseq_end_id:
                     break
 
-                subseq_xml_files = all_xml_files[subseq_start_id:subseq_end_id + 1]
+                subseq_xml_files = all_xml_files[subseq_start_id:subseq_end_id + 1:params.frame_gap]
 
                 n_subseq_xml_files = len(subseq_xml_files)
 
                 if n_subseq_xml_files < params.min_length:
-                    print(f'skipping {subseq_id + 1} - with length {n_subseq_xml_files}')
+                    print(f'skipping subseq {subseq_id + 1} - with length {n_subseq_xml_files}')
                     continue
 
                 print(f'{seq_name} :: subseq {subseq_id + 1} length {n_subseq_xml_files} '
@@ -678,8 +688,9 @@ def get_xml_files(
 
         # print(f'{vid_id} / {n_vids} :: {seq_name} (subseq: {subseq_id + 1}) : '
         #       f'n_train, n_val: {[n_train_files, n_val_files]} ')
+        subseq_xml_file_ids = [all_xml_files.index(file) for file in subseq_xml_files]
 
-        subseq_xml_files = tuple(zip(subseq_xml_files, [seq_path, ] * n_files, [seq_name, ] * n_files))
+        subseq_xml_files = tuple(zip(subseq_xml_files, subseq_xml_file_ids, [seq_path, ] * n_files, [seq_name, ] * n_files))
 
         val_xml_files = subseq_xml_files[:n_val_files]
         train_xml_files = subseq_xml_files[n_val_files:]
@@ -703,7 +714,6 @@ def get_xml_files(
 
 def main():
     params = Params()
-
     paramparse.process(params)
 
     seq_paths = params.seq_paths
@@ -744,9 +754,14 @@ def main():
             if not params.stride:
                 print('setting stride to be equal to min_length')
                 params.stride = params.min_length
+
     if params.stride:
         print(f'stride: {params.stride}')
         description = f'{description}-stride-{params.stride}'
+
+    if params.frame_gap > 1:
+        print(f'stride: {params.stride}')
+        description = f'{description}-frame_gap-{params.frame_gap}'
 
     if params.incremental:
         print(f'saving incremental clips')
@@ -948,14 +963,14 @@ def main():
         'val': all_val_files,
     }
 
-    for div_type, all_div_files in all_files.items():
+    for split_type, all_split_files in all_files.items():
 
-        n_div_vids = len(all_div_files)
-        if not n_div_vids:
-            print(f'no {div_type} videos found')
+        n_split_vids = len(all_split_files)
+        if not n_split_vids:
+            print(f'no {split_type} videos found')
             continue
 
-        all_data_xml_paths = list(set([item for sublist in all_div_files for item in sublist]))
+        all_data_xml_paths = list(set([item for sublist in all_split_files for item in sublist]))
 
         read_xml_func = functools.partial(
             read_xml_file,
@@ -967,15 +982,16 @@ def main():
             img_path_to_stats,
             params.remove_mj_dir_suffix
         )
-        print(f'reading {len(all_data_xml_paths)} {div_type} xml files')
+        print(f'reading {len(all_data_xml_paths)} {split_type} xml files')
         if params.n_proc > 1:
             print('running in parallel over {} processes'.format(params.n_proc))
             with multiprocessing.Pool(params.n_proc) as p:
-                xml_out_data = list(tqdm(p.imap(read_xml_func, all_data_xml_paths), total=n_div_vids, ncols=100))
+                xml_out_data = list(tqdm(p.imap(read_xml_func, all_data_xml_paths), total=n_split_vids, ncols=100))
         else:
             xml_out_data = []
             for xml_info in tqdm(all_data_xml_paths, ncols=100):
                 xml_out_data.append(read_xml_func(xml_info))
+                # xml_out_data.append(None)
 
         xml_data_dict = {}
 
@@ -999,14 +1015,14 @@ def main():
             False,
         )
 
-        print(f'generating json data for {n_div_vids} {div_type} videos')
-        vid_ids = list(range(1, n_div_vids + 1))
-        vid_info_list = list(zip(all_div_files, vid_ids))
+        print(f'generating json data for {n_split_vids} {split_type} videos')
+        vid_ids = list(range(1, n_split_vids + 1))
+        vid_info_list = list(zip(all_split_files, vid_ids))
 
         if params.n_proc > 1:
             print('running in parallel over {} processes'.format(params.n_proc))
             with multiprocessing.Pool(params.n_proc) as p:
-                json_out_data = list(tqdm(p.imap(json_func, vid_info_list), total=n_div_vids, ncols=100))
+                json_out_data = list(tqdm(p.imap(json_func, vid_info_list), total=n_split_vids, ncols=100))
         else:
             json_out_data = []
             for vid_info in tqdm(vid_info_list, ncols=100):
@@ -1021,8 +1037,8 @@ def main():
             annotations += k2
             vid_to_target_ids[vid_id] = k3
 
-        offset_target_ids(vid_to_target_ids, annotations, f'{div_type}')
-        info["description"] = description + f'-{div_type}'
+        offset_target_ids(vid_to_target_ids, annotations, f'{split_type}')
+        info["description"] = description + f'-{split_type}'
         info["counts"] = dict(
             videos=len(videos),
             annotations=len(annotations),
@@ -1034,10 +1050,10 @@ def main():
             "categories": categories,
             "annotations": annotations,
         }
-        n_xml = len(all_div_files)
+        n_xml = len(all_split_files)
 
         if n_val_vids > 0:
-            json_name = f'{out_json_name}-{div_type}.json'
+            json_name = f'{out_json_name}-{split_type}.json'
         else:
             json_name = f'{out_json_name}.json'
 
@@ -1052,7 +1068,7 @@ def main():
         json_kwargs = dict(
             indent=4
         )
-        print(f'saving json for {n_xml} {div_type} images to: {json_path}')
+        print(f'saving json for {n_xml} {split_type} images to: {json_path}')
 
         if params.compressed:
             import compress_json
