@@ -11,10 +11,10 @@
 - [ext_reorg_roi_g2_16_53       @ xml_to_ytvis](#ext_reorg_roi_g2_16_53___xml_to_ytvis_)
 - [ext_reorg_roi_g2_0_1       @ xml_to_ytvis](#ext_reorg_roi_g2_0_1___xml_to_ytvis_)
 - [length-2-stride-1](#length_2_stride_1_)
-    - [ext_reorg_roi_g2_0_4       @ length-2-stride-1](#ext_reorg_roi_g2_0_4___length_2_stride_1_)
-        - [frame_gap-3       @ ext_reorg_roi_g2_0_4/length-2-stride-1](#frame_gap_3___ext_reorg_roi_g2_0_4_length_2_stride_1_)
-    - [ext_reorg_roi_g2_5_9       @ length-2-stride-1](#ext_reorg_roi_g2_5_9___length_2_stride_1_)
-    - [ext_reorg_roi_g2_0_37       @ length-2-stride-1](#ext_reorg_roi_g2_0_37___length_2_stride_1_)
+    - [0_4       @ length-2-stride-1](#0_4___length_2_stride_1_)
+        - [frame_gap-3       @ 0_4/length-2-stride-1](#frame_gap_3___0_4_length_2_stride_1_)
+    - [5_9       @ length-2-stride-1](#5_9___length_2_stride_1_)
+    - [0_37       @ length-2-stride-1](#0_37___length_2_stride_1_)
     - [ext_reorg_roi_g2_16_53       @ length-2-stride-1](#ext_reorg_roi_g2_16_53___length_2_stride_1_)
 - [ext_reorg_roi_g2_0_15       @ xml_to_ytvis](#ext_reorg_roi_g2_0_15___xml_to_ytvis_)
     - [incremental       @ ext_reorg_roi_g2_0_15](#incremental___ext_reorg_roi_g2_0_1_5_)
@@ -69,19 +69,32 @@ length_2-stride_1
 
 <a id="length_2_stride_1_"></a>
 # length-2-stride-1
-<a id="ext_reorg_roi_g2_0_4___length_2_stride_1_"></a>
-## ext_reorg_roi_g2_0_4       @ length-2-stride-1-->xml_to_ytvis
+<a id="0_4___length_2_stride_1_"></a>
+## 0_4       @ length-2-stride-1-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=4 description=ext_reorg_roi_g2_0_4 save_masks=0 n_proc=12 length=2 stride=1 compressed=1
-<a id="frame_gap_3___ext_reorg_roi_g2_0_4_length_2_stride_1_"></a>
-### frame_gap-3       @ ext_reorg_roi_g2_0_4/length-2-stride-1-->xml_to_ytvis
+<a id="frame_gap_3___0_4_length_2_stride_1_"></a>
+### frame_gap-3       @ 0_4/length-2-stride-1-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=4 description=ext_reorg_roi_g2_0_4 save_masks=0 n_proc=1 length=2 stride=1 frame_gap=3 compressed=0
 
-<a id="ext_reorg_roi_g2_5_9___length_2_stride_1_"></a>
-## ext_reorg_roi_g2_5_9       @ length-2-stride-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=5 end_frame_id=9 description=ext_reorg_roi_g2_5_9 save_masks=0 n_proc=12 length=2 stride=1 compressed=1
-<a id="ext_reorg_roi_g2_0_37___length_2_stride_1_"></a>
-## ext_reorg_roi_g2_0_37       @ length-2-stride-1-->xml_to_ytvis
+<a id="5_9___length_2_stride_1_"></a>
+## 5_9       @ length-2-stride-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-5:end-9:len-2:strd-1:gz-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-2 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-3 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-4 
+
+<a id="0_37___length_2_stride_1_"></a>
+## 0_37       @ length-2-stride-1-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=37 description=ext_reorg_roi_g2_0_37 save_masks=0 n_proc=12 length=2 stride=1 compressed=1
+
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-37:len-2:strd-1:gz-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-37:len-2:strd-1:gz-1:gap-2 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-37:len-2:strd-1:gz-1:gap-3 
+
+python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=37 description=ext_reorg_roi_g2_0_37 save_masks=0 n_proc=12 length=2 stride=1 compressed=1 frame_gap=3
+python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=37 description=ext_reorg_roi_g2_0_37 save_masks=0 n_proc=12 length=2 stride=1 compressed=1 frame_gap=4
+
+
 <a id="ext_reorg_roi_g2_16_53___length_2_stride_1_"></a>
 ## ext_reorg_roi_g2_16_53       @ length-2-stride-1-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=16 end_frame_id=53 description=ext_reorg_roi_g2_16_53 save_masks=0 n_proc=12 length=2 stride=1 compressed=1
