@@ -7,7 +7,7 @@ alias ac='workon dproc'
 Add interpreter > On WSL
 
 # packages
-python -m pip install imagesize paramparse numpy opencv-python matplotlib pandas tqdm prettytable tabulate scikit-learn pycocotools pyperclip
+python -m pip install imagesize paramparse numpy opencv-python matplotlib pandas tqdm prettytable tabulate scikit-learn pycocotools pyperclip compress_json
 
 sudo apt-get install python3.10-tk
 
