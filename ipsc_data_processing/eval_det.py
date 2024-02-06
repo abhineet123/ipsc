@@ -160,6 +160,8 @@ class Params:
         self.compute_rec_prec = 1
         self.img_dir_name = ''
 
+        self.vid_nms = 0
+
         self.nms_thresh = [0, ]
         self.n_proc = 1
 
@@ -196,10 +198,12 @@ def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
     return vis_h, vis_w
 
 
-def evaluate(params, seq_paths, gt_classes, gt_path_list, det_path_list, out_root_dir, class_name_to_col,
-             img_start_id=-1, img_end_id=-1,
-             _gt_data_dict=None, raw_det_data_dict=None, eval_result_dict=None,
-             fps_to_gt=1, json_out_dir=None):
+def evaluate(
+        params, seq_paths, gt_classes, gt_path_list, det_path_list,
+        out_root_dir, class_name_to_col,
+        img_start_id=-1, img_end_id=-1,
+        _gt_data_dict=None, raw_det_data_dict=None, eval_result_dict=None,
+        fps_to_gt=1, json_out_dir=None):
     """
 
     :param Params params:
