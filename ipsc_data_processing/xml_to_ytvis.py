@@ -9,7 +9,6 @@ import cv2
 
 from pprint import pformat
 
-import xml.etree.ElementTree as ET
 from datetime import datetime
 from tqdm import tqdm
 
@@ -83,6 +82,7 @@ class Params(paramparse.CFG):
         self.n_proc = 1
         self.json_gz = 0
         self.xml_zip = 0
+        self.enable_mask = 1
 
 
 def offset_target_ids(vid_to_target_ids, annotations, set_type):
@@ -126,13 +126,25 @@ def binary_mask_to_rle(binary_mask):
 
 
 def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
-                  get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_data):
+                  get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip, enable_mask, xml_data):
     xml_path, xml_path_id, seq_path, seq_name = xml_data
 
     all_pix_vals_mean = []
     all_pix_vals_std = []
 
-    ann_tree = ET.parse(xml_path)
+    import xml.etree.ElementTree as ET
+
+    if xml_zip:
+        xml_name = os.path.basename(xml_path)
+        xml_dir_path = os.path.dirname(xml_path)
+        xml_zip_path = xml_dir_path + ".zip"
+
+        from zipfile import ZipFile
+        with ZipFile(xml_zip_path, 'r') as xml_zip_file:
+            with xml_zip_file.open(xml_name, "r") as xml_file:
+                ann_tree = ET.parse(xml_file)
+    else:
+        ann_tree = ET.parse(xml_path)
     ann_root = ann_tree.getroot()
 
     """img_path is relative to db_root_dir"""
@@ -232,33 +244,37 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
         bbox = [xmin, ymin, w, h]
 
-        mask_obj = obj.find('mask')
-        if mask_obj is None:
-            msg = 'no mask found for object:\n{}'.format(img_name)
-            raise AssertionError(msg)
-
-        mask = mask_obj.text
-
-        mask = [k.strip().split(',') for k in mask.strip().split(';') if k]
-        # pprint(mask)
-        mask_pts = [(float(_pt[0]), float(_pt[1])) for _pt in mask]
-
-        bin_mask = np.zeros(src_shape, dtype=np.uint8)
-        bin_mask = cv2.fillPoly(bin_mask, np.array([mask_pts, ], dtype=np.int32), 255)
-        if coco_rle:
-            bin_mask_rle = binary_mask_to_rle_coco(bin_mask)
-        else:
-            bin_mask_rle = binary_mask_to_rle(bin_mask)
-
-        seg_area = np.count_nonzero(bin_mask)
-
         xml_data = dict(
             label=label,
             target_id=target_id,
             bbox=bbox,
-            bin_mask_rle=bin_mask_rle,
-            seg_area=seg_area,
         )
+
+        if enable_mask:
+            mask_obj = obj.find('mask')
+            if mask_obj is None:
+                msg = 'no mask found for object:\n{}'.format(img_name)
+                raise AssertionError(msg)
+
+            mask = mask_obj.text
+
+            mask = [k.strip().split(',') for k in mask.strip().split(';') if k]
+            # pprint(mask)
+            mask_pts = [(float(_pt[0]), float(_pt[1])) for _pt in mask]
+
+            bin_mask = np.zeros(src_shape, dtype=np.uint8)
+            bin_mask = cv2.fillPoly(bin_mask, np.array([mask_pts, ], dtype=np.int32), 255)
+            if coco_rle:
+                bin_mask_rle = binary_mask_to_rle_coco(bin_mask)
+            else:
+                bin_mask_rle = binary_mask_to_rle(bin_mask)
+
+            seg_area = np.count_nonzero(bin_mask)
+
+            xml_data.update(dict(
+                bin_mask_rle=bin_mask_rle,
+                seg_area=seg_area,
+            ))
 
         xml_data_list.append(xml_data)
 
@@ -535,6 +551,7 @@ def get_xml_files(
             with ZipFile(xml_zip_path, 'r') as xml_zip_file:
                 all_xml_files = xml_zip_file.namelist()
 
+            all_xml_files = [linux_path(xml_dir_path, xml_file) for xml_file in all_xml_files]
         else:
             # xml_file_gen = [[os.path.join(dirpath, f) for f in filenames if
             #                  os.path.splitext(f.lower())[1] == '.xml']
@@ -700,7 +717,8 @@ def get_xml_files(
         #       f'n_train, n_val: {[n_train_files, n_val_files]} ')
         subseq_xml_file_ids = [all_xml_files.index(file) for file in subseq_xml_files]
 
-        subseq_xml_files = tuple(zip(subseq_xml_files, subseq_xml_file_ids, [seq_path, ] * n_files, [seq_name, ] * n_files))
+        subseq_xml_files = tuple(
+            zip(subseq_xml_files, subseq_xml_file_ids, [seq_path, ] * n_files, [seq_name, ] * n_files))
 
         val_xml_files = subseq_xml_files[:n_val_files]
         train_xml_files = subseq_xml_files[n_val_files:]
@@ -995,7 +1013,9 @@ def main():
             params.coco_rle,
             params.get_img_stats,
             img_path_to_stats,
-            params.remove_mj_dir_suffix
+            params.remove_mj_dir_suffix,
+            params.xml_zip,
+            params.enable_mask,
         )
         print(f'reading {len(all_data_xml_paths)} {split_type} xml files')
         if params.n_proc > 1:
