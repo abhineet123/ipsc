@@ -379,8 +379,13 @@ def save_annotations_ytvis(
             label = obj['label']
             target_id = obj['target_id']
             bbox = obj['bbox']
-            bin_mask_rle = obj['bin_mask_rle']
-            seg_area = obj['seg_area']
+
+            if enable_masks:
+                bin_mask_rle = obj['bin_mask_rle']
+                obj_area = obj['seg_area']
+            else:
+                cx, cy, w, h = bbox
+                obj_area = w * h
 
             try:
                 category_id = class_to_id[label]
@@ -393,6 +398,8 @@ def save_annotations_ytvis(
                     raise AssertionError(msg)
 
             if infer_target_id:
+                assert enable_masks, "infer_target_id is currently only supported with masks"
+
                 assert target_id <= 0, f"existing target_id: {target_id} found in {xml_path}"
 
                 valid_prev_objs = [prev_obj for prev_obj in prev_objs
@@ -463,13 +470,16 @@ def save_annotations_ytvis(
                 ann_objs[target_id] = {
                     'iscrowd': 0,
                     'category_id': category_id,
-                    'segmentations': [None, ] * n_files,
                     'bboxes': [None, ] * n_files,
                     'areas': [None, ] * n_files,
-
-                    'bin_mask_rle': [None, ] * n_files,
-                    'mask_pts': [None, ] * n_files,
                 }
+                if enable_masks:
+                    ann_objs[target_id].update({
+                        'segmentations': [None, ] * n_files,
+                        'bin_mask_rle': [None, ] * n_files,
+                        'mask_pts': [None, ] * n_files,
+                    })
+
                 if infer_target_id:
                     sec_ann_objs[target_id] = {
                         'category_id': category_id,
@@ -481,8 +491,10 @@ def save_annotations_ytvis(
             curr_ann_obj = ann_objs[target_id]
 
             curr_ann_obj['bboxes'][frame_id] = bbox
-            curr_ann_obj['segmentations'][frame_id] = bin_mask_rle
-            curr_ann_obj['areas'][frame_id] = seg_area
+            curr_ann_obj['areas'][frame_id] = obj_area
+
+            if enable_masks:
+                curr_ann_obj['segmentations'][frame_id] = bin_mask_rle
 
             if infer_target_id:
                 sec_curr_ann_obj = sec_ann_objs[target_id]
@@ -511,12 +523,15 @@ def save_annotations_ytvis(
             "id": target_id,
             "video_id": vid_id,
             "category_id": ann_obj['category_id'],
-            "segmentations": ann_obj['segmentations'],
             "bboxes": ann_obj['bboxes'],
             "iscrowd": ann_obj['iscrowd'],
             "areas": ann_obj['areas'],
         }
 
+        if enable_masks:
+            annotations_dict.update({
+                 "segmentations": ann_obj['segmentations'],
+            })
         all_annotations.append(annotations_dict)
 
     video_dict = {
