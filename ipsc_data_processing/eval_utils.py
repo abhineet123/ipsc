@@ -324,12 +324,13 @@ def resize_ar_tf_api(src_img, width=0, height=0, return_factors=0, add_border=1,
             return dst_img
 
 
-def annotate(img_list,
-             img_labels,
-             text,
-             fmt=None,
-             grid_size=(-1, 1),
-             ):
+def annotate(
+        img_list,
+        img_labels,
+        text=None,
+        fmt=None,
+        grid_size=(-1, 1),
+):
     """
 
     :param np.ndarray | list | tuple img_list:
@@ -341,6 +342,9 @@ def annotate(img_list,
 
     if not isinstance(img_list, (list, tuple)):
         img_list = [img_list, ]
+
+    if not isinstance(img_labels, (list, tuple)):
+        img_labels = [img_labels, ]
 
     assert len(img_labels) == len(img_list), "img_labels and img_list must have same length"
 

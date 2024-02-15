@@ -197,7 +197,7 @@ class PascalVocWriter:
                 mask = SubElement(object_item, 'mask')
                 mask.text = mask_txt
 
-    def save(self, targetFile=None, _filename=None, _imgSize=None, verbose=True):
+    def save(self, targetFile=None, _filename=None, _imgSize=None, verbose=True, zip_file=None):
 
         if _filename is not None:
             self.filename = _filename
@@ -221,11 +221,15 @@ class PascalVocWriter:
             print(f'writing xml to: {self.out_fname}')
 
         self.appendObjects(root)
-        out_file = codecs.open(self.out_fname, 'w', encoding=ENCODE_METHOD)
+        out_xml_bytes = self.prettify(root)
+        out_xml_str = out_xml_bytes.decode('utf8')
 
-        prettifyResult = self.prettify(root)
-        out_file.write(prettifyResult.decode('utf8'))
-        out_file.close()
+        if zip_file is not None:
+            zip_file.writestr(self.out_fname, out_xml_str)
+        else:
+            out_file = codecs.open(self.out_fname, 'w', encoding=ENCODE_METHOD)
+            out_file.write(out_xml_str)
+            out_file.close()
 
 
 class PascalVocReader:

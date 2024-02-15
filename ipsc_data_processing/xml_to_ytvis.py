@@ -81,7 +81,8 @@ class Params(paramparse.CFG):
         self.min_length = 0
         self.coco_rle = 0
         self.n_proc = 1
-        self.compressed = 0
+        self.json_gz = 0
+        self.xml_zip = 0
 
 
 def offset_target_ids(vid_to_target_ids, annotations, set_type):
@@ -526,12 +527,21 @@ def get_xml_files(
     xml_dir_path, all_xml_files, seq_name, seq_path, subseq_info, vid_start_id = xml_data
 
     if all_xml_files is None:
-        # xml_file_gen = [[os.path.join(dirpath, f) for f in filenames if
-        #                  os.path.splitext(f.lower())[1] == '.xml']
-        #                 for (dirpath, dirnames, filenames) in os.walk(xml_dir_path, followlinks=True)]
-        # all_xml_files = [item for sublist in xml_file_gen for item in sublist]
+        if params.xml_zip:
+            from zipfile import ZipFile
 
-        all_xml_files = glob.glob(linux_path(xml_dir_path, '*.xml'), recursive=params.recursive)
+            xml_zip_path = xml_dir_path + ".zip"
+            print(f'loading xml files from  zip file {xml_zip_path}')
+            with ZipFile(xml_zip_path, 'r') as xml_zip_file:
+                all_xml_files = xml_zip_file.namelist()
+
+        else:
+            # xml_file_gen = [[os.path.join(dirpath, f) for f in filenames if
+            #                  os.path.splitext(f.lower())[1] == '.xml']
+            #                 for (dirpath, dirnames, filenames) in os.walk(xml_dir_path, followlinks=True)]
+            # all_xml_files = [item for sublist in xml_file_gen for item in sublist]
+
+            all_xml_files = glob.glob(linux_path(xml_dir_path, '*.xml'), recursive=params.recursive)
 
         if params.shuffle:
             random.shuffle(all_xml_files)
@@ -896,7 +906,7 @@ def main():
 
     if params.save_masks:
         print(f'saving mask images to {ann_dir_path}')
-        os.makedirs(ann_dir_path, exist_ok=1)
+        os.makedirs(ann_dir_path, exist_ok=True)
     else:
         print(f'not saving mask images')
 
@@ -1062,7 +1072,7 @@ def main():
         else:
             json_name = f'{out_json_name}.json'
 
-        if params.compressed:
+        if params.json_gz:
             json_name += '.gz'
 
         json_path = linux_path(db_root_dir, out_dir_name, json_name)
@@ -1075,7 +1085,7 @@ def main():
         )
         print(f'saving json for {n_xml} {split_type} images to: {json_path}')
 
-        if params.compressed:
+        if params.json_gz:
             import compress_json
             compress_json.dump(json_dict, json_path, json_kwargs=json_kwargs)
         else:

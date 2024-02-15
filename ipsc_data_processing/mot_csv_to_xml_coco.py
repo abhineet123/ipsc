@@ -80,6 +80,8 @@ class Params:
 
         self.json_dir = 0
         self.json_fname = 0
+        """save all the XML files for a sequence into as zip file rather than separate XML files"""
+        self.zip = 0
 
 
 def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, clamp_scores):
@@ -396,7 +398,7 @@ def main():
         if out_root_dir:
             json_dir = json_dir.replace(root_dir, out_root_dir, 1)
 
-        os.makedirs(json_dir, exist_ok=1)
+        os.makedirs(json_dir, exist_ok=True)
         json_path = os.path.join(json_dir, json_fname)
 
         print(f'saving json to {json_path}')
@@ -447,7 +449,8 @@ def main():
             print(f'n_sampled_frames: {n_sampled_frames}')
 
         total_n_frames += n_frames
-        total_sampled_n_frames += n_sampled_frames
+        if params.sample:
+            total_sampled_n_frames += n_sampled_frames
 
         # if is_vid:
         #     seq_name = os.path.splitext(seq_name)[0]
@@ -571,6 +574,7 @@ def main():
             print(f'looking for gold standard CTC segmentations in {gold_seg_dir_path}')
             print(f'looking for silver standard CTC segmentations in {silver_seg_dir_path}')
 
+        xml_zip_file = xml_dir_path = None
         if not json_fname:
             if mode == 0:
                 xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
@@ -581,9 +585,15 @@ def main():
                 else:
                     xml_dir_path = linux_path(img_root_dir, out_dir_name)
 
-            os.makedirs(xml_dir_path, exist_ok=1)
+            if params.zip:
+                from zipfile import ZipFile
 
-            print(f'saving xml files to {xml_dir_path}')
+                xml_zip_path = xml_dir_path + '.zip'
+                print(f'saving xml files to  zip file {xml_zip_path}')
+                xml_zip_file = ZipFile(xml_zip_path, 'w')
+            else:
+                os.makedirs(xml_dir_path, exist_ok=True)
+                print(f'saving xml files to {xml_dir_path}')
 
         obj_ids_to_bboxes = {}
         obj_ids_to_seg_pts = {}
@@ -635,7 +645,10 @@ def main():
 
             else:
                 xml_fname = filename_no_ext + '.xml'
-                out_xml_path = linux_path(xml_dir_path, xml_fname)
+                if params.zip:
+                    out_xml_path = xml_fname
+                else:
+                    out_xml_path = linux_path(xml_dir_path, xml_fname)
 
             vis_img = image.copy()
             seg_img_vis = np.zeros_like(vis_img)
@@ -853,7 +866,6 @@ def main():
 
                                 obj_ids_to_seg_pts[obj_id].append(seg_pts)
 
-
                             if json_fname:
                                 mask_pts_flat = []
                                 for _pt in seg_pts:
@@ -888,7 +900,7 @@ def main():
                             drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label, font_size=0.5, box_color=obj_col)
 
                 if not json_fname:
-                    xml_writer.save(targetFile=out_xml_path, verbose=False)
+                    xml_writer.save(targetFile=out_xml_path, verbose=False, zip_file=xml_zip_file)
 
             if save_video or show_img:
                 curr_obj_cols = [rgb_cols[k] for k in curr_obj_ids]
@@ -925,6 +937,9 @@ def main():
                         break
                     elif k == 32:
                         pause_after_frame = 1 - pause_after_frame
+
+        if xml_zip_file is not None:
+            xml_zip_file.close()
 
         if missing_seg_images:
             missing_seg_images = list(set(missing_seg_images))

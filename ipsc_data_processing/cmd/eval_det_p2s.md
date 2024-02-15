@@ -43,7 +43,7 @@
 ## g2_5_9       @ resnet-640-vid-->eval_det_p2s
 <a id="on_g2_5_9___g2_5_9_resnet_640_vi_d_"></a>
 ### on-g2_5_9       @ g2_5_9/resnet-640-vid-->eval_det_p2s
-python3 eval_det.py cfg=ipsc_2_class:ext:g2_5_9,p2s det_paths=resnet_640_ext_reorg_roi_g2_5_9-length-2-stride-1-batch_8/ckpt-122864-ext_reorg_roi_g2_5_9-length-2-stride-1/csv-batch_16 save_suffix=p2s-resnet_640-g2_5_9-len-2-strd-1-g2_0_4-batch_8-122864 show_vis=0 load_gt=0
+python3 eval_det.py cfg=ipsc_2_class:ext:g2_5_9,p2s det_paths=resnet_640_ext_reorg_roi_g2_5_9-length-2-stride-1-batch_8/ckpt-1226544-ext_reorg_roi_g2_5_9-length-2-stride-1/csv-batch_4 save_suffix=p2s-resnet_640-g2_5_9-len-2-strd-1-g2_0_4-batch_8-1226544 show_vis=0 load_gt=0
 <a id="on_g2_0_4___g2_5_9_resnet_640_vi_d_"></a>
 ### on-g2_0_4       @ g2_5_9/resnet-640-vid-->eval_det_p2s
 python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_4,p2s det_paths=resnet_640_ext_reorg_roi_g2_5_9-length-2-stride-1-batch_8/ckpt-1052144-ext_reorg_roi_g2_0_4-length-2-stride-1/csv-batch_4 save_suffix=p2s-resnet_640-g2_5_9-len-2-strd-1-g2_0_4-batch_8-1052144 show_vis=0 load_gt=0
