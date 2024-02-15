@@ -82,7 +82,7 @@ class Params(paramparse.CFG):
         self.n_proc = 1
         self.json_gz = 0
         self.xml_zip = 0
-        self.enable_mask = 1
+        self.enable_masks = 1
 
 
 def offset_target_ids(vid_to_target_ids, annotations, set_type):
@@ -126,7 +126,7 @@ def binary_mask_to_rle(binary_mask):
 
 
 def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
-                  get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip, enable_mask, xml_data):
+                  get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip, enable_masks, xml_data):
     xml_path, xml_path_id, seq_path, seq_name = xml_data
 
     all_pix_vals_mean = []
@@ -250,7 +250,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
             bbox=bbox,
         )
 
-        if enable_mask:
+        if enable_masks:
             mask_obj = obj.find('mask')
             if mask_obj is None:
                 msg = 'no mask found for object:\n{}'.format(img_name)
@@ -289,6 +289,7 @@ def save_annotations_ytvis(
         ignore_invalid_label,
         infer_target_id,
         use_tqdm,
+        enable_masks,
         xml_data,
 ):
     xml_files, vid_id = xml_data
@@ -1015,7 +1016,7 @@ def main():
             img_path_to_stats,
             params.remove_mj_dir_suffix,
             params.xml_zip,
-            params.enable_mask,
+            params.enable_masks,
         )
         print(f'reading {len(all_data_xml_paths)} {split_type} xml files')
         if params.n_proc > 1:
@@ -1047,6 +1048,7 @@ def main():
             class_dict,
             params.ignore_invalid_label,
             params.infer_target_id,
+            params.enable_masks,
             False,
         )
 
