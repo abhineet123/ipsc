@@ -59,6 +59,7 @@ class Params(paramparse.CFG):
         self.save_file_name = ''
         self.save_video = 1
         self.seq_paths = ''
+        self.seq_paths_suffix = ''
         self.show_img = 0
         self.shuffle = 0
         self.subseq = 0
@@ -818,7 +819,12 @@ def main():
 
     if seq_paths:
         if seq_paths.endswith('.txt'):
+            if params.seq_paths_suffix:
+                name_, ext_ = os.path.splitext(seq_paths)
+                seq_paths = f'{name_}_{params.seq_paths_suffix}.{ext_}'
+
             assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
+
             seq_paths = [x.strip() for x in open(seq_paths).readlines() if x.strip()]
         else:
             seq_paths = seq_paths.split(',')
