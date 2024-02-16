@@ -821,7 +821,7 @@ def main():
         if seq_paths.endswith('.txt'):
             if params.seq_paths_suffix:
                 name_, ext_ = os.path.splitext(seq_paths)
-                seq_paths = f'{name_}_{params.seq_paths_suffix}.{ext_}'
+                seq_paths = f'{name_}_{params.seq_paths_suffix}{ext_}'
 
             assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
 
