@@ -817,7 +817,8 @@ def main():
     print(f'description: {description}')
 
     if seq_paths:
-        if os.path.isfile(seq_paths):
+        if seq_paths.endswith('.txt'):
+            assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
             seq_paths = [x.strip() for x in open(seq_paths).readlines() if x.strip()]
         else:
             seq_paths = seq_paths.split(',')
