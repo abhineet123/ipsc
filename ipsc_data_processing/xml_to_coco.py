@@ -17,7 +17,7 @@ import imagesize
 
 import paramparse
 
-from eval_utils import sortKey, col_bgr, linux_path
+from eval_utils import sortKey, col_bgr, linux_path, add_suffix
 
 
 class Params(paramparse.CFG):
@@ -45,7 +45,7 @@ class Params(paramparse.CFG):
         self.n_frames = 0
         self.dir_name = 'annotations'
         self.dir_suffix = ''
-        self.output_json = 'coco.json'
+        self.output_json = ''
 
         self.enable_masks = 2
         self.save_masks = 0
@@ -467,11 +467,17 @@ def main():
     n_seq = params.n_seq
     seq_stride = params.seq_stride
 
+    if params.start_id > 0 or params.end_id >= 0:
+        output_json = f'{output_json}-seq_{params.start_id}_{params.end_id}'
+
+    if params.start_frame_id > 0 or params.end_frame_id >= 0:
+        output_json = f'{output_json}-frame_{params.start_frame_id}_{params.end_frame_id}'
+
     if seq_paths:
         if seq_paths.endswith('.txt'):
             if params.seq_paths_suffix:
-                name_, ext_ = os.path.splitext(seq_paths)
-                seq_paths = f'{name_}_{params.seq_paths_suffix}{ext_}'
+                seq_paths = add_suffix(seq_paths, params.seq_paths_suffix)
+                output_json = add_suffix(output_json, params.seq_paths_suffix, sep='-')
 
             assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
 
@@ -501,6 +507,9 @@ def main():
 
     output_json_dir, output_json_fname = os.path.dirname(output_json), os.path.basename(output_json)
     output_json_fname_noext, output_json_fname_ext = os.path.splitext(output_json_fname)
+    if not output_json_fname_ext:
+        output_json += '.json'
+        output_json_fname_ext = '.json'
 
     if not output_json_dir:
         if root_dir:

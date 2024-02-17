@@ -776,7 +776,7 @@ def main():
     assert description, "dataset description must be provided"
 
     if params.start_frame_id > 0 or params.end_frame_id >= 0:
-        description = f'{description}_{params.start_frame_id}_{params.end_frame_id}'
+        description = f'{description}-{params.start_frame_id}_{params.end_frame_id}'
 
     if params.dir_suffix:
         print(f'dir_suffix: {params.dir_suffix}')

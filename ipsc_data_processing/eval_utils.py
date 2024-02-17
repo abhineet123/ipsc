@@ -1081,14 +1081,14 @@ def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
 
 
-def add_suffix(src_path, suffix, dst_ext=''):
+def add_suffix(src_path, suffix, dst_ext='', sep='_'):
     # abs_src_path = os.path.abspath(src_path)
     src_dir = os.path.dirname(src_path)
     src_name, src_ext = os.path.splitext(os.path.basename(src_path))
     if not dst_ext:
         dst_ext = src_ext
 
-    dst_path = linux_path(src_dir, src_name + '_' + suffix + dst_ext)
+    dst_path = linux_path(src_dir, src_name + sep + suffix + dst_ext)
     return dst_path
 
 
