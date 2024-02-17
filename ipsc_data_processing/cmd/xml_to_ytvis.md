@@ -26,7 +26,6 @@
 
 <!-- /MarkdownTOC -->
 
-
 <a id="all_frames_roi_g2_38_53___all_frames_roi_"></a>
 # all_frames_roi_g2_38_53       @ all_frames_roi-->xml_to_ytvis
 python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=all_frames_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt start_frame_id=38 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 min_val=0 allow_missing_images=0 get_img_stats=0 description=all_frames_roi_g2_38_53 save_masks=0 coco_rle=1
