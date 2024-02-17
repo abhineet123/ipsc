@@ -2,6 +2,8 @@
 <!-- MarkdownTOC -->
 
 - [mnist_mot       @ xml_to_coco](#mnist_mot___xml_to_coc_o_)
+    - [640-5       @ mnist_mot](#640_5___mnist_mo_t_)
+    - [512-3       @ mnist_mot](#512_3___mnist_mo_t_)
 - [all_frames_roi](#all_frames_ro_i_)
     - [g2_0_37       @ all_frames_roi](#g2_0_37___all_frames_roi_)
 - [ipsc_2_class       @ xml_to_coco](#ipsc_2_class___xml_to_coc_o_)
@@ -14,10 +16,10 @@
     - [ext_reorg_roi       @ ipsc_2_class](#ext_reorg_roi___ipsc_2_class_)
         - [g2_0_37       @ ext_reorg_roi/ipsc_2_class](#g2_0_37___ext_reorg_roi_ipsc_2_class_)
             - [no_validate       @ g2_0_37/ext_reorg_roi/ipsc_2_class](#no_validate___g2_0_37_ext_reorg_roi_ipsc_2_class_)
-            - [write_masks       @ g2_0_37/ext_reorg_roi/ipsc_2_class](#write_masks___g2_0_37_ext_reorg_roi_ipsc_2_class_)
+            - [save_masks       @ g2_0_37/ext_reorg_roi/ipsc_2_class](#save_masks___g2_0_37_ext_reorg_roi_ipsc_2_class_)
             - [no_mask       @ g2_0_37/ext_reorg_roi/ipsc_2_class](#no_mask___g2_0_37_ext_reorg_roi_ipsc_2_class_)
         - [g2_38_53       @ ext_reorg_roi/ipsc_2_class](#g2_38_53___ext_reorg_roi_ipsc_2_class_)
-            - [write_masks       @ g2_38_53/ext_reorg_roi/ipsc_2_class](#write_masks___g2_38_53_ext_reorg_roi_ipsc_2_clas_s_)
+            - [save_masks       @ g2_38_53/ext_reorg_roi/ipsc_2_class](#save_masks___g2_38_53_ext_reorg_roi_ipsc_2_clas_s_)
         - [g2_15_53       @ ext_reorg_roi/ipsc_2_class](#g2_15_53___ext_reorg_roi_ipsc_2_class_)
             - [no_validate       @ g2_15_53/ext_reorg_roi/ipsc_2_class](#no_validate___g2_15_53_ext_reorg_roi_ipsc_2_clas_s_)
         - [g2_16_53       @ ext_reorg_roi/ipsc_2_class](#g2_16_53___ext_reorg_roi_ipsc_2_class_)
@@ -73,9 +75,15 @@
 <!-- /MarkdownTOC -->
 <a id="mnist_mot___xml_to_coc_o_"></a>
 # mnist_mot       @ xml_to_coco-->coco
-python xml_to_coco.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images seq_paths=lists/mnist_mot_rgb_512_1k_9600_3_var.txt class_names_path=lists/classes/mnist_mot.txt output_json=mnist_mot_rgb_512_1k_9600_3_var.json ignore_invalid_label=0 val_ratio=0 start_id=0 end_id=999 skip_invalid=0 enable_mask=0
+<a id="640_5___mnist_mo_t_"></a>
+## 640-5       @ mnist_mot-->xml_to_coco
+python xml_to_coco.py cfg=mnist:640-1:12_1000:gz
+
+<a id="512_3___mnist_mo_t_"></a>
+## 512-3       @ mnist_mot-->xml_to_coco
+python xml_to_coco.py root_dir=/data/mnist_mot/512_3_1000_9600_var/Images seq_paths=lists/mnist_mot_rgb_512_1k_9600_3_var.txt class_names_path=lists/classes/mnist_mot.txt output_json=mnist_mot_rgb_512_1k_9600_3_var.json ignore_invalid_label=0 val_ratio=0 start_id=0 end_id=999 skip_invalid=0 enable_masks=0
 __val__
-python xml_to_coco.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images seq_paths=lists/mnist_mot_rgb_512_1k_9600_3_var.txt class_names_path=lists/classes/mnist_mot.txt output_json=mnist_mot_rgb_512_1k_9600_3_var.json ignore_invalid_label=0 val_ratio=1 start_id=1000 end_id=-1 skip_invalid=0 enable_mask=0 samples_per_seq=0.01
+python xml_to_coco.py root_dir=/data/MNIST_MOT_RGB_512x512_3_1000_9600_var/Images seq_paths=lists/mnist_mot_rgb_512_1k_9600_3_var.txt class_names_path=lists/classes/mnist_mot.txt output_json=mnist_mot_rgb_512_1k_9600_3_var.json ignore_invalid_label=0 val_ratio=1 start_id=1000 end_id=-1 skip_invalid=0 enable_masks=0 samples_per_seq=0.01
 
 <a id="all_frames_ro_i_"></a>
 # all_frames_roi       
@@ -127,13 +135,13 @@ pix_vals_std: [16.855180446630406, 16.855180446630406, 16.855180446630406]
 saving output json for 1209 images to: /data/ipsc/well3/all_frames_roi/ext_reorg_roi_g2_0_37.json
 ```
 
-<a id="write_masks___g2_0_37_ext_reorg_roi_ipsc_2_class_"></a>
-#### write_masks       @ g2_0_37/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0 write_masks=1 get_img_stats=0
+<a id="save_masks___g2_0_37_ext_reorg_roi_ipsc_2_class_"></a>
+#### save_masks       @ g2_0_37/ext_reorg_roi/ipsc_2_class-->xml_to_coco
+python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0 save_masks=1 get_img_stats=0
 
 <a id="no_mask___g2_0_37_ext_reorg_roi_ipsc_2_class_"></a>
 #### no_mask       @ g2_0_37/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_37-no_mask.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0 enable_mask=0
+python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_37-no_mask.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0 enable_masks=0
 ```
 1209 / 1209 valid images :: 7557 objects  ipsc: 1877 diff: 5680
 pix_vals_mean: [130.2047103166563, 130.2047103166563, 130.2047103166563]
@@ -149,9 +157,9 @@ pix_vals_std: [21.941942680167365, 21.941942680167365, 21.941942680167365]
 __only_list__
 python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_38_53.json start_frame_id=38 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 min_val=0 only_list=1
 
-<a id="write_masks___g2_38_53_ext_reorg_roi_ipsc_2_clas_s_"></a>
-#### write_masks       @ g2_38_53/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_38_53.json start_frame_id=38 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 min_val=0 write_masks=1 get_img_stats=0
+<a id="save_masks___g2_38_53_ext_reorg_roi_ipsc_2_clas_s_"></a>
+#### save_masks       @ g2_38_53/ext_reorg_roi/ipsc_2_class-->xml_to_coco
+python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_38_53.json start_frame_id=38 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 min_val=0 save_masks=1 get_img_stats=0
 
 <a id="g2_15_53___ext_reorg_roi_ipsc_2_class_"></a>
 ### g2_15_53       @ ext_reorg_roi/ipsc_2_class-->xml_to_coco
@@ -186,7 +194,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg
 
 <a id="no_mask___no_val_g2_16_53_ext_reorg_roi_ipsc_2_class_"></a>
 ##### no_mask       @ no-val/g2_16_53/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_16_53-no_mask.json start_frame_id=16 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 enable_mask=0
+python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_16_53-no_mask.json start_frame_id=16 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 enable_masks=0
 
 <a id="g2_0_1___ext_reorg_roi_ipsc_2_class_"></a>
 ### g2_0_1       @ ext_reorg_roi/ipsc_2_class-->xml_to_coco
@@ -200,7 +208,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg
 
 <a id="no_mask___g2_0_15_ext_reorg_roi_ipsc_2_class_"></a>
 #### no_mask       @ g2_0_15/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_15-no_mask.json start_frame_id=0 end_frame_id=15 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 enable_mask=0
+python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_15-no_mask.json start_frame_id=0 end_frame_id=15 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 enable_masks=0
 
 <a id="g2_54_126___ext_reorg_roi_ipsc_2_class_"></a>
 ### g2_54_126       @ ext_reorg_roi/ipsc_2_class-->xml_to_coco
@@ -213,7 +221,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg
 
 <a id="no_mask___g2_54_126_ext_reorg_roi_ipsc_2_class_"></a>
 #### no_mask       @ g2_54_126/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_54_126-no_mask.json start_frame_id=54 end_frame_id=126 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 enable_mask=0
+python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_54_126-no_mask.json start_frame_id=54 end_frame_id=126 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 enable_masks=0
 
 <a id="g2_0_53___ext_reorg_roi_ipsc_2_class_"></a>
 ### g2_0_53       @ ext_reorg_roi/ipsc_2_class-->xml_to_coco
@@ -226,7 +234,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg
 
 <a id="no_mask___g2_0_53_ext_reorg_roi_ipsc_2_class_"></a>
 #### no_mask       @ g2_0_53/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_53-no_mask.json start_frame_id=0 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 enable_mask=0
+python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_53-no_mask.json start_frame_id=0 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 enable_masks=0
 
 <a id="ext_reorg_roi_no_annotations___ipsc_2_class_"></a>
 ## ext_reorg_roi-no_annotations       @ ipsc_2_class-->xml_to_coco
@@ -395,4 +403,4 @@ pix_vals_std: [15.87, 15.87, 15.87]
 
 <a id="ctmc_all___xml_to_coc_o_"></a>
 # ctmc_all       @ xml_to_coco-->coco
-python xml_to_coco.py root_dir=/data/CTMC/Images seq_paths=ctmc_train.txt class_names_path=lists/classes/predefined_classes_cell.txt output_json=ctmc_train.json val_ratio=0.3 enable_mask=0
+python xml_to_coco.py root_dir=/data/CTMC/Images seq_paths=ctmc_train.txt class_names_path=lists/classes/predefined_classes_cell.txt output_json=ctmc_train.json val_ratio=0.3 enable_masks=0

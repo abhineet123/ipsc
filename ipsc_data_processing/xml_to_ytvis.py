@@ -28,8 +28,7 @@ import multiprocessing
 
 class Params(paramparse.CFG):
     def __init__(self):
-        paramparse.CFG.__init__(self)
-        self.cfg_root = 'cfg/xml_to_ytvis'
+        paramparse.CFG.__init__(self, cfg_root='cfg/xml_to_coco')
 
         self.batch_size = 1
         self.description = ''
@@ -66,7 +65,6 @@ class Params(paramparse.CFG):
         self.subseq_split_ids = []
         self.sources_to_include = []
         self.val_ratio = 0
-        self.save_masks = 0
         self.allow_missing_images = 0
         self.remove_mj_dir_suffix = 0
         self.infer_target_id = 0
@@ -81,9 +79,12 @@ class Params(paramparse.CFG):
         self.min_length = 0
         self.coco_rle = 0
         self.n_proc = 1
+
         self.json_gz = 0
         self.xml_zip = 0
+
         self.enable_masks = 1
+        self.save_masks = 0
 
 
 def offset_target_ids(vid_to_target_ids, annotations, set_type):
@@ -531,7 +532,7 @@ def save_annotations_ytvis(
 
         if enable_masks:
             annotations_dict.update({
-                 "segmentations": ann_obj['segmentations'],
+                "segmentations": ann_obj['segmentations'],
             })
         all_annotations.append(annotations_dict)
 
@@ -815,13 +816,12 @@ def main():
         print(f'saving incremental clips')
         description = f'{description}-incremental'
 
-    print(f'description: {description}')
-
     if seq_paths:
         if seq_paths.endswith('.txt'):
             if params.seq_paths_suffix:
                 name_, ext_ = os.path.splitext(seq_paths)
                 seq_paths = f'{name_}_{params.seq_paths_suffix}{ext_}'
+                description = f'{description}-{params.seq_paths_suffix}'
 
             assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
 
@@ -837,6 +837,8 @@ def main():
         seq_paths.sort(key=sortKey)
     else:
         raise IOError('Either seq_paths or root_dir must be provided')
+
+    print(f'description: {description}')
 
     if 0 < n_seq < len(seq_paths):
         seq_paths = seq_paths[:n_seq]
@@ -1097,7 +1099,11 @@ def main():
             vid_to_target_ids[vid_id] = k3
 
         offset_target_ids(vid_to_target_ids, annotations, f'{split_type}')
-        info["description"] = description + f'-{split_type}'
+        if params.val_ratio > 0:
+            info["description"] = description + f'-{split_type}'
+        else:
+            info["description"] = description
+
         info["counts"] = dict(
             videos=len(videos),
             annotations=len(annotations),

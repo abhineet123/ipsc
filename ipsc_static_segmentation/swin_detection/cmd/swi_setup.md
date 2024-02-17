@@ -75,7 +75,7 @@ mkvirtualenv swin_i
 workon swin_i
 
 <a id="cc___virtualenv_"></a>
-## cc       @ virtualenv-->swin_det_setup
+## cc       @ virtualenv-->swi_setup
 module load python/3.7
 module load gcc cuda cudnn
 virtualenv ~/venv/swin_i
@@ -88,7 +88,7 @@ alias swi='source ~/venv/swin_i/bin/activate'
 
 
 <a id="windows___virtualenv_"></a>
-## windows       @ virtualenv-->swin_det_setup
+## windows       @ virtualenv-->swi_setup
 virtualenv swin_i
 swin_i\Scripts\activate.bat
 
@@ -96,85 +96,85 @@ swin_i\Scripts\activate.bat
 # install
 
 <a id="torch___instal_l_"></a>
-## torch       @ install-->swin_det_setup
+## torch       @ install-->swi_setup
 
 <a id="cc___torch_instal_l_"></a>
-### cc       @ torch/install-->swin_det_setup
+### cc       @ torch/install-->swi_setup
 python -m pip install torch torchvision
 
 <a id="cu111___torch_instal_l_"></a>
-### cu111       @ torch/install-->swin_det_setup
+### cu111       @ torch/install-->swi_setup
 __this is the one for ubuntu 20.04__
 python -m pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio===0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
 
 <a id="cu102___torch_instal_l_"></a>
-### cu102       @ torch/install-->swin_det_setup
+### cu102       @ torch/install-->swi_setup
 python -m pip install torch==1.9.0+cu102 torchvision==0.10.0+cu102 torchaudio===0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
 
 <a id="cu113___torch_instal_l_"></a>
-### cu113       @ torch/install-->swin_det_setup
+### cu113       @ torch/install-->swi_setup
 python -m pip install torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio===0.10.2+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 
 <a id="py3_10___cu113_torch_instal_l_"></a>
-#### py3.10       @ cu113/torch/install-->swin_det_setup
+#### py3.10       @ cu113/torch/install-->swi_setup
 pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
 
 __buggy errors in resuming training__
 pip install torch==1.12.0+cu116 torchvision==0.13.0+cu116 torchaudio==0.12.0 --extra-index-url https://download.pytorch.org/whl/cu116
 
 <a id="mmcv___instal_l_"></a>
-## mmcv       @ install-->swin_det_setup
+## mmcv       @ install-->swi_setup
 python -c 'import torch;print(torch.__version__);print(torch.version.cuda)'
 https://mmcv.readthedocs.io/en/latest/get_started/installation.html
 
 <a id="cc___mmcv_install_"></a>
-### cc       @ mmcv/install-->swin_det_setup
+### cc       @ mmcv/install-->swi_setup
 pip install mmcv-full==1.7.0 -f https://download.openmmlab.com/mmcv/dist/cu117/torch1.13/index.html
 
 <a id="from_source___cc_mmcv_instal_l_"></a>
-#### from_source       @ cc/mmcv/install-->swin_det_setup
+#### from_source       @ cc/mmcv/install-->swi_setup
 CUDA_HOME=/cvmfs/soft.computecanada.ca/easybuild/software/2020/Core/cudacore/11.4.2 MMCV_WITH_OPS=1 pip install -e . -v
 MMCV_WITH_OPS=1 pip install -e . -v
 
 <a id="cu111___mmcv_install_"></a>
-### cu111       @ mmcv/install-->swin_det_setup
+### cu111       @ mmcv/install-->swi_setup
 <a id="torch1_9_0___cu111_mmcv_install_"></a>
-#### torch1.9.0       @ cu111/mmcv/install-->swin_det_setup
+#### torch1.9.0       @ cu111/mmcv/install-->swi_setup
 python -m pip install mmcv-full==1.3.9 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
 
 <a id="torch1_8_0___cu111_mmcv_install_"></a>
-#### torch1.8.0       @ cu111/mmcv/install-->swin_det_setup
+#### torch1.8.0       @ cu111/mmcv/install-->swi_setup
 python -m pip install mmcv-full==1.3.9 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.8.0/index.html
 
 <a id="cu102___mmcv_install_"></a>
-### cu102       @ mmcv/install-->swin_det_setup
+### cu102       @ mmcv/install-->swi_setup
 __won't work with RTX 3000___
 python -m pip install mmcv-full==1.3.9 -f https://download.openmmlab.com/mmcv/dist/cu102/torch1.9.0/index.html
 
 python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu102/torch1.9.0/index.html
 
 <a id="cu113___mmcv_install_"></a>
-### cu113       @ mmcv/install-->swin_det_setup
+### cu113       @ mmcv/install-->swi_setup
 <a id="torch1_10_0___cu113_mmcv_install_"></a>
-#### torch1.10.0       @ cu113/mmcv/install-->swin_det_setup
+#### torch1.10.0       @ cu113/mmcv/install-->swi_setup
 python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.0/index.html -v
 <a id="torch1_10_2___cu113_mmcv_install_"></a>
-#### torch1.10.2       @ cu113/mmcv/install-->swin_det_setup
+#### torch1.10.2       @ cu113/mmcv/install-->swi_setup
 __might take a while__
 python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.2/index.html
 
 <a id="py3_10___mmcv_install_"></a>
-### py3.10       @ mmcv/install-->swin_det_setup
+### py3.10       @ mmcv/install-->swi_setup
 <a id="torch1_11___py3_10_mmcv_instal_l_"></a>
-#### torch1.11       @ py3.10/mmcv/install-->swin_det_setup
+#### torch1.11       @ py3.10/mmcv/install-->swi_setup
 python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
 
 <a id="torch1_12___py3_10_mmcv_instal_l_"></a>
-#### torch1.12       @ py3.10/mmcv/install-->swin_det_setup
+#### torch1.12       @ py3.10/mmcv/install-->swi_setup
 python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu116/torch1.12.0/index.html
 
 <a id="uninstall___mmcv_install_"></a>
-### uninstall       @ mmcv/install-->swin_det_setup
+### uninstall       @ mmcv/install-->swi_setup
 python -m pip uninstall mmcv-full
 python -m pip install mmcv-full
 
@@ -182,19 +182,19 @@ python -m pip uninstall torch torchvision
 python -m pip install torch torchvision
 
 <a id="misc___mmcv_install_"></a>
-### misc       @ mmcv/install-->swin_det_setup
+### misc       @ mmcv/install-->swi_setup
 'utils/spconv/spconv/geometry.h'
 
 python -m pip install libboost-filesystem-dev
 python -m pip install libboost-dev
 
 <a id="openmim___instal_l_"></a>
-## openmim       @ install-->swin_det_setup
+## openmim       @ install-->swi_setup
 python -m pip install openmim
 python -m pip install --upgrade timm
 
 <a id="mmdet___instal_l_"></a>
-## mmdet       @ install-->swin_det_setup
+## mmdet       @ install-->swi_setup
 __buggy__
 python -m pip install mmdet
 
@@ -210,7 +210,7 @@ sys.path.append(swin_det_dir)
 ```
 
 <a id="misc___instal_l_"></a>
-## misc       @ install-->swin_det_setup
+## misc       @ install-->swi_setup
 python -m pip install setuptools==59.5.0
 python -m pip install setuptools
 python -m pip install tqdm terminaltables lxml fiftyone instaboostfast paramparse imagesize
@@ -222,12 +222,12 @@ python -m pip install albumentations>=0.3.2 --no-binary imgaug,albumentations cy
 python -m pip install tensorflow tensorboard
 
 <a id="mmpycocotools___misc_install_"></a>
-### mmpycocotools       @ misc/install-->swin_det_setup
+### mmpycocotools       @ misc/install-->swi_setup
 python -m pip uninstall pycocotools
 python -m pip uninstall mmpycocotools
 python -m pip install mmpycocotools
 <a id="py3_10_ubuntu_22_04_e5g____mmpycocotools_misc_install_"></a>
-#### py3.10/ubuntu_22.04/e5g:       @ mmpycocotools/misc/install-->swin_det_setup
+#### py3.10/ubuntu_22.04/e5g:       @ mmpycocotools/misc/install-->swi_setup
 __cc1: fatal error: ../common/maskApi.c: No such file or directory__
 
 ```
@@ -244,14 +244,14 @@ numpy version <= 1.23.5
 
 
 <a id="apex___misc_install_"></a>
-### apex       @ misc/install-->swin_det_setup
+### apex       @ misc/install-->swi_setup
 __best_not_installed__
 git clone https://github.com/NVIDIA/apex
 cd apex
 pip install --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 
 <a id="bugs___instal_l_"></a>
-## bugs       @ install-->swin_det_setup
+## bugs       @ install-->swi_setup
 __AttributeError: partially initialized module 'cv2' has no attribute '_registerMatType' (most likely due to a circular import)__
 https://github.com/opencv/opencv-python/issues/591
 uninstall opencv
@@ -316,23 +316,23 @@ sudo nvidia-smi -i 0,1 -pl 300
 <a id="file_location_s_"></a>
 # file locations
 <a id="optimizer_config___file_locations_"></a>
-## optimizer_config       @ file_locations-->swin_det_setup
+## optimizer_config       @ file_locations-->swi_setup
 configs/_base_/schedules/schedule_1x.py
 <a id="lr_updater___optimizer_config_file_location_s_"></a>
-### lr_updater       @ optimizer_config/file_locations-->swin_det_setup
+### lr_updater       @ optimizer_config/file_locations-->swi_setup
 lib/site-packages/mmcv/runner/hooks/lr_updater.py
 <a id="checkpoint_saving___file_locations_"></a>
-## checkpoint_saving       @ file_locations-->swin_det_setup
+## checkpoint_saving       @ file_locations-->swi_setup
 mmcv_custom/runner/checkpoint.py
 <a id="epochs___file_locations_"></a>
-## epochs       @ file_locations-->swin_det_setup
+## epochs       @ file_locations-->swi_setup
 mmcv_custom/runner/epoch_based_runner.py
 <a id="train_progress_bar___file_locations_"></a>
-## train_progress_bar       @ file_locations-->swin_det_setup
+## train_progress_bar       @ file_locations-->swi_setup
 line 52 in mmcv/runner/epoch_based_runner.py (use pycharm)
 
 <a id="data_pipelines___file_locations_"></a>
-## data_pipelines       @ file_locations-->swin_det_setup
+## data_pipelines       @ file_locations-->swi_setup
 Resize, RandomFlip, Normalize, Pad: swin_detection\mmdet\datasets\pipelines\transforms.py
 
 <a id="train_on_new_datase_t_"></a>
@@ -348,7 +348,7 @@ Resize, RandomFlip, Normalize, Pad: swin_detection\mmdet\datasets\pipelines\tran
 8. copy over the new class file, if needed, to `data/`
 
 <a id="only_bboxes___train_on_new_dataset_"></a>
-## only_bboxes       @ train_on_new_dataset-->swin_det_setup
+## only_bboxes       @ train_on_new_dataset-->swi_setup
 - `configs\_base_\models\<name>.py`
     - comment out:
         # mask_roi_extractor=dict(
@@ -374,23 +374,23 @@ Resize, RandomFlip, Normalize, Pad: swin_detection\mmdet\datasets\pipelines\tran
     `evaluation = dict(metric=['bbox'])`
 
 <a id="enable_tensorboard___train_on_new_dataset_"></a>
-## enable_tensorboard       @ train_on_new_dataset-->swin_det_setup
+## enable_tensorboard       @ train_on_new_dataset-->swi_setup
 `configs/_base_/default_runtime.py`
 comment out:
 `dict(type='TensorboardLoggerHook')`
 
 <a id="multiple_non_distributed_on_separate_gpus___train_on_new_dataset_"></a>
-## multiple_non_distributed_on_separate_gpus       @ train_on_new_dataset-->swin_det_setup
+## multiple_non_distributed_on_separate_gpus       @ train_on_new_dataset-->swi_setup
 `dist.init_process_group` with different file passed to `init_method` in line 124 of `tools.train`
 
 <a id="issues___train_on_new_dataset_"></a>
-## issues       @ train_on_new_dataset-->swin_det_setup
+## issues       @ train_on_new_dataset-->swi_setup
 __apex IndexError: tuple index out of range__
 comment out  ```optimizer_config = dict``` part completely in the `configs\swin\<name>.py` file
 
 
 <a id="visualize___train_on_new_dataset_"></a>
-## visualize       @ train_on_new_dataset-->swin_det_setup
+## visualize       @ train_on_new_dataset-->swi_setup
 python tools/misc/browse_dataset.py configs/swin/cascade_mask_rcnn_swin_base_ipsc_2_class_all_frames_roi_g2_0_37.py
 
 <a id="test_on_new_unlabeled_image_s_"></a>
@@ -404,11 +404,11 @@ python tools/misc/browse_dataset.py configs/swin/cascade_mask_rcnn_swin_base_ips
 6. copy over the new class file if needed to `data/`
 
 <a id="k___test_on_new_unlabeled_images_"></a>
-## k       @ test_on_new_unlabeled_images-->swin_det_setup
+## k       @ test_on_new_unlabeled_images-->swi_setup
 python tools/test.py config=configs/swin/cascade_mask_rcnn_swin_base_patch4_window7_mstrain_480-800_giou_4conv1f_adamw_3x_coco_person.py checkpoint=work_dirs/cascade_mask_rcnn_swin_base_patch4_window7.pth show=1 show_dir=work_dirs/cascade_mask_rcnn_swin_base_patch4_window7_mstrain_480-800_giou_4conv1f_adamw_3x_coco_person/vis test_name=k class_info=data/classes_person.txt filter_objects=1
 
 <a id="output_to_annotations___test_on_new_unlabeled_images_"></a>
-## output_to_annotations       @ test_on_new_unlabeled_images-->swin_det_setup
+## output_to_annotations       @ test_on_new_unlabeled_images-->swi_setup
 1. replace `<name>diff</name>` and `<name>ipsc</name>` with `<name>cell</name>`
 2. if xml files not in annotations folder, first find and isolate all xml files and then use mftf: `mftf ann 1000 roi_6094_19416_8394_20382`
 3. change ann1 to annotations: `rrepfr ann1 annotations`
@@ -416,7 +416,7 @@ python tools/test.py config=configs/swin/cascade_mask_rcnn_swin_base_patch4_wind
 <a id="create_ro_i_"></a>
 # create_roi 
 <a id="reorg_rois___create_roi_"></a>
-## reorg_rois       @ create_roi-->swin_det_setup
+## reorg_rois       @ create_roi-->swi_setup
 python create_ROIs.py root_dir=/data/ipsc/well3 rois_path=reorg_rois.txt src_path=all_frames
 
 <a id="scp_"></a>

@@ -11,7 +11,6 @@ from PIL import Image
 from pprint import pformat
 
 import json
-import xml.etree.ElementTree as ET
 from typing import Dict, List
 from tqdm import tqdm
 import imagesize
@@ -21,15 +20,15 @@ import paramparse
 from eval_utils import sortKey, col_bgr, linux_path
 
 
-class Params:
+class Params(paramparse.CFG):
     def __init__(self):
-        self.cfg = ()
+        paramparse.CFG.__init__(self, cfg_root='cfg/xml_to_coco')
+
         self.batch_size = 1
         self.excluded_images_list = ''
         self.class_names_path = ''
         self.codec = 'H264'
         self.csv_file_name = ''
-        self.enable_mask = 2
         self.extract_num_from_imgid = 0
         self.fps = 20
         self.img_ext = 'png'
@@ -47,8 +46,14 @@ class Params:
         self.dir_name = 'annotations'
         self.dir_suffix = ''
         self.output_json = 'coco.json'
+
+        self.enable_masks = 2
+        self.save_masks = 0
+        self.mask_dir_name = 'masks'
+
         self.root_dir = ''
         self.seq_paths = ''
+        self.seq_paths_suffix = ''
         self.show_img = 0
         self.shuffle = 0
         self.sources_to_include = []
@@ -58,8 +63,6 @@ class Params:
         self.allow_missing_images = 0
         self.remove_mj_dir_suffix = 0
         self.get_img_stats = 1
-        self.write_masks = 0
-        self.mask_dir_name = 'masks'
         self.ignore_invalid_label = 0
         self.skip_invalid = 1
 
@@ -74,23 +77,48 @@ class Params:
 
         self.only_list = 0
 
+        self.json_gz = 0
+        self.xml_zip = 0
 
-def save_json(json_dict, json_path):
+
+def save_json(json_dict, json_path, json_gz):
     n_json_imgs = len(json_dict['images'])
     n_json_objs = len(json_dict['annotations'])
+    if json_gz:
+        json_path += '.gz'
+
     print(f'saving output json with {n_json_imgs} images and {n_json_objs} objects to: {json_path}')
-    with open(json_path, 'w') as f:
-        output_json_data = json.dumps(json_dict, indent=4)
-        f.write(output_json_data)
+    json_kwargs = dict(
+        indent=4
+    )
+    if json_gz:
+        import compress_json
+        compress_json.dump(json_dict, json_path, json_kwargs=json_kwargs)
+    else:
+        with open(json_path, 'w') as f:
+            output_json_data = json.dumps(json_dict, **json_kwargs)
+            f.write(output_json_data)
 
 
-def save_ytvis_json(json_dict, json_path):
+def save_ytvis_json(json_dict, json_path, json_gz):
     n_vids = len(json_dict['videos'])
     n_json_objs = len(json_dict['annotations'])
+
+    if json_gz:
+        json_path += '.gz'
+
     print(f'saving ytvis json with {n_vids} videos and {n_json_objs} objects to: {json_path}')
-    with open(json_path, 'w') as f:
-        output_json_data = json.dumps(json_dict, indent=4)
-        f.write(output_json_data)
+
+    json_kwargs = dict(
+        indent=4
+    )
+    if json_gz:
+        import compress_json
+        compress_json.dump(json_dict, json_path, json_kwargs=json_kwargs)
+    else:
+        with open(json_path, 'w') as f:
+            output_json_data = json.dumps(json_dict, indent=4)
+            f.write(output_json_data)
 
 
 def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
@@ -182,24 +210,26 @@ def get_coco_annotation_from_obj(obj, label2id, enable_mask, ignore_invalid_labe
     return ann
 
 
-def save_boxes_coco(annotation_paths,
-                    output_json_dict,
-                    label2id,
-                    output_json,
-                    extract_num_from_imgid,
-                    enable_mask,
-                    allow_missing_images,
-                    skip_invalid,
-                    ignore_invalid_label,
-                    remove_mj_dir_suffix,
-                    get_img_stats,
-                    write_masks,
-                    list_path,
-                    mask_dir_name,
-                    palette_flat,
-                    only_list,
-                    excluded_images=None
-                    ):
+def save_boxes_coco(
+        annotation_paths,
+        output_json_dict,
+        label2id,
+        output_json,
+        extract_num_from_imgid,
+        enable_mask,
+        allow_missing_images,
+        skip_invalid,
+        ignore_invalid_label,
+        remove_mj_dir_suffix,
+        get_img_stats,
+        save_masks,
+        list_path,
+        mask_dir_name,
+        palette_flat,
+        only_list,
+        excluded_images,
+        xml_zip,
+):
     bnd_id = 1  # START_BOUNDING_BOX_ID, TODO input as args ?
     pbar = tqdm(annotation_paths)
 
@@ -243,7 +273,19 @@ def save_boxes_coco(annotation_paths,
         n_images += 1
 
         # Read annotation xml
-        ann_tree = ET.parse(xml_path)
+        import xml.etree.ElementTree as ET
+        if xml_zip:
+            xml_name = os.path.basename(xml_path)
+            xml_dir_path = os.path.dirname(xml_path)
+            xml_zip_path = xml_dir_path + ".zip"
+
+            from zipfile import ZipFile
+            with ZipFile(xml_zip_path, 'r') as xml_zip_file:
+                with xml_zip_file.open(xml_name, "r") as xml_file:
+                    ann_tree = ET.parse(xml_file)
+        else:
+            ann_tree = ET.parse(xml_path)
+
         ann_root = ann_tree.getroot()
 
         img_info = get_image_info(
@@ -285,7 +327,7 @@ def save_boxes_coco(annotation_paths,
         img_fname_noext = os.path.splitext(img_file_name)[0]
         img_dir_path = os.path.dirname(img_file_path)
 
-        if write_masks:
+        if save_masks:
             mask_dir_path = linux_path(img_dir_path, mask_dir_name)
             os.makedirs(mask_dir_path, exist_ok=True)
 
@@ -347,7 +389,7 @@ def save_boxes_coco(annotation_paths,
 
             bnd_id += 1
 
-            if write_masks:
+            if save_masks:
                 category_id = ann['category_id']
                 """0 is background"""
                 class_id = category_id + 1
@@ -363,7 +405,7 @@ def save_boxes_coco(annotation_paths,
         for label in label2id:
             desc += f' {label}: {label_to_n_objs[label]}'
 
-        if write_masks:
+        if save_masks:
             mask_img_pil = Image.fromarray(mask_img)
             mask_img_pil = mask_img_pil.convert('P')
             mask_img_pil.putpalette(palette_flat)
@@ -404,7 +446,7 @@ def main():
     seq_paths = params.seq_paths
     root_dir = params.root_dir
     # sources_to_include = params.sources_to_include
-    enable_mask = params.enable_mask
+    enable_mask = params.enable_masks
     val_ratio = params.val_ratio
     min_val = params.min_val
     shuffle = params.shuffle
@@ -426,7 +468,13 @@ def main():
     seq_stride = params.seq_stride
 
     if seq_paths:
-        if os.path.isfile(seq_paths):
+        if seq_paths.endswith('.txt'):
+            if params.seq_paths_suffix:
+                name_, ext_ = os.path.splitext(seq_paths)
+                seq_paths = f'{name_}_{params.seq_paths_suffix}{ext_}'
+
+            assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
+
             seq_paths = [x.strip() for x in open(seq_paths).readlines() if x.strip()]
         else:
             seq_paths = seq_paths.split(',')
@@ -512,11 +560,14 @@ def main():
         print('including images without annotations in the json')
         assert val_ratio == 0, "validation set with empty images is meaningless"
 
+    description = output_json_fname_noext
+
     output_json_dict = {
         "images": [],
         "type": "instances",
         "annotations": [],
-        "categories": []
+        "categories": [],
+        "description": description,
     }
 
     if no_annotations or write_empty:
@@ -524,10 +575,10 @@ def main():
         time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
         info = {
             "version": "1.0",
-            "year": 2022,
+            "year": 2024,
             "contributor": "asingh1",
             "date_created": time_stamp,
-            "description": f'ipsc-{os.path.basename(seq_paths[0])}',
+            "description": description,
         }
 
         licenses = [
@@ -641,7 +692,17 @@ def main():
 
         seq_path = os.path.dirname(xml_path)
 
-        xml_files = glob.glob(os.path.join(xml_path, '**/*.xml'), recursive=True)
+        if params.xml_zip:
+            from zipfile import ZipFile
+
+            xml_zip_path = xml_path + ".zip"
+            print(f'loading xml files from  zip file {xml_zip_path}')
+            with ZipFile(xml_zip_path, 'r') as xml_zip_file:
+                all_xml_files = xml_zip_file.namelist()
+
+            xml_files = [linux_path(xml_path, xml_file) for xml_file in all_xml_files]
+        else:
+            xml_files = glob.glob(os.path.join(xml_path, '**/*.xml'), recursive=True)
 
         xml_files.sort(key=lambda fname: os.path.basename(fname))
 
@@ -713,28 +774,30 @@ def main():
         val_json_path = os.path.join(output_json_dir, val_json_fname)
 
         val_list_path = val_json_path.replace('.json', '.txt')
-        if params.write_masks:
+        if params.save_masks:
             print(f'\nsaving img list for {n_val_xml} validation files to: {val_list_path}\n')
         else:
             print(f'\nsaving JSON annotations for {n_val_xml} validation files to: {val_json_path}\n')
 
-        save_boxes_coco(val_xml,
-                        output_json_dict,
-                        class_dict,
-                        val_json_path,
-                        extract_num_from_imgid, enable_mask,
-                        excluded_images=all_excluded_images,
-                        skip_invalid=params.skip_invalid,
-                        ignore_invalid_label=params.ignore_invalid_label,
-                        allow_missing_images=params.allow_missing_images,
-                        remove_mj_dir_suffix=params.remove_mj_dir_suffix,
-                        get_img_stats=params.get_img_stats,
-                        write_masks=params.write_masks,
-                        list_path=val_list_path,
-                        mask_dir_name=params.mask_dir_name,
-                        only_list=params.only_list,
-                        palette_flat=palette_flat,
-                        )
+        save_boxes_coco(
+            val_xml,
+            output_json_dict,
+            class_dict,
+            val_json_path,
+            extract_num_from_imgid, enable_mask,
+            excluded_images=all_excluded_images,
+            skip_invalid=params.skip_invalid,
+            ignore_invalid_label=params.ignore_invalid_label,
+            allow_missing_images=params.allow_missing_images,
+            remove_mj_dir_suffix=params.remove_mj_dir_suffix,
+            get_img_stats=params.get_img_stats,
+            save_masks=params.save_masks,
+            list_path=val_list_path,
+            mask_dir_name=params.mask_dir_name,
+            only_list=params.only_list,
+            palette_flat=palette_flat,
+            xml_zip=params.xml_zip,
+        )
 
     n_train_xml = len(train_xml)
     if n_train_xml > 0:
@@ -742,28 +805,30 @@ def main():
 
         train_json_path = os.path.join(output_json_dir, train_json_fname)
         train_list_path = train_json_path.replace('.json', '.txt')
-        if params.write_masks:
+        if params.save_masks:
             print(f'\nsaving imag list for {n_train_xml} train files to: {train_list_path}\n')
         else:
             print(f'\nsaving JSON annotations for {n_train_xml} train files to: {train_json_path}\n')
 
-        save_boxes_coco(train_xml,
-                        output_json_dict,
-                        class_dict,
-                        train_json_path,
-                        extract_num_from_imgid, enable_mask,
-                        excluded_images=all_excluded_images,
-                        allow_missing_images=params.allow_missing_images,
-                        skip_invalid=params.skip_invalid,
-                        ignore_invalid_label=params.ignore_invalid_label,
-                        remove_mj_dir_suffix=params.remove_mj_dir_suffix,
-                        get_img_stats=params.get_img_stats,
-                        list_path=train_list_path,
-                        write_masks=params.write_masks,
-                        mask_dir_name=params.mask_dir_name,
-                        only_list=params.only_list,
-                        palette_flat=palette_flat,
-                        )
+        save_boxes_coco(
+            train_xml,
+            output_json_dict,
+            class_dict,
+            train_json_path,
+            extract_num_from_imgid, enable_mask,
+            excluded_images=all_excluded_images,
+            allow_missing_images=params.allow_missing_images,
+            skip_invalid=params.skip_invalid,
+            ignore_invalid_label=params.ignore_invalid_label,
+            remove_mj_dir_suffix=params.remove_mj_dir_suffix,
+            get_img_stats=params.get_img_stats,
+            list_path=train_list_path,
+            save_masks=params.save_masks,
+            mask_dir_name=params.mask_dir_name,
+            only_list=params.only_list,
+            palette_flat=palette_flat,
+            xml_zip=params.xml_zip,
+        )
 
 
 if __name__ == '__main__':
