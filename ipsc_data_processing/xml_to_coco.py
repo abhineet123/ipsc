@@ -229,6 +229,7 @@ def save_boxes_coco(
         only_list,
         excluded_images,
         xml_zip,
+        json_gz,
 ):
     bnd_id = 1  # START_BOUNDING_BOX_ID, TODO input as args ?
     pbar = tqdm(annotation_paths)
@@ -435,7 +436,7 @@ def save_boxes_coco(
         print(f'pix_vals_mean: {pix_vals_mean}')
         print(f'pix_vals_std: {pix_vals_std}')
 
-    save_json(output_json_dict, output_json)
+    save_json(output_json_dict, output_json, json_gz)
 
 
 def main():
@@ -806,6 +807,7 @@ def main():
             only_list=params.only_list,
             palette_flat=palette_flat,
             xml_zip=params.xml_zip,
+            json_gz=params.json_gz,
         )
 
     n_train_xml = len(train_xml)
@@ -837,6 +839,7 @@ def main():
             only_list=params.only_list,
             palette_flat=palette_flat,
             xml_zip=params.xml_zip,
+            json_gz=params.json_gz,
         )
 
 

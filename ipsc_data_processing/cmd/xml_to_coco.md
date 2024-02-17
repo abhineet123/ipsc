@@ -2,6 +2,8 @@
 <!-- MarkdownTOC -->
 
 - [mnist_mot       @ xml_to_coco](#mnist_mot___xml_to_coc_o_)
+    - [640-1       @ mnist_mot](#640_1___mnist_mo_t_)
+    - [640-3       @ mnist_mot](#640_3___mnist_mo_t_)
     - [640-5       @ mnist_mot](#640_5___mnist_mo_t_)
     - [512-3       @ mnist_mot](#512_3___mnist_mo_t_)
 - [all_frames_roi](#all_frames_ro_i_)
@@ -75,6 +77,12 @@
 <!-- /MarkdownTOC -->
 <a id="mnist_mot___xml_to_coc_o_"></a>
 # mnist_mot       @ xml_to_coco-->coco
+<a id="640_1___mnist_mo_t_"></a>
+## 640-1       @ mnist_mot-->xml_to_coco
+python xml_to_coco.py cfg=mnist:640-1:12_1000:gz
+<a id="640_3___mnist_mo_t_"></a>
+## 640-3       @ mnist_mot-->xml_to_coco
+python xml_to_coco.py cfg=mnist:640-1:12_1000:gz
 <a id="640_5___mnist_mo_t_"></a>
 ## 640-5       @ mnist_mot-->xml_to_coco
 python xml_to_coco.py cfg=mnist:640-1:12_1000:gz
