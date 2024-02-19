@@ -28,7 +28,7 @@ import multiprocessing
 
 class Params(paramparse.CFG):
     def __init__(self):
-        paramparse.CFG.__init__(self, cfg_root='cfg/xml_to_coco')
+        paramparse.CFG.__init__(self, cfg_root='cfg/xml_to_ytvis')
 
         self.batch_size = 1
         self.description = ''
@@ -759,8 +759,7 @@ def get_xml_files(
 
 
 def main():
-    params = Params()
-    paramparse.process(params)
+    params: Params = paramparse.process(Params)
 
     seq_paths = params.seq_paths
     root_dir = params.root_dir
