@@ -22,7 +22,7 @@ from eval_utils import sortKey, col_bgr, linux_path, add_suffix
 
 class Params(paramparse.CFG):
     def __init__(self):
-        paramparse.CFG.__init__(self, cfg_root='cfg/xml_to_coco')
+        paramparse.CFG.__init__(self, cfg_prefix='xml_to_coco')
 
         self.batch_size = 1
         self.excluded_images_list = ''

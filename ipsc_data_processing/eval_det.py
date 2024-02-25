@@ -37,7 +37,7 @@ import itertools
 import eval_utils as utils
 
 
-class Params:
+class Params(paramparse.CFG):
     """
 
     :ivar check_seq_name: 'iou_thresh',
@@ -75,9 +75,8 @@ class Params:
     """
 
     def __init__(self):
-        self.cfg_ext = 'cfg'
-        self.cfg_root = 'cfg'
-        self.cfg = ''
+        paramparse.CFG.__init__(self, cfg_prefix='eval_det')
+
         self.check_seq_name = 1
         self.delete_tmp_files = 0
         self.det_root_dir = ''
@@ -90,6 +89,7 @@ class Params:
 
         self.img_ext = 'jpg'
         self.img_paths = ''
+        self.img_paths_suffix = ''
         self.img_root_dir = ''
         self.all_img_dirs = 1
 
@@ -3005,6 +3005,9 @@ def run(params, *argv):
 
     gt_paths = params.gt_paths
     img_path_list_file = params.img_paths
+
+    if params.img_paths_suffix:
+        img_path_list_file = utils.add_suffix(img_path_list_file, params.img_paths_suffix)
 
     _det_path_list_file = params.det_paths
     if nms_thresh > 0:
