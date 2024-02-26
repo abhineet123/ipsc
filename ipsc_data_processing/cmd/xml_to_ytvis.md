@@ -23,6 +23,8 @@
     - [subseq       @ ext_reorg_roi_g2_54_126](#subseq___ext_reorg_roi_g2_54_12_6_)
 - [ext_reorg_roi_g2_0_53       @ xml_to_ytvis](#ext_reorg_roi_g2_0_53___xml_to_ytvis_)
     - [incremental       @ ext_reorg_roi_g2_0_53](#incremental___ext_reorg_roi_g2_0_5_3_)
+- [detrac](#detra_c_)
+    - [len-2:strd-1       @ detrac](#len_2_strd_1___detrac_)
 
 <!-- /MarkdownTOC -->
 
@@ -159,3 +161,11 @@ __-max_length-10__
 python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt start_frame_id=0 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 allow_missing_images=0 get_img_stats=0 description=ext_reorg_roi_g2_0_53 save_masks=0 n_proc=12 subseq=1 subseq_split_ids=38 incremental=1 max_length=10
 __-max_length-20__
 python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt start_frame_id=0 end_frame_id=53 ignore_invalid_label=1 val_ratio=0 allow_missing_images=0 get_img_stats=0 description=ext_reorg_roi_g2_0_53 save_masks=0 n_proc=12 subseq=1 subseq_split_ids=38 incremental=1 max_length=20
+
+<a id="detra_c_"></a>
+# detrac
+<a id="len_2_strd_1___detrac_"></a>
+## len-2:strd-1       @ detrac-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=detrac:640-1:12_1000:train:proc-12:len-2:strd-1:gz:gap-1 
+
+python xml_to_ytvis.py cfg=detrac:non_empty:zip:mot:start-19:end-19

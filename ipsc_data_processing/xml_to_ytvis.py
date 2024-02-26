@@ -50,7 +50,7 @@ class Params(paramparse.CFG):
         self.xml_dir_name = 'annotations'
         self.dir_suffix = ''
         self.out_dir_name = ''
-        self.n_seq = 0
+
         self.incremental = 0
 
         self.out_json_name = ''
@@ -70,8 +70,14 @@ class Params(paramparse.CFG):
         self.infer_target_id = 0
         self.get_img_stats = 1
         self.ignore_invalid_label = 0
+
         self.start_frame_id = 0
         self.end_frame_id = -1
+
+        self.n_seq = 0
+        self.start_seq_id = 0
+        self.end_seq_id = -1
+
         self.frame_gap = 1
         self.length = 0
         self.stride = 0
@@ -771,6 +777,8 @@ def main():
     out_dir_name = params.out_dir_name
     out_json_name = params.out_json_name
     n_seq = params.n_seq
+    start_seq_id = params.start_seq_id
+    end_seq_id = params.end_seq_id
 
     assert description, "dataset description must be provided"
 
@@ -837,10 +845,17 @@ def main():
     else:
         raise IOError('Either seq_paths or root_dir must be provided')
 
-    print(f'description: {description}')
-
     if 0 < n_seq < len(seq_paths):
-        seq_paths = seq_paths[:n_seq]
+        assert end_seq_id < 0, "n_seq be specified along with end_seq_id"
+        end_seq_id = start_seq_id + n_seq
+
+    if start_seq_id > 0 or end_seq_id >= 0:
+        seq_paths = seq_paths[start_seq_id:end_seq_id]
+        description = f'{description}-seq-{start_seq_id}_{end_seq_id}'
+        print(f'start_seq_id: {start_seq_id}')
+        print(f'end_seq_id: {end_seq_id}')
+
+    print(f'description: {description}')
 
     n_seq = len(seq_paths)
     assert n_seq > 0, "no sequences found"
