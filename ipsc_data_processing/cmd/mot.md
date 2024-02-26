@@ -78,7 +78,7 @@ python mot_csv_to_xml_coco.py root_dir=/data/CTMC img_dir=Images list_file_name=
 
 <a id="detrac___mot_csv_to_xml_coc_o_"></a>
 ## detrac       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=detrac:zip:mot
+python mot_csv_to_xml_coco.py cfg=detrac:zip:mot:start-13:end-19
 
 <a id="mot_to_cs_v_"></a>
 # mot_to_csv

@@ -262,6 +262,16 @@ def parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_s
     return obj_ids, obj_dict
 
 
+# def process_seq(
+#         seq_idx, n_seq, params, img_root_dir, mode, vid_ext, img_ext, root_dir, out_root_dir,
+#         data_type, ignore_missing, ignore_invalid, percent_scores,
+#         clamp_scores, class_names, total_unique_obj_ids, total_n_frames, total_sampled_n_frames,
+#         stats_only, seq_to_n_unique_obj_ids, vis_size, seg_dir_path, vis_root_dir, ext, save_video,
+#         image_exts, codec, fps, out_suffix, raw_ctc_seg, json_fname, json_dict, save_raw, seg_ext,
+#         allow_missing_seg,extrapolate_seg, label2id, bnd_id, bbox_source, show_img, show_class,
+# ):
+
+
 def main():
     params = Params()
     paramparse.process(params)
@@ -494,18 +504,19 @@ def main():
             msg = f"Annotation file for sequence {seq_name} not found: {ann_path}"
             if ignore_missing:
                 print(msg)
-                continue
+                return
             else:
-                raise IOError(msg)
+                raise AssertionError(msg)
 
         print(f'Reading {data_type} from {ann_path}')
 
         if is_csv:
-            obj_ids, obj_dict = parse_csv(ann_path, sampled_frame_ids, ignore_invalid, percent_scores, clamp_scores)
+            obj_ids, obj_dict = parse_csv(ann_path, sampled_frame_ids,
+                                          ignore_invalid, percent_scores, clamp_scores)
         else:
             assert len(class_names) == 1, "multiple class names not supported in MOT mode"
-            obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores,
-                                          clamp_scores)
+            obj_ids, obj_dict = parse_mot(
+                ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores, clamp_scores)
 
         print(f'Done reading {data_type}')
 
@@ -577,9 +588,9 @@ def main():
                     vis_width, vis_height, save_path))
 
         if out_suffix:
-            out_dir_name = '{}_{}'.format(data_type, out_suffix)
+            out_dir_name = f'{data_type}_{out_suffix}'
         else:
-            out_dir_name = '{}'.format(data_type)
+            out_dir_name = f'{data_type}'
 
         if seg_dir_path is not None and raw_ctc_seg:
             gold_seg_dir_path = linux_path(seg_dir_path, f'{seq_name}_GT', 'SEG')
@@ -910,7 +921,8 @@ def main():
                             vis_img[seg_mask_binary] = vis_img[seg_mask_binary] * 0.5 + color_mask * 0.5
                             seg_img_vis[seg_mask_binary] = color_mask
                         else:
-                            drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label, font_size=0.5, box_color=obj_col)
+                            drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label,
+                                    font_size=0.5, box_color=obj_col)
 
                 if not json_fname:
                     xml_writer.save(targetFile=out_xml_path, verbose=False, zip_file=xml_zip_file)
