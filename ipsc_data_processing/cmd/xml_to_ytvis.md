@@ -166,6 +166,6 @@ python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists
 # detrac
 <a id="len_2_strd_1___detrac_"></a>
 ## len-2:strd-1       @ detrac-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=detrac:640-1:12_1000:train:proc-12:len-2:strd-1:gz:gap-1 
+python3 xml_to_ytvis.py cfg=detrac:non_empty:train:proc-12:len-2:strd-1:gz:gap-1 
 
-python xml_to_ytvis.py cfg=detrac:non_empty:zip:mot:start-19:end-19
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-12:len-2:strd-1:gz:gap-1 
