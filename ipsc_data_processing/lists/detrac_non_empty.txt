@@ -37,12 +37,10 @@ detrac_44_MVI_40871
 detrac_45_MVI_40962
 detrac_46_MVI_40963
 detrac_47_MVI_40981
-detrac_49_MVI_40992
 detrac_50_MVI_41063
 detrac_51_MVI_41073
 detrac_52_MVI_63521
 detrac_53_MVI_63525
-detrac_54_MVI_63544
 detrac_55_MVI_63552
 detrac_56_MVI_63553
 detrac_57_MVI_63554
@@ -50,8 +48,6 @@ detrac_58_MVI_63561
 detrac_59_MVI_63562
 detrac_60_MVI_63563
 detrac_61_MVI_39031
-detrac_62_MVI_39051
-detrac_63_MVI_39211
 detrac_64_MVI_39271
 detrac_65_MVI_39311
 detrac_66_MVI_39361
@@ -67,7 +63,6 @@ detrac_75_MVI_40742
 detrac_76_MVI_40743
 detrac_77_MVI_40761
 detrac_78_MVI_40762
-detrac_79_MVI_40763
 detrac_80_MVI_40771
 detrac_81_MVI_40772
 detrac_82_MVI_40773

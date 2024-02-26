@@ -850,6 +850,8 @@ def main():
         end_seq_id = start_seq_id + n_seq - 1
 
     if start_seq_id > 0 or end_seq_id >= 0:
+        if end_seq_id < 0:
+            end_seq_id = len(seq_paths) - 1
         seq_paths = seq_paths[start_seq_id:end_seq_id+1]
         description = f'{description}-seq-{start_seq_id}_{end_seq_id}'
         print(f'start_seq_id: {start_seq_id}')
