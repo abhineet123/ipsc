@@ -467,12 +467,12 @@ def main():
 
     if params.save_masks:
         params.enable_masks = 1
-        
+
     if params.start_id > 0 or params.end_id >= 0:
-        output_json = f'{output_json}-seq_{params.start_id}_{params.end_id}'
+        output_json = f'{output_json}-seq-{params.start_id}_{params.end_id}'
 
     if params.start_frame_id > 0 or params.end_frame_id >= 0:
-        output_json = f'{output_json}-frame_{params.start_frame_id}_{params.end_frame_id}'
+        output_json = f'{output_json}-frame-{params.start_frame_id}_{params.end_frame_id}'
 
     if seq_paths:
         if seq_paths.endswith('.txt'):
