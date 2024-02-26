@@ -15,7 +15,7 @@ from tqdm import tqdm
 import imagesize
 import paramparse
 
-from eval_utils import col_bgr, sortKey, linux_path
+from eval_utils import col_bgr, sortKey, linux_path, draw_box, annotate
 
 from itertools import groupby
 import pycocotools.mask as mask_util
@@ -55,8 +55,6 @@ class Params(paramparse.CFG):
 
         self.out_json_name = ''
         self.root_dir = ''
-        self.save_file_name = ''
-        self.save_video = 1
         self.seq_paths = ''
         self.seq_paths_suffix = ''
         self.show_img = 0
@@ -91,6 +89,8 @@ class Params(paramparse.CFG):
 
         self.enable_masks = 1
         self.save_masks = 0
+
+        self.vis = 0
 
 
 def offset_target_ids(vid_to_target_ids, annotations, set_type):
@@ -298,6 +298,7 @@ def save_annotations_ytvis(
         infer_target_id,
         use_tqdm,
         enable_masks,
+        vis,
         xml_data,
 ):
     xml_files, vid_id = xml_data
@@ -325,6 +326,7 @@ def save_annotations_ytvis(
     vid_seq_path = vid_seq_name = None
     next_target_id = 0
     target_ids = []
+    pause = 1
 
     pbar = tqdm(xml_files, ncols=100) if use_tqdm else xml_files
     for frame_id, (xml_path, xml_id, seq_path, seq_name) in enumerate(pbar):
@@ -362,7 +364,6 @@ def save_annotations_ytvis(
         n_images += 1
 
         img_rel_path = xml_data['img_rel_path']
-        # img_path = xml_data['img_path']
 
         img_id = xml_data['img_id']
 
@@ -382,18 +383,26 @@ def save_annotations_ytvis(
 
         objs = xml_data['objs']
 
+        vis_img = None
+        if vis:
+            img_path = xml_data['img_path']
+            vis_img = cv2.imread(img_path)
+
         for obj_id, obj in enumerate(objs):
 
             label = obj['label']
             target_id = obj['target_id']
             bbox = obj['bbox']
 
+            bbox_cx, bbox_cy, bbox_w, bbox_h = bbox
+            if vis:
+                draw_box(vis_img, np.asarray(bbox), f'{label}-{target_id}', 'green', 1)
+
             if enable_masks:
                 bin_mask_rle = obj['bin_mask_rle']
                 obj_area = obj['seg_area']
             else:
-                cx, cy, w, h = bbox
-                obj_area = w * h
+                obj_area = bbox_w * bbox_h
 
             try:
                 category_id = class_to_id[label]
@@ -514,6 +523,12 @@ def save_annotations_ytvis(
 
             label_to_n_objs[label] += 1
 
+        if vis:
+            vis_img = annotate(vis_img, img_rel_path)
+            cv2.imshow('vis_img', vis_img)
+            k = cv2.waitKey(1 - pause)
+            if k == 32:
+                pause = 1 - pause
         n_valid_images += 1
 
     assert len(file_names) == n_valid_images, f"mismatch in n_valid_images: {n_valid_images}"
@@ -782,6 +797,9 @@ def main():
 
     assert description, "dataset description must be provided"
 
+    if params.vis:
+        assert params.n_proc <= 1, "visualization is not supported in multiprocessing mode"
+
     if params.start_frame_id > 0 or params.end_frame_id >= 0:
         description = f'{description}-{params.start_frame_id}_{params.end_frame_id}'
 
@@ -852,7 +870,7 @@ def main():
     if start_seq_id > 0 or end_seq_id >= 0:
         if end_seq_id < 0:
             end_seq_id = len(seq_paths) - 1
-        seq_paths = seq_paths[start_seq_id:end_seq_id+1]
+        seq_paths = seq_paths[start_seq_id:end_seq_id + 1]
         description = f'{description}-seq-{start_seq_id}_{end_seq_id}'
         print(f'start_seq_id: {start_seq_id}')
         print(f'end_seq_id: {end_seq_id}')
@@ -1082,14 +1100,16 @@ def main():
             all_pix_vals_mean += pix_vals_mean
             all_pix_vals_std += pix_vals_std
 
+        use_tqdm = params.n_proc <= 1
         json_func = functools.partial(
             save_annotations_ytvis,
             xml_data_dict,
             class_dict,
             params.ignore_invalid_label,
             params.infer_target_id,
+            use_tqdm,
             params.enable_masks,
-            False,
+            params.vis,
         )
 
         print(f'generating json data for {n_split_vids} {split_type} videos')

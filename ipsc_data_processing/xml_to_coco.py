@@ -440,13 +440,10 @@ def save_boxes_coco(
 
 
 def main():
-    params = Params()
-
-    paramparse.process(params)
+    params: Params = paramparse.process(Params)
 
     seq_paths = params.seq_paths
     root_dir = params.root_dir
-    # sources_to_include = params.sources_to_include
     enable_mask = params.enable_masks
     val_ratio = params.val_ratio
     min_val = params.min_val
@@ -468,6 +465,9 @@ def main():
     n_seq = params.n_seq
     seq_stride = params.seq_stride
 
+    if params.save_masks:
+        params.enable_masks = 1
+        
     if params.start_id > 0 or params.end_id >= 0:
         output_json = f'{output_json}-seq_{params.start_id}_{params.end_id}'
 

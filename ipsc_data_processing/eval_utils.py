@@ -3086,7 +3086,7 @@ def draw_dotted_rect(img, pt1, pt2, color, thickness=1):
 
 
 def draw_box(frame, box, _id=None, color='black', thickness=2,
-             is_dotted=0, transparency=0.):
+             is_dotted=0, transparency=0., xywh=True, norm=False):
     """
     :type frame: np.ndarray
     :type box: np.ndarray
@@ -3102,10 +3102,25 @@ def draw_box(frame, box, _id=None, color='black', thickness=2,
         print('invalid location provided: {}'.format(box))
         return
 
-    box = box.squeeze()
-    pt1 = (int(box[0]), int(box[1]))
-    pt2 = (int(box[0] + box[2]),
-           int(box[1] + box[3]))
+    if isinstance(box, np.ndarray):
+        box = list(box.squeeze())
+
+    if xywh:
+        pt1 = (box[0], box[1])
+        pt2 = (box[0] + box[2],
+               box[1] + box[3])
+    else:
+        pt1 = (box[0], box[1])
+        pt2 = (box[2], box[3])
+
+    img_h, img_w = frame.shape[:2]
+
+    if norm:
+        pt1 = (pt1[0] * img_w, pt1[1] * img_h)
+        pt2 = (pt2[0] * img_w, pt2[1] * img_h)
+
+    pt1 = tuple(map(int, pt1))
+    pt2 = tuple(map(int, pt2))
 
     if transparency > 0:
         _frame = np.copy(frame)

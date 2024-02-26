@@ -1,11 +1,6 @@
 
 <!-- MarkdownTOC -->
 
-- [mnist_mot       @ xml_to_coco](#mnist_mot___xml_to_coc_o_)
-    - [640-1       @ mnist_mot](#640_1___mnist_mo_t_)
-    - [640-3       @ mnist_mot](#640_3___mnist_mo_t_)
-    - [640-5       @ mnist_mot](#640_5___mnist_mo_t_)
-    - [512-3       @ mnist_mot](#512_3___mnist_mo_t_)
 - [all_frames_roi](#all_frames_ro_i_)
     - [g2_0_37       @ all_frames_roi](#g2_0_37___all_frames_roi_)
 - [ipsc_2_class       @ xml_to_coco](#ipsc_2_class___xml_to_coc_o_)
@@ -73,6 +68,19 @@
     - [ctc_Fluo_N2DH_SIM       @ ctc](#ctc_fluo_n2dh_sim___ct_c_)
     - [ctc_Fluo_N2DL_HeLa       @ ctc](#ctc_fluo_n2dl_hela___ct_c_)
 - [ctmc_all       @ xml_to_coco](#ctmc_all___xml_to_coc_o_)
+
+<a id="detra_c_"></a>
+# detrac
+<a id="0_19___len_2_strd_1_detra_c_"></a>
+## 0_19       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:0_19:gz 
+<a id="0_9___len_2_strd_1_detra_c_"></a>
+## 0_9       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:0_9:gz 
+<a id="0_0___len_2_strd_1_detra_c_"></a>
+## 0_0       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:0_0:gz 
+
 
 <a id="all_frames_ro_i_"></a>
 # all_frames_roi       
