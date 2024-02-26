@@ -12,12 +12,14 @@ from xml_to_coco import save_json
 from eval_utils import ImageSequenceWriter as ImageWriter
 from pascal_voc_io import PascalVocWriter
 from eval_utils import contour_pts_to_mask, mask_img_to_pts, sortKey, resize_ar, \
-    drawBox, show_labels, clamp, linux_path
+    drawBox, show_labels, clamp, linux_path, add_suffix
 
 
-class Params:
+class Params(paramparse.CFG):
     def __init__(self):
         self.cfg = ()
+        paramparse.CFG.__init__(self, cfg_prefix='mot_csv_to_xml_coco')
+
         self.bbox_source = ''
         self.clamp_scores = 0
         self.codec = 'H264'
@@ -37,8 +39,8 @@ class Params:
         self.seg_dir = ''
         self.img_ext = 'jpg'
         self.seg_ext = 'png'
-        # self.label = 'person'
         self.list_file_name = ''
+        self.list_file_suffix = ''
         self.map_folder = ''
         self.min_vis = 0.5
         self.class_names_path = ''
@@ -78,10 +80,12 @@ class Params:
         self.sample = 0
         self.allow_empty = 0
 
+        self.json_gz = 1
         self.json_dir = 0
         self.json_fname = 0
+        self.json_desc = ''
         """save all the XML files for a sequence into as zip file rather than separate XML files"""
-        self.zip = 0
+        self.zip = 1
 
 
 def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, clamp_scores):
@@ -269,6 +273,7 @@ def main():
     out_root_dir = params.out_root_dir
     out_root_suffix = params.out_root_suffix
     list_file_name = params.list_file_name
+    list_file_suffix = params.list_file_suffix
     img_ext = params.img_ext
     # ignore_occl = params.ignore_occl
     show_img = params.show_img
@@ -322,11 +327,14 @@ def main():
         seg_dir_path = None
 
     if list_file_name:
-        if not os.path.exists(list_file_name):
-            raise IOError('List file: {} does not exist'.format(list_file_name))
+        if list_file_suffix:
+            list_file_name = add_suffix(list_file_name, list_file_suffix)
+
+        assert os.path.isfile(list_file_name), f'List file: {list_file_name} does not exist'
         seq_paths = [x.strip() for x in open(list_file_name).readlines() if x.strip()]
         if img_root_dir:
             seq_paths = [linux_path(img_root_dir, x) for x in seq_paths]
+
     elif img_root_dir:
         if vid_ext:
             seq_paths = [linux_path(img_root_dir, name) for name in os.listdir(img_root_dir) if
@@ -377,6 +385,8 @@ def main():
             bbox_source = data_type
 
     json_fname = params.json_fname
+    json_path = None
+
     if json_fname:
         json_dict = {
             "images": [],
@@ -384,6 +394,9 @@ def main():
             "annotations": [],
             "categories": []
         }
+        if params.json_desc:
+            json_dict['description'] = params.json_desc
+
         for label, label_id in label2id.items():
             category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
             json_dict['categories'].append(category_info)
@@ -589,7 +602,7 @@ def main():
                 from zipfile import ZipFile
 
                 xml_zip_path = xml_dir_path + '.zip'
-                print(f'saving xml files to  zip file {xml_zip_path}')
+                print(f'saving xml files to zip file {xml_zip_path}')
                 xml_zip_file = ZipFile(xml_zip_path, 'w')
             else:
                 os.makedirs(xml_dir_path, exist_ok=True)
@@ -959,7 +972,7 @@ def main():
         # print('out_n_frames: ', out_frame_id)
 
     if json_fname:
-        save_json(json_dict, json_path)
+        save_json(json_dict, json_path, params.json_gz)
 
     print('total_n_frames: ', total_n_frames)
     print('total_sampled_n_frames: ', total_sampled_n_frames)

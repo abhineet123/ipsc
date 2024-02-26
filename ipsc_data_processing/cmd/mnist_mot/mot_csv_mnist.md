@@ -1,10 +1,9 @@
 <!-- MarkdownTOC -->
 
 - [mot_csv_to_xml_coco](#mot_csv_to_xml_coco_)
-    - [640       @ mot_csv_to_xml_coco](#640___mot_csv_to_xml_coc_o_)
-        - [n-1       @ 640/mot_csv_to_xml_coco](#n_1___640_mot_csv_to_xml_coc_o_)
-        - [n-3       @ 640/mot_csv_to_xml_coco](#n_3___640_mot_csv_to_xml_coc_o_)
-        - [n-5       @ 640/mot_csv_to_xml_coco](#n_5___640_mot_csv_to_xml_coc_o_)
+    - [640-1       @ mot_csv_to_xml_coco](#640_1___mot_csv_to_xml_coc_o_)
+    - [640-3       @ mot_csv_to_xml_coco](#640_3___mot_csv_to_xml_coc_o_)
+    - [640-5       @ mot_csv_to_xml_coco](#640_5___mot_csv_to_xml_coc_o_)
     - [512       @ mot_csv_to_xml_coco](#512___mot_csv_to_xml_coc_o_)
         - [n-1       @ 512/mot_csv_to_xml_coco](#n_1___512_mot_csv_to_xml_coc_o_)
         - [n-3       @ 512/mot_csv_to_xml_coco](#n_3___512_mot_csv_to_xml_coc_o_)
@@ -14,17 +13,15 @@
 
 <a id="mot_csv_to_xml_coco_"></a>
 # mot_csv_to_xml_coco
-<a id="640___mot_csv_to_xml_coc_o_"></a>
-## 640       @ mot_csv_to_xml_coco-->mot_csv_mnist
-<a id="n_1___640_mot_csv_to_xml_coc_o_"></a>
-### n-1       @ 640/mot_csv_to_xml_coco-->mot_csv_mnist
-python mot_csv_to_xml_coco.py root_dir=/data/mnist_mot/640_1_12_1000_var img_dir=Images data_type=annotations ignore_invalid=0 show_img=0 sample=0 mode=2 class_names_path=lists/classes/mnist_mot.txt zip=1
-<a id="n_3___640_mot_csv_to_xml_coc_o_"></a>
-### n-3       @ 640/mot_csv_to_xml_coco-->mot_csv_mnist
-python mot_csv_to_xml_coco.py root_dir=/data/mnist_mot/640_3_12_1000_var img_dir=Images data_type=annotations ignore_invalid=0 show_img=0 sample=0 mode=2 class_names_path=lists/classes/mnist_mot.txt zip=1
-<a id="n_5___640_mot_csv_to_xml_coc_o_"></a>
-### n-5       @ 640/mot_csv_to_xml_coco-->mot_csv_mnist
-python mot_csv_to_xml_coco.py root_dir=/data/mnist_mot/640_5_12_1000_var img_dir=Images data_type=annotations ignore_invalid=0 show_img=0 sample=0 mode=2 class_names_path=lists/classes/mnist_mot.txt zip=1
+<a id="640_1___mot_csv_to_xml_coc_o_"></a>
+## 640-1       @ mot_csv_to_xml_coco-->mot_csv_mnist
+python mot_csv_to_xml_coco.py cfg=mnist:640-1:12_1000:train:zip:csv
+<a id="640_3___mot_csv_to_xml_coc_o_"></a>
+## 640-3       @ mot_csv_to_xml_coco-->mot_csv_mnist
+python mot_csv_to_xml_coco.py cfg=mnist:640-3:12_1000:train:zip:csv
+<a id="640_5___mot_csv_to_xml_coc_o_"></a>
+## 640-5       @ mot_csv_to_xml_coco-->mot_csv_mnist
+python mot_csv_to_xml_coco.py cfg=mnist:640-5:12_1000:train:zip:csv
 
 <a id="512___mot_csv_to_xml_coc_o_"></a>
 ## 512       @ mot_csv_to_xml_coco-->mot_csv_mnist
