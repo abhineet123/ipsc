@@ -37,7 +37,6 @@ detrac_44_MVI_40871
 detrac_45_MVI_40962
 detrac_46_MVI_40963
 detrac_47_MVI_40981
-detrac_48_MVI_40991
 detrac_49_MVI_40992
 detrac_50_MVI_41063
 detrac_51_MVI_41073
