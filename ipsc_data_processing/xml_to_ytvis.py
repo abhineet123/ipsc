@@ -28,7 +28,7 @@ import multiprocessing
 
 class Params(paramparse.CFG):
     def __init__(self):
-        paramparse.CFG.__init__(self, cfg_root='cfg/xml_to_ytvis')
+        paramparse.CFG.__init__(self, cfg_prefix='xml_to_ytvis')
 
         self.batch_size = 1
         self.description = ''
