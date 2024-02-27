@@ -561,7 +561,7 @@ def main():
 
     palette_flat = [value for color in palette for value in color]
 
-    class_dict = {x.strip(): i for (i, x) in enumerate(class_names)}
+    class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
 
     if no_annotations:
         print('writing json for all images without annotations')

@@ -41,7 +41,6 @@
 
 <a id="resnet_640_vid___p2_s_"></a>
 # resnet-640-vid       @ p2s-->eval_det_p2s
-
 <a id="mnist_640_1___resnet_640_vid_"></a>
 ## mnist-640-1       @ resnet-640-vid-->eval_det_p2s
 <a id="test_strd_2___mnist_640_1_resnet_640_vid_"></a>
