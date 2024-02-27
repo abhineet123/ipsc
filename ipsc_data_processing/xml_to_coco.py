@@ -468,12 +468,6 @@ def main():
     if params.save_masks:
         params.enable_masks = 1
 
-    if params.start_id > 0 or params.end_id >= 0:
-        output_json = f'{output_json}-seq-{params.start_id}_{params.end_id}'
-
-    if params.start_frame_id > 0 or params.end_frame_id >= 0:
-        output_json = f'{output_json}-frame-{params.start_frame_id}_{params.end_frame_id}'
-
     if seq_paths:
         if seq_paths.endswith('.txt'):
             if params.seq_paths_suffix:
@@ -498,8 +492,21 @@ def main():
     if n_seq > 0:
         end_id = start_id + n_seq - 1
 
+    if start_id > 0 or end_id >= 0 or seq_stride > 1:
+        if end_id < 0:
+            end_id = len(seq_paths) - 1
+
+        seq_suffix = f'seq-{start_id}_{end_id}'
+        if seq_stride > 1:
+            seq_suffix = f'{seq_suffix}_{seq_stride}'
+        output_json = add_suffix(output_json, seq_suffix, sep='-')
+
     if end_id < 0:
         end_id = len(seq_paths) - 1
+
+    if params.start_frame_id > 0 or params.end_frame_id >= 0:
+        frame_suffix = f'frame-{params.start_frame_id}_{params.end_frame_id}'
+        output_json = add_suffix(output_json, frame_suffix, sep='-')
 
     seq_paths = seq_paths[start_id:end_id + 1:seq_stride]
 
@@ -509,7 +516,6 @@ def main():
     output_json_dir, output_json_fname = os.path.dirname(output_json), os.path.basename(output_json)
     output_json_fname_noext, output_json_fname_ext = os.path.splitext(output_json_fname)
     if not output_json_fname_ext:
-        output_json += '.json'
         output_json_fname_ext = '.json'
 
     if not output_json_dir:
