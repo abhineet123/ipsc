@@ -99,6 +99,8 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/a
 <a id="no_val___g2_0_37_all_frames_roi_ipsc_2_clas_s_"></a>
 #### no_val       @ g2_0_37/all_frames_roi/ipsc_2_class-->xml_to_coco
 python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/all_frames_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=all_frames_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0
+python xml_to_coco.py cfg=ipsc:frame-0_37:zip-0:gz 
+
 
 <a id="g2_38_53___all_frames_roi_ipsc_2_clas_s_"></a>
 ### g2_38_53       @ all_frames_roi/ipsc_2_class-->xml_to_coco
@@ -180,7 +182,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg
 
 <a id="no_val___g2_16_53_ext_reorg_roi_ipsc_2_clas_s_"></a>
 #### no-val       @ g2_16_53/ext_reorg_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_16_53.json start_frame_id=16 end_frame_id=53 ignore_invalid_label=1 val_ratio=0
+python xml_to_coco.py cfg=ipsc:frame-16_53:zip-0:gz 
 
 ```
 pix_vals_mean: [126.21, 126.21, 126.21]

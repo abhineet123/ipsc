@@ -2,7 +2,11 @@
 
 - [resnet-640-vid       @ p2s](#resnet_640_vid___p2_s_)
     - [mnist-640-1       @ resnet-640-vid](#mnist_640_1___resnet_640_vid_)
+        - [test       @ mnist-640-1/resnet-640-vid](#test___mnist_640_1_resnet_640_vid_)
         - [test-strd-2       @ mnist-640-1/resnet-640-vid](#test_strd_2___mnist_640_1_resnet_640_vid_)
+    - [mnist-640-5       @ resnet-640-vid](#mnist_640_5___resnet_640_vid_)
+        - [test       @ mnist-640-5/resnet-640-vid](#test___mnist_640_5_resnet_640_vid_)
+        - [test-strd-2       @ mnist-640-5/resnet-640-vid](#test_strd_2___mnist_640_5_resnet_640_vid_)
     - [g2_5_9       @ resnet-640-vid](#g2_5_9___resnet_640_vid_)
         - [on-g2_5_9       @ g2_5_9/resnet-640-vid](#on_g2_5_9___g2_5_9_resnet_640_vi_d_)
         - [on-g2_0_4       @ g2_5_9/resnet-640-vid](#on_g2_0_4___g2_5_9_resnet_640_vi_d_)
@@ -43,9 +47,20 @@
 # resnet-640-vid       @ p2s-->eval_det_p2s
 <a id="mnist_640_1___resnet_640_vid_"></a>
 ## mnist-640-1       @ resnet-640-vid-->eval_det_p2s
+<a id="test___mnist_640_1_resnet_640_vid_"></a>
+### test       @ mnist-640-1/resnet-640-vid-->eval_det_p2s
+python3 eval_det.py cfg=mnist:640-1:12_1000:test,p2s det_paths=video/resnet_640_mnist_640_1_12_1000_var-length-2-stride-1-train-batch_18/ckpt-186480-mnist_640_1_12_1000_var-length-2-stride-1-test/csv-batch_32 save_suffix=p2s-resnet_640-g2_mnist:640-1-12-len-2-strd-1-test-strd-1-186480 show_vis=0 load_gt=0
 <a id="test_strd_2___mnist_640_1_resnet_640_vid_"></a>
 ### test-strd-2       @ mnist-640-1/resnet-640-vid-->eval_det_p2s
 python3 eval_det.py cfg=mnist:640-1:12_1000:test,p2s det_paths=video/resnet_640_mnist_640_1_12_1000_var-length-2-stride-1-train-batch_18/ckpt-186480-mnist_640_1_12_1000_var-length-2-stride-2-test/csv-batch_48 save_suffix=p2s-resnet_640-g2_mnist:640-1-12-len-2-strd-1-test-strd-2-186480 show_vis=0 load_gt=0
+<a id="mnist_640_5___resnet_640_vid_"></a>
+## mnist-640-5       @ resnet-640-vid-->eval_det_p2s
+<a id="test___mnist_640_5_resnet_640_vid_"></a>
+### test       @ mnist-640-5/resnet-640-vid-->eval_det_p2s
+python3 eval_det.py cfg=mnist:640-5:12_1000:test,p2s det_paths=video/resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-1-test/csv-batch_36 save_suffix=p2s-resnet_640-g2_mnist:640-5-12-len-2-strd-1-test-strd-1-581418 show_vis=0 load_gt=0
+<a id="test_strd_2___mnist_640_5_resnet_640_vid_"></a>
+### test-strd-2       @ mnist-640-5/resnet-640-vid-->eval_det_p2s
+python3 eval_det.py cfg=mnist:640-5:12_1000:test,p2s det_paths=video/resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-2-test/csv-batch_48 save_suffix=p2s-resnet_640-g2_mnist:640-1-12-len-2-strd-1-test-strd-2-581418 show_vis=0 load_gt=0
 <a id="g2_5_9___resnet_640_vid_"></a>
 ## g2_5_9       @ resnet-640-vid-->eval_det_p2s
 <a id="on_g2_5_9___g2_5_9_resnet_640_vi_d_"></a>

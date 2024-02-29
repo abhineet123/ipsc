@@ -79,8 +79,11 @@ class Params(paramparse.CFG):
 
         self.check_seq_name = 1
         self.delete_tmp_files = 0
+
         self.det_root_dir = ''
         self.det_paths = ''
+        self.det_file_nms_thresh = [0, ]
+
         self.allow_missing_dets = 0
         self.combine_dets = 0
         self.draw_plot = 0
@@ -162,7 +165,6 @@ class Params(paramparse.CFG):
 
         self.vid_nms = 0
 
-        self.nms_thresh = [0, ]
         self.n_proc = 1
 
         self.save_vis = 0
@@ -179,6 +181,8 @@ class Params(paramparse.CFG):
         self.fps_to_gt = 0
 
         self.monitor_scale = 1.25
+
+        self.enable_nms = 0.
 
         self._sweep_params = [
             'nms_thresh',
@@ -468,6 +472,7 @@ def evaluate(
         print(f'\n\nProcessing sequence {seq_idx + 1:d}/{n_seq:d}')
         print(f'seq_path: {seq_path:s}')
 
+        """load GT"""
         if not gt_loaded:
 
             gt_path = _gt_path
@@ -622,7 +627,7 @@ def evaluate(
 
             gt_img_paths = sorted(list(seq_gt_data_dict.keys()))
             all_img_paths += gt_img_paths
-
+        """load det"""
         if not det_loaded:
             det_paths = det_path_list[seq_idx]
 
@@ -633,7 +638,9 @@ def evaluate(
             # if n_seq == 1:
             #     print(f'\ndet_paths: {det_paths}')
 
-            seq_det_bounding_boxes = []
+            seq_det_bboxes_list = []
+            from collections import defaultdict
+            seq_det_file_to_bboxes = defaultdict(list)
 
             det_pbar = None
 
@@ -645,6 +652,7 @@ def evaluate(
             n_invalid_dets = 0
             n_total_dets = 0
 
+            """load and consolidate all sets of detections for one sequence"""
             for _det_path_id, _det_path in enumerate(det_paths_iter):
                 det_seq_name = os.path.splitext(os.path.basename(_det_path))[0]
                 if check_seq_name and (det_seq_name != seq_name or gt_seq_name != seq_name):
@@ -765,8 +773,16 @@ def evaluate(
                             "filename": det_filename,
                             "file_path": file_path,
                             "bbox": [xmin, ymin, xmax, ymax],
-                            'mask': None
+                            'mask': None,
+                            "det_path_id": _det_path_id,
                         }
+
+                        try:
+                            video_id = int(row['video_id'])
+                        except KeyError:
+                            video_id = -1
+
+                        bbox_dict['video_id'] = video_id
 
                         if enable_mask:
                             try:
@@ -782,14 +798,22 @@ def evaluate(
                                 )
                             bbox_dict["mask"] = mask_rle
 
-                        seq_det_bounding_boxes.append(bbox_dict)
+                        seq_det_bboxes_list.append(bbox_dict)
+                        seq_det_bbox_id = len(seq_det_bboxes_list) - 1
+
+                        seq_det_file_to_bboxes[det_filename].append((bbox_dict, seq_det_bbox_id))
 
                         if det_pbar is not None:
                             det_pbar_msg = det_pbar_base_msg + f"invalid dets: {n_invalid_dets} / {n_total_dets}"
 
                             det_pbar.set_description(det_pbar_msg)
 
-            raw_det_data_dict[seq_path] = seq_det_bounding_boxes
+            if params.enable_nms > 0:
+                for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
+                    bbox_ids_to_delete = perform_nms()
+
+            """Flat list of all the detections from all detection sets and images in this sequence"""
+            raw_det_data_dict[seq_path] = seq_det_bboxes_list
 
     """save pkl and detection post-proc"""
     if True:
@@ -2994,7 +3018,7 @@ def run(params, *argv):
     print('img_paths', params.img_paths)
     print('labels_path', params.labels_path)
 
-    nms_thresh = params.nms_thresh  # type: float
+    nms_thresh = params.det_file_nms_thresh  # type: float
     labels_path = params.labels_path
 
     if params.labels_root:
