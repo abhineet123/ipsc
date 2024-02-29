@@ -1,6 +1,9 @@
-
 <!-- MarkdownTOC -->
 
+- [detrac](#detra_c_)
+    - [0_19       @ detrac](#0_19___detrac_)
+    - [0_9       @ detrac](#0_9___detrac_)
+    - [49_68       @ detrac](#49_68___detrac_)
 - [all_frames_roi](#all_frames_ro_i_)
     - [g2_0_37       @ all_frames_roi](#g2_0_37___all_frames_roi_)
 - [ipsc_2_class       @ xml_to_coco](#ipsc_2_class___xml_to_coc_o_)
@@ -69,18 +72,19 @@
     - [ctc_Fluo_N2DL_HeLa       @ ctc](#ctc_fluo_n2dl_hela___ct_c_)
 - [ctmc_all       @ xml_to_coco](#ctmc_all___xml_to_coc_o_)
 
+<!-- /MarkdownTOC -->
+
 <a id="detra_c_"></a>
 # detrac
-<a id="0_19___len_2_strd_1_detra_c_"></a>
+<a id="0_19___detrac_"></a>
 ## 0_19       @ detrac-->xml_to_coco
 python xml_to_coco.py cfg=detrac:non_empty:0_19:gz 
-<a id="0_9___len_2_strd_1_detra_c_"></a>
+<a id="0_9___detrac_"></a>
 ## 0_9       @ detrac-->xml_to_coco
 python xml_to_coco.py cfg=detrac:non_empty:0_9:gz 
-<a id="0_0___len_2_strd_1_detra_c_"></a>
+<a id="49_68___detrac_"></a>
 ## 49_68       @ detrac-->xml_to_coco
 python xml_to_coco.py cfg=detrac:non_empty:49_68:gz 
-
 
 <a id="all_frames_ro_i_"></a>
 # all_frames_roi       
@@ -98,9 +102,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/a
 
 <a id="no_val___g2_0_37_all_frames_roi_ipsc_2_clas_s_"></a>
 #### no_val       @ g2_0_37/all_frames_roi/ipsc_2_class-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/all_frames_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=all_frames_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0
 python xml_to_coco.py cfg=ipsc:frame-0_37:zip-0:gz 
-
 
 <a id="g2_38_53___all_frames_roi_ipsc_2_clas_s_"></a>
 ### g2_38_53       @ all_frames_roi/ipsc_2_class-->xml_to_coco
