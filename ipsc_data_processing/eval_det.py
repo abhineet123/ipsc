@@ -182,10 +182,11 @@ class Params(paramparse.CFG):
 
         self.monitor_scale = 1.25
 
-        self.nms_thresh = 0.
+        self.nms_thresh = [0.,]
 
         self._sweep_params = [
             'det_nms',
+            'nms_thresh',
         ]
 
 
@@ -629,6 +630,9 @@ def evaluate(
             all_img_paths += gt_img_paths
         """load det"""
         if not det_loaded:
+            if params.nms_thresh > 0:
+                print(f'performing NMS with threshold {params.nms_thresh:.2f}')
+
             det_paths = det_path_list[seq_idx]
 
             if isinstance(det_paths, str):
@@ -809,8 +813,6 @@ def evaluate(
                             det_pbar.set_description(det_pbar_msg)
 
             if params.nms_thresh > 0:
-                print(f'performing NMS with threshold {params.nms_thresh:.2f}')
-
                 bbox_ids_to_delete = []
                 for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
                     bbox_ids_to_delete += utils.perform_nms(
@@ -821,7 +823,7 @@ def evaluate(
                 n_bbox_ids_to_delete = len(bbox_ids_to_delete)
                 n_total_bbox_ids = len(seq_det_bboxes_list)
 
-                print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
+                # print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
                 seq_det_bboxes_list = [k for i, k in enumerate(seq_det_bboxes_list) if i not in bbox_ids_to_delete]
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
@@ -3030,7 +3032,8 @@ def run(params, *argv):
     print('img_paths', params.img_paths)
     print('labels_path', params.labels_path)
 
-    nms_thresh = params.det_nms  # type: float
+    det_nms = params.det_nms  # type: float
+    nms_thresh = params.nms_thresh  # type: float
     labels_path = params.labels_path
 
     if params.labels_root:
@@ -3046,8 +3049,8 @@ def run(params, *argv):
         img_path_list_file = utils.add_suffix(img_path_list_file, params.img_paths_suffix)
 
     _det_path_list_file = params.det_paths
-    if nms_thresh > 0:
-        _det_path_list_file = f'{_det_path_list_file}_nms_{int(nms_thresh * 100):02d}'
+    if det_nms > 0:
+        _det_path_list_file = f'{_det_path_list_file}_nms_{int(det_nms * 100):02d}'
 
     if params.det_root_dir:
         _det_path_list_file = os.path.join(params.det_root_dir, _det_path_list_file)
@@ -3076,8 +3079,14 @@ def run(params, *argv):
     #     specific_iou_flagged = True
 
     save_suffix = params.save_suffix
+    if det_nms > 0:
+        assert nms_thresh == 0, "both nms_thresh and det_nms should not be nonzero"
+        save_suffix = f'{save_suffix}-nms_{int(det_nms * 100):02d}'
+
     if nms_thresh > 0:
-        save_suffix = f'{save_suffix}-nms_{int(nms_thresh * 100):02d}'
+        assert det_nms == 0, "both nms_thresh and det_nms should not be nonzero"
+
+        save_suffix = f'{save_suffix}-nms_{int(det_nms * 100):02d}'
 
     out_dir_name = None
 
