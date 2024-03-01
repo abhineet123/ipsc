@@ -3086,7 +3086,7 @@ def run(params, *argv):
     if nms_thresh > 0:
         assert det_nms == 0, "both nms_thresh and det_nms should not be nonzero"
 
-        save_suffix = f'{save_suffix}-nms_{int(det_nms * 100):02d}'
+        save_suffix = f'{save_suffix}-nms_{int(nms_thresh * 100):02d}'
 
     out_dir_name = None
 

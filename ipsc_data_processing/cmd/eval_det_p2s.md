@@ -99,7 +99,7 @@ python3 eval_det.py cfg=ipsc_2_class:ext:g2_0_4,p2s det_paths=resnet_640_ext_reo
 <a id="49_68___detrac_0_9_resnet_640_vi_d_"></a>
 <a id="0_9___detrac_0_9_resnet_64_0_"></a>
 ### 0_9       @ detrac-0_9/resnet-640-->eval_det_p2s
-python3 eval_det.py cfg=p2s,detrac:non_empty-0_9:nms-10:gt-0:show-0 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_9-batch_18/ckpt-120132-detrac-length-2-stride-1-non_empty-seq-0_9/csv-batch_48 save_suffix=p2s-resnet_640-detrac:0_9-len-2-strd-1-0_9-strd-1-120132
+python3 eval_det.py cfg=p2s,detrac:non_empty-0_9:nms-1:gt-1:show-0:proc-12 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_9-batch_18/ckpt-120132-detrac-length-2-stride-1-non_empty-seq-0_9/csv-batch_48 save_suffix=p2s-resnet_640-detrac:0_9-len-2-strd-1-0_9-strd-1-120132
 <a id="strd_2___0_9_detrac_0_9_resnet_64_0_"></a>
 #### strd-2       @ 0_9/detrac-0_9/resnet-640-->eval_det_p2s
 python3 eval_det.py cfg=p2s,detrac:non_empty:0_9:nms-1:gt-1:show-0:proc-12 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_9-batch_18/ckpt-120132-detrac-length-2-stride-2-non_empty-seq-0_9/csv-batch_48 save_suffix=p2s-resnet_640-detrac:0_9-len-2-strd-2-0_9-strd-2-120132
