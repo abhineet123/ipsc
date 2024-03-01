@@ -327,7 +327,7 @@ def evaluate(
         plots_out_dir = utils.linux_path(out_root_dir, 'plots')
         if draw_plot:
             print('Saving plots to: {}'.format(plots_out_dir))
-            os.makedirs(plots_out_dir, exist_ok=1)
+            os.makedirs(plots_out_dir, exist_ok=True)
 
         if not det_pkl_dir:
             det_pkl_dir = out_root_dir
@@ -809,8 +809,15 @@ def evaluate(
                             det_pbar.set_description(det_pbar_msg)
 
             if params.enable_nms > 0:
+                bbox_ids_to_delete = []
                 for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
-                    bbox_ids_to_delete = perform_nms()
+                    bbox_ids_to_delete += utils.perform_nms(params, _det_filename, _bbox_info)
+
+                n_bbox_ids_to_delete = len(bbox_ids_to_delete)
+                n_total_bbox_ids = len(seq_det_bboxes_list)
+
+                print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
+                seq_det_bboxes_list = [k for i, k in enumerate(seq_det_bboxes_list) if i not in bbox_ids_to_delete]
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
@@ -819,13 +826,13 @@ def evaluate(
     if True:
         if not det_loaded:
             print(f'\nSaving detection data to {det_pkl}')
-            os.makedirs(det_pkl_dir, exist_ok=1)
+            os.makedirs(det_pkl_dir, exist_ok=True)
             with open(det_pkl, 'wb') as f:
                 pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
 
         if not gt_loaded:
             gt_data_dict['counter_per_class'] = gt_counter_per_class
-            os.makedirs(gt_pkl_dir, exist_ok=1)
+            os.makedirs(gt_pkl_dir, exist_ok=True)
 
             print(f'\nSaving GT data to {gt_pkl}')
             with open(gt_pkl, 'wb') as f:
@@ -1062,10 +1069,10 @@ def evaluate(
         frame_to_det_data = {}
         csv_columns_rec_prec = ['confidence_threshold', 'Recall', 'Precision']
 
-        os.makedirs(out_root_dir, exist_ok=1)
+        os.makedirs(out_root_dir, exist_ok=True)
 
         misc_out_root_dir = utils.linux_path(out_root_dir, 'misc')
-        os.makedirs(misc_out_root_dir, exist_ok=1)
+        os.makedirs(misc_out_root_dir, exist_ok=True)
 
         if vid_ext in img_exts:
             vis_video = 0
@@ -1160,7 +1167,7 @@ def evaluate(
             else:
                 vis_root_dir = out_root_dir
 
-            os.makedirs(vis_root_dir, exist_ok=1)
+            os.makedirs(vis_root_dir, exist_ok=True)
             print(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
 
             vis_out_fnames = {

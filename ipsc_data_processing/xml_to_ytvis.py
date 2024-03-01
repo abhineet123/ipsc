@@ -1100,7 +1100,8 @@ def main():
             all_pix_vals_mean += pix_vals_mean
             all_pix_vals_std += pix_vals_std
 
-        use_tqdm = params.n_proc <= 1
+        # use_tqdm = params.n_proc <= 1
+        use_tqdm = 0
         json_func = functools.partial(
             save_annotations_ytvis,
             xml_data_dict,

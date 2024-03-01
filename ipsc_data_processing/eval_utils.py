@@ -579,8 +579,14 @@ def stack_images(img_list, grid_size=None, stack_order=0, borderless=1,
         return stacked_img
 
 
+def resize_ar_video(src_vid, **kwargs):
+    out_imgs = [resize_ar(img, **kwargs) for img in src_vid]
+    out_vid = np.stack(out_imgs, axis=0)
+    return out_vid
+
+
 def resize_ar(src_img, width=0, height=0, return_factors=False,
-              placement_type=0, only_border=0, only_shrink=0):
+              placement_type=0, only_border=0, only_shrink=0, strict=False):
     src_height, src_width = src_img.shape[:2]
     src_aspect_ratio = float(src_width) / float(src_height)
 
@@ -607,6 +613,9 @@ def resize_ar(src_img, width=0, height=0, return_factors=False,
             width = int(height * src_aspect_ratio)
 
     aspect_ratio = float(width) / float(height)
+
+    if strict:
+        assert aspect_ratio == src_aspect_ratio, "aspect_ratio mismatch"
 
     if only_border:
         dst_width = width
@@ -1073,8 +1082,96 @@ def annotate_and_show(title, img_list, text=None, pause=1,
     return pause
 
 
+from contextlib import contextmanager
+import time
+
+
+@contextmanager
+def profile(_id, _times=None, _rel_times=None, enable=1, show=1, _fps=None):
+    """
+
+    :param _id:
+    :param dict _times:
+    :param int enable:
+    :return:
+    """
+    if not enable:
+        yield None
+
+    else:
+        start_t = time.time()
+        yield None
+        end_t = time.time()
+        _time = end_t - start_t
+
+        if show:
+            print(f'{_id} :: {_time}')
+
+        if _fps is not None:
+            if _time > 0:
+                _fps[_id] = 1.0 / _time
+            else:
+                _fps[_id] = np.inf
+
+        if _times is not None:
+
+            _times[_id] = _time
+
+            total_time = np.sum(list(_times.values()))
+
+            if _rel_times is not None:
+
+                for __id in _times:
+                    rel__time = _times[__id] / total_time
+                    _rel_times[__id] = rel__time
+
+
 def to_str(iter_, sep='\n'):
     return sep.join(iter_)
+
+
+def perform_nms(params, _det_filename, _bbox_info):
+    pred_objs = [
+        (local_id, bbox_dict['bbox'], bbox_dict['mask'], bbox_dict['confidence'], bbox_dict['class'], global_id)
+        for local_id, (bbox_dict, global_id) in enumerate(_bbox_info)
+    ]
+
+    pred_obj_pairs = list(itertools.combinations(pred_objs, 2))
+
+    objs_to_delete = []
+    global_objs_to_delete = []
+
+    for pred_obj_pair in pred_obj_pairs:
+        obj1, obj2 = pred_obj_pair
+
+        idx1, bbox1, mask1, score1, label1, global_id1 = obj1
+        idx2, bbox2, mask2, score2, label2, global_id2 = obj2
+
+        assert idx1 != idx2, "invalid object pair with identical IDs"
+
+        if idx1 in objs_to_delete or idx2 in objs_to_delete:
+            continue
+
+        if params.enable_mask:
+            pred_iou = get_mask_iou(mask1, mask2, bbox1, bbox2)
+        else:
+            pred_iou = get_iou(bbox1, bbox2, xywh=False)
+
+            # mask_iou2 = get_mask_iou(mask1, mask2, bbox1, bbox2, giou=False)
+            # assert pred_iou == mask_iou2, "mask_iou2 mismatch found"
+
+        if pred_iou >= params.nms_thresh:
+            # print(f'found matching object pair with iou {pred_iou:.3f}')
+            if score1 > score2:
+                objs_to_delete.append(idx2)
+                global_objs_to_delete.append(global_id2)
+                # print(f'removing obj {idx2} with score {score2} < {score1}')
+            else:
+                objs_to_delete.append(idx1)
+                global_objs_to_delete.append(global_id1)
+                # print(f'removing obj {idx1} with score {score1} < {score2}')
+
+    return global_objs_to_delete
 
 
 def linux_path(*args, **kwargs):

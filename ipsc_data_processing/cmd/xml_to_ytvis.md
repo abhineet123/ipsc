@@ -25,9 +25,11 @@
     - [incremental       @ ext_reorg_roi_g2_0_53](#incremental___ext_reorg_roi_g2_0_5_3_)
 - [detrac](#detra_c_)
     - [len-2       @ detrac](#len_2___detrac_)
-        - [0_19       @ len-2/detrac](#0_19___len_2_detrac_)
-        - [0_9       @ len-2/detrac](#0_9___len_2_detrac_)
         - [0_0       @ len-2/detrac](#0_0___len_2_detrac_)
+        - [0_19       @ len-2/detrac](#0_19___len_2_detrac_)
+            - [strd-2       @ 0_19/len-2/detrac](#strd_2___0_19_len_2_detra_c_)
+        - [0_9       @ len-2/detrac](#0_9___len_2_detrac_)
+            - [strd-2       @ 0_9/len-2/detrac](#strd_2___0_9_len_2_detrac_)
         - [49_68       @ len-2/detrac](#49_68___len_2_detrac_)
             - [strd-2       @ 49_68/len-2/detrac](#strd_2___49_68_len_2_detrac_)
 
@@ -171,15 +173,21 @@ python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists
 # detrac
 <a id="len_2___detrac_"></a>
 ## len-2       @ detrac-->xml_to_ytvis
-<a id="0_19___len_2_detrac_"></a>
-### 0_19       @ len-2/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-12:len-2:strd-1:gz:gap-1 
-<a id="0_9___len_2_detrac_"></a>
-### 0_9       @ len-2/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-1:gz:gap-1:vis 
 <a id="0_0___len_2_detrac_"></a>
 ### 0_0       @ len-2/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gz:gap-1:vis 
+<a id="0_19___len_2_detrac_"></a>
+### 0_19       @ len-2/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-1:gz:gap-1 
+<a id="strd_2___0_19_len_2_detra_c_"></a>
+#### strd-2       @ 0_19/len-2/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-2:gz:gap-1 
+<a id="0_9___len_2_detrac_"></a>
+### 0_9       @ len-2/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-1:gz:gap-1:vis 
+<a id="strd_2___0_9_len_2_detrac_"></a>
+#### strd-2       @ 0_9/len-2/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-2:gz:gap-1 
 <a id="49_68___len_2_detrac_"></a>
 ### 49_68       @ len-2/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-2:strd-1:gz:gap-1
