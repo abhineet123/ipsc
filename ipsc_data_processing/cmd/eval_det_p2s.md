@@ -2,7 +2,7 @@
 
 - [resnet-640-vid       @ p2s](#resnet_640_vid___p2_s_)
     - [detrac-0_9       @ resnet-640-vid](#detrac_0_9___resnet_640_vid_)
-        - [test       @ detrac-0_9/resnet-640-vid](#test___detrac_0_9_resnet_640_vi_d_)
+        - [49_68       @ detrac-0_9/resnet-640-vid](#49_68___detrac_0_9_resnet_640_vi_d_)
     - [mnist-640-1       @ resnet-640-vid](#mnist_640_1___resnet_640_vid_)
         - [test       @ mnist-640-1/resnet-640-vid](#test___mnist_640_1_resnet_640_vid_)
         - [test-strd-2       @ mnist-640-1/resnet-640-vid](#test_strd_2___mnist_640_1_resnet_640_vid_)
@@ -52,11 +52,9 @@
 
 <a id="detrac_0_9___resnet_640_vid_"></a>
 ## detrac-0_9       @ resnet-640-vid-->eval_det_p2s
-<a id="test___detrac_0_9_resnet_640_vi_d_"></a>
-### test       @ detrac-0_9/resnet-640-vid-->eval_det_p2s
-python3 eval_det.py cfg=detrac:640-1:12_1000:test,p2s det_paths=video/resnet_640_mnist_640_1_12_1000_var-length-2-stride-1-train-batch_18/ckpt-186480-mnist_640_1_12_1000_var-length-2-stride-1-test/csv-batch_32 save_suffix=p2s-resnet_640-g2_mnist:640-1-12-len-2-strd-1-test-strd-1-186480 show_vis=0 load_gt=0
-
-python3 eval_det.py cfg=detrac:640-1:12_1000:test,p2s det_paths=video/resnet_640_mnist_640_1_12_1000_var-length-2-stride-1-train-batch_18/ckpt-186480-mnist_640_1_12_1000_var-length-2-stride-1-test/csv-batch_32 save_suffix=p2s-resnet_640-g2_mnist:640-1-12-len-2-strd-1-test-strd-2-186480 show_vis=0 load_gt=0
+<a id="49_68___detrac_0_9_resnet_640_vi_d_"></a>
+### 49_68       @ detrac-0_9/resnet-640-vid-->eval_det_p2s
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_68:nms-10:gt-0:show-0 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_9-batch_18/ckpt-120132-detrac-length-2-stride-1-non_empty-seq-49_68/csv-batch_48 save_suffix=p2s-resnet_640-resnet:0_9-len-2-strd-1-49_68-strd-1-120132
 
 <a id="mnist_640_1___resnet_640_vid_"></a>
 ## mnist-640-1       @ resnet-640-vid-->eval_det_p2s

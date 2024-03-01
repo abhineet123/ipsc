@@ -1130,7 +1130,7 @@ def to_str(iter_, sep='\n'):
     return sep.join(iter_)
 
 
-def perform_nms(params, _det_filename, _bbox_info):
+def perform_nms(_det_filename, _bbox_info, enable_mask, nms_thresh):
     pred_objs = [
         (local_id, bbox_dict['bbox'], bbox_dict['mask'], bbox_dict['confidence'], bbox_dict['class'], global_id)
         for local_id, (bbox_dict, global_id) in enumerate(_bbox_info)
@@ -1152,7 +1152,7 @@ def perform_nms(params, _det_filename, _bbox_info):
         if idx1 in objs_to_delete or idx2 in objs_to_delete:
             continue
 
-        if params.enable_mask:
+        if enable_mask:
             pred_iou = get_mask_iou(mask1, mask2, bbox1, bbox2)
         else:
             pred_iou = get_iou(bbox1, bbox2, xywh=False)
@@ -1160,7 +1160,7 @@ def perform_nms(params, _det_filename, _bbox_info):
             # mask_iou2 = get_mask_iou(mask1, mask2, bbox1, bbox2, giou=False)
             # assert pred_iou == mask_iou2, "mask_iou2 mismatch found"
 
-        if pred_iou >= params.nms_thresh:
+        if pred_iou >= nms_thresh:
             # print(f'found matching object pair with iou {pred_iou:.3f}')
             if score1 > score2:
                 objs_to_delete.append(idx2)

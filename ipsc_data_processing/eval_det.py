@@ -82,7 +82,7 @@ class Params(paramparse.CFG):
 
         self.det_root_dir = ''
         self.det_paths = ''
-        self.det_file_nms_thresh = [0, ]
+        self.det_nms = [0, ]
 
         self.allow_missing_dets = 0
         self.combine_dets = 0
@@ -182,10 +182,10 @@ class Params(paramparse.CFG):
 
         self.monitor_scale = 1.25
 
-        self.enable_nms = 0.
+        self.nms_thresh = 0.
 
         self._sweep_params = [
-            'nms_thresh',
+            'det_nms',
         ]
 
 
@@ -808,10 +808,15 @@ def evaluate(
 
                             det_pbar.set_description(det_pbar_msg)
 
-            if params.enable_nms > 0:
+            if params.nms_thresh > 0:
+                print(f'performing NMS with threshold {params.nms_thresh:.2f}')
+
                 bbox_ids_to_delete = []
                 for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
-                    bbox_ids_to_delete += utils.perform_nms(params, _det_filename, _bbox_info)
+                    bbox_ids_to_delete += utils.perform_nms(
+                        _det_filename, _bbox_info,
+                        enable_mask=params.enable_mask, nms_thresh=params.nms_thresh
+                    )
 
                 n_bbox_ids_to_delete = len(bbox_ids_to_delete)
                 n_total_bbox_ids = len(seq_det_bboxes_list)
@@ -3025,7 +3030,7 @@ def run(params, *argv):
     print('img_paths', params.img_paths)
     print('labels_path', params.labels_path)
 
-    nms_thresh = params.det_file_nms_thresh  # type: float
+    nms_thresh = params.det_nms  # type: float
     labels_path = params.labels_path
 
     if params.labels_root:
@@ -3220,7 +3225,9 @@ def run(params, *argv):
             n_dets = 1
 
         if n_seq != n_dets:
-            if 0 < n_dets < n_seq and params.allow_missing_dets and not params.combine_dets:
+            if len(_img_path_list) == n_dets:
+                print(f'n_dets = curtailed img_path_list = {n_dets} so assuming it is already curtailed')
+            elif 0 < n_dets < n_seq and params.allow_missing_dets and not params.combine_dets:
                 det_seq_names = [os.path.splitext(os.path.basename(k))[0]
                                  for k in det_path_list]
                 assert len(set(det_seq_names)) == n_dets, "missing dets can only be handled when det file names " \
@@ -3241,8 +3248,8 @@ def run(params, *argv):
                 n_dets = len(det_path_list)
             else:
                 raise AssertionError(f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}")
-
-        det_path_list = det_path_list[start_id:end_id + 1]
+        else:
+            det_path_list = det_path_list[start_id:end_id + 1]
 
         print(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
 
