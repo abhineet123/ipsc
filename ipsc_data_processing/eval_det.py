@@ -3079,6 +3079,7 @@ def run(params, *argv):
     #     specific_iou_flagged = True
 
     save_suffix = params.save_suffix
+    save_suffix = save_suffix.replace(':', '-')
     if det_nms > 0:
         assert nms_thresh == 0, "both nms_thresh and det_nms should not be nonzero"
         save_suffix = f'{save_suffix}-nms_{int(det_nms * 100):02d}'
