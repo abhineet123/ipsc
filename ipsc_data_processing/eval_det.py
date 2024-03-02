@@ -864,6 +864,8 @@ def evaluate(
                     df = pd.DataFrame(out_csv_rows, columns=csv_columns)
                     print(f'writing nms {params.nms_thresh} results to {out_det_path}')
                     df.to_csv(out_det_path, index=False)
+                else:
+                    print(f'n_det_paths: {n_det_paths}')
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
