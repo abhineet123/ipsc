@@ -182,7 +182,7 @@ class Params(paramparse.CFG):
 
         self.monitor_scale = 1.25
 
-        self.nms_thresh = [0.,]
+        self.nms_thresh = [0., ]
 
         self._sweep_params = [
             'det_nms',
@@ -768,6 +768,11 @@ def evaluate(
                             # print(f'ignoring invalid detection: {[xmin, ymin, xmax, ymax]}')
                             continue
 
+                        try:
+                            video_id = int(row['video_id'])
+                        except KeyError:
+                            video_id = -1
+
                         bbox_dict = {
                             "class": det_class,
                             "width": det_img_w,
@@ -779,14 +784,8 @@ def evaluate(
                             "bbox": [xmin, ymin, xmax, ymax],
                             'mask': None,
                             "det_path_id": _det_path_id,
+                            "video_id": video_id,
                         }
-
-                        try:
-                            video_id = int(row['video_id'])
-                        except KeyError:
-                            video_id = -1
-
-                        bbox_dict['video_id'] = video_id
 
                         if enable_mask:
                             try:
@@ -820,11 +819,48 @@ def evaluate(
                         enable_mask=params.enable_mask, nms_thresh=params.nms_thresh
                     )
 
-                n_bbox_ids_to_delete = len(bbox_ids_to_delete)
-                n_total_bbox_ids = len(seq_det_bboxes_list)
-
+                # n_bbox_ids_to_delete = len(bbox_ids_to_delete)
+                # n_total_bbox_ids = len(seq_det_bboxes_list)
                 # print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
+
                 seq_det_bboxes_list = [k for i, k in enumerate(seq_det_bboxes_list) if i not in bbox_ids_to_delete]
+
+                if n_det_paths == 1:
+                    out_csv_rows = []
+                    for det_bbox in seq_det_bboxes_list:
+                        xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
+                        csv_row = {
+                            "ImageID": det_bbox['filename'],
+                            "LabelName": det_bbox['"class"'],
+                            "XMin": xmin_,
+                            "XMax": xmax_,
+                            "YMin": ymin_,
+                            "YMax": ymax_,
+                            "Confidence": det_bbox['confidence'],
+                        }
+                        if params.enable_mask:
+                            mask_rle = det_bbox['mask']
+                            mask_h_, mask_w_ = mask_rle['size']
+                            csv_row.update(
+                                {
+                                    "mask_w": mask_w_,
+                                    "mask_h": mask_h_,
+                                    "mask_counts": mask_rle['counts'],
+                                }
+                            )
+                        out_csv_rows.append(csv_row)
+                    det_dir, det_name = os.path.dirname(det_paths[0]), os.path.basename(det_paths[0])
+                    out_det_dir = utils.add_suffix(det_dir, f'nms_{int(params.nms_thresh * 100):02d}')
+                    os.makedirs(out_det_dir, exist_ok=True)
+                    out_det_path = os.path.join(out_det_dir, det_name)
+                    csv_columns = [
+                        "ImageID", "LabelName",
+                        "XMin", "XMax", "YMin", "YMax", "Confidence",
+                    ]
+                    if params.enable_mask:
+                        csv_columns += ['mask_w', 'mask_h', 'mask_counts']
+                    df = pd.DataFrame(out_csv_rows, columns=csv_columns)
+                    df.to_csv(out_det_path, index=False)
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
