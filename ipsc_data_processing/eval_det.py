@@ -309,6 +309,9 @@ def evaluate(
                     'Mismatch between the no. of image ({})  and GT ({}) sequences'.format(n_seq, len(seq_paths)))
 
         n_det_paths = len(det_path_list)
+
+        print(f'n_det_paths: {n_det_paths}')
+
         if raw_det_data_dict is None:
             if n_seq < n_det_paths:
                 print(f'Mismatch between n_seq ({n_seq}) and n_det_paths ({n_det_paths})')
@@ -852,6 +855,7 @@ def evaluate(
                     det_dir, det_name = os.path.dirname(det_paths[0]), os.path.basename(det_paths[0])
                     out_det_dir = utils.add_suffix(det_dir, f'nms_{int(params.nms_thresh * 100):02d}')
                     os.makedirs(out_det_dir, exist_ok=True)
+
                     out_det_path = os.path.join(out_det_dir, det_name)
                     csv_columns = [
                         "ImageID", "LabelName",
@@ -860,6 +864,7 @@ def evaluate(
                     if params.enable_mask:
                         csv_columns += ['mask_w', 'mask_h', 'mask_counts']
                     df = pd.DataFrame(out_csv_rows, columns=csv_columns)
+                    print(f'writing nms {params.nms_thresh} results to {out_det_path}')
                     df.to_csv(out_det_path, index=False)
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
