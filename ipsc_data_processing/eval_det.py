@@ -204,7 +204,7 @@ def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
 
 
 def evaluate(
-        params, seq_paths, gt_classes, gt_path_list, det_path_list,
+        params, seq_paths, gt_classes, gt_path_list, all_seq_det_paths,
         out_root_dir, class_name_to_col,
         img_start_id=-1, img_end_id=-1,
         _gt_data_dict=None, raw_det_data_dict=None, eval_result_dict=None,
@@ -308,14 +308,12 @@ def evaluate(
                 raise AssertionError(
                     'Mismatch between the no. of image ({})  and GT ({}) sequences'.format(n_seq, len(seq_paths)))
 
-        n_det_paths = len(det_path_list)
-
-        print(f'n_det_paths: {n_det_paths}')
+        n_seq_det_paths = len(all_seq_det_paths)
 
         if raw_det_data_dict is None:
-            if n_seq < n_det_paths:
-                print(f'Mismatch between n_seq ({n_seq}) and n_det_paths ({n_det_paths})')
-                det_path_list = det_path_list[:n_seq]
+            if n_seq < n_seq_det_paths:
+                print(f'Mismatch between n_seq ({n_seq}) and n_seq_det_paths ({n_seq_det_paths})')
+                all_seq_det_paths = all_seq_det_paths[:n_seq]
 
         seq_root_dirs = [os.path.dirname(x) for x in seq_paths]
         seq_name_list = [os.path.basename(x) for x in seq_paths]
@@ -636,7 +634,7 @@ def evaluate(
             if params.nms_thresh > 0:
                 print(f'performing NMS with threshold {params.nms_thresh:.2f}')
 
-            det_paths = det_path_list[seq_idx]
+            det_paths = all_seq_det_paths[seq_idx]
 
             if isinstance(det_paths, str):
                 det_paths = [det_paths, ]
@@ -834,7 +832,7 @@ def evaluate(
                         xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
                         csv_row = {
                             "ImageID": det_bbox['filename'],
-                            "LabelName": det_bbox['"class"'],
+                            "LabelName": det_bbox['class'],
                             "XMin": xmin_,
                             "XMax": xmax_,
                             "YMin": ymin_,
@@ -3382,7 +3380,7 @@ def run(params, *argv):
                     params=params,
                     seq_paths=_img_path_list,
                     gt_path_list=gt_path_list,
-                    det_path_list=det_path_list,
+                    all_seq_det_paths=det_path_list,
                     gt_classes=gt_classes,
                     out_root_dir=img_out_root_dir,
                     img_start_id=img_id,
@@ -3458,7 +3456,7 @@ def run(params, *argv):
                 params=params,
                 seq_paths=_img_path_list,
                 gt_path_list=gt_path_list,
-                det_path_list=det_path_list,
+                all_seq_det_paths=det_path_list,
                 gt_classes=gt_classes,
                 out_root_dir=out_root_dir,
                 class_name_to_col=class_name_to_col,
