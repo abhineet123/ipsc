@@ -103,10 +103,11 @@ python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-37:len-2:str
 python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-37:len-2:strd-1:gz-1:gap-4
 <a id="16_53___len_2_strd_1_"></a>
 ## 16_53       @ len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-16:end-53:len-2:strd-1:gz-1:gap-1 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-16:end-53:len-2:strd-1:gz-1:gap-2 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-16:end-53:len-2:strd-1:gz-1:gap-3 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-16:end-53:len-2:strd-1:gz-1:gap-4
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-1:mask-0:proc-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-2:mask-0:proc-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-3:mask-0:proc-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-4:mask-0:proc-1 
+
 <a id="54_126___len_2_strd_1_"></a>
 ## 54_126       @ len-2:strd-1-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-54:end-126:len-2:strd-1:gz-1:gap-1 
