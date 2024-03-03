@@ -53,7 +53,7 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_68:nms-10:gt-1:nms-1:show-0:
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty-0_19:nms-50:gt-1:proc-12:show-0 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_19-batch_18/ckpt-301636-detrac-length-2-stride-1-non_empty-seq-0_19/csv-batch_12 save_suffix=p2s-resnet_640-detrac-0_19-len-2-strd-1-0_19-strd-1-301636
 <a id="strd_2___0_19_detrac_0_19_resnet_64_0_"></a>
 #### strd-2       @ 0_19/detrac-0_19/resnet-640-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:0_19:gt-1:nms-1:show-0:proc-12 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_19-batch_18/ckpt-301636-detrac-length-2-stride-2-non_empty-seq-0_19/csv-batch_12 save_suffix=p2s-resnet_640-detrac-0_19-len-2-strd-1-0_19-strd-2-301636
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:0_19:gt-0:nms-0:show-0:proc-12 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_19-batch_18/ckpt-301636-detrac-length-2-stride-2-non_empty-seq-0_19/csv-batch_12 save_suffix=p2s-resnet_640-detrac-0_19-len-2-strd-1-0_19-strd-2-301636
 <a id="49_68___detrac_0_19_resnet_640_"></a>
 ### 49_68       @ detrac-0_19/resnet-640-->eval_det_p2s_vid
 <a id="strd_1___49_68_detrac_0_19_resnet_640_"></a>
@@ -61,7 +61,7 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:0_19:gt-1:nms-1:show-0:proc-12 
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_68:gt-1:nms-1:show-0:proc-12 det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_19-batch_18/ckpt-301636-detrac-length-2-stride-1-non_empty-seq-49_68/csv-batch_12 save_suffix=p2s-resnet_640-detrac-0_19-len-2-strd-1-49_68-strd-1-301636
 <a id="strd_2___49_68_detrac_0_19_resnet_640_"></a>
 #### strd-2       @ 49_68/detrac-0_19/resnet-640-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_68:gt-1:nms-10:show-0:proc-12  det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_19-batch_18/ckpt-301636-detrac-length-2-stride-2-non_empty-seq-49_68/csv-batch_12 save_suffix=p2s-resnet_640-detrac-0_19-len-2-strd-1-49_68-strd-2-301636
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_68:gt-1:nms-1:show-0:proc-12  det_paths=resnet_640_detrac-length-2-stride-1-non_empty-seq-0_19-batch_18/ckpt-301636-detrac-length-2-stride-2-non_empty-seq-49_68/csv-batch_12 save_suffix=p2s-resnet_640-detrac-0_19-len-2-strd-1-49_68-strd-2-301636
 
 <a id="mnist_640_1___resnet_640_"></a>
 ## mnist-640-1       @ resnet-640-->eval_det_p2s_vid
