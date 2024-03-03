@@ -107,7 +107,7 @@ python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-4:mask-0:pr
 
 <a id="54_126___len_2_strd_1_"></a>
 ## 54_126       @ len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-1:gz:gap-1:mask-0:proc-1:zip-0 
 
 <a id="0_15___xml_to_ytvis_"></a>
 # 0_15       @ xml_to_ytvis-->xml_to_ytvis

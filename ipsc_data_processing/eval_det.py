@@ -393,6 +393,8 @@ def evaluate(
 
                 for _img_path, _img_objs in _seq_gt_data_dict.items():
                     for obj in _img_objs:
+                        if params.class_agnostic:
+                            obj['class'] = 'agnostic'
                         gt_class_data_dict[obj['class']][_seq_path].append(obj)
 
         if raw_det_data_dict is not None:
@@ -474,7 +476,7 @@ def evaluate(
         print(f'\n\nProcessing sequence {seq_idx + 1:d}/{n_seq:d}')
         print(f'seq_path: {seq_path:s}')
 
-        """load GT"""
+        """read GT from csv"""
         if not gt_loaded:
 
             gt_path = _gt_path
@@ -629,7 +631,7 @@ def evaluate(
 
             gt_img_paths = sorted(list(seq_gt_data_dict.keys()))
             all_img_paths += gt_img_paths
-        """load det"""
+        """read det from csv"""
         if not det_loaded:
             if params.nms_thresh > 0:
                 print(f'performing NMS with threshold {params.nms_thresh:.2f}')

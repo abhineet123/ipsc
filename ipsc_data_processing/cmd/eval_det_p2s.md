@@ -53,7 +53,9 @@ python3 eval_det.py cfg=p2s,detrac:non_empty:49_68:nms-1:gt-1:show-0 det_paths=r
 ## mnist-640-5       @ resnet-640-->eval_det_p2s
 <a id="test___mnist_640_5_resnet_640_"></a>
 ### test       @ mnist-640-5/resnet-640-->eval_det_p2s
-python3 eval_det.py cfg=mnist:640-5:12_1000:test:gt-1,p2s det_paths=resnet_640_mnist_640_5_12_1000_var-train-batch_18/ckpt-59363-mnist_640_5_12_1000_var-test/csv-batch_96 save_suffix=p2s-resnet_640-mnist-640-5-12-test-59363 show_vis=0 load_gt=0
+python3 eval_det.py cfg=mnist:640-5:12_1000:test:nms-1:gt-1,p2s det_paths=resnet_640_mnist_640_5_12_1000_var-train-batch_18/ckpt-174087-mnist_640_5_12_1000_var-test/csv-batch_96 save_suffix=p2s-resnet_640-mnist-640-5-12-test-174087
+
+python3 eval_det.py cfg=mnist:640-5:12_1000:test:nms-1:gt-1,p2s:agn det_paths=resnet_640_mnist_640_5_12_1000_var-train-batch_18/ckpt-174087-mnist_640_5_12_1000_var-test/csv-batch_96 save_suffix=p2s-resnet_640-mnist-640-5-12-test-174087-agn
 
 <a id="g2_16_53___resnet_640_"></a>
 ## g2_16_53       @ resnet-640-->eval_det_p2s
