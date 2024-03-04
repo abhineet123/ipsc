@@ -204,15 +204,20 @@ def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
 
 
 def evaluate(
-        params, seq_paths, gt_classes, gt_path_list, all_seq_det_paths,
-        out_root_dir, class_name_to_col,
-        img_start_id=-1, img_end_id=-1,
-        _gt_data_dict=None, raw_det_data_dict=None, eval_result_dict=None,
-        fps_to_gt=1, json_out_dir=None):
-    """
-
-    :param Params params:
-    """
+        params: Params,
+        seq_paths: list[str],
+        gt_classes: list[str],
+        gt_path_list: list[str],
+        all_seq_det_paths: list[str],
+        out_root_dir: str,
+        class_name_to_col: dict,
+        img_start_id=-1,
+        img_end_id=-1,
+        _gt_data_dict=None,
+        raw_det_data_dict=None,
+        eval_result_dict=None,
+        fps_to_gt=1,
+        json_out_dir=None):
     """general init"""
     if True:
         assert out_root_dir, "out_root_dir must be provided"
@@ -3139,7 +3144,7 @@ def run(params, *argv):
             save_suffix = f'{save_suffix}-iw'
         out_dir_name = f'{save_suffix}'
     else:
-        print('Using automatically generated suffix in the absence of an custom one')
+        print('Using automatically generated suffix in the absence of a custom one')
         params.auto_suffix = 1
 
     img_path_list_file_temp = img_path_list_file
