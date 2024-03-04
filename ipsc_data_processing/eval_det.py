@@ -178,16 +178,26 @@ class Params(paramparse.CFG):
         self.vid_fmt = 'mp4v,2,mp4'
         self.check_det = 0
 
+
         self.fps_to_gt = 0
 
         self.monitor_scale = 1.25
 
         self.nms_thresh = [0., ]
 
+        self._sweep_mode = 0
+
         self._sweep_params = [
             'det_nms',
             'nms_thresh',
         ]
+    @property
+    def sweep_mode(self):
+        return self._sweep_mode
+
+    @property
+    def sweep_params(self):
+        return self._sweep_params
 
 
 def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
@@ -410,7 +420,9 @@ def evaluate(
             if params.det_pkl:
                 assert os.path.exists(det_pkl), f"det_pkl does not exist: {det_pkl}"
 
-            if params.load_det and os.path.isfile(det_pkl):
+            if params.load_det:
+                assert os.path.isfile(det_pkl), f"nonexistent det_pkl: {det_pkl}"
+
                 print(f'loading detection data from {det_pkl}')
                 with open(det_pkl, 'rb') as f:
                     raw_det_data_dict = pickle.load(f)
@@ -943,17 +955,22 @@ def evaluate(
 
             det_start_t = time.time()
 
-            for seq_idx in tqdm(range(n_seq), desc="Post processing sequence"):
+            det_post_proc_pbar = tqdm(range(n_seq))
+
+            for seq_idx in det_post_proc_pbar:
 
                 # sys.stdout.write('\rPost processing sequence {:d}/{:d} '.format(
                 #     seq_idx + 1, n_seq))
                 # sys.stdout.flush()
+
 
                 seq_name = seq_name_list[seq_idx]
                 seq_path = seq_paths[seq_idx]
 
                 seq_gt = gt_data_dict[seq_path]
                 seq_det = raw_det_data_dict[seq_path]
+
+                det_post_proc_pbar.set_description(f"Post processing sequence {seq_name}")
 
                 curr_class_det_exists = {}
                 curr_class_det_bounding_boxes = []
@@ -3065,10 +3082,11 @@ def run(params, *argv):
     """
     params = copy.deepcopy(params)
 
-    for i, sweep_param in enumerate(params._sweep_params):
+    for i, sweep_param in enumerate(params.sweep_params):
 
         if argv[i] is not None:
             setattr(params, sweep_param, argv[i])
+            params._sweep_mode = 1
 
         param_val = getattr(params, sweep_param)
 
@@ -3128,14 +3146,15 @@ def run(params, *argv):
 
     save_suffix = params.save_suffix
     save_suffix = save_suffix.replace(':', '-')
-    if det_nms > 0:
-        assert nms_thresh == 0, "both nms_thresh and det_nms should not be nonzero"
-        save_suffix = f'{save_suffix}-nms_{int(det_nms * 100):02d}'
+    sweep_suffix = ''
 
-    if nms_thresh > 0:
-        assert det_nms == 0, "both nms_thresh and det_nms should not be nonzero"
+    assert det_nms == 0 or nms_thresh == 0, "both nms_thresh and det_nms should not be nonzero"
 
-        save_suffix = f'{save_suffix}-nms_{int(nms_thresh * 100):02d}'
+    if det_nms > 0 or params.sweep_mode:
+        sweep_suffix = f'nms_{int(det_nms * 100):02d}'
+
+    if nms_thresh > 0 or params.sweep_mode:
+        sweep_suffix = f'nms_{int(nms_thresh * 100):02d}'
 
     out_dir_name = None
 
@@ -3143,6 +3162,12 @@ def run(params, *argv):
         if params.iw:
             save_suffix = f'{save_suffix}-iw'
         out_dir_name = f'{save_suffix}'
+
+        if params.sweep_mode:
+            assert sweep_suffix, "sweep_suffix must be non-empty in sweep_mode"
+            out_dir_name = os.path.join(out_dir_name, sweep_suffix)
+        else:
+            out_dir_name = f'{out_dir_name}-{sweep_suffix}'
     else:
         print('Using automatically generated suffix in the absence of a custom one')
         params.auto_suffix = 1
