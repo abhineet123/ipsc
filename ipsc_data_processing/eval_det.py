@@ -373,6 +373,10 @@ def evaluate(
             gt_pkl = utils.add_suffix(gt_pkl, img_suffix)
             det_pkl = utils.add_suffix(det_pkl, img_suffix)
 
+        if params.class_agnostic:
+            gt_pkl = utils.add_suffix(gt_pkl, 'agn', sep='-')
+            det_pkl = utils.add_suffix(det_pkl, 'agn', sep='-')
+
         gt_class_data_dict = {
             gt_class: {} for gt_class in gt_classes
         }
@@ -408,8 +412,8 @@ def evaluate(
 
                 for _img_path, _img_objs in _seq_gt_data_dict.items():
                     for obj in _img_objs:
-                        if params.class_agnostic:
-                            obj['class'] = 'agnostic'
+                        # if params.class_agnostic:
+                        #     obj['class'] = 'agnostic'
                         gt_class_data_dict[obj['class']][_seq_path].append(obj)
 
         if raw_det_data_dict is not None:

@@ -6,6 +6,7 @@
         - [49_68       @ detrac-0_19/resnet-640](#49_68___detrac_0_19_resnet_640_)
     - [mnist-640-5       @ resnet-640](#mnist_640_5___resnet_640_)
         - [test       @ mnist-640-5/resnet-640](#test___mnist_640_5_resnet_640_)
+            - [agn       @ test/mnist-640-5/resnet-640](#agn___test_mnist_640_5_resnet_64_0_)
     - [g2_16_53       @ resnet-640](#g2_16_53___resnet_640_)
         - [batch_48       @ g2_16_53/resnet-640](#batch_48___g2_16_53_resnet_64_0_)
             - [ckpt-1975       @ batch_48/g2_16_53/resnet-640](#ckpt_1975___batch_48_g2_16_53_resnet_640_)
@@ -54,8 +55,9 @@ python3 eval_det.py cfg=p2s,detrac:non_empty:49_68:nms-1:gt-1:show-0 det_paths=r
 <a id="test___mnist_640_5_resnet_640_"></a>
 ### test       @ mnist-640-5/resnet-640-->eval_det_p2s
 python3 eval_det.py cfg=mnist:640-5:12_1000:test:nms-1:gt-1,p2s det_paths=resnet_640_mnist_640_5_12_1000_var-train-batch_18/ckpt-174087-mnist_640_5_12_1000_var-test/csv-batch_96 save_suffix=p2s-resnet_640-mnist-640-5-12-test-174087
-
-python3 eval_det.py cfg=mnist:640-5:12_1000:test:nms-1:gt-1:agn,p2s det_paths=resnet_640_mnist_640_5_12_1000_var-train-batch_18/ckpt-174087-mnist_640_5_12_1000_var-test/csv-batch_96 save_suffix=p2s-resnet_640-mnist-640-5-12-test-174087-agn
+<a id="agn___test_mnist_640_5_resnet_64_0_"></a>
+#### agn       @ test/mnist-640-5/resnet-640-->eval_det_p2s
+python3 eval_det.py cfg=mnist:640-5:12_1000:test:nms-1:det-1:gt-1:agn,p2s det_paths=resnet_640_mnist_640_5_12_1000_var-train-batch_18/ckpt-174087-mnist_640_5_12_1000_var-test/csv-batch_96 save_suffix=p2s-resnet_640-mnist-640-5-12-test-174087-agn
 
 <a id="g2_16_53___resnet_640_"></a>
 ## g2_16_53       @ resnet-640-->eval_det_p2s
