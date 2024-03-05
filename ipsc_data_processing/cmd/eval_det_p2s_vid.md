@@ -80,13 +80,13 @@ python3 eval_det.py cfg=mnist:640-1:12_1000:test,p2s:vid det_paths=resnet_640_mn
 python3 eval_det.py cfg=mnist:640-5:12_1000:test:gt-1:nms-1,p2s:vid det_paths=resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-1-test/csv-batch_36 save_suffix=p2s-resnet_640-mnist-640-5-12-len-2-strd-1-test-strd-1-581418
 <a id="agn___test_strd_1_mnist_640_5_resnet_640_"></a>
 #### agn       @ test-strd-1/mnist-640-5/resnet-640-->eval_det_p2s_vid
-python3 eval_det.py cfg=mnist:640-5:12_1000:test:gt-1:det-1:nms-1:agn,p2s:vid det_paths=resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-1-test/csv-batch_36 save_suffix=p2s-resnet_640-mnist-640-5-12-len-2-strd-1-test-strd-1-581418-agn
+python3 eval_det.py cfg=mnist:640-5:12_1000:test:gt-0:det-0:nms-1:agn,p2s:vid det_paths=resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-1-test/csv-batch_36 save_suffix=p2s-resnet_640-mnist-640-5-12-len-2-strd-1-test-strd-1-581418-agn
 <a id="test_strd_2___mnist_640_5_resnet_640_"></a>
 ### test-strd-2       @ mnist-640-5/resnet-640-->eval_det_p2s_vid
 python3 eval_det.py cfg=mnist:640-5:12_1000:test:gt-1:nms-1,p2s:vid det_paths=resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-2-test/csv-batch_48 save_suffix=p2s-resnet_640-mnist-640-5-12-len-2-strd-1-test-strd-2-581418
 <a id="agn___test_strd_2_mnist_640_5_resnet_640_"></a>
 #### agn       @ test-strd-2/mnist-640-5/resnet-640-->eval_det_p2s_vid
-python3 eval_det.py cfg=mnist:640-5:12_1000:test:det-1:gt-1:nms-1:agn,p2s:vid det_paths=resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-2-test/csv-batch_48 save_suffix=p2s-resnet_640-mnist-640-5-12-len-2-strd-1-test-strd-2-581418-agn
+python3 eval_det.py cfg=mnist:640-5:12_1000:test:det-0:gt-0:nms-1:agn,p2s:vid det_paths=resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-2-test/csv-batch_48 save_suffix=p2s-resnet_640-mnist-640-5-12-len-2-strd-1-test-strd-2-581418-agn
 
 <a id="g2_5_9___resnet_640_"></a>
 ## g2_5_9       @ resnet-640-->eval_det_p2s_vid
