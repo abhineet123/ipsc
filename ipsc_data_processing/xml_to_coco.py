@@ -505,7 +505,7 @@ def main():
         end_id = len(seq_paths) - 1
 
     if params.start_frame_id > 0 or params.end_frame_id >= 0:
-        frame_suffix = f'frame-{params.start_frame_id}_{params.end_frame_id}'
+        frame_suffix = f'{params.start_frame_id}_{params.end_frame_id}'
         output_json = add_suffix(output_json, frame_suffix, sep='-')
 
     seq_paths = seq_paths[start_id:end_id + 1:seq_stride]
