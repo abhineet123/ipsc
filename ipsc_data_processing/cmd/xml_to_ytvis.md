@@ -1,5 +1,12 @@
 <!-- MarkdownTOC -->
 
+- [len-2](#len_2_)
+    - [0_4       @ len-2](#0_4___len_2_)
+        - [12094       @ 0_4/len-2](#12094___0_4_len_2_)
+    - [5_9       @ len-2](#5_9___len_2_)
+    - [0_37       @ len-2](#0_37___len_2_)
+    - [16_53       @ len-2](#16_53___len_2_)
+    - [54_126       @ len-2](#54_126___len_2_)
 - [all_frames_roi_g2_38_53       @ all_frames_roi](#all_frames_roi_g2_38_53___all_frames_roi_)
 - [all_frames_roi_g2_seq_1_38_53       @ all_frames_roi](#all_frames_roi_g2_seq_1_38_53___all_frames_roi_)
 - [all_frames_roi_g3_53_92       @ all_frames_roi](#all_frames_roi_g3_53_92___all_frames_roi_)
@@ -10,13 +17,6 @@
     - [incremental       @ ext_reorg_roi_g2_38_53](#incremental___ext_reorg_roi_g2_38_53_)
 - [ext_reorg_roi_g2_16_53       @ xml_to_ytvis](#ext_reorg_roi_g2_16_53___xml_to_ytvis_)
 - [ext_reorg_roi_g2_0_1       @ xml_to_ytvis](#ext_reorg_roi_g2_0_1___xml_to_ytvis_)
-- [len-2:strd-1](#len_2_strd_1_)
-    - [0_4       @ len-2:strd-1](#0_4___len_2_strd_1_)
-        - [12094       @ 0_4/len-2:strd-1](#12094___0_4_len_2_strd_1_)
-    - [5_9       @ len-2:strd-1](#5_9___len_2_strd_1_)
-    - [0_37       @ len-2:strd-1](#0_37___len_2_strd_1_)
-    - [16_53       @ len-2:strd-1](#16_53___len_2_strd_1_)
-    - [54_126       @ len-2:strd-1](#54_126___len_2_strd_1_)
 - [0_15       @ xml_to_ytvis](#0_15___xml_to_ytvis_)
     - [incremental       @ 0_15](#incremental___0_15_)
 - [ext_reorg_roi_g2_54_126       @ xml_to_ytvis](#ext_reorg_roi_g2_54_126___xml_to_ytvis_)
@@ -34,6 +34,41 @@
             - [strd-2       @ 49_68/len-2/detrac](#strd_2___49_68_len_2_detrac_)
 
 <!-- /MarkdownTOC -->
+
+
+<a id="len_2_"></a>
+# len-2
+<a id="0_4___len_2_"></a>
+## 0_4       @ len-2-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-3 
+
+<a id="12094___0_4_len_2_"></a>
+### 12094       @ 0_4/len-2-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:12094:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:12094_short:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
+
+<a id="5_9___len_2_"></a>
+## 5_9       @ len-2-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-5:end-9:len-2:strd-1:gz-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-2 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-3 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-4 
+
+<a id="0_37___len_2_"></a>
+## 0_37       @ len-2-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:2_class:0_37:len-2:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
+<a id="16_53___len_2_"></a>
+## 16_53       @ len-2-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-2:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-3:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-4:mask-0:proc-1:zip-0 
+
+<a id="54_126___len_2_"></a>
+## 54_126       @ len-2-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-1:gz:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-2:gz:gap-1:mask-0:proc-1:zip-0 
 
 <a id="all_frames_roi_g2_38_53___all_frames_roi_"></a>
 # all_frames_roi_g2_38_53       @ all_frames_roi-->xml_to_ytvis
@@ -75,39 +110,6 @@ python3 xml_to_ytvis.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists
 # ext_reorg_roi_g2_0_1       @ xml_to_ytvis-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class start_frame_id=0 end_frame_id=1 description=ext_reorg_roi_g2_0_1 save_masks=0 n_proc=12
 length_2-stride_1
-
-<a id="len_2_strd_1_"></a>
-# len-2:strd-1
-<a id="0_4___len_2_strd_1_"></a>
-## 0_4       @ len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-3 
-
-<a id="12094___0_4_len_2_strd_1_"></a>
-### 12094       @ 0_4/len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:12094:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
-python3 xml_to_ytvis.py cfg=ipsc:12094_short:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
-
-<a id="5_9___len_2_strd_1_"></a>
-## 5_9       @ len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-5:end-9:len-2:strd-1:gz-1:gap-1 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-2 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-3 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-4 
-
-<a id="0_37___len_2_strd_1_"></a>
-## 0_37       @ len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:0_37:len-2:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
-<a id="16_53___len_2_strd_1_"></a>
-## 16_53       @ len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-2:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-3:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-4:mask-0:proc-1:zip-0 
-
-<a id="54_126___len_2_strd_1_"></a>
-## 54_126       @ len-2:strd-1-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-1:gz:gap-1:mask-0:proc-1:zip-0 
 
 <a id="0_15___xml_to_ytvis_"></a>
 # 0_15       @ xml_to_ytvis-->xml_to_ytvis
