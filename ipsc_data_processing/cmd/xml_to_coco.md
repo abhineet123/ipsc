@@ -117,7 +117,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/e
 
 <a id="no_validate___0_37_ext_reorg_roi_ips_c_"></a>
 #### no_validate       @ 0_37/ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0
+python xml_to_coco.py cfg=ipsc:0_37:zip-0:gz 
 
 __only_list__
 python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0 only_list=1
@@ -206,7 +206,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/e
 
 <a id="54_126___ext_reorg_roi_ipsc_"></a>
 ### 54_126       @ ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:frame-54_126:zip-0:gz 
+python xml_to_coco.py cfg=ipsc:54_126:zip-0:gz 
 
 ```
 pix_vals_mean: [118.06, 118.06, 118.06]
