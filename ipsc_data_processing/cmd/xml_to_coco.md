@@ -28,6 +28,8 @@
         - [0_15       @ ext_reorg_roi/ipsc](#0_15___ext_reorg_roi_ipsc_)
             - [no_mask       @ 0_15/ext_reorg_roi/ipsc](#no_mask___0_15_ext_reorg_roi_ips_c_)
         - [54_126       @ ext_reorg_roi/ipsc](#54_126___ext_reorg_roi_ipsc_)
+            - [strd-5       @ 54_126/ext_reorg_roi/ipsc](#strd_5___54_126_ext_reorg_roi_ips_c_)
+            - [strd-8       @ 54_126/ext_reorg_roi/ipsc](#strd_8___54_126_ext_reorg_roi_ips_c_)
             - [list       @ 54_126/ext_reorg_roi/ipsc](#list___54_126_ext_reorg_roi_ips_c_)
             - [no_mask       @ 54_126/ext_reorg_roi/ipsc](#no_mask___54_126_ext_reorg_roi_ips_c_)
         - [g2_0_53       @ ext_reorg_roi/ipsc](#g2_0_53___ext_reorg_roi_ipsc_)
@@ -207,6 +209,13 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/e
 <a id="54_126___ext_reorg_roi_ipsc_"></a>
 ### 54_126       @ ext_reorg_roi/ipsc-->xml_to_coco
 python xml_to_coco.py cfg=ipsc:54_126:zip-0:gz 
+<a id="strd_5___54_126_ext_reorg_roi_ips_c_"></a>
+#### strd-5       @ 54_126/ext_reorg_roi/ipsc-->xml_to_coco
+python xml_to_coco.py cfg=ipsc:54_126:zip-0:gz:strd-5
+<a id="strd_8___54_126_ext_reorg_roi_ips_c_"></a>
+#### strd-8       @ 54_126/ext_reorg_roi/ipsc-->xml_to_coco
+python xml_to_coco.py cfg=ipsc:54_126:zip-0:gz:strd-8
+
 
 ```
 pix_vals_mean: [118.06, 118.06, 118.06]

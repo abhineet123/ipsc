@@ -75,9 +75,9 @@ python3 eval_det.py cfg=ipsc:16_53:agn:nms-1:gt-0,p2s det_paths=resnet_640_ext_r
 ## ipsc-0_37       @ resnet-640-->eval_det_p2s
 <a id="on_54_126___ipsc_0_37_resnet_640_"></a>
 ### on-54_126       @ ipsc-0_37/resnet-640-->eval_det_p2s
-python3 eval_det.py cfg=ipsc:0_37:nms-1:gt-0,p2s det_paths=resnet_640_ext_reorg_roi_g2-0_37-batch_18/ckpt-119860-ext_reorg_roi_g2-54_126 save_suffix=p2s-resnet_640-ipsc-640-0_37-54_126-119860
+python3 eval_det.py cfg=ipsc:0_37:nms-1:gt-0,p2s det_paths=resnet_640_ext_reorg_roi_g2-0_37-batch_18/ckpt-119860-ext_reorg_roi_g2-54_126/csv-batch_36  save_suffix=p2s-resnet_640-ipsc-640-0_37-54_126-119860
 
-python3 eval_det.py cfg=ipsc:0_37:agn:nms-1:gt-0,p2s det_paths=resnet_640_ext_reorg_roi_g2-0_37-batch_18/ckpt-119860-ext_reorg_roi_g2-54_126 save_suffix=p2s-resnet_640-ipsc-640-0_37-54_126-119860-agn
+python3 eval_det.py cfg=ipsc:0_37:agn:nms-0:gt-0,p2s det_paths=resnet_640_ext_reorg_roi_g2-0_37-batch_18/ckpt-119860-ext_reorg_roi_g2-54_126/csv-batch_36  save_suffix=p2s-resnet_640-ipsc-640-0_37-54_126-119860-agn
 
 
 <a id="ipsc_16_53_buggy___resnet_640_"></a>

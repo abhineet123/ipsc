@@ -504,8 +504,11 @@ def main():
     if end_id < 0:
         end_id = len(seq_paths) - 1
 
-    if params.start_frame_id > 0 or params.end_frame_id >= 0:
+    if params.start_frame_id > 0 or params.end_frame_id >= 0 or params.frame_stride > 1:
         frame_suffix = f'{params.start_frame_id}_{params.end_frame_id}'
+        if params.frame_stride > 1:
+            frame_suffix = f'{frame_suffix}_{params.frame_stride}'
+
         output_json = add_suffix(output_json, frame_suffix, sep='-')
 
     seq_paths = seq_paths[start_id:end_id + 1:seq_stride]
@@ -622,6 +625,10 @@ def main():
 
             start_frame_id = params.start_frame_id
             end_frame_id = params.end_frame_id
+            frame_stride = params.frame_stride
+
+            if frame_stride <= 0:
+                frame_stride = 1
 
             if end_frame_id < start_frame_id:
                 end_frame_id = len(img_files) - 1
@@ -629,7 +636,7 @@ def main():
             # print(f'params.end_frame_id: {params.end_frame_id}')
             # print(f'end_frame_id: {end_frame_id}')
 
-            img_files = img_files[start_frame_id:end_frame_id + 1]
+            img_files = img_files[start_frame_id:end_frame_id + 1:frame_stride]
 
             if shuffle:
                 random.shuffle(img_files)
@@ -725,6 +732,9 @@ def main():
         start_frame_id = params.start_frame_id
         end_frame_id = params.end_frame_id
         frame_stride = params.frame_stride
+
+        if frame_stride <= 0:
+            frame_stride = 1
 
         if end_frame_id < start_frame_id:
             end_frame_id = len(xml_files) - 1
