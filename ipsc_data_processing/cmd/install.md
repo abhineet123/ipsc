@@ -2,8 +2,6 @@
 
 <!-- MarkdownTOC -->
 
-- [unattended-upgrades](#unattended_upgrades_)
-- [nvtop](#nvtop_)
 - [persistence](#persistence_)
 - [power_limit](#power_limit_)
   - [pc](#p_c_)
@@ -115,7 +113,6 @@
     - [windows/python3.7       @ tensorflow/setup_python_2](#windows_python3_7___tensorflow_setup_python_2_)
       - [no_gpu       @ windows/python3.7/tensorflow/setup_python_2](#no_gpu___windows_python3_7_tensorflow_setup_python_2_)
 - [misc tools](#misc_tool_s_)
-  - [archive](#archive_)
   - [jedit       @ misc_tools](#jedit___misc_tools_)
   - [imagemagick_7       @ misc_tools](#imagemagick_7___misc_tools_)
   - [pycharm       @ misc_tools](#pycharm___misc_tools_)
@@ -147,13 +144,10 @@
 
 <!-- /MarkdownTOC -->
 
-<a id="unattended_upgrades_"></a>
-# unattended-upgrades
 sudo apt-get purge unattended-upgrades
-
-<a id="nvtop_"></a>
-# nvtop
+sudo apt install nautilus-share
 sudo apt install nvtop
+sudo apt install thunar-archive-plugin
 
 <a id="persistence_"></a>
 # persistence
@@ -1309,13 +1303,6 @@ python36 -m pip install --upgrade https://download.lfd.uci.edu/pythonlibs/t4jqbe
 ```
 <a id="misc_tool_s_"></a>
 # misc tools
-
-<a id="archive_"></a>
-## archive
-https://ubuntuforums.org/showthread.php?t=2337245
-
-sudo apt install thunar-archive-plugin
-
 <a id="jedit___misc_tools_"></a>
 ## jedit       @ misc_tools-->install
 

@@ -27,6 +27,8 @@
         - [0_1       @ ext_reorg_roi/ipsc](#0_1___ext_reorg_roi_ipsc_)
         - [0_15       @ ext_reorg_roi/ipsc](#0_15___ext_reorg_roi_ipsc_)
             - [no_mask       @ 0_15/ext_reorg_roi/ipsc](#no_mask___0_15_ext_reorg_roi_ips_c_)
+        - [0_1       @ ext_reorg_roi/ipsc](#0_1___ext_reorg_roi_ipsc__1)
+        - [2_3       @ ext_reorg_roi/ipsc](#2_3___ext_reorg_roi_ipsc_)
         - [54_126       @ ext_reorg_roi/ipsc](#54_126___ext_reorg_roi_ipsc_)
             - [strd-5       @ 54_126/ext_reorg_roi/ipsc](#strd_5___54_126_ext_reorg_roi_ips_c_)
             - [strd-8       @ 54_126/ext_reorg_roi/ipsc](#strd_8___54_126_ext_reorg_roi_ips_c_)
@@ -205,6 +207,13 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg
 <a id="no_mask___0_15_ext_reorg_roi_ips_c_"></a>
 #### no_mask       @ 0_15/ext_reorg_roi/ipsc-->xml_to_coco
 python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_15-no_mask.json start_frame_id=0 end_frame_id=15 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 enable_masks=0
+
+<a id="0_1___ext_reorg_roi_ipsc__1"></a>
+### 0_1       @ ext_reorg_roi/ipsc-->xml_to_coco
+python xml_to_coco.py cfg=ipsc:0_1:zip-0:gz 
+<a id="2_3___ext_reorg_roi_ipsc_"></a>
+### 2_3       @ ext_reorg_roi/ipsc-->xml_to_coco
+python xml_to_coco.py cfg=ipsc:2_3:zip-0:gz 
 
 <a id="54_126___ext_reorg_roi_ipsc_"></a>
 ### 54_126       @ ext_reorg_roi/ipsc-->xml_to_coco

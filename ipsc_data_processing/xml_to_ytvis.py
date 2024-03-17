@@ -71,6 +71,7 @@ class Params(paramparse.CFG):
 
         self.start_frame_id = 0
         self.end_frame_id = -1
+        self.frame_stride = -1
 
         self.n_seq = 0
         self.start_seq_id = 0
@@ -89,6 +90,7 @@ class Params(paramparse.CFG):
 
         self.enable_masks = 1
         self.save_masks = 0
+        self.check_img_size = 0
 
         self.vis = 0
 
@@ -134,7 +136,8 @@ def binary_mask_to_rle(binary_mask):
 
 
 def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
-                  get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip, enable_masks, xml_data):
+                  get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip,
+                  enable_masks, check_img_size, seq_name_to_xml_paths, seq_name_to_info, xml_data):
     xml_path, xml_path_id, seq_path, seq_name = xml_data
 
     all_pix_vals_mean = []
@@ -192,13 +195,23 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         else:
             raise AssertionError(msg)
 
-    w, h = imagesize.get(img_path)
-
     size_from_xml = ann_root.find('size')
-    w_from_xml = int(size_from_xml.findtext('width'))
-    h_from_xml = int(size_from_xml.findtext('height'))
+    w = int(size_from_xml.findtext('width'))
+    h = int(size_from_xml.findtext('height'))
 
-    assert h_from_xml == h and w_from_xml == w, f"incorrect image dimensions in XML: {(h_from_xml, w_from_xml)}"
+    if seq_name not in seq_name_to_info:
+        all_xml_files = seq_name_to_xml_paths[seq_name]
+        seq_name_to_info[seq_name] = dict(
+            name=seq_name,
+            height=h,
+            width=w,
+            aspect_ratio=float(w) / float(h),
+            length=len(all_xml_files)
+        )
+
+    if check_img_size:
+        w_, h_ = imagesize.get(img_path)
+        assert h_ == h and w_ == w, f"mismatch between image dimensions in XML: {(h, w)} and actual: ({h_, w_})"
 
     if get_img_stats:
         try:
@@ -220,7 +233,6 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         all_pix_vals_std.append(pix_vals_std)
 
     objs = ann_root.findall('object')
-
     src_shape = (h, w)
 
     xml_dict = dict(
@@ -577,6 +589,7 @@ def get_xml_files(
         params: Params,
         excluded_images_list, all_excluded_images,
         all_val_files, all_train_files,
+        seq_name_to_xml_paths,
         xml_data
 ):
     xml_dir_path, all_xml_files, seq_name, seq_path, subseq_info, vid_start_id = xml_data
@@ -599,6 +612,9 @@ def get_xml_files(
 
             all_xml_files = glob.glob(linux_path(xml_dir_path, '*.xml'), recursive=params.recursive)
 
+        if seq_name not in seq_name_to_xml_paths:
+            seq_name_to_xml_paths[seq_name] = all_xml_files
+
         if params.shuffle:
             random.shuffle(all_xml_files)
         else:
@@ -606,11 +622,15 @@ def get_xml_files(
 
     start_frame_id = params.start_frame_id
     end_frame_id = params.end_frame_id
+    frame_stride = params.frame_stride
+
+    if frame_stride <= 0:
+        frame_stride = 1
 
     if end_frame_id < start_frame_id:
         end_frame_id = len(all_xml_files) - 1
 
-    all_xml_files = all_xml_files[start_frame_id:end_frame_id + 1]
+    all_xml_files = all_xml_files[start_frame_id:end_frame_id + 1:frame_stride]
 
     n_all_files = len(all_xml_files)
 
@@ -800,8 +820,11 @@ def main():
     if params.vis:
         assert params.n_proc <= 1, "visualization is not supported in multiprocessing mode"
 
-    if params.start_frame_id > 0 or params.end_frame_id >= 0:
-        description = f'{description}-{params.start_frame_id}_{params.end_frame_id}'
+    if params.start_frame_id > 0 or params.end_frame_id >= 0 or params.frame_stride > 1:
+        frame_suffix = f'{params.start_frame_id}_{params.end_frame_id}'
+        if params.frame_stride > 1:
+            frame_suffix = f'{frame_suffix}_{params.frame_stride}'
+        description = f'{description}-{frame_suffix}'
 
     if params.dir_suffix:
         print(f'dir_suffix: {params.dir_suffix}')
@@ -988,6 +1011,7 @@ def main():
         print(f'not saving mask images')
 
     xml_data_list = list(zip(xml_dir_paths, sorted_files_list, seq_names, seq_paths, subseq_info_list, vid_start_ids))
+    seq_name_to_xml_paths = {}
 
     import functools
     print(f'generating video clips from {n_vids} source videos...')
@@ -996,6 +1020,7 @@ def main():
             params,
             excluded_images_list, all_excluded_images,
             all_val_files, _all_train_files,
+            seq_name_to_xml_paths,
             xml_data)
 
     n_train_vids = len(_all_train_files)
@@ -1063,6 +1088,7 @@ def main():
             continue
 
         all_data_xml_paths = list(set([item for sublist in all_split_files for item in sublist]))
+        seq_name_to_info = {}
 
         read_xml_func = functools.partial(
             read_xml_file,
@@ -1075,6 +1101,9 @@ def main():
             params.remove_mj_dir_suffix,
             params.xml_zip,
             params.enable_masks,
+            params.check_img_size,
+            seq_name_to_xml_paths,
+            seq_name_to_info,
         )
         print(f'reading {len(all_data_xml_paths)} {split_type} xml files')
         if params.n_proc > 1:
@@ -1086,6 +1115,11 @@ def main():
             for xml_info in tqdm(all_data_xml_paths, ncols=100):
                 xml_out_data.append(read_xml_func(xml_info))
                 # xml_out_data.append(None)
+
+        seq_name_to_info_df = pd.DataFrame.from_dict(seq_name_to_info, orient='index')
+        seq_name_to_info_csv = os.path.join(db_root_dir, out_dir_name, f"{out_json_name}-seq_name_to_info.csv")
+        print(f'\nseq_name_to_info_csv: {seq_name_to_info_csv}\n')
+        seq_name_to_info_df.to_csv(seq_name_to_info_csv, index=False)
 
         xml_data_dict = {}
 
