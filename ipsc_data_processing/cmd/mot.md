@@ -9,6 +9,7 @@
     - [CTMC       @ mot_csv_to_xml_coco](#ctmc___mot_csv_to_xml_coc_o_)
         - [annotations       @ CTMC/mot_csv_to_xml_coco](#annotations___ctmc_mot_csv_to_xml_coco_)
     - [gram       @ mot_csv_to_xml_coco](#gram___mot_csv_to_xml_coc_o_)
+    - [idot       @ mot_csv_to_xml_coco](#idot___mot_csv_to_xml_coc_o_)
     - [detrac       @ mot_csv_to_xml_coco](#detrac___mot_csv_to_xml_coc_o_)
 - [mot_to_csv](#mot_to_cs_v_)
     - [CTC       @ mot_to_csv](#ctc___mot_to_csv_)
@@ -80,6 +81,10 @@ python mot_csv_to_xml_coco.py root_dir=/data/CTMC img_dir=Images list_file_name=
 <a id="gram___mot_csv_to_xml_coc_o_"></a>
 ## gram       @ mot_csv_to_xml_coco-->mot
 python mot_csv_to_xml_coco.py cfg=gram:zip:mot
+
+<a id="idot___mot_csv_to_xml_coc_o_"></a>
+## idot       @ mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=idot:zip:mot
 
 <a id="detrac___mot_csv_to_xml_coc_o_"></a>
 ## detrac       @ mot_csv_to_xml_coco-->mot

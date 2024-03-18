@@ -1118,7 +1118,9 @@ def main():
                 # xml_out_data.append(None)
 
         seq_name_to_info_df = pd.DataFrame.from_dict(seq_name_to_info, orient='index')
-        seq_name_to_info_csv = os.path.join(db_root_dir, out_dir_name, f"{out_json_name}-seq_name_to_info.csv")
+        seq_name_to_info_dir = os.path.join(db_root_dir, out_dir_name)
+        os.makedirs(seq_name_to_info_dir, exist_ok=True)
+        seq_name_to_info_csv = os.path.join(seq_name_to_info_dir, f"{out_json_name}-seq_name_to_info.csv")
         print(f'\nseq_name_to_info_csv: {seq_name_to_info_csv}\n')
         seq_name_to_info_df.to_csv(seq_name_to_info_csv, index=False)
 
