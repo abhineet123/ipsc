@@ -149,6 +149,19 @@ sudo apt install nautilus-share
 sudo apt install nvtop
 sudo apt install thunar-archive-plugin
 
+`CUDA stops working after waking up from suspend`
+https://askubuntu.com/questions/1228423/how-do-i-fix-cuda-breaking-after-suspend
+
+sudo nano /etc/modprobe.d/nvidia-power-management.conf
+
+options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/tmp
+
+sudo update-initramfs -u
+sudo shutdown -r now
+
+no need to enable the suspend service in the newest drivers
+sudo systemctl enable nvidia-suspend.service
+
 <a id="persistence_"></a>
 # persistence
 sudo nvidia-smi -pm 1 
