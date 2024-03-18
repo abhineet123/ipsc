@@ -8,6 +8,7 @@
         - [annotations       @ CTC/mot_csv_to_xml_coco](#annotations___ctc_mot_csv_to_xml_coc_o_)
     - [CTMC       @ mot_csv_to_xml_coco](#ctmc___mot_csv_to_xml_coc_o_)
         - [annotations       @ CTMC/mot_csv_to_xml_coco](#annotations___ctmc_mot_csv_to_xml_coco_)
+    - [gram       @ mot_csv_to_xml_coco](#gram___mot_csv_to_xml_coc_o_)
     - [detrac       @ mot_csv_to_xml_coco](#detrac___mot_csv_to_xml_coc_o_)
 - [mot_to_csv](#mot_to_cs_v_)
     - [CTC       @ mot_to_csv](#ctc___mot_to_csv_)
@@ -75,6 +76,10 @@ python mot_csv_to_xml_coco.py root_dir=/data/CTC img_dir=Images seg_dir=Labels_T
 python mot_csv_to_xml_coco.py root_dir=/data/CTMC img_dir=Images list_file_name=lists/ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0 save_video=1 vis_size=1920x1080
 
 python mot_csv_to_xml_coco.py root_dir=/data/CTMC img_dir=Images list_file_name=ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0 save_video=0 start_id=29
+
+<a id="gram___mot_csv_to_xml_coc_o_"></a>
+## gram       @ mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=gram:zip:mot
 
 <a id="detrac___mot_csv_to_xml_coc_o_"></a>
 ## detrac       @ mot_csv_to_xml_coco-->mot
