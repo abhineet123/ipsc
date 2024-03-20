@@ -59,6 +59,8 @@ python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-9:strd-1:gz:gap-1
 
 python xml_to_ytvis.py cfg=gram:0_1:frame-0_2000:proc-1:len-16:strd-1:gz:gap-1 
 
+python xml_to_ytvis.py cfg=gram:0_1:frame-3000_5000:proc-1:len-16:strd-16:gz:gap-1 
+
 <a id="ido_t_"></a>
 # idot
 <a id="0_1___idot_"></a>
