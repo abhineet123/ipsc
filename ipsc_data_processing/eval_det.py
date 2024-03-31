@@ -178,7 +178,6 @@ class Params(paramparse.CFG):
         self.vid_fmt = 'mp4v,2,mp4'
         self.check_det = 0
 
-
         self.fps_to_gt = 0
 
         self.monitor_scale = 1.25
@@ -191,6 +190,7 @@ class Params(paramparse.CFG):
             'det_nms',
             'nms_thresh',
         ]
+
     @property
     def sweep_mode(self):
         return self._sweep_mode
@@ -966,7 +966,6 @@ def evaluate(
                 # sys.stdout.write('\rPost processing sequence {:d}/{:d} '.format(
                 #     seq_idx + 1, n_seq))
                 # sys.stdout.flush()
-
 
                 seq_name = seq_name_list[seq_idx]
                 seq_path = seq_paths[seq_idx]
@@ -3165,6 +3164,9 @@ def run(params, *argv):
     if save_suffix:
         if params.iw:
             save_suffix = f'{save_suffix}-iw'
+        if params.class_agnostic:
+            save_suffix = f'{save_suffix}-agn'
+
         out_dir_name = f'{save_suffix}'
 
         if params.sweep_mode:
@@ -3526,6 +3528,10 @@ def run(params, *argv):
 def main():
     params = Params()
     paramparse.process(params)
+
+    if params.class_agnostic == 2:
+        params._sweep_params.append('class_agnostic')
+        params.class_agnostic = [0, 1]
 
     sweep_vals = []
     for i, sweep_param in enumerate(params._sweep_params):
