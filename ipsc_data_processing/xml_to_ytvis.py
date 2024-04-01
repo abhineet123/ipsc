@@ -72,6 +72,7 @@ class Params(paramparse.CFG):
         self.start_frame_id = 0
         self.end_frame_id = -1
         self.frame_stride = -1
+        self.vid_stride = -1
 
         self.n_seq = 0
         self.start_seq_id = 0
