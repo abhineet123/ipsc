@@ -72,7 +72,6 @@ class Params(paramparse.CFG):
         self.start_frame_id = 0
         self.end_frame_id = -1
         self.frame_stride = -1
-        self.vid_stride = -1
 
         self.n_seq = 0
         self.start_seq_id = 0
@@ -81,6 +80,8 @@ class Params(paramparse.CFG):
         self.frame_gap = 1
         self.length = 0
         self.stride = 0
+        self.sample = -1
+
         self.max_length = 0
         self.min_length = 0
         self.coco_rle = 0
@@ -900,6 +901,10 @@ def main():
         print(f'start_seq_id: {start_seq_id}')
         print(f'end_seq_id: {end_seq_id}')
 
+    if params.sample > 0:
+        sample_suffix = f'sample-{params.sample}'
+        description = f'{description}-{sample_suffix}'
+
     print(f'description: {description}')
 
     n_seq = len(seq_paths)
@@ -1024,6 +1029,11 @@ def main():
             all_val_files, _all_train_files,
             seq_name_to_xml_paths,
             xml_data)
+
+    if params.sample > 0:
+        print(f'sampling every {params.sample} video')
+        _all_train_files = _all_train_files[::params.sample]
+        all_val_files = all_val_files[::params.sample]
 
     n_train_vids = len(_all_train_files)
     n_val_vids = len(all_val_files)
