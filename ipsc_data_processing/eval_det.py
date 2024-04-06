@@ -738,7 +738,7 @@ def evaluate(
                         det_filenames = [det_filename for det_filename in det_filenames if det_filename in gt_filenames]
                         n_det_filenames = len(det_filenames)
 
-                if show_pbar and n_det_paths > 1:
+                if not show_pbar or n_det_paths > 1:
                     det_filename_iter = det_filenames
                 else:
                     det_pbar = det_filename_iter = tqdm(det_filenames, ncols=100)
@@ -2170,7 +2170,13 @@ def evaluate(
                 print(f'\n{gt_class}:{seq_name} :: n_fp_nex_whole_dets : {n_fp_nex_whole_dets}')
 
                 det_csv_rows = []
-                for _det in tqdm(fp_nex_whole_dets, desc="fps_to_gt: fp_nex_whole_dets", ncols=100):
+
+                fp_nex_whole_dets_iter = fp_nex_whole_dets
+                if show_pbar:
+                    fp_nex_whole_dets_iter = tqdm(
+                        fp_nex_whole_dets_iter, desc="fps_to_gt: fp_nex_whole_dets", ncols=100)
+
+                for _det in fp_nex_whole_dets_iter:
                     _det_xmin, _det_ymin, _det_xmax, _det_ymax = _det["bbox"]
                     _det_class = _det["class"]
 
