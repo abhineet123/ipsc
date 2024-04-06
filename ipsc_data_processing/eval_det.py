@@ -180,6 +180,8 @@ class Params(paramparse.CFG):
 
         self.fps_to_gt = 0
 
+        self.show_pbar = True
+
         self.monitor_scale = 1.25
 
         self.nms_thresh = [0., ]
@@ -227,7 +229,9 @@ def evaluate(
         raw_det_data_dict=None,
         eval_result_dict=None,
         fps_to_gt=1,
-        json_out_dir=None):
+        json_out_dir=None,
+        show_pbar=False,
+):
     """general init"""
     if True:
         assert out_root_dir, "out_root_dir must be provided"
@@ -287,7 +291,7 @@ def evaluate(
         fourcc = cv2.VideoWriter_fourcc(*codec)
         # fourcc = -1
 
-        show_pbar = not show_vis
+        # show_pbar = not show_vis
 
         cls_cat_types = [
             "all",
@@ -553,12 +557,18 @@ def evaluate(
                 print(f'selecting {n_gt_filenames} image(s) from ID {img_start_id} to {img_end_id}')
 
             # gt_file_paths = [utils.linux_path(seq_path, gt_filename) for gt_filename in gt_filenames]
-            gt_pbar = tqdm(gt_filenames, total=n_gt_filenames, ncols=100)
+
+            gt_iter = gt_filenames
+
+            if show_pbar:
+                gt_iter = tqdm(gt_iter, total=n_gt_filenames, ncols=100)
+            else:
+                print('reading GT...')
 
             valid_rows = 0
             total_rows = 0
 
-            for gt_filename in gt_pbar:
+            for gt_filename in gt_iter:
 
                 assert os.path.isfile(gt_filename), f"gt_filename does not exist: {gt_filename}"
 
@@ -570,8 +580,9 @@ def evaluate(
                 # seq_gt_data_dict[file_path] = []
                 curr_frame_gt_data = []
 
-                gt_pbar.set_description(f'seq {seq_idx + 1} / {n_seq}: '
-                                        f'valid_rows: {valid_rows} / {total_rows}')
+                if show_pbar:
+                    gt_iter.set_description(f'seq {seq_idx + 1} / {n_seq}: '
+                                            f'valid_rows: {valid_rows} / {total_rows}')
 
                 for _, row in img_df.iterrows():
                     total_rows += 1
@@ -672,10 +683,11 @@ def evaluate(
 
             det_pbar = None
 
-            if n_det_paths > 1:
+            if show_pbar and n_det_paths > 1:
                 det_pbar = det_paths_iter = tqdm(det_paths, ncols=100)
             else:
                 det_paths_iter = det_paths
+                print('reading dets')
 
             n_invalid_dets = 0
             n_total_dets = 0
@@ -726,7 +738,7 @@ def evaluate(
                         det_filenames = [det_filename for det_filename in det_filenames if det_filename in gt_filenames]
                         n_det_filenames = len(det_filenames)
 
-                if n_det_paths > 1:
+                if show_pbar and n_det_paths > 1:
                     det_filename_iter = det_filenames
                 else:
                     det_pbar = det_filename_iter = tqdm(det_filenames, ncols=100)
@@ -958,8 +970,9 @@ def evaluate(
             print(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
 
             det_start_t = time.time()
-
-            det_post_proc_pbar = tqdm(range(n_seq))
+            det_post_proc_pbar = range(n_seq)
+            if show_pbar:
+                det_post_proc_pbar = tqdm(det_post_proc_pbar)
 
             for seq_idx in det_post_proc_pbar:
 
@@ -973,7 +986,8 @@ def evaluate(
                 seq_gt = gt_data_dict[seq_path]
                 seq_det = raw_det_data_dict[seq_path]
 
-                det_post_proc_pbar.set_description(f"Post processing sequence {seq_name}")
+                if show_pbar:
+                    det_post_proc_pbar.set_description(f"Post processing sequence {seq_name}")
 
                 curr_class_det_exists = {}
                 curr_class_det_bounding_boxes = []
@@ -1256,8 +1270,13 @@ def evaluate(
 
         cat_to_ids_vis_done = {k: [] for k in cls_cat_types}
         cat_to_vis_count = {k: 0 for k in cls_cat_types}
+        seq_iter = range(n_seq)
+        if show_pbar:
+            seq_iter = tqdm(seq_iter, desc="sequence", ncols=70)
+        else:
+            print('computing mAP')
 
-        for seq_idx in tqdm(range(n_seq), desc="sequence", ncols=70):
+        for seq_idx in seq_iter:
             seq_path = seq_paths[seq_idx]
             seq_name = seq_name_list[seq_idx]
             seq_root_dir = seq_root_dirs[seq_idx]
@@ -2046,11 +2065,15 @@ def evaluate(
                     seq_name_to_csv_rows[seq_name] = []
                     gt_csv_rows = []
 
-                    """GT is class-agnostic so should be added to the CSV only once"""
-                    for _gt_file_id, _frame_gt_data in tqdm(
-                            seq_gt_data_dict.items(),
+                    fps_to_gt_iter = seq_gt_data_dict.items()
+                    if show_pbar:
+                        fps_to_gt_iter = tqdm(
+                            fps_to_gt_iter,
                             desc="fps_to_gt: seq_gt_data_dict",
-                            ncols=100):
+                            ncols=100)
+
+                    """GT is class-agnostic so should be added to the CSV only once"""
+                    for _gt_file_id, _frame_gt_data in fps_to_gt_iter:
 
                         if not _frame_gt_data:
                             continue
@@ -3427,6 +3450,7 @@ def run(params, *argv):
                     img_end_id=img_id,
                     class_name_to_col=class_name_to_col,
                     fps_to_gt=params.fps_to_gt,
+                    show_pbar=params.show_pbar,
                 )
                 if img_eval_dict is None:
                     break
@@ -3503,6 +3527,7 @@ def run(params, *argv):
                 img_start_id=img_start_id,
                 img_end_id=img_end_id,
                 fps_to_gt=params.fps_to_gt,
+                show_pbar=params.show_pbar,
             )
             for gt_class in gt_classes:
                 eval_ = eval_dict[gt_class]
@@ -3553,6 +3578,8 @@ def main():
 
         # import multiprocessing
         import functools
+
+        params.show_pbar = False
 
         print(f'running in parallel over {n_proc} processes')
         # pool = multiprocessing.Pool(n_proc)
