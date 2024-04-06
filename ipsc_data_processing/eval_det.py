@@ -405,7 +405,7 @@ def evaluate(
         else:
             gt_data_dict = {}
             gt_loaded = 0
-            print('Generating GT data...')
+            print('Generating GT data')
         if gt_loaded:
             for _seq_path, _seq_gt_data_dict in gt_data_dict.items():
                 if _seq_path == "counter_per_class":
@@ -442,7 +442,7 @@ def evaluate(
         det_data_dict = {}
 
         if not det_loaded:
-            print('Generating detection data...')
+            print('Generating detection data')
 
         _pause = 1
         gt_counter_per_class = {}
@@ -563,7 +563,7 @@ def evaluate(
             if show_pbar:
                 gt_iter = tqdm(gt_iter, total=n_gt_filenames, ncols=100)
             else:
-                print('reading GT...')
+                print('reading GT')
 
             valid_rows = 0
             total_rows = 0
@@ -1087,7 +1087,7 @@ def evaluate(
         min_overlap = iou_thresh
 
         # ap_dictionary = {}
-        print('Calculating the AP for each class...')
+        print('Calculating the AP for each class')
 
         # colors (OpenCV works with BGR)
         # white = (255, 255, 255)
@@ -2285,7 +2285,7 @@ def evaluate(
         # completed processing all sequences for one class
         # -------------------------------
         """
-        # print('Sorting by confidence...')
+        # print('Sorting by confidence')
         sort_idx = np.argsort(conf_class)[::-1]
 
         fp_class = [fp_class[i] for i in sort_idx]
