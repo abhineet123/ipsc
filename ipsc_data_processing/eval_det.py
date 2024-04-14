@@ -1,26 +1,18 @@
-import glob
 import os
 import sys
-import shutil
 import pickle
 import copy
 import time
 import multiprocessing
 from multiprocessing.pool import ThreadPool
 import json
-import math
 
 import functools
 from contextlib import closing
-from datetime import datetime
 
 import imagesize
 
 import paramparse
-
-# from skimage.io import imread
-# from PIL import Image
-
 
 import cv2
 import matplotlib.pyplot as plt

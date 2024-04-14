@@ -2,6 +2,7 @@
 
 - [gram](#gra_m_)
     - [0_1       @ gram](#0_1___gram_)
+        - [len-2       @ 0_1/gram](#len_2___0_1_gram_)
         - [len-9       @ 0_1/gram](#len_9___0_1_gram_)
         - [len-14       @ 0_1/gram](#len_14___0_1_gram_)
             - [0_2000       @ len-14/0_1/gram](#0_2000___len_14_0_1_gra_m_)
@@ -68,6 +69,11 @@
 # gram
 <a id="0_1___gram_"></a>
 ## 0_1       @ gram-->xml_to_ytvis
+<a id="len_2___0_1_gram_"></a>
+### len-2       @ 0_1/gram-->xml_to_ytvis
+python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-2:strd-1:gz:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-2:strd-2:gz:gap-1 
+
 <a id="len_9___0_1_gram_"></a>
 ### len-9       @ 0_1/gram-->xml_to_ytvis
 python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-9:strd-1:gz:gap-1 
