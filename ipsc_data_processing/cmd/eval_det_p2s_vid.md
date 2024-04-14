@@ -26,10 +26,10 @@
     - [ipsc-16_53-len-3       @ resnet-640-lfn](#ipsc_16_53_len_3___resnet_640_lfn_)
         - [on-train       @ ipsc-16_53-len-3/resnet-640-lfn](#on_train___ipsc_16_53_len_3_resnet_640_lf_n_)
             - [stride-1       @ on-train/ipsc-16_53-len-3/resnet-640-lfn](#stride_1___on_train_ipsc_16_53_len_3_resnet_640_lfn_)
-            - [stride-2       @ on-train/ipsc-16_53-len-3/resnet-640-lfn](#stride_2___on_train_ipsc_16_53_len_3_resnet_640_lfn_)
+            - [stride-3       @ on-train/ipsc-16_53-len-3/resnet-640-lfn](#stride_3___on_train_ipsc_16_53_len_3_resnet_640_lfn_)
         - [on-54_126       @ ipsc-16_53-len-3/resnet-640-lfn](#on_54_126___ipsc_16_53_len_3_resnet_640_lf_n_)
             - [stride-1       @ on-54_126/ipsc-16_53-len-3/resnet-640-lfn](#stride_1___on_54_126_ipsc_16_53_len_3_resnet_640_lf_n_)
-            - [stride-2       @ on-54_126/ipsc-16_53-len-3/resnet-640-lfn](#stride_2___on_54_126_ipsc_16_53_len_3_resnet_640_lf_n_)
+            - [stride-3       @ on-54_126/ipsc-16_53-len-3/resnet-640-lfn](#stride_3___on_54_126_ipsc_16_53_len_3_resnet_640_lf_n_)
 - [resnet-640](#resnet_64_0_)
     - [detrac-0_9       @ resnet-640](#detrac_0_9___resnet_640_)
         - [0_9       @ detrac-0_9/resnet-640](#0_9___detrac_0_9_resnet_64_0_)
@@ -148,19 +148,19 @@ python3 eval_det.py cfg=ipsc:54_126:det-0:gt-0:nms:agn,p2s:vid det_paths=swin_t_
 ### on-train       @ ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
 <a id="stride_1___on_train_ipsc_16_53_len_3_resnet_640_lfn_"></a>
 #### stride-1       @ on-train/ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
-python3 eval_det.py cfg=ipsc:16_53:det-0:gt-0:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18/ckpt-161728-ext_reorg_roi_g2-16_53-length-2-stride-1/csv-batch_18 save_suffix=p2s-resnet_640-ipsc-16_53-len-2-strd-1-16_53-batch_18-161728
-<a id="stride_2___on_train_ipsc_16_53_len_3_resnet_640_lfn_"></a>
-#### stride-2       @ on-train/ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
-python3 eval_det.py cfg=ipsc:16_53:det-0:gt-0:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18/ckpt-161728-ext_reorg_roi_g2-16_53-length-2-stride-2/csv-batch_18 save_suffix=p2s-resnet_640-ipsc-16_53-len-2-strd-2-16_53-batch_18-161728
+python3 eval_det.py cfg=ipsc:16_53:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-3-stride-1-batch_6-lfn/ckpt-128340-ext_reorg_roi_g2-54_126-length-3-stride-1/vis-batch_24 save_suffix=p2s-resnet_640-lfn-ipsc-16_53-len-3-strd-1-train-128340
+<a id="stride_3___on_train_ipsc_16_53_len_3_resnet_640_lfn_"></a>
+#### stride-3       @ on-train/ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
+python3 eval_det.py cfg=ipsc:16_53:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-3-stride-1-batch_6-lfn/ckpt-128340-ext_reorg_roi_g2-54_126-length-3-stride-3/vis-batch_24 save_suffix=p2s-resnet_640-lfn-ipsc-16_53-len-3-strd-3-train-128340
 
 <a id="on_54_126___ipsc_16_53_len_3_resnet_640_lf_n_"></a>
 ### on-54_126       @ ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
 <a id="stride_1___on_54_126_ipsc_16_53_len_3_resnet_640_lf_n_"></a>
 #### stride-1       @ on-54_126/ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
-python3 eval_det.py cfg=ipsc:54_126:det-0:gt-0:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18/ckpt-161728-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_36 save_suffix=p2s-resnet_640-ipsc-16_53-len-2-strd-1-54_126-batch_18-161728
-<a id="stride_2___on_54_126_ipsc_16_53_len_3_resnet_640_lf_n_"></a>
-#### stride-2       @ on-54_126/ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
-python3 eval_det.py cfg=ipsc:54_126:det-0:gt-0:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18/ckpt-161728-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_36 save_suffix=p2s-resnet_640-ipsc-16_53-len-2-strd-2-54_126-batch_18-161728
+python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-3-stride-1-batch_6-lfn/ckpt-128340-ext_reorg_roi_g2-54_126-length-3-stride-1/vis-batch_24 save_suffix=p2s-resnet_640-lfn-ipsc-16_53-len-3-strd-1-54_126-128340
+<a id="stride_3___on_54_126_ipsc_16_53_len_3_resnet_640_lf_n_"></a>
+#### stride-3       @ on-54_126/ipsc-16_53-len-3/resnet-640-lfn-->eval_det_p2s_vid
+python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-3-stride-1-batch_6-lfn/ckpt-128340-ext_reorg_roi_g2-54_126-length-3-stride-3/vis-batch_24 save_suffix=p2s-resnet_640-lfn-ipsc-16_53-len-3-strd-3-54_126-128340
 
 <a id="resnet_64_0_"></a>
 # resnet-640
