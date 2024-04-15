@@ -60,6 +60,13 @@
         - [on-54_126       @ ipsc-16_53-jtr-res-1280/resnet-640](#on_54_126___ipsc_16_53_jtr_res_1280_resnet_640_)
             - [stride-1       @ on-54_126/ipsc-16_53-jtr-res-1280/resnet-640](#stride_1___on_54_126_ipsc_16_53_jtr_res_1280_resnet_640_)
             - [stride-2       @ on-54_126/ipsc-16_53-jtr-res-1280/resnet-640](#stride_2___on_54_126_ipsc_16_53_jtr_res_1280_resnet_640_)
+    - [ipsc-16_53-len-6-jtr-res-1280       @ resnet-640](#ipsc_16_53_len_6_jtr_res_1280___resnet_640_)
+        - [on-train       @ ipsc-16_53-len-6-jtr-res-1280/resnet-640](#on_train___ipsc_16_53_len_6_jtr_res_1280_resnet_640_)
+            - [stride-1       @ on-train/ipsc-16_53-len-6-jtr-res-1280/resnet-640](#stride_1___on_train_ipsc_16_53_len_6_jtr_res_1280_resnet_64_0_)
+            - [stride-6       @ on-train/ipsc-16_53-len-6-jtr-res-1280/resnet-640](#stride_6___on_train_ipsc_16_53_len_6_jtr_res_1280_resnet_64_0_)
+        - [on-54_126       @ ipsc-16_53-len-6-jtr-res-1280/resnet-640](#on_54_126___ipsc_16_53_len_6_jtr_res_1280_resnet_640_)
+            - [stride-1       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/resnet-640](#stride_1___on_54_126_ipsc_16_53_len_6_jtr_res_1280_resnet_640_)
+            - [stride-2       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/resnet-640](#stride_2___on_54_126_ipsc_16_53_len_6_jtr_res_1280_resnet_640_)
     - [ipsc-16_53-len-2       @ resnet-640](#ipsc_16_53_len_2___resnet_640_)
         - [on-train       @ ipsc-16_53-len-2/resnet-640](#on_train___ipsc_16_53_len_2_resnet_64_0_)
             - [stride-1       @ on-train/ipsc-16_53-len-2/resnet-640](#stride_1___on_train_ipsc_16_53_len_2_resnet_640_)
@@ -241,10 +248,10 @@ python3 eval_det.py cfg=ipsc:0_37:det-0:gt-0:nms:agn,p2s:vid det_paths=resnet_64
 ### on-train       @ ipsc-16_53-jtr-res-1280/resnet-640-->eval_det_p2s_vid
 <a id="stride_1___on_train_ipsc_16_53_jtr_res_1280_resnet_64_0_"></a>
 #### stride-1       @ on-train/ipsc-16_53-jtr-res-1280/resnet-640-->eval_det_p2s_vid
-python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18-jtr-res_1280/ckpt-809664-ext_reorg_roi_g2-16_53-length-2-stride-1/csv-batch_12 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-1-train-809664
+python3 eval_det.py cfg=ipsc:16_53:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18-jtr-res_1280/ckpt-809664-ext_reorg_roi_g2-16_53-length-2-stride-1/csv-batch_12 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-1-train-809664
 <a id="stride_2___on_train_ipsc_16_53_jtr_res_1280_resnet_64_0_"></a>
 #### stride-2       @ on-train/ipsc-16_53-jtr-res-1280/resnet-640-->eval_det_p2s_vid
-python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18-jtr-res_1280/ckpt-809664-ext_reorg_roi_g2-16_53-length-2-stride-2/csv-batch_12 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-2-train-809664
+python3 eval_det.py cfg=ipsc:16_53:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18-jtr-res_1280/ckpt-809664-ext_reorg_roi_g2-16_53-length-2-stride-2/csv-batch_12 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-2-train-809664
 
 <a id="on_54_126___ipsc_16_53_jtr_res_1280_resnet_640_"></a>
 ### on-54_126       @ ipsc-16_53-jtr-res-1280/resnet-640-->eval_det_p2s_vid
@@ -254,6 +261,26 @@ python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_
 <a id="stride_2___on_54_126_ipsc_16_53_jtr_res_1280_resnet_640_"></a>
 #### stride-2       @ on-54_126/ipsc-16_53-jtr-res-1280/resnet-640-->eval_det_p2s_vid
 python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_18-jtr-res_1280/ckpt-809664-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_12 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-2-54_126-809664
+
+<a id="ipsc_16_53_len_6_jtr_res_1280___resnet_640_"></a>
+## ipsc-16_53-len-6-jtr-res-1280       @ resnet-640-->eval_det_p2s_vid
+<a id="on_train___ipsc_16_53_len_6_jtr_res_1280_resnet_640_"></a>
+### on-train       @ ipsc-16_53-len-6-jtr-res-1280/resnet-640-->eval_det_p2s_vid
+<a id="stride_1___on_train_ipsc_16_53_len_6_jtr_res_1280_resnet_64_0_"></a>
+#### stride-1       @ on-train/ipsc-16_53-len-6-jtr-res-1280/resnet-640-->eval_det_p2s_vid
+python3 eval_det.py cfg=ipsc:16_53:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-16_53-length-6-stride-1/csv-batch_4 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-6-strd-1-train-530740
+<a id="stride_6___on_train_ipsc_16_53_len_6_jtr_res_1280_resnet_64_0_"></a>
+#### stride-6       @ on-train/ipsc-16_53-len-6-jtr-res-1280/resnet-640-->eval_det_p2s_vid
+python3 eval_det.py cfg=ipsc:16_53:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-16_53-length-6-stride-6/csv-batch_4 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-6-strd-6-train-530740
+
+<a id="on_54_126___ipsc_16_53_len_6_jtr_res_1280_resnet_640_"></a>
+### on-54_126       @ ipsc-16_53-len-6-jtr-res-1280/resnet-640-->eval_det_p2s_vid
+<a id="stride_1___on_54_126_ipsc_16_53_len_6_jtr_res_1280_resnet_640_"></a>
+#### stride-1       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/resnet-640-->eval_det_p2s_vid
+python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-54_126-length-6-stride-1/csv-batch_4 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-54_126-len-6-strd-1-train-530740
+<a id="stride_2___on_54_126_ipsc_16_53_len_6_jtr_res_1280_resnet_640_"></a>
+#### stride-2       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/resnet-640-->eval_det_p2s_vid
+python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid det_paths=resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-54_126-length-6-stride-6/csv-batch_4 save_suffix=p2s-resnet_640-jtr-res-1280-ipsc-54_126-len-6-strd-6-train-530740
 
 <a id="ipsc_16_53_len_2___resnet_640_"></a>
 ## ipsc-16_53-len-2       @ resnet-640-->eval_det_p2s_vid
