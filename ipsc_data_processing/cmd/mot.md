@@ -10,6 +10,8 @@
         - [annotations       @ CTMC/mot_csv_to_xml_coco](#annotations___ctmc_mot_csv_to_xml_coco_)
     - [gram       @ mot_csv_to_xml_coco](#gram___mot_csv_to_xml_coc_o_)
     - [idot       @ mot_csv_to_xml_coco](#idot___mot_csv_to_xml_coc_o_)
+        - [mot       @ idot/mot_csv_to_xml_coco](#mot___idot_mot_csv_to_xml_coco_)
+        - [csv       @ idot/mot_csv_to_xml_coco](#csv___idot_mot_csv_to_xml_coco_)
     - [mot15       @ mot_csv_to_xml_coco](#mot15___mot_csv_to_xml_coc_o_)
     - [mot17       @ mot_csv_to_xml_coco](#mot17___mot_csv_to_xml_coc_o_)
     - [detrac       @ mot_csv_to_xml_coco](#detrac___mot_csv_to_xml_coc_o_)
@@ -86,7 +88,13 @@ python mot_csv_to_xml_coco.py cfg=gram:zip:mot:save_vid
 
 <a id="idot___mot_csv_to_xml_coc_o_"></a>
 ## idot       @ mot_csv_to_xml_coco-->mot
+<a id="mot___idot_mot_csv_to_xml_coco_"></a>
+### mot       @ idot/mot_csv_to_xml_coco-->mot
 python mot_csv_to_xml_coco.py cfg=idot:1_1:zip:mot:save_vid
+<a id="csv___idot_mot_csv_to_xml_coco_"></a>
+### csv       @ idot/mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=idot:zip:csv
+python mot_csv_to_xml_coco.py cfg=idot:8_8:zip:csv
 
 <a id="mot15___mot_csv_to_xml_coc_o_"></a>
 ## mot15       @ mot_csv_to_xml_coco-->mot
