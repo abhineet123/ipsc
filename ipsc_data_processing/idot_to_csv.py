@@ -15,8 +15,8 @@ params = {
     'save_file_name': '',
     'csv_file_name': '',
     'map_folder': '',
-    'root_dir': '/data/IDOT',
-    'list_file_name': '',
+    'root_dir': '/data/GRAM',
+    'list_file_name': 'lists/idot.txt',
     'n_classes': 4,
     'img_ext': 'jpg',
     'show_img': 0,
@@ -59,7 +59,7 @@ if list_file_name:
         raise IOError('List file: {} does not exist'.format(list_file_name))
     file_list = [x.strip() for x in open(list_file_name).readlines()]
     if root_dir:
-        file_list = [os.path.join(root_dir, x) for x in file_list]
+        file_list = [os.path.join(root_dir, 'Images', x) for x in file_list]
 elif root_dir:
     img_root_dir = os.path.join(root_dir, 'Images')
     file_list = [os.path.join(img_root_dir, name) for name in os.listdir(img_root_dir) if
@@ -222,14 +222,16 @@ for seq_idx, img_path in enumerate(file_list):
             elif k == 32:
                 pause_after_frame = 1 - pause_after_frame
 
-    csv_file = os.path.join(img_path, 'annotations.csv')
-    print('saving csv file to {}'.format(csv_file))
     print('out_n_frames: ', out_frame_id)
     total_n_frames += out_frame_id
+
+    csv_file = os.path.join(img_path, 'annotations.csv')
+    print('saving csv file to {}'.format(csv_file))
     df = pd.DataFrame(csv_raw)
-    df.to_csv(csv_file)
-    video_out.release()
+    df.to_csv(csv_file, index=False)
+
     save_path = ''
-    cv2.destroyWindow(seq_name)
+    if show_img:
+        cv2.destroyWindow(seq_name)
 
 print('total_n_frames: ', total_n_frames)
