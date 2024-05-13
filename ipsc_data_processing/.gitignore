@@ -2,6 +2,7 @@ log/
 .cache/
 __pycache__/
 .idea/
+*.dll
 *.zip
 *.model
 gitu.sh

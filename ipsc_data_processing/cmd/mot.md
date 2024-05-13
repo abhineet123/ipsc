@@ -10,6 +10,8 @@
         - [annotations       @ CTMC/mot_csv_to_xml_coco](#annotations___ctmc_mot_csv_to_xml_coco_)
     - [gram       @ mot_csv_to_xml_coco](#gram___mot_csv_to_xml_coc_o_)
     - [idot       @ mot_csv_to_xml_coco](#idot___mot_csv_to_xml_coc_o_)
+    - [mot15       @ mot_csv_to_xml_coco](#mot15___mot_csv_to_xml_coc_o_)
+    - [mot17       @ mot_csv_to_xml_coco](#mot17___mot_csv_to_xml_coc_o_)
     - [detrac       @ mot_csv_to_xml_coco](#detrac___mot_csv_to_xml_coc_o_)
 - [mot_to_csv](#mot_to_cs_v_)
     - [CTC       @ mot_to_csv](#ctc___mot_to_csv_)
@@ -80,14 +82,24 @@ python mot_csv_to_xml_coco.py root_dir=/data/CTMC img_dir=Images list_file_name=
 
 <a id="gram___mot_csv_to_xml_coc_o_"></a>
 ## gram       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=gram:zip:mot
+python mot_csv_to_xml_coco.py cfg=gram:zip:mot:save_vid
 
 <a id="idot___mot_csv_to_xml_coc_o_"></a>
 ## idot       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=idot:zip:mot
+python mot_csv_to_xml_coco.py cfg=idot:1_1:zip:mot:save_vid
+
+<a id="mot15___mot_csv_to_xml_coc_o_"></a>
+## mot15       @ mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=mot15:zip:mot:save_vid
+
+<a id="mot17___mot_csv_to_xml_coc_o_"></a>
+## mot17       @ mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=mot17:zip:mot:save_vid
 
 <a id="detrac___mot_csv_to_xml_coc_o_"></a>
 ## detrac       @ mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot::save_vid
+
 python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot:start-19:end-19
 
 <a id="mot_to_cs_v_"></a>
@@ -154,9 +166,9 @@ python mot_to_csv.py root_dir=/data/MOT2017_DPM/Images list_file_name=mot17_dpm.
 
 <a id="detrac___mot_to_csv_"></a>
 ## detrac       @ mot_to_csv-->mot
-python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 ignore_occl=0 mode=1 start_id=0 label=vehicle data_type=annotations ignore_invalid=1
+python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 mode=1 start_id=0 end_id=0 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle.txt sample=0
 
-python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 ignore_occl=0 mode=1 start_id=0 label=vehicle data_type=detections
+python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 mode=1 start_id=0 label=vehicle data_type=detections
 
 <a id="gram___mot_to_csv_"></a>
 ## GRAM       @ mot_to_csv-->mot

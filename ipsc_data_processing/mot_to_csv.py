@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 import paramparse
 
-from mot_csv_to_xml import parse_csv, parse_mot
+from mot_csv_to_xml_coco import parse_csv, parse_mot
 from eval_utils import ImageSequenceWriter as ImageWriter
 from eval_utils import sortKey, resize_ar, drawBox, clamp, linux_path
 
@@ -82,6 +82,8 @@ from eval_utils import sortKey, resize_ar, drawBox, clamp, linux_path
 #         obj_dict[frame_id].append(obj_entry)
 #
 #     print('Done reading {}'.format(data_type))
+
+
 class Params:
     def __init__(self):
         self.cfg = ()
@@ -207,7 +209,7 @@ def main():
         if out_root_suffix and root_dir:
             out_root_dir = f'{root_dir}_{out_root_suffix}'
         else:
-            out_root_dir = linux_path(os.path.dirname(seq_paths[0]), 'vis')
+            out_root_dir = os.path.dirname(seq_paths[0])
 
     print('Running over {} sequences'.format(n_seq))
     pause_after_frame = 1

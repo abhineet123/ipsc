@@ -5,7 +5,6 @@
 - [persistence](#persistence_)
 - [power_limit](#power_limit_)
   - [pc](#p_c_)
-  - [servers](#servers_)
 - [install nvidia drivers](#install_nvidia_driver_s_)
   - [418_for_cuda_10.1](#418_for_cuda_10_1_)
   - [410_for_cuda_10.0](#410_for_cuda_10_0_)
@@ -162,21 +161,16 @@ sudo shutdown -r now
 no need to enable the suspend service in the newest drivers
 sudo systemctl enable nvidia-suspend.service
 
+CUDA_VISIBLE_DEVICES=1
+
 <a id="persistence_"></a>
 # persistence
 sudo nvidia-smi -pm 1 
 
 <a id="power_limit_"></a>
 # power_limit
-
-<a id="p_c_"></a>
-## pc
-nvidia-smi -i 0 -pl 300
-nvidia-smi -i 1,2 -pl 100
-
-<a id="servers_"></a>
-## servers
 sudo nvidia-smi -i 0 -pl 300
+sudo nvidia-smi -i 0,1 -pl 300
 
 sudo nvidia-smi -i 2 -pl 120
 
@@ -190,6 +184,11 @@ sudo nvidia-smi -i 0,1 -pl 300
 sudo nvidia-smi -i 0,1 -pl 350
 
 watch nvidia-smi
+
+<a id="p_c_"></a>
+## pc
+nvidia-smi -i 0 -pl 300
+nvidia-smi -i 1,2 -pl 100
 
 <a id="install_nvidia_driver_s_"></a>
 # install nvidia drivers

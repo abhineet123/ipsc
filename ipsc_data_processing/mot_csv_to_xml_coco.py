@@ -22,10 +22,10 @@ class Params(paramparse.CFG):
 
         self.bbox_source = ''
         self.clamp_scores = 0
-        self.codec = 'H264'
+        self.codec = 'mp4v'
         self.csv_file_name = ''
         self.data_type = 'annotations'
-        self.ext = 'mkv'
+        self.ext = 'mp4'
         self.extrapolate_seg = 0
         self.allow_missing_seg = 1
         self.file_name = ''
@@ -677,6 +677,8 @@ def main():
             vis_img = image.copy()
             seg_img_vis = np.zeros_like(vis_img)
 
+            curr_obj_ids = []
+            n_objs = 0
             try:
                 objects = obj_dict[frame_id]
             except KeyError:
@@ -754,7 +756,6 @@ def main():
                         unique_ids = np.unique(seg_img)
                         # seg_pts = contour_pts_from_mask(seg_img)
 
-                curr_obj_ids = []
                 for obj in objects:
                     obj_id = obj['id']
 

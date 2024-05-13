@@ -12,6 +12,7 @@
             - [3000_5000       @ len-16/0_1/gram](#3000_5000___len_16_0_1_gra_m_)
 - [idot](#ido_t_)
     - [0_1       @ idot](#0_1___idot_)
+    - [8_8       @ idot](#8_8___idot_)
 - [detrac](#detra_c_)
     - [0_0       @ detrac](#0_0___detrac_)
     - [0_19       @ detrac](#0_19___detrac_)
@@ -99,13 +100,27 @@ python xml_to_ytvis.py cfg=gram:0_1:frame-3000_5000:proc-1:len-16:strd-16:gz:gap
 # idot
 <a id="0_1___idot_"></a>
 ## 0_1       @ idot-->xml_to_ytvis
-python xml_to_ytvis.py cfg=idot:proc-1:len-9:strd-1:gz:gap-1 
+python xml_to_ytvis.py cfg=idot:0_1:proc-1:len-9:strd-1:gz:gap-1 
+
+<a id="8_8___idot_"></a>
+## 8_8       @ idot-->xml_to_ytvis
+python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-2:strd-10:gz:gap-10 
+
+python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-3:strd-20:gz:gap-10 
+
+python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gz:gap-10 
 
 <a id="detra_c_"></a>
 # detrac
 <a id="0_0___detrac_"></a>
 ## 0_0       @ detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gz:gap-1:vis 
+
+python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-2:strd-10:gz:gap-10:vis-0 
+
+python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-3:strd-10:gz:gap-10:vis-0 
+
+python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-6:strd-10:gz:gap-10:vis-0 
 <a id="0_19___detrac_"></a>
 ## 0_19       @ detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-1:gz:gap-1 

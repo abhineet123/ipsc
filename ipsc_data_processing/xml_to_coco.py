@@ -100,7 +100,7 @@ def save_json(json_dict, json_path, json_gz):
             f.write(output_json_data)
 
 
-def save_ytvis_json(json_dict, json_path, json_gz):
+def save_ytvis_json(json_dict, json_path, json_gz=True):
     n_vids = len(json_dict['videos'])
     n_json_objs = len(json_dict['annotations'])
 
@@ -232,7 +232,6 @@ def save_boxes_coco(
         json_gz,
 ):
     bnd_id = 1  # START_BOUNDING_BOX_ID, TODO input as args ?
-    pbar = tqdm(annotation_paths)
 
     out_root_dir = os.path.dirname(output_json)
 
@@ -268,7 +267,9 @@ def save_boxes_coco(
 
     img_paths = []
 
-    for xml_path, seq_path in pbar:
+    pbar = tqdm(annotation_paths)
+
+    for seq_id, (xml_path, seq_path) in enumerate(pbar):
         seq_name = os.path.basename(seq_path)
 
         n_images += 1
@@ -332,6 +333,8 @@ def save_boxes_coco(
             mask_dir_path = linux_path(img_dir_path, mask_dir_name)
             os.makedirs(mask_dir_path, exist_ok=True)
 
+            # print(f'{seq_name}: mask_dir_path: {mask_dir_path}')
+
             width, height = imagesize.get(str(img_file_path))
             mask_img = np.zeros((height, width), dtype=np.uint8)
 
@@ -391,9 +394,10 @@ def save_boxes_coco(
             bnd_id += 1
 
             if save_masks:
-                category_id = ann['category_id']
-                """0 is background"""
-                class_id = category_id + 1
+                # category_id = ann['category_id']
+                # class_id = category_id + 1
+                category_name = ann['label']
+                class_id = label2id[category_name]
                 mask_pts = ann['mask_pts']
                 mask_pts_arr = np.array([mask_pts, ], dtype=np.int32)
                 mask_img = cv2.fillPoly(mask_img, mask_pts_arr, class_id)
@@ -402,7 +406,7 @@ def save_boxes_coco(
                 del ann['mask_pts']
 
         n_valid_images += 1
-        desc = f'{n_valid_images} / {n_images} valid images :: {n_objs} objects '
+        desc = f'{seq_name} {n_valid_images} / {n_images} valid images :: {n_objs} objects '
         for label in label2id:
             desc += f' {label}: {label_to_n_objs[label]}'
 
@@ -414,7 +418,7 @@ def save_boxes_coco(
             mask_fname = f'{img_fname_noext}.png'
             mask_path = linux_path(mask_dir_path, mask_fname)
             mask_parent_path = os.path.dirname(mask_path)
-            os.makedirs(mask_parent_path, exist_ok=1)
+            os.makedirs(mask_parent_path, exist_ok=True)
             mask_img_pil.save(mask_path)
 
         pbar.set_description(desc)
@@ -442,6 +446,9 @@ def save_boxes_coco(
 def main():
     params: Params = paramparse.process(Params)
 
+    if params.save_masks:
+        params.enable_masks = 1
+
     seq_paths = params.seq_paths
     root_dir = params.root_dir
     enable_mask = params.enable_masks
@@ -465,8 +472,7 @@ def main():
     n_seq = params.n_seq
     seq_stride = params.seq_stride
 
-    if params.save_masks:
-        params.enable_masks = 1
+
 
     if seq_paths:
         if seq_paths.endswith('.txt'):
@@ -842,7 +848,8 @@ def main():
             output_json_dict,
             class_dict,
             train_json_path,
-            extract_num_from_imgid, enable_mask,
+            extract_num_from_imgid,
+            enable_mask,
             excluded_images=all_excluded_images,
             allow_missing_images=params.allow_missing_images,
             skip_invalid=params.skip_invalid,
