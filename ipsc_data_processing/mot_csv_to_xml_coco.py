@@ -31,6 +31,7 @@ class Params(paramparse.CFG):
         self.file_name = ''
         self.vid_ext = ''
 
+        self.ignore_invalid_class = 0
         self.ignore_invalid = 0
         self.ignore_missing = 0
         self.ignore_occl = 1
@@ -810,15 +811,21 @@ def main():
                     # seg_pts = contour_pts_from_mask(seg_img)
 
             for obj in objects:
-                obj_id = obj['id']
+                label = obj['label']
+                try:
+                    class_col = col_bgr[class_to_col[label]]
+                except KeyError:
+                    msg = f'Invalid class {label}\n'
+                    if params.ignore_invalid_class:
+                        print(msg)
+                        continue
+                    else:
+                        raise AssertionError(msg)
 
+                obj_id = obj['id']
                 curr_obj_ids.append(obj_id)
 
                 bbox = obj['bbox']
-
-                label = obj['label']
-                class_col = col_bgr[class_to_col[label]]
-
                 confidence = obj['confidence']
 
                 xmin, ymin, xmax, ymax = bbox
