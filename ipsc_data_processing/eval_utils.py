@@ -220,14 +220,14 @@ def clamp(_vals, min_val, max_val):
     return [max(min(_val, max_val), min_val) for _val in _vals]
 
 
-def drawBox(image, xmin, ymin, xmax, ymax, box_color=(0, 255, 0), label=None, font_size=0.3, mask=None):
+def drawBox(image, xmin, ymin, xmax, ymax, box_color=(0, 255, 0), label=None, font_size=0.3, mask=None, thickness=2):
     image_float = image.astype(np.float32)
 
     if mask is not None:
         mask_pts = np.asarray(mask).reshape((-1, 1, 2)).astype(np.int32)
-        cv2.drawContours(image_float, mask_pts, -1, box_color, thickness=2, lineType=cv2.LINE_AA)
+        cv2.drawContours(image_float, mask_pts, -1, box_color, thickness=thickness, lineType=cv2.LINE_AA)
     else:
-        cv2.rectangle(image_float, (int(xmin), int(ymin)), (int(xmax), int(ymax)), box_color)
+        cv2.rectangle(image_float, (int(xmin), int(ymin)), (int(xmax), int(ymax)), box_color, thickness=thickness)
 
     image[:] = image_float.astype(image.dtype)
 

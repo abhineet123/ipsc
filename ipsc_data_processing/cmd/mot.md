@@ -8,6 +8,7 @@
         - [annotations       @ CTC/mot_csv_to_xml_coco](#annotations___ctc_mot_csv_to_xml_coc_o_)
     - [CTMC       @ mot_csv_to_xml_coco](#ctmc___mot_csv_to_xml_coc_o_)
         - [annotations       @ CTMC/mot_csv_to_xml_coco](#annotations___ctmc_mot_csv_to_xml_coco_)
+    - [ipsc       @ mot_csv_to_xml_coco](#ipsc___mot_csv_to_xml_coc_o_)
     - [gram       @ mot_csv_to_xml_coco](#gram___mot_csv_to_xml_coc_o_)
     - [idot       @ mot_csv_to_xml_coco](#idot___mot_csv_to_xml_coc_o_)
         - [mot       @ idot/mot_csv_to_xml_coco](#mot___idot_mot_csv_to_xml_coco_)
@@ -82,15 +83,19 @@ python mot_csv_to_xml_coco.py root_dir=/data/CTMC img_dir=Images list_file_name=
 
 python mot_csv_to_xml_coco.py root_dir=/data/CTMC img_dir=Images list_file_name=ctmc_train.txt data_type=annotations mode=1 ignore_invalid=1 start_id=0 label=cell show_img=0 save_video=0 start_id=29
 
+<a id="ipsc___mot_csv_to_xml_coc_o_"></a>
+## ipsc       @ mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=ipsc:zip:csv:vid-2:fps-5:show-0:fhd
+
 <a id="gram___mot_csv_to_xml_coc_o_"></a>
 ## gram       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=gram:zip:mot:save_vid
+python mot_csv_to_xml_coco.py cfg=gram:zip:mot:vid
 
 <a id="idot___mot_csv_to_xml_coc_o_"></a>
 ## idot       @ mot_csv_to_xml_coco-->mot
 <a id="mot___idot_mot_csv_to_xml_coco_"></a>
 ### mot       @ idot/mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=idot:1_1:zip:mot:save_vid
+python mot_csv_to_xml_coco.py cfg=idot:1_1:zip:mot:vid
 <a id="csv___idot_mot_csv_to_xml_coco_"></a>
 ### csv       @ idot/mot_csv_to_xml_coco-->mot
 python mot_csv_to_xml_coco.py cfg=idot:zip:csv
@@ -98,15 +103,15 @@ python mot_csv_to_xml_coco.py cfg=idot:8_8:zip:csv
 
 <a id="mot15___mot_csv_to_xml_coc_o_"></a>
 ## mot15       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=mot15:zip:mot:save_vid
+python mot_csv_to_xml_coco.py cfg=mot15:zip:mot:vid
 
 <a id="mot17___mot_csv_to_xml_coc_o_"></a>
 ## mot17       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=mot17:zip:mot:save_vid
+python mot_csv_to_xml_coco.py cfg=mot17:zip:mot:vid
 
 <a id="detrac___mot_csv_to_xml_coc_o_"></a>
 ## detrac       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot::save_vid
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot::vid
 
 python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot:start-19:end-19
 

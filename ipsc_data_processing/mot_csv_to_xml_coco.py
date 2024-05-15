@@ -12,7 +12,7 @@ from xml_to_coco import save_json
 from eval_utils import ImageSequenceWriter as ImageWriter
 from pascal_voc_io import PascalVocWriter
 from eval_utils import contour_pts_to_mask, mask_img_to_pts, sortKey, resize_ar, \
-    drawBox, show_labels, clamp, linux_path, add_suffix
+    drawBox, show_labels, clamp, linux_path, add_suffix, mask_pts_to_img
 
 
 class Params(paramparse.CFG):
@@ -31,7 +31,6 @@ class Params(paramparse.CFG):
         self.file_name = ''
         self.vid_ext = ''
 
-        self.fps = 30
         self.ignore_invalid = 0
         self.ignore_missing = 0
         self.ignore_occl = 1
@@ -61,24 +60,33 @@ class Params(paramparse.CFG):
         self.percent_scores = 0
         self.resize_factor = 1.0
         self.root_dir = ''
+
         self.out_root_dir = ''
         self.out_root_suffix = ''
+
         self.save_file_name = ''
         self.save_path = ''
         self.save_raw = 0
         self.save_video = 0
+        self.fps = 30
+        self.save_img_seq = 0
+
         self.show_class = 0
-        self.show_img = 1
+        self.show_img = 0
+
         self.start_id = 0
         self.end_id = -1
+
+        self.allow_empty = 0
         self.stats_only = 0
         self.raw_ctc_seg = 0
         self.vis_size = ''
         self.vis_root_dir = ''
 
-        self.save_img_seq = 0
         self.sample = 0
-        self.allow_empty = 0
+        self.start_frame_id = 0
+        self.end_frame_id = -1
+        self.frame_stride = 1
 
         self.json_gz = 1
         self.json_dir = 0
@@ -255,6 +263,29 @@ def parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_s
                 'bbox': bbox,
                 'confidence': confidence
             }
+            try:
+                mask_str = str(row['mask']).strip('"')
+            except KeyError:
+                pass
+            else:
+                x_coordinates = []
+                y_coordinates = []
+
+                mask = [[float(k) for k in point_string.split(",")]
+                        for point_string in mask_str.split(";") if point_string]
+
+                # for point_string in mask_str.split(";"):
+                #     if not point_string:
+                #         continue
+                #     x_coordinate, y_coordinate = point_string.split(",")
+                #     x_coordinate = float(x_coordinate)
+                #     y_coordinate = float(y_coordinate)
+                #     x_coordinates.append(x_coordinate)
+                #     y_coordinates.append(y_coordinate)
+                # mask = [(x, y) for x, y in zip(x_coordinates, y_coordinates)]
+
+                obj_entry['mask'] = mask
+
             if frame_id not in obj_dict:
                 obj_dict[frame_id] = []
             obj_dict[frame_id].append(obj_entry)
@@ -395,7 +426,9 @@ def main():
             bbox_source = data_type
 
     json_fname = params.json_fname
+
     json_path = None
+    xml_writer = None
 
     if json_fname:
         json_dict = {
@@ -463,6 +496,21 @@ def main():
         print(f'n_frames: {n_frames}')
 
         sampled_frame_ids = list(range(n_frames))
+
+        start_frame_id = params.start_frame_id
+        end_frame_id = params.end_frame_id
+        frame_stride = params.frame_stride
+
+        if frame_stride <= 0:
+            frame_stride = 1
+
+        if end_frame_id < start_frame_id:
+            end_frame_id = len(sampled_frame_ids) - 1
+
+        # print(f'params.end_frame_id: {params.end_frame_id}')
+        # print(f'end_frame_id: {end_frame_id}')
+
+        sampled_frame_ids = sampled_frame_ids[start_frame_id:end_frame_id + 1:frame_stride]
 
         if params.sample:
             print(f'sampling 1 in {params.sample} frames')
@@ -599,7 +647,7 @@ def main():
             print(f'looking for silver standard CTC segmentations in {silver_seg_dir_path}')
 
         xml_zip_file = xml_dir_path = None
-        if not json_fname:
+        if save_video!=2 and not json_fname:
             if mode == 0:
                 xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
             else:
@@ -655,27 +703,28 @@ def main():
             filename_no_ext = os.path.splitext(filename)[0]
             height, width = image.shape[:2]
 
-            if json_fname:
-                rel_path = linux_path(f'{seq_name}/{filename}')
-                img_id = linux_path(f'{seq_name}/{filename_no_ext}')
+            if save_video != 2:
+                if json_fname:
+                    rel_path = linux_path(f'{seq_name}/{filename}')
+                    img_id = linux_path(f'{seq_name}/{filename_no_ext}')
 
-                json_img_info = {
-                    'file_name': rel_path,
-                    'height': height,
-                    'width': width,
-                    'id': seq_name + '/' + img_id
-                }
-                json_dict['images'].append(json_img_info)
+                    json_img_info = {
+                        'file_name': rel_path,
+                        'height': height,
+                        'width': width,
+                        'id': seq_name + '/' + img_id
+                    }
+                    json_dict['images'].append(json_img_info)
 
-            else:
-                xml_fname = filename_no_ext + '.xml'
-                if params.zip:
-                    out_xml_path = xml_fname
                 else:
-                    out_xml_path = linux_path(xml_dir_path, xml_fname)
+                    xml_fname = filename_no_ext + '.xml'
+                    if params.zip:
+                        out_xml_path = xml_fname
+                    else:
+                        out_xml_path = linux_path(xml_dir_path, xml_fname)
 
             vis_img = image.copy()
-            seg_img_vis = np.zeros_like(vis_img)
+            seg_img_vis = None
 
             curr_obj_ids = []
             n_objs = 0
@@ -685,262 +734,265 @@ def main():
                 msg = f'No {data_type} found for frame {frame_id}: {img_file_path}'
                 if params.allow_empty:
                     print(msg)
+                    objects = []
                 else:
                     raise AssertionError(msg)
-            else:
-                if save_video and save_raw:
-                    video_out.write(image)
 
-                # out_frame_id += 1
-                # out_filename = 'image{:06d}.jpg'.format(out_frame_id)
+            if save_video and save_raw:
+                video_out.write(image)
 
-                image_shape = [height, width, 3]
-                if not json_fname:
-                    xml_writer = PascalVocWriter(src_path, filename, image_shape)
+            # out_frame_id += 1
+            # out_filename = 'image{:06d}.jpg'.format(out_frame_id)
 
-                n_objs = len(objects)
+            image_shape = [height, width, 3]
+            if save_video != 2 and not json_fname:
+                xml_writer = PascalVocWriter(src_path, filename, image_shape)
 
-                # obj_ids = [obj['id'] for obj in objects]
+            n_objs = len(objects)
 
-                if seg_dir_path is not None:
+            # obj_ids = [obj['id'] for obj in objects]
 
-                    seg_img = None
+            if seg_dir_path is not None:
 
+                seg_img = None
+
+                if raw_ctc_seg:
+                    gold_seg_file_path = linux_path(gold_seg_dir_path, f'{filename_no_ext}.{seg_ext}')
+                    silver_seg_file_path = linux_path(silver_seg_dir_path, f'{filename_no_ext}.{seg_ext}')
+
+                    unique_ids = []
+                    unique_ids_dict = dict(
+                        silver=[],
+                        gold=[],
+                    )
+                    gold_seg_img = silver_seg_img = None
+                    if os.path.exists(gold_seg_file_path):
+                        gold_seg_img = cv2.imread(gold_seg_file_path, cv2.IMREAD_UNCHANGED)
+                        gold_unique_ids = np.unique(gold_seg_img)
+
+                        assert len(gold_unique_ids) > 1, \
+                            f"invalid gold_seg_img with single unique_id: {gold_unique_ids}"
+
+                        unique_ids_dict['gold'] = list(gold_unique_ids)
+                        unique_ids += unique_ids_dict['gold']
+
+                        seg_img = gold_seg_img
+
+                    if os.path.exists(silver_seg_file_path):
+                        silver_seg_img = cv2.imread(silver_seg_file_path, cv2.IMREAD_UNCHANGED)
+                        silver_unique_ids = np.unique(silver_seg_img)
+
+                        assert len(silver_unique_ids) > 1, \
+                            f"invalid silver_seg_img with single unique_id: {silver_unique_ids}"
+
+                        unique_ids_dict['silver'] = list(silver_unique_ids)
+                        unique_ids += unique_ids_dict['silver']
+
+                        seg_img = silver_seg_img
+
+                    if gold_seg_img is None and silver_seg_img is None:
+                        msg = f"neither gold not silver segmentation file found for {filename_no_ext}"
+                        if allow_missing_seg:
+                            print(msg)
+                        else:
+                            raise AssertionError(msg)
+
+                else:
+                    seg_file_path = linux_path(seg_dir_path, seq_name, f'{filename_no_ext}.{seg_ext}')
+                    assert os.path.exists(seg_file_path), f"seg_file: {seg_file_path} does not exist"
+
+                    seg_img = cv2.imread(seg_file_path, cv2.IMREAD_GRAYSCALE)
+
+                    unique_ids = np.unique(seg_img)
+                    # seg_pts = contour_pts_from_mask(seg_img)
+
+            for obj in objects:
+                obj_id = obj['id']
+
+                curr_obj_ids.append(obj_id)
+
+                label = obj['label']
+                bbox = obj['bbox']
+                confidence = obj['confidence']
+
+                xmin, ymin, xmax, ymax = bbox
+
+                if extrapolate_seg:
+                    if obj_id in obj_ids_to_bboxes:
+                        prev_bbox = obj_ids_to_bboxes[obj_id][-1]
+                    else:
+                        obj_ids_to_bboxes[obj_id] = []
+                        prev_bbox = None
+
+                    obj_ids_to_bboxes[obj_id].append(bbox)
+
+                xmin, xmax = clamp([xmin, xmax], 0, width - 1)
+                ymin, ymax = clamp([ymin, ymax], 0, height - 1)
+
+                if json_fname:
+                    o_width = xmax - xmin
+                    o_height = ymax - ymin
+                    category_id = label2id[label]
+
+                    json_ann = {
+                        'image_id': json_img_info['id'],
+                        'area': o_width * o_height,
+                        'iscrowd': 0,
+                        'bbox': [xmin, ymin, o_width, o_height],
+                        'label': label,
+                        'category_id': category_id,
+                        'ignore': 0,
+                        'id': bnd_id
+                    }
+                    bnd_id += 1
+                else:
+                    xml_dict = dict(
+                        xmin=int(xmin),
+                        ymin=int(ymin),
+                        xmax=int(xmax),
+                        ymax=int(ymax),
+                        name=label,
+                        difficult=False,
+                        bbox_source=bbox_source,
+                        id_number=obj_id,
+                        score=confidence,
+                        mask=None,
+                        mask_img=None
+                    )
+
+                seg_mask = None
+                if seg_dir_path is None:
+                    try:
+                        mask_pts = obj['mask']
+                    except KeyError:
+                        pass
+                    else:
+                        seg_mask = mask_pts_to_img(mask_pts, height, width, to_rle=False)
+                else:
                     if raw_ctc_seg:
-                        gold_seg_file_path = linux_path(gold_seg_dir_path, f'{filename_no_ext}.{seg_ext}')
-                        silver_seg_file_path = linux_path(silver_seg_dir_path, f'{filename_no_ext}.{seg_ext}')
-
-                        unique_ids = []
-                        unique_ids_dict = dict(
-                            silver=[],
-                            gold=[],
-                        )
-                        gold_seg_img = silver_seg_img = None
-                        if os.path.exists(gold_seg_file_path):
-                            gold_seg_img = cv2.imread(gold_seg_file_path, cv2.IMREAD_UNCHANGED)
-                            gold_unique_ids = np.unique(gold_seg_img)
-
-                            assert len(gold_unique_ids) > 1, \
-                                f"invalid gold_seg_img with single unique_id: {gold_unique_ids}"
-
-                            unique_ids_dict['gold'] = list(gold_unique_ids)
-                            unique_ids += unique_ids_dict['gold']
-
-                            seg_img = gold_seg_img
-
-                        if os.path.exists(silver_seg_file_path):
-                            silver_seg_img = cv2.imread(silver_seg_file_path, cv2.IMREAD_UNCHANGED)
-                            silver_unique_ids = np.unique(silver_seg_img)
-
-                            assert len(silver_unique_ids) > 1, \
-                                f"invalid silver_seg_img with single unique_id: {silver_unique_ids}"
-
-                            unique_ids_dict['silver'] = list(silver_unique_ids)
-                            unique_ids += unique_ids_dict['silver']
-
-                            seg_img = silver_seg_img
-
-                        if gold_seg_img is None and silver_seg_img is None:
-                            msg = f"neither gold not silver segmentation file found for {filename_no_ext}"
-                            if allow_missing_seg:
-                                print(msg)
-                            else:
-                                raise AssertionError(msg)
-
-                    else:
-                        seg_file_path = linux_path(seg_dir_path, seq_name, f'{filename_no_ext}.{seg_ext}')
-                        assert os.path.exists(seg_file_path), f"seg_file: {seg_file_path} does not exist"
-
-                        seg_img = cv2.imread(seg_file_path, cv2.IMREAD_GRAYSCALE)
-
-                        unique_ids = np.unique(seg_img)
-                        # seg_pts = contour_pts_from_mask(seg_img)
-
-                for obj in objects:
-                    obj_id = obj['id']
-
-                    curr_obj_ids.append(obj_id)
-
-                    label = obj['label']
-                    bbox = obj['bbox']
-                    confidence = obj['confidence']
-
-                    xmin, ymin, xmax, ymax = bbox
-
-                    if extrapolate_seg:
-                        if obj_id in obj_ids_to_bboxes:
-                            prev_bbox = obj_ids_to_bboxes[obj_id][-1]
+                        obj_seg_img = None
+                        """first try silver segmentations and then the gold once since the former 
+                        are more consistent and numerous"""
+                        if obj_id in unique_ids_dict['silver']:
+                            obj_seg_img = silver_seg_img
+                        elif obj_id in unique_ids_dict['gold']:
+                            obj_seg_img = gold_seg_img
                         else:
-                            obj_ids_to_bboxes[obj_id] = []
-                            prev_bbox = None
+                            if show_img:
+                                if silver_seg_img is not None:
+                                    silver_seg_img_vis = (silver_seg_img.astype(np.float32) *
+                                                          (255 / silver_unique_ids[-1])).astype(np.uint8)
+                                    cv2.imshow(f'{silver_seg_file_path}', silver_seg_img_vis)
 
-                        obj_ids_to_bboxes[obj_id].append(bbox)
+                                if gold_seg_img is not None:
+                                    gold_seg_img_vis = (gold_seg_img.astype(np.float32) *
+                                                        (255 / gold_unique_ids[-1])).astype(np.uint8)
+                                    cv2.imshow(f'{gold_seg_file_path}', gold_seg_img_vis)
 
-                    xmin, xmax = clamp([xmin, xmax], 0, width - 1)
-                    ymin, ymax = clamp([ymin, ymax], 0, height - 1)
-
-                    if json_fname:
-                        o_width = xmax - xmin
-                        o_height = ymax - ymin
-                        category_id = label2id[label]
-
-                        json_ann = {
-                            'image_id': json_img_info['id'],
-                            'area': o_width * o_height,
-                            'iscrowd': 0,
-                            'bbox': [xmin, ymin, o_width, o_height],
-                            'label': label,
-                            'category_id': category_id,
-                            'ignore': 0,
-                            'id': bnd_id
-                        }
-                        bnd_id += 1
-                    else:
-                        xml_dict = dict(
-                            xmin=int(xmin),
-                            ymin=int(ymin),
-                            xmax=int(xmax),
-                            ymax=int(ymax),
-                            name=label,
-                            difficult=False,
-                            bbox_source=bbox_source,
-                            id_number=obj_id,
-                            score=confidence,
-                            mask=None,
-                            mask_img=None
-                        )
-
-                    if seg_dir_path is not None:
-
-                        if raw_ctc_seg:
-                            obj_seg_img = None
-                            """first try silver segmentations and then the gold once since the former 
-                            are more consistent and numerous"""
-                            if obj_id in unique_ids_dict['silver']:
-                                obj_seg_img = silver_seg_img
-                            elif obj_id in unique_ids_dict['gold']:
-                                obj_seg_img = gold_seg_img
-                            else:
-                                if show_img:
-                                    if silver_seg_img is not None:
-                                        silver_seg_img_vis = (silver_seg_img.astype(np.float32) *
-                                                              (255 / silver_unique_ids[-1])).astype(np.uint8)
-                                        cv2.imshow(f'{silver_seg_file_path}', silver_seg_img_vis)
-
-                                    if gold_seg_img is not None:
-                                        gold_seg_img_vis = (gold_seg_img.astype(np.float32) *
-                                                            (255 / gold_unique_ids[-1])).astype(np.uint8)
-                                        cv2.imshow(f'{gold_seg_file_path}', gold_seg_img_vis)
-
-                                print(
-                                    f'neither gold nor silver segmentation found in frame {frame_id}: {filename} '
-                                    f'for object {obj_id} :: {unique_ids}'
-                                )
-
-                                if extrapolate_seg:
-                                    """try to extrapolate segmentation points from the most recent points and box"""
-                                    if prev_bbox is not None:
-                                        prev_seg_pts = obj_ids_to_seg_pts[obj_id][-1]
-
-                                        tx = bbox[0] - prev_bbox[0]
-                                        ty = bbox[1] - prev_bbox[1]
-
-                                        seg_pts = [[x + tx, y + ty] for x, y, f in prev_seg_pts]
-
-                                        obj_seg_img, blended_seg_img = contour_pts_to_mask(seg_pts, vis_img)
-
-                                        if show_img:
-                                            cv2.imshow(f'extrapolated obj_seg_img', obj_seg_img)
-                                            cv2.imshow(f'extrapolated blended_seg_img', blended_seg_img)
-                                    else:
-                                        print('no previous data exists for this object to extrapolate from')
-
-                                if show_img:
-                                    cv2.waitKey(0)
-
-                                # print()
-                        else:
-                            if obj_id not in unique_ids:
-                                print(
-                                    # raise AssertionError(
-                                    f'No segmentation found for object {obj_id} :: {unique_ids}'
-                                )
-
-                        if obj_seg_img is None:
-                            msg = f'no segmentation found in frame {frame_id}: {filename} for object {obj_id}'
-                            if allow_missing_seg:
-                                """skip this object since it has missing segmentation"""
-                                missing_seg_images.append(filename)
-                                print(msg)
-                                # continue
-                                seg_mask = None
-                            else:
-                                raise AssertionError(msg)
-                        else:
-                            seg_mask = np.zeros_like(obj_seg_img, dtype=np.uint8)
-                            seg_mask[obj_seg_img == obj_id] = 255
-
-                            # cv2.imshow('seg_mask', seg_mask)
-                            # cv2.waitKey(0)
-
-                            seg_pts, _, _ = mask_img_to_pts(seg_mask)
+                            print(
+                                f'neither gold nor silver segmentation found in frame {frame_id}: {filename} '
+                                f'for object {obj_id} :: {unique_ids}'
+                            )
 
                             if extrapolate_seg:
-                                if obj_id not in obj_ids_to_seg_pts:
-                                    obj_ids_to_seg_pts[obj_id] = []
+                                """try to extrapolate segmentation points from the most recent points and box"""
+                                if prev_bbox is not None:
+                                    prev_seg_pts = obj_ids_to_seg_pts[obj_id][-1]
 
-                                obj_ids_to_seg_pts[obj_id].append(seg_pts)
+                                    tx = bbox[0] - prev_bbox[0]
+                                    ty = bbox[1] - prev_bbox[1]
 
-                            if json_fname:
-                                mask_pts_flat = []
-                                for _pt in seg_pts:
-                                    mask_pts_flat.append(float(_pt[0]))
-                                    mask_pts_flat.append(float(_pt[1]))
-                                json_ann.update({
-                                    'segmentation': [mask_pts_flat, ],
-                                })
-                            else:
-                                xml_dict['mask'] = seg_pts
+                                    seg_pts = [[x + tx, y + ty] for x, y, f in prev_seg_pts]
 
-                        # print()
+                                    obj_seg_img, blended_seg_img = contour_pts_to_mask(seg_pts, vis_img)
 
-                    if json_fname:
-                        json_dict['annotations'].append(json_ann)
+                                    if show_img:
+                                        cv2.imshow(f'extrapolated obj_seg_img', obj_seg_img)
+                                        cv2.imshow(f'extrapolated blended_seg_img', blended_seg_img)
+                                else:
+                                    print('no previous data exists for this object to extrapolate from')
+
+                            if show_img:
+                                cv2.waitKey(0)
+
+                            # print()
                     else:
-                        xml_writer.addBndBox(**xml_dict)
+                        if obj_id not in unique_ids:
+                            print(
+                                # raise AssertionError(
+                                f'No segmentation found for object {obj_id} :: {unique_ids}'
+                            )
 
-                    if show_img or (save_video and not save_raw):
-                        obj_col = rgb_cols[obj_id]
-                        if show_class:
-                            _label = '{} {}'.format(label, obj_id)
+                    if obj_seg_img is None:
+                        msg = f'no segmentation found in frame {frame_id}: {filename} for object {obj_id}'
+                        if allow_missing_seg:
+                            """skip this object since it has missing segmentation"""
+                            missing_seg_images.append(filename)
+                            print(msg)
+                            # continue
+                            seg_mask = None
                         else:
-                            _label = '{}'.format(obj_id)
+                            raise AssertionError(msg)
+                    else:
+                        seg_mask = np.zeros_like(obj_seg_img, dtype=np.uint8)
+                        seg_mask[obj_seg_img == obj_id] = 255
 
-                        if seg_dir_path is not None and seg_mask is not None:
-                            seg_mask_binary = seg_mask.astype(bool)
-                            color_mask = np.asarray(obj_col)
-                            vis_img[seg_mask_binary] = vis_img[seg_mask_binary] * 0.5 + color_mask * 0.5
-                            seg_img_vis[seg_mask_binary] = color_mask
+                        # cv2.imshow('seg_mask', seg_mask)
+                        # cv2.waitKey(0)
+
+                        seg_pts, _, _ = mask_img_to_pts(seg_mask)
+
+                        if extrapolate_seg:
+                            if obj_id not in obj_ids_to_seg_pts:
+                                obj_ids_to_seg_pts[obj_id] = []
+
+                            obj_ids_to_seg_pts[obj_id].append(seg_pts)
+
+                        if json_fname:
+                            mask_pts_flat = []
+                            for _pt in seg_pts:
+                                mask_pts_flat.append(float(_pt[0]))
+                                mask_pts_flat.append(float(_pt[1]))
+                            json_ann.update({
+                                'segmentation': [mask_pts_flat, ],
+                            })
                         else:
-                            drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label,
-                                    font_size=0.5, box_color=obj_col)
+                            xml_dict['mask'] = seg_pts
 
-                if not json_fname:
+                    # print()
+
+                if json_fname:
+                    json_dict['annotations'].append(json_ann)
+                elif xml_writer is not None:
+                    xml_writer.addBndBox(**xml_dict)
+
+                if show_img or (save_video and not save_raw):
+                    obj_col = rgb_cols[obj_id]
+                    if show_class:
+                        _label = '{} {}'.format(label, obj_id)
+                    else:
+                        _label = '{}'.format(obj_id)
+
+                    if seg_mask is not None:
+                        if seg_img_vis is None:
+                            seg_img_vis = np.zeros_like(vis_img)
+
+                        seg_mask_binary = seg_mask.astype(bool)
+                        color_mask = np.asarray(obj_col)
+                        vis_img[seg_mask_binary] = vis_img[seg_mask_binary] * 0.5 + color_mask * 0.5
+                        seg_img_vis[seg_mask_binary] = color_mask
+
+                    drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label,
+                            font_size=1.0, box_color=obj_col, thickness=6)
+
+                if xml_writer is not None:
                     xml_writer.save(targetFile=out_xml_path, verbose=False, zip_file=xml_zip_file)
 
             if save_video or show_img:
                 curr_obj_cols = [rgb_cols[k] for k in curr_obj_ids]
 
-                if seg_dir_path is not None:
-                    # if seg_img is not None:
-                    #     seg_img_vis = (seg_img.astype(np.float32) * (255 / unique_ids[-1])).astype(np.uint8)
-                    # else:
-                    #     seg_img_vis = np.zeros_like(vis_img)
-
+                if seg_img_vis is not None:
                     vis_img = np.concatenate((vis_img, seg_img_vis), axis=1)
-
-                    # cv2.imshow('seg_img_vis', seg_img_vis)
-
                 if enable_resize:
                     vis_img = resize_ar(vis_img, vis_width, vis_height)
 
