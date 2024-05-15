@@ -12,7 +12,7 @@ from xml_to_coco import save_json
 from eval_utils import ImageSequenceWriter as ImageWriter
 from pascal_voc_io import PascalVocWriter
 from eval_utils import contour_pts_to_mask, mask_img_to_pts, sortKey, resize_ar, \
-    drawBox, show_labels, clamp, linux_path, add_suffix, mask_pts_to_img
+    drawBox, show_labels, clamp, linux_path, add_suffix, mask_pts_to_img, col_bgr
 
 
 class Params(paramparse.CFG):
@@ -397,8 +397,9 @@ def main():
         vis_root_dir = linux_path(os.path.dirname(seq_paths[0]), 'vis')
 
     class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
-    class_names, class_cols = zip(*[k.split('\t') for k in class_info])
-    label2id = {x.strip(): i for (i, x) in enumerate(class_names)}
+    class_names, class_cols = zip(*[[m.strip() for m in k.split('\t')] for k in class_info])
+    class_to_id = {x: i for (i, x) in enumerate(class_names)}
+    class_to_col = {x: c for (x, c) in zip(class_names, class_cols)}
 
     if not out_root_dir and out_root_suffix:
         out_root_dir = f'{root_dir}_{out_root_suffix}'
@@ -440,7 +441,7 @@ def main():
         if params.json_desc:
             json_dict['description'] = params.json_desc
 
-        for label, label_id in label2id.items():
+        for label, label_id in class_to_id.items():
             category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
             json_dict['categories'].append(category_info)
 
@@ -458,6 +459,8 @@ def main():
         json_path = os.path.join(json_dir, json_fname)
 
         print(f'saving json to {json_path}')
+
+    n_classes = len(class_names)
 
     for seq_idx, img_root_dir in enumerate(seq_paths):
         seq_name = os.path.basename(img_root_dir)
@@ -811,8 +814,11 @@ def main():
 
                 curr_obj_ids.append(obj_id)
 
-                label = obj['label']
                 bbox = obj['bbox']
+
+                label = obj['label']
+                class_col = col_bgr[class_to_col[label]]
+
                 confidence = obj['confidence']
 
                 xmin, ymin, xmax, ymax = bbox
@@ -832,7 +838,7 @@ def main():
                 if json_fname:
                     o_width = xmax - xmin
                     o_height = ymax - ymin
-                    category_id = label2id[label]
+                    category_id = class_to_id[label]
 
                     json_ann = {
                         'image_id': json_img_info['id'],
@@ -978,9 +984,10 @@ def main():
                             seg_img_vis = np.zeros_like(vis_img)
 
                         seg_mask_binary = seg_mask.astype(bool)
-                        color_mask = np.asarray(obj_col)
-                        vis_img[seg_mask_binary] = vis_img[seg_mask_binary] * 0.5 + color_mask * 0.5
-                        seg_img_vis[seg_mask_binary] = color_mask
+                        vis_img[seg_mask_binary] = vis_img[seg_mask_binary] * 0.5 + np.asarray(obj_col) * 0.5
+                        seg_col = class_col if n_classes > 1 else obj_col
+                        if n_classes > 1:
+                            seg_img_vis[seg_mask_binary] = np.asarray(seg_col)
 
                     drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label,
                             font_size=1.0, box_color=obj_col, thickness=6)
