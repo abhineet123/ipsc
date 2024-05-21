@@ -19,6 +19,7 @@
         - [g2_seq_1_39_53       @ all_frames_roi/ipsc](#g2_seq_1_39_53___all_frames_roi_ips_c_)
         - [g3_54_92       @ all_frames_roi/ipsc](#g3_54_92___all_frames_roi_ips_c_)
     - [ext_reorg_roi       @ ipsc](#ext_reorg_roi___ipsc_)
+        - [0_0       @ ext_reorg_roi/ipsc](#0_0___ext_reorg_roi_ipsc_)
         - [0_1       @ ext_reorg_roi/ipsc](#0_1___ext_reorg_roi_ipsc_)
         - [0_126       @ ext_reorg_roi/ipsc](#0_126___ext_reorg_roi_ipsc_)
         - [0_37       @ ext_reorg_roi/ipsc](#0_37___ext_reorg_roi_ipsc_)
@@ -158,6 +159,10 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/a
 
 <a id="ext_reorg_roi___ipsc_"></a>
 ## ext_reorg_roi       @ ipsc-->xml_to_coco
+<a id="0_0___ext_reorg_roi_ipsc_"></a>
+### 0_0       @ ext_reorg_roi/ipsc-->xml_to_coco
+python xml_to_coco.py cfg=ipsc:0_0:zip-0 
+
 <a id="0_1___ext_reorg_roi_ipsc_"></a>
 ### 0_1       @ ext_reorg_roi/ipsc-->xml_to_coco
 python xml_to_coco.py cfg=ipsc:0_1:zip-0:gz:mask 

@@ -84,6 +84,8 @@ class Params(paramparse.CFG):
 def save_json(json_dict, json_path, json_gz):
     n_json_imgs = len(json_dict['images'])
     n_json_objs = len(json_dict['annotations'])
+
+    out_csv_path = json_path.replace('.json', '.csv')
     if json_gz:
         json_path += '.gz'
 
@@ -91,6 +93,13 @@ def save_json(json_dict, json_path, json_gz):
     json_kwargs = dict(
         indent=4
     )
+
+    import pandas as pd
+    print(f'out_csv_path: {out_csv_path}')
+
+    img_info_df = pd.DataFrame.from_records(json_dict['images'])
+    img_info_df.to_csv(out_csv_path, index=False)
+
     if json_gz:
         import compress_json
         compress_json.dump(json_dict, json_path, json_kwargs=json_kwargs)
