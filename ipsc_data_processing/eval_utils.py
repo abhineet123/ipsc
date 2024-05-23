@@ -178,6 +178,8 @@ col_bgr = {
     'magenta': (255, 0, 255)
 }
 
+bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
+
 
 def print_stats(stats, name='', fmt='.3f'):
     if name:
