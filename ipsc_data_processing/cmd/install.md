@@ -162,7 +162,7 @@ no need to enable the suspend service in the newest drivers
 sudo systemctl enable nvidia-suspend.service
 
 CUDA_VISIBLE_DEVICES=1
-
+DISPLAY=localhost:10.0
 <a id="persistence_"></a>
 # persistence
 sudo nvidia-smi -pm 1 
