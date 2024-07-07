@@ -11,6 +11,7 @@
   - [396_for_cuda_9](#396_for_cuda_9_)
   - [20.04](#20_04_)
     - [470_for_cuda_11](#470_for_cuda_11_)
+    - [others](#other_s_)
 - [install cuda](#install_cuda_)
   - [uninstall_10.0](#uninstall_10__0_)
   - [ubuntu_20.04](#ubuntu_20_0_4_)
@@ -161,6 +162,7 @@ sudo shutdown -r now
 no need to enable the suspend service in the newest drivers
 sudo systemctl enable nvidia-suspend.service
 
+CUDA_VISIBLE_DEVICES=0
 CUDA_VISIBLE_DEVICES=1
 DISPLAY=localhost:10.0
 <a id="persistence_"></a>
@@ -268,6 +270,10 @@ sudo apt-get install nvidia-396
 ### 470_for_cuda_11 
 ```
 sudo apt install nvidia-driver-470
+```
+<a id="other_s_"></a>
+### others
+```
 sudo apt install nvidia-driver-510
 sudo apt install nvidia-driver-515
 sudo apt install nvidia-driver-520
