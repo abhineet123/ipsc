@@ -1017,7 +1017,8 @@ def main():
     else:
         print(f'not saving mask images')
 
-    xml_data_list = list(zip(xml_dir_paths, sorted_files_list, seq_names, seq_paths, subseq_info_list, vid_start_ids))
+    xml_data_list = list(zip(xml_dir_paths, sorted_files_list, seq_names, seq_paths,
+                             subseq_info_list, vid_start_ids, strict=True))
     seq_name_to_xml_paths = {}
 
     import functools
