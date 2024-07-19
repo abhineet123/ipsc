@@ -17,7 +17,7 @@ import imagesize
 
 import paramparse
 
-from eval_utils import sortKey, col_bgr, linux_path, add_suffix
+from eval_utils import sortKey, col_bgr, linux_path, add_suffix, load_samples_from_txt
 
 
 class Params(paramparse.CFG):
@@ -464,11 +464,35 @@ def main():
     val_ratio = params.val_ratio
     min_val = params.min_val
     shuffle = params.shuffle
+
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
+    if len(load_samples) == 1:
+        if load_samples[0] == 1:
+            load_samples = ['seq_to_samples.txt', ]
+        elif load_samples[0] == 0:
+            load_samples = []
+
     class_names_path = params.class_names_path
 
     assert class_names_path, "class_names_path must be provided"
+    
+    class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
+    class_names, class_cols = zip(*[k.split('\t') for k in class_info])
+
+    n_classes = len(class_cols)
+    """background is class ID 0 with color black"""
+    palette = [[0, 0, 0], ]
+    for class_id in range(n_classes):
+        col = class_cols[class_id]
+
+        col_rgb = col_bgr[col][::-1]
+
+        palette.append(col_rgb)
+
+    palette_flat = [value for color in palette for value in color]
+
+    class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
 
     output_json = params.output_json
     extract_num_from_imgid = params.extract_num_from_imgid
@@ -481,28 +505,37 @@ def main():
     n_seq = params.n_seq
     seq_stride = params.seq_stride
 
+    xml_dir_name = params.dir_name
+    if params.dir_suffix:
+        xml_dir_name = f'{xml_dir_name}_{params.dir_suffix}'
 
+    print(f'xml_dir_name: {xml_dir_name}')
 
-    if seq_paths:
-        if seq_paths.endswith('.txt'):
-            if params.seq_paths_suffix:
-                seq_paths = add_suffix(seq_paths, params.seq_paths_suffix)
-                output_json = add_suffix(output_json, params.seq_paths_suffix, sep='-')
-
-            assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
-
-            seq_paths = [x.strip() for x in open(seq_paths).readlines() if x.strip()]
-        else:
-            seq_paths = seq_paths.split(',')
-        if root_dir:
-            seq_paths = [os.path.join(root_dir, name) for name in seq_paths]
-
-    elif root_dir:
-        seq_paths = [os.path.join(root_dir, name) for name in os.listdir(root_dir) if
-                     os.path.isdir(os.path.join(root_dir, name))]
-        seq_paths.sort(key=sortKey)
+    if load_samples:
+        seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
     else:
-        raise IOError('Either seq_paths or root_dir must be provided')
+        seq_to_samples = None
+
+        if seq_paths:
+            if seq_paths.endswith('.txt'):
+                if params.seq_paths_suffix:
+                    seq_paths = add_suffix(seq_paths, params.seq_paths_suffix)
+                    output_json = add_suffix(output_json, params.seq_paths_suffix, sep='-')
+
+                assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
+
+                seq_paths = [x.strip() for x in open(seq_paths).readlines() if x.strip()]
+            else:
+                seq_paths = seq_paths.split(',')
+            if root_dir:
+                seq_paths = [os.path.join(root_dir, name) for name in seq_paths]
+
+        elif root_dir:
+            seq_paths = [os.path.join(root_dir, name) for name in os.listdir(root_dir) if
+                         os.path.isdir(os.path.join(root_dir, name))]
+            seq_paths.sort(key=sortKey)
+        else:
+            raise IOError('Either seq_paths or root_dir must be provided')
 
     if n_seq > 0:
         end_id = start_id + n_seq - 1
@@ -541,51 +574,6 @@ def main():
             output_json_dir = root_dir
         else:
             output_json_dir = os.path.dirname(seq_paths[0])
-
-    if True:
-        """seq_to_samples not supported yet"""
-        seq_to_samples = {}
-
-        if len(load_samples) == 1:
-            if load_samples[0] == 1:
-                load_samples = ['seq_to_samples.txt', ]
-            elif load_samples[0] == 0:
-                load_samples = []
-
-        if load_samples:
-            # if load_samples == '1':
-            #     load_samples = 'seq_to_samples.txt'
-            # print('load_samples: {}'.format(pformat(load_samples)))
-            if load_samples_root:
-                load_samples = [os.path.join(load_samples_root, k) for k in load_samples]
-            print('Loading samples from : {}'.format(load_samples))
-            for _f in load_samples:
-                if os.path.isdir(_f):
-                    _f = os.path.join(_f, 'seq_to_samples.txt')
-                with open(_f, 'r') as fid:
-                    curr_seq_to_samples = ast.literal_eval(fid.read())
-                    for _seq in curr_seq_to_samples:
-                        if _seq in seq_to_samples:
-                            seq_to_samples[_seq] += curr_seq_to_samples[_seq]
-                        else:
-                            seq_to_samples[_seq] = curr_seq_to_samples[_seq]
-
-    class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
-    class_names, class_cols = zip(*[k.split('\t') for k in class_info])
-
-    n_classes = len(class_cols)
-    """background is class ID 0 with color black"""
-    palette = [[0, 0, 0], ]
-    for class_id in range(n_classes):
-        col = class_cols[class_id]
-
-        col_rgb = col_bgr[col][::-1]
-
-        palette.append(col_rgb)
-
-    palette_flat = [value for color in palette for value in color]
-
-    class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
 
     if no_annotations:
         print('writing json for all images without annotations')
@@ -707,13 +695,8 @@ def main():
             save_ytvis_json(ytvis_json_dict, ytvis_json_path)
             return
 
-    dir_name = params.dir_name
-    if params.dir_suffix:
-        dir_name = f'{dir_name}_{params.dir_suffix}'
 
-    print(f'dir_name: {dir_name}')
-
-    xml_paths = [linux_path(seq_path, dir_name) for seq_path in seq_paths]
+    xml_paths = [linux_path(seq_path, xml_dir_name) for seq_path in seq_paths]
     seq_names = [os.path.basename(seq_path) for seq_path in seq_paths]
     # samples = [seq_to_samples[seq_path] for seq_path in seq_paths]
 
@@ -727,22 +710,24 @@ def main():
         val_ratio = - val_ratio
 
     for xml_path, seq_name in zip(xml_paths, seq_names):
-
         seq_path = os.path.dirname(xml_path)
 
-        if params.xml_zip:
-            from zipfile import ZipFile
-
-            xml_zip_path = xml_path + ".zip"
-            print(f'loading xml files from  zip file {xml_zip_path}')
-            with ZipFile(xml_zip_path, 'r') as xml_zip_file:
-                all_xml_files = xml_zip_file.namelist()
-
-            xml_files = [linux_path(xml_path, xml_file) for xml_file in all_xml_files]
+        if seq_to_samples is not None:
+            xml_files = seq_to_samples[seq_path]
         else:
-            xml_files = glob.glob(os.path.join(xml_path, '**/*.xml'), recursive=True)
+            if params.xml_zip:
+                from zipfile import ZipFile
 
-        xml_files.sort(key=lambda fname: os.path.basename(fname))
+                xml_zip_path = xml_path + ".zip"
+                print(f'loading xml files from  zip file {xml_zip_path}')
+                with ZipFile(xml_zip_path, 'r') as xml_zip_file:
+                    all_xml_files = xml_zip_file.namelist()
+
+                xml_files = [linux_path(xml_path, xml_file) for xml_file in all_xml_files]
+            else:
+                xml_files = glob.glob(os.path.join(xml_path, '**/*.xml'), recursive=True)
+
+            xml_files.sort(key=lambda fname: os.path.basename(fname))
 
         start_frame_id = params.start_frame_id
         end_frame_id = params.end_frame_id

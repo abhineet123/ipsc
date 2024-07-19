@@ -1179,6 +1179,41 @@ def perform_nms(_det_filename, _bbox_info, enable_mask, nms_thresh):
 def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
 
+def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
+    from pprint import pformat
+    from collections import OrderedDict
+    import ast
+
+    # if load_samples == '1':
+    #     load_samples = 'seq_to_samples.txt'
+    print('load_samples: {}'.format(pformat(load_paths)))
+    if load_path_root:
+        load_paths = [linux_path(load_path_root, k) for k in load_paths]
+
+    print('Loading samples from : {}'.format(load_paths))
+    for _f in load_paths:
+        if os.path.isdir(_f):
+            _f = linux_path(_f, 'seq_to_samples.txt')
+        with open(_f, 'r') as fid:
+            curr_seq_to_samples = ast.literal_eval(fid.read())
+            # curr_seq_to_samples = json.load(fid)
+        for _seq in curr_seq_to_samples:
+            _dir_img_names = [(os.path.dirname(_sample), os.path.splitext(os.path.basename(_sample))[0])
+                              for _sample in curr_seq_to_samples[_seq]]
+            curr_seq_to_samples[_seq] = [os.path.join(_dir_name, xml_dir_name, f'{_img_name}.xml')
+                                         for _dir_name, _img_name in _dir_img_names]
+            # curr_seq_to_samples[_seq] = [
+            #     '.xml'.join(_sample.rsplit('.jpg', 1))
+            #     for _sample in  curr_seq_to_samples[_seq]
+            # ]
+            if _seq in seq_to_samples:
+                seq_to_samples[_seq] += curr_seq_to_samples[_seq]
+            else:
+                seq_to_samples[_seq] = curr_seq_to_samples[_seq]
+    seq_paths = [_seq for _seq in seq_to_samples if seq_to_samples[_seq]]
+    seq_to_samples = {_seq: seq_to_samples[_seq] for _seq in seq_paths}
+
+    return seq_paths, seq_to_samples
 
 def add_suffix(src_path, suffix, dst_ext='', sep='_'):
     # abs_src_path = os.path.abspath(src_path)

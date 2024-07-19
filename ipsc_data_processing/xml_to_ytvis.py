@@ -16,7 +16,7 @@ from tqdm import tqdm
 import imagesize
 import paramparse
 
-from eval_utils import col_bgr, sortKey, linux_path, draw_box, annotate
+from eval_utils import col_bgr, sortKey, linux_path, draw_box, annotate, load_samples_from_txt
 
 from itertools import groupby
 import pycocotools.mask as mask_util
@@ -617,7 +617,7 @@ def get_xml_files(
     xml_dir_path, all_xml_files, seq_name, seq_path, subseq_info, vid_start_id = xml_data
 
     if all_xml_files is None:
-        if seq_to_samples:
+        if seq_to_samples is not None:
             all_xml_files = seq_to_samples[seq_path]
         else:
             if params.xml_zip:
@@ -645,7 +645,7 @@ def get_xml_files(
         else:
             all_xml_files.sort(key=lambda fname: os.path.basename(fname))
     else:
-        assert not seq_to_samples, "seq_to_samples cannot be provided alongside all_xml_files"
+        assert seq_to_samples is None, "seq_to_samples cannot be provided alongside all_xml_files"
 
     start_frame_id = params.start_frame_id
     end_frame_id = params.end_frame_id
@@ -831,8 +831,15 @@ def main():
 
     seq_paths = params.seq_paths
     root_dir = params.root_dir
+
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
+    if len(load_samples) == 1:
+        if load_samples[0] == 1:
+            load_samples = ['seq_to_samples.txt', ]
+        elif load_samples[0] == 0:
+            load_samples = []
+
     class_names_path = params.class_names_path
     excluded_images_list = params.excluded_images_list
     description = params.description
@@ -915,44 +922,12 @@ def main():
         print(f'saving incremental clips')
         description = f'{description}-incremental'
 
-    from collections import OrderedDict
-    seq_to_samples = OrderedDict()
-
-    if len(load_samples) == 1:
-        if load_samples[0] == 1:
-            load_samples = ['seq_to_samples.txt', ]
-        elif load_samples[0] == 0:
-            load_samples = []
 
     if load_samples:
-        # if load_samples == '1':
-        #     load_samples = 'seq_to_samples.txt'
-        print('load_samples: {}'.format(pformat(load_samples)))
-        if load_samples_root:
-            load_samples = [linux_path(load_samples_root, k) for k in load_samples]
-        print('Loading samples from : {}'.format(load_samples))
-        for _f in load_samples:
-            if os.path.isdir(_f):
-                _f = linux_path(_f, 'seq_to_samples.txt')
-            with open(_f, 'r') as fid:
-                curr_seq_to_samples = ast.literal_eval(fid.read())
-                # curr_seq_to_samples = json.load(fid)
-            for _seq in curr_seq_to_samples:
-                _dir_img_names = [(os.path.dirname(_sample), os.path.splitext(os.path.basename(_sample))[0])
-                                  for _sample in curr_seq_to_samples[_seq]]
-                curr_seq_to_samples[_seq] = [os.path.join(_dir_name, xml_dir_name, f'{_img_name}.xml')
-                                             for _dir_name, _img_name in _dir_img_names]
-                # curr_seq_to_samples[_seq] = [
-                #     '.xml'.join(_sample.rsplit('.jpg', 1))
-                #     for _sample in  curr_seq_to_samples[_seq]
-                # ]
-                if _seq in seq_to_samples:
-                    seq_to_samples[_seq] += curr_seq_to_samples[_seq]
-                else:
-                    seq_to_samples[_seq] = curr_seq_to_samples[_seq]
-        seq_paths = [_seq for _seq in seq_to_samples if seq_to_samples[_seq]]
-        seq_to_samples = {_seq: seq_to_samples[_seq] for _seq in seq_paths}
+        seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
     else:
+        seq_to_samples = None
+
         if seq_paths:
             if seq_paths.endswith('.txt'):
                 if params.seq_paths_suffix:
