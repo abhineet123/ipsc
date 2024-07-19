@@ -78,6 +78,7 @@
     - [ctc_Fluo_N2DL_HeLa       @ ctc](#ctc_fluo_n2dl_hela___ct_c_)
 - [ctmc_all       @ xml_to_coco](#ctmc_all___xml_to_coc_o_)
 - [acamp](#acamp_)
+    - [1k8_vid_entire_seq       @ acamp](#1k8_vid_entire_seq___acam_p_)
     - [10k6_vid_entire_seq       @ acamp](#10k6_vid_entire_seq___acam_p_)
 
 <!-- /MarkdownTOC -->
@@ -86,13 +87,13 @@
 # detrac
 <a id="0_19___detrac_"></a>
 ## 0_19       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:0_19:gz 
+python xml_to_coco.py cfg=detrac:non_empty:0_19 
 <a id="0_9___detrac_"></a>
 ## 0_9       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:0_9:gz 
+python xml_to_coco.py cfg=detrac:non_empty:0_9 
 <a id="49_68___detrac_"></a>
 ## 49_68       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:49_68:gz 
+python xml_to_coco.py cfg=detrac:non_empty:49_68 
 
 
 <a id="ipsc___xml_to_coc_o_"></a>
@@ -105,7 +106,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/a
 
 <a id="no_val___g2_0_37_all_frames_roi_ips_c_"></a>
 #### no_val       @ g2_0_37/all_frames_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:frame-0_37:zip-0:gz 
+python xml_to_coco.py cfg=ipsc:frame-0_37:zip-0 
 
 <a id="g2_38_53___all_frames_roi_ips_c_"></a>
 ### g2_38_53       @ all_frames_roi/ipsc-->xml_to_coco
@@ -127,11 +128,11 @@ python xml_to_coco.py cfg=ipsc:0_0:zip-0
 
 <a id="0_1___ext_reorg_roi_ipsc_"></a>
 ### 0_1       @ ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:0_1:zip-0:gz:mask 
+python xml_to_coco.py cfg=ipsc:0_1:zip-0:mask 
 
 <a id="0_126___ext_reorg_roi_ipsc_"></a>
 ### 0_126       @ ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:0_126:zip-0:gz:mask 
+python xml_to_coco.py cfg=ipsc:0_126:zip-0:mask 
 
 <a id="0_37___ext_reorg_roi_ipsc_"></a>
 ### 0_37       @ ext_reorg_roi/ipsc-->xml_to_coco
@@ -139,7 +140,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/e
 
 <a id="no_validate___0_37_ext_reorg_roi_ips_c_"></a>
 #### no_validate       @ 0_37/ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:0_37:zip-0:gz 
+python xml_to_coco.py cfg=ipsc:0_37:zip-0 
 
 __only_list__
 python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_37.json start_frame_id=0 end_frame_id=37 ignore_invalid_label=1 val_ratio=0 only_list=1
@@ -199,7 +200,7 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg
 
 <a id="no_val___16_53_ext_reorg_roi_ipsc_"></a>
 #### no-val       @ 16_53/ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:frame-16_53:zip-0:gz 
+python xml_to_coco.py cfg=ipsc:frame-16_53:zip-0 
 
 ```
 pix_vals_mean: [126.21, 126.21, 126.21]
@@ -228,20 +229,20 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/e
 
 <a id="0_1___ext_reorg_roi_ipsc__2"></a>
 ### 0_1       @ ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:0_1:zip-0:gz 
+python xml_to_coco.py cfg=ipsc:0_1:zip-0 
 <a id="2_3___ext_reorg_roi_ipsc_"></a>
 ### 2_3       @ ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:2_3:zip-0:gz 
+python xml_to_coco.py cfg=ipsc:2_3:zip-0 
 
 <a id="54_126___ext_reorg_roi_ipsc_"></a>
 ### 54_126       @ ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:54_126:zip-0:gz 
+python xml_to_coco.py cfg=ipsc:54_126:zip-0 
 <a id="strd_5___54_126_ext_reorg_roi_ips_c_"></a>
 #### strd-5       @ 54_126/ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:54_126:zip-0:gz:strd-5
+python xml_to_coco.py cfg=ipsc:54_126:zip-0:strd-5
 <a id="strd_8___54_126_ext_reorg_roi_ips_c_"></a>
 #### strd-8       @ 54_126/ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:54_126:zip-0:gz:strd-8
+python xml_to_coco.py cfg=ipsc:54_126:zip-0:strd-8
 
 
 ```
@@ -250,7 +251,7 @@ pix_vals_std: [23.99, 23.99, 23.99]
 ```
 <a id="list___54_126_ext_reorg_roi_ips_c_"></a>
 #### list       @ 54_126/ext_reorg_roi/ipsc-->xml_to_coco
-python xml_to_coco.py cfg=ipsc:frame-54_126:zip-0:gz:list 
+python xml_to_coco.py cfg=ipsc:frame-54_126:zip-0:list 
 
 <a id="no_mask___54_126_ext_reorg_roi_ips_c_"></a>
 #### no_mask       @ 54_126/ext_reorg_roi/ipsc-->xml_to_coco
@@ -440,6 +441,9 @@ python xml_to_coco.py root_dir=/data/CTMC/Images seq_paths=ctmc_train.txt class_
 
 <a id="acamp_"></a>
 # acamp
+<a id="1k8_vid_entire_seq___acam_p_"></a>
+## 1k8_vid_entire_seq       @ acamp-->xml_to_coco
+python xml_to_coco.py cfg=acamp:1k8_vid_entire_seq
 <a id="10k6_vid_entire_seq___acam_p_"></a>
 ## 10k6_vid_entire_seq       @ acamp-->xml_to_coco
-python xml_to_coco.py cfg=acamp:10k6_vid_entire_seq:gz
+python xml_to_coco.py cfg=acamp:10k6_vid_entire_seq

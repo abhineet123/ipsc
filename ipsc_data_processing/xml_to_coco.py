@@ -77,7 +77,7 @@ class Params(paramparse.CFG):
 
         self.only_list = 0
 
-        self.json_gz = 0
+        self.json_gz = 1
         self.xml_zip = 0
 
 
