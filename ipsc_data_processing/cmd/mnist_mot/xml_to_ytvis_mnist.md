@@ -38,6 +38,29 @@
         - [len-6       @ 54_126/ipsc](#len_6___54_126_ips_c_)
             - [sample-8       @ len-6/54_126/ipsc](#sample_8___len_6_54_126_ips_c_)
             - [sample-4       @ len-6/54_126/ipsc](#sample_4___len_6_54_126_ips_c_)
+- [mnist-640-1](#mnist_640_1_)
+    - [len-2:strd-1       @ mnist-640-1](#len_2_strd_1___mnist_640_1_)
+        - [test       @ len-2:strd-1/mnist-640-1](#test___len_2_strd_1_mnist_640_1_)
+            - [strd-2       @ test/len-2:strd-1/mnist-640-1](#strd_2___test_len_2_strd_1_mnist_640_1_)
+    - [len-3:strd-1       @ mnist-640-1](#len_3_strd_1___mnist_640_1_)
+        - [test       @ len-3:strd-1/mnist-640-1](#test___len_3_strd_1_mnist_640_1_)
+            - [strd-3       @ test/len-3:strd-1/mnist-640-1](#strd_3___test_len_3_strd_1_mnist_640_1_)
+    - [len-9:strd-1       @ mnist-640-1](#len_9_strd_1___mnist_640_1_)
+- [mnist-640-3](#mnist_640_3_)
+    - [len-2:strd-1       @ mnist-640-3](#len_2_strd_1___mnist_640_3_)
+        - [test       @ len-2:strd-1/mnist-640-3](#test___len_2_strd_1_mnist_640_3_)
+- [mnist-640-5](#mnist_640_5_)
+    - [len-2:strd-1       @ mnist-640-5](#len_2_strd_1___mnist_640_5_)
+    - [len-2:strd-2       @ mnist-640-5](#len_2_strd_2___mnist_640_5_)
+    - [len-3:strd-1       @ mnist-640-5](#len_3_strd_1___mnist_640_5_)
+    - [len-3:strd-3       @ mnist-640-5](#len_3_strd_3___mnist_640_5_)
+    - [len-4:strd-1       @ mnist-640-5](#len_4_strd_1___mnist_640_5_)
+    - [len-4:strd-4       @ mnist-640-5](#len_4_strd_4___mnist_640_5_)
+    - [len-6:strd-1       @ mnist-640-5](#len_6_strd_1___mnist_640_5_)
+    - [len-6:strd-6       @ mnist-640-5](#len_6_strd_6___mnist_640_5_)
+    - [len-8:strd-1       @ mnist-640-5](#len_8_strd_1___mnist_640_5_)
+    - [len-9:strd-1       @ mnist-640-5](#len_9_strd_1___mnist_640_5_)
+        - [test       @ len-9:strd-1/mnist-640-5](#test___len_9_strd_1_mnist_640_5_)
 - [acamp](#acamp_)
     - [10k6_vid_entire_seq       @ acamp](#10k6_vid_entire_seq___acam_p_)
 
@@ -189,6 +212,88 @@ python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gz:gap-1:mask-0:pro
 <a id="sample_4___len_6_54_126_ips_c_"></a>
 #### sample-4       @ len-6/54_126/ipsc-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gz:gap-1:mask-0:proc-1:zip-0:sample-4 
+
+<a id="mnist_640_1_"></a>
+# mnist-640-1
+<a id="len_2_strd_1___mnist_640_1_"></a>
+## len-2:strd-1       @ mnist-640-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-1:12_1000:train:proc-12:len-2:strd-1:gz:gap-1 
+<a id="test___len_2_strd_1_mnist_640_1_"></a>
+### test       @ len-2:strd-1/mnist-640-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-1:12_1000:test:proc-12:len-2:strd-1:gz:gap-1 
+<a id="strd_2___test_len_2_strd_1_mnist_640_1_"></a>
+#### strd-2       @ test/len-2:strd-1/mnist-640-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-1:12_1000:test:proc-1:len-2:strd-2:gz:gap-1 
+
+<a id="len_3_strd_1___mnist_640_1_"></a>
+## len-3:strd-1       @ mnist-640-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-1:12_1000:train:proc-1:len-3:strd-1:gz:gap-1 
+<a id="test___len_3_strd_1_mnist_640_1_"></a>
+### test       @ len-3:strd-1/mnist-640-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-1:12_1000:test:proc-1:len-3:strd-1:gz:gap-1 
+<a id="strd_3___test_len_3_strd_1_mnist_640_1_"></a>
+#### strd-3       @ test/len-3:strd-1/mnist-640-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-1:12_1000:test:proc-1:len-3:strd-3:gz:gap-1 
+
+<a id="len_9_strd_1___mnist_640_1_"></a>
+## len-9:strd-1       @ mnist-640-1-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-1:12_1000:train:proc-12:len-9:strd-1:gz:gap-1 
+
+<a id="mnist_640_3_"></a>
+# mnist-640-3
+<a id="len_2_strd_1___mnist_640_3_"></a>
+## len-2:strd-1       @ mnist-640-3-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-3:12_1000:train:proc-6:len-2:strd-1:gz:gap-1 
+<a id="test___len_2_strd_1_mnist_640_3_"></a>
+### test       @ len-2:strd-1/mnist-640-3-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-3:12_1000:train:test:proc-6:len-2:strd-1:gz:gap-1 
+
+<a id="mnist_640_5_"></a>
+# mnist-640-5
+<a id="len_2_strd_1___mnist_640_5_"></a>
+## len-2:strd-1       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:train:proc-6:len-2:strd-1:gz:gap-1 
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-6:len-2:strd-1:gz:gap-1 
+<a id="len_2_strd_2___mnist_640_5_"></a>
+## len-2:strd-2       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-6:len-2:strd-2:gz:gap-1 
+
+<a id="len_3_strd_1___mnist_640_5_"></a>
+## len-3:strd-1       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:train:proc-12:len-3:strd-1:gz:gap-1 
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-12:len-3:strd-1:gz:gap-1 
+
+<a id="len_3_strd_3___mnist_640_5_"></a>
+## len-3:strd-3       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-12:len-3:strd-3:gz:gap-1 
+
+<a id="len_4_strd_1___mnist_640_5_"></a>
+## len-4:strd-1       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:train:proc-12:len-4:strd-1:gz:gap-1 
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-12:len-4:strd-1:gz:gap-1 
+
+<a id="len_4_strd_4___mnist_640_5_"></a>
+## len-4:strd-4       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-12:len-4:strd-4:gz:gap-1 
+
+<a id="len_6_strd_1___mnist_640_5_"></a>
+## len-6:strd-1       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:train:proc-12:len-6:strd-1:gz:gap-1 
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-12:len-6:strd-1:gz:gap-1 
+<a id="len_6_strd_6___mnist_640_5_"></a>
+## len-6:strd-6       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-12:len-6:strd-6:gz:gap-1 
+
+<a id="len_8_strd_1___mnist_640_5_"></a>
+## len-8:strd-1       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:train:proc-12:len-8:strd-1:gz:gap-1 
+
+<a id="len_9_strd_1___mnist_640_5_"></a>
+## len-9:strd-1       @ mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:train:proc-6:len-9:strd-1:gz:gap-1 
+<a id="test___len_9_strd_1_mnist_640_5_"></a>
+### test       @ len-9:strd-1/mnist-640-5-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=mnist:640-5:12_1000:test:proc-6:len-2:strd-1:gz:gap-1 
 
 <a id="acamp_"></a>
 # acamp
