@@ -131,12 +131,15 @@ def save_ytvis_json(json_dict, json_path, json_gz=True):
 
 
 def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
-    rel_path = annotation_root.findtext('path')
-    if rel_path is None:
-        filename = annotation_root.findtext('filename')
-        rel_path = linux_path(seq_name, filename)
-    else:
-        filename = os.path.basename(rel_path)
+    filename = annotation_root.findtext('filename')
+    rel_path = linux_path(seq_name, filename)
+
+    # rel_path = annotation_root.findtext('path')
+    # if rel_path is None:
+    #     filename = annotation_root.findtext('filename')
+    #     rel_path = linux_path(seq_name, filename)
+    # else:
+    #     filename = os.path.basename(rel_path)
 
     # folder = annotation_root.findtext('folder')
     # path = linux_path(folder, rel_path)
