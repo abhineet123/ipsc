@@ -1184,8 +1184,11 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
     from collections import OrderedDict
     import ast
 
+    seq_to_samples=OrderedDict()
+
     # if load_samples == '1':
     #     load_samples = 'seq_to_samples.txt'
+
     print('load_samples: {}'.format(pformat(load_paths)))
     if load_path_root:
         load_paths = [linux_path(load_path_root, k) for k in load_paths]

@@ -77,7 +77,8 @@
     - [ctc_Fluo_N2DH_SIM       @ ctc](#ctc_fluo_n2dh_sim___ct_c_)
     - [ctc_Fluo_N2DL_HeLa       @ ctc](#ctc_fluo_n2dl_hela___ct_c_)
 - [ctmc_all       @ xml_to_coco](#ctmc_all___xml_to_coc_o_)
-    - [10k6_vid_entire_seq       @ ctmc_all](#10k6_vid_entire_seq___ctmc_all_)
+- [acamp](#acamp_)
+    - [10k6_vid_entire_seq       @ acamp](#10k6_vid_entire_seq___acam_p_)
 
 <!-- /MarkdownTOC -->
 
@@ -437,6 +438,8 @@ pix_vals_std: [15.87, 15.87, 15.87]
 # ctmc_all       @ xml_to_coco-->coco
 python xml_to_coco.py root_dir=/data/CTMC/Images seq_paths=ctmc_train.txt class_names_path=lists/classes/predefined_classes_cell.txt output_json=ctmc_train.json val_ratio=0.3 enable_masks=0
 
-<a id="10k6_vid_entire_seq___ctmc_all_"></a>
-## 10k6_vid_entire_seq       @ ctmc_all-->xml_to_coco
-python2 xml_to_coco.py cfg=acamp:10k6_vid_entire_seq:proc-0:gz
+<a id="acamp_"></a>
+# acamp
+<a id="10k6_vid_entire_seq___acam_p_"></a>
+## 10k6_vid_entire_seq       @ acamp-->xml_to_coco
+python xml_to_coco.py cfg=acamp:10k6_vid_entire_seq:gz

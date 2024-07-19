@@ -194,4 +194,4 @@ python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gz:gap-1:mask-0:pro
 # acamp
 <a id="10k6_vid_entire_seq___acam_p_"></a>
 ## 10k6_vid_entire_seq       @ acamp-->xml_to_ytvis
-python2 xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strd-1:gz:gap-1
+python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strd-1:gz:gap-1
