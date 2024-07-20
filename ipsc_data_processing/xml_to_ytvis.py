@@ -89,7 +89,7 @@ class Params(paramparse.CFG):
         self.coco_rle = 0
         self.n_proc = 1
 
-        self.json_gz = 0
+        self.json_gz = 1
         self.xml_zip = 0
 
         self.enable_masks = 1
