@@ -51,156 +51,156 @@
 ## 0_1       @ gram-->xml_to_ytvis
 <a id="len_2___0_1_gram_"></a>
 ### len-2       @ 0_1/gram-->xml_to_ytvis
-python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-2:strd-1:gz:gap-1 
-python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-2:strd-2:gz:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-2:strd-1:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-2:strd-2:gap-1 
 
 <a id="len_9___0_1_gram_"></a>
 ### len-9       @ 0_1/gram-->xml_to_ytvis
-python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-9:strd-1:gz:gap-1 
-python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-9:strd-9:gz:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-9:strd-1:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:proc-1:len-9:strd-9:gap-1 
 
 <a id="len_14___0_1_gram_"></a>
 ### len-14       @ 0_1/gram-->xml_to_ytvis
 <a id="0_2000___len_14_0_1_gra_m_"></a>
 #### 0_2000       @ len-14/0_1/gram-->xml_to_ytvis
-python xml_to_ytvis.py cfg=gram:0_1:frame-0_2000:proc-1:len-14:strd-1:gz:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:frame-0_2000:proc-1:len-14:strd-1:gap-1 
 <a id="3000_5000___len_14_0_1_gra_m_"></a>
 #### 3000_5000       @ len-14/0_1/gram-->xml_to_ytvis
-python xml_to_ytvis.py cfg=gram:0_1:frame-3000_5000:proc-1:len-14:strd-14:gz:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:frame-3000_5000:proc-1:len-14:strd-14:gap-1 
 
 <a id="len_16___0_1_gram_"></a>
 ### len-16       @ 0_1/gram-->xml_to_ytvis
 <a id="0_2000___len_16_0_1_gra_m_"></a>
 #### 0_2000       @ len-16/0_1/gram-->xml_to_ytvis
-python xml_to_ytvis.py cfg=gram:0_1:frame-0_2000:proc-1:len-16:strd-1:gz:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:frame-0_2000:proc-1:len-16:strd-1:gap-1 
 <a id="3000_5000___len_16_0_1_gra_m_"></a>
 #### 3000_5000       @ len-16/0_1/gram-->xml_to_ytvis
-python xml_to_ytvis.py cfg=gram:0_1:frame-3000_5000:proc-1:len-16:strd-16:gz:gap-1 
+python xml_to_ytvis.py cfg=gram:0_1:frame-3000_5000:proc-1:len-16:strd-16:gap-1 
 
 <a id="ido_t_"></a>
 # idot
 <a id="0_1___idot_"></a>
 ## 0_1       @ idot-->xml_to_ytvis
-python xml_to_ytvis.py cfg=idot:0_1:proc-1:len-9:strd-1:gz:gap-1 
+python xml_to_ytvis.py cfg=idot:0_1:proc-1:len-9:strd-1:gap-1 
 
 <a id="8_8___idot_"></a>
 ## 8_8       @ idot-->xml_to_ytvis
-python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-2:strd-10:gz:gap-10 
+python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-2:strd-10:gap-10 
 
-python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-3:strd-20:gz:gap-10 
+python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-3:strd-20:gap-10 
 
-python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gz:gap-10 
+python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gap-10 
 
 <a id="detra_c_"></a>
 # detrac
 <a id="0_0___detrac_"></a>
 ## 0_0       @ detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gz:gap-1:vis 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gap-1:vis 
 
 
 <a id="0_19___detrac_"></a>
 ## 0_19       @ detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-1:gz:gap-1 
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-3:strd-1:gz:gap-1 
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-4:strd-1:gz:gap-1 
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-6:strd-1:gz:gap-1 
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-8:strd-1:gz:gap-1 
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-9:strd-1:gz:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-1:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-3:strd-1:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-4:strd-1:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-6:strd-1:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-8:strd-1:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-9:strd-1:gap-1 
 <a id="strd_2___0_19_detra_c_"></a>
 ### strd-2       @ 0_19/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-2:gz:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-2:gap-1 
 <a id="0_9___detrac_"></a>
 ## 0_9       @ detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-1:gz:gap-1:vis 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-1:gap-1:vis 
 <a id="strd_2___0_9_detrac_"></a>
 ### strd-2       @ 0_9/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-2:gz:gap-1 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-2:gap-1 
 <a id="49_68___detrac_"></a>
 ## 49_68       @ detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-2:strd-1:gz:gap-1
+python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-2:strd-1:gap-1
 `strd-12 frame-0_360`
-python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-3:strd-12:gz:gap-1:frame-0_360
+python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-3:strd-12:gap-1:frame-0_360
 <a id="strd_2___49_68_detrac_"></a>
 ### strd-2       @ 49_68/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-2:strd-2:gz:gap-1
+python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-2:strd-2:gap-1
 
 <a id="ips_c_"></a>
 # ipsc
 <a id="0_4___ipsc_"></a>
 ## 0_4       @ ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:frame-0_4:len-2:strd-1:gz-1:gap-1 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:frame-0_4:len-2:strd-1:gz-1:gap-3 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:frame-0_4:len-2:strd-1-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:frame-0_4:len-2:strd-1-1:gap-3 
 
 <a id="12094___0_4_ipsc_"></a>
 ### 12094       @ 0_4/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:12094:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
-python3 xml_to_ytvis.py cfg=ipsc:12094_short:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1:gz-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:12094:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:12094_short:2_class:mask-0:proc-12:start-0:end-4:len-2:strd-1-1:gap-1 
 
 <a id="5_9___ipsc_"></a>
 ## 5_9       @ ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-5:end-9:len-2:strd-1:gz-1:gap-1 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-2 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-3 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1:gz-1:gap-4 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-12:start-5:end-9:len-2:strd-1-1:gap-1 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1-1:gap-2 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1-1:gap-3 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:mask-0:proc-1:start-5:end-9:len-2:strd-1-1:gap-4 
 
 <a id="0_37___ipsc_"></a>
 ## 0_37       @ ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:0_37:len-2:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:0_37:len-2:strd-1-1:gap-1:mask-0:proc-1:zip-0 
 <a id="16_53___ipsc_"></a>
 ## 16_53       @ ipsc-->xml_to_ytvis
 <a id="len_2___16_53_ipsc_"></a>
 ### len-2       @ 16_53/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-2:gz-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-2-1:gap-1:mask-0:proc-1:zip-0 
 <a id="gap___len_2_16_53_ipsc_"></a>
 #### gap       @ len-2/16_53/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-2:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-3:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1:gz-1:gap-4:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1-1:gap-2:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1-1:gap-3:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-2:strd-1-1:gap-4:mask-0:proc-1:zip-0 
 <a id="len_3___16_53_ipsc_"></a>
 ### len-3       @ 16_53/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-3:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-3:strd-3:gz-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-3:strd-1-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-3:strd-3-1:gap-1:mask-0:proc-1:zip-0 
 <a id="len_6___16_53_ipsc_"></a>
 ### len-6       @ 16_53/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-6:strd-1:gz-1:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-6:strd-6:gz-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-6:strd-1-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:16_53:len-6:strd-6-1:gap-1:mask-0:proc-1:zip-0 
 
 <a id="54_126___ipsc_"></a>
 ## 54_126       @ ipsc-->xml_to_ytvis
 <a id="len_2___54_126_ips_c_"></a>
 ### len-2       @ 54_126/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-1:gz:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-2:gz:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-2:gap-1:mask-0:proc-1:zip-0 
 
 <a id="sample_8___len_2_54_126_ips_c_"></a>
 #### sample-8       @ len-2/54_126/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-2:gz:gap-1:mask-0:proc-1:zip-0:sample-8 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-2:strd-2:gap-1:mask-0:proc-1:zip-0:sample-8 
 
 <a id="len_3___54_126_ips_c_"></a>
 ### len-3       @ 54_126/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-3:strd-1:gz:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-3:strd-3:gz:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-3:strd-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-3:strd-3:gap-1:mask-0:proc-1:zip-0 
 <a id="len_6___54_126_ips_c_"></a>
 ### len-6       @ 54_126/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-1:gz:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gz:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-1:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0 
 <a id="sample_8___len_6_54_126_ips_c_"></a>
 #### sample-8       @ len-6/54_126/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gz:gap-1:mask-0:proc-1:zip-0:sample-8 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0:sample-8 
 <a id="sample_4___len_6_54_126_ips_c_"></a>
 #### sample-4       @ len-6/54_126/ipsc-->xml_to_ytvis
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gz:gap-1:mask-0:proc-1:zip-0:sample-4 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0:sample-4 
 
 <a id="acamp_"></a>
 # acamp
 <a id="1k8_vid_entire_seq___acam_p_"></a>
 ## 1k8_vid_entire_seq       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq:proc-0:len-2:strd-1:gz:gap-1
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq:proc-0:len-2:strd-1:gap-1
 <a id="10k6_vid_entire_seq___acam_p_"></a>
 ## 10k6_vid_entire_seq       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strd-1:gz:gap-1
+python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strd-1:gap-1
 <a id="1k8_vid_entire_seq_inv___acam_p_"></a>
 ## 1k8_vid_entire_seq_inv       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-1:gz:gap-1
-python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-2:gz:gap-1
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-1:gap-1
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-2:gap-1
