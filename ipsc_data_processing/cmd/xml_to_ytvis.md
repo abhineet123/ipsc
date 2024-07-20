@@ -41,6 +41,7 @@
 - [acamp](#acamp_)
     - [1k8_vid_entire_seq       @ acamp](#1k8_vid_entire_seq___acam_p_)
     - [10k6_vid_entire_seq       @ acamp](#10k6_vid_entire_seq___acam_p_)
+    - [1k8_vid_entire_seq_inv       @ acamp](#1k8_vid_entire_seq_inv___acam_p_)
 
 <!-- /MarkdownTOC -->
 
@@ -199,3 +200,7 @@ python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq:proc-0:len-2:strd-1:gz:gap-1
 <a id="10k6_vid_entire_seq___acam_p_"></a>
 ## 10k6_vid_entire_seq       @ acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strd-1:gz:gap-1
+<a id="1k8_vid_entire_seq_inv___acam_p_"></a>
+## 1k8_vid_entire_seq_inv       @ acamp-->xml_to_ytvis
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-1:gz:gap-1
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-2:gz:gap-1
