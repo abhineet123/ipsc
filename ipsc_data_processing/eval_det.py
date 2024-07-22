@@ -87,6 +87,9 @@ class Params(paramparse.CFG):
         self.img_paths_suffix = ''
         self.img_root_dir = ''
         self.all_img_dirs = 1
+        
+        self.load_samples = []
+        self.load_samples_root = ''
 
         self.iou_thresh = 0.25
         self.labels_root = 'lists/classes/'
@@ -217,6 +220,7 @@ def evaluate(
         class_name_to_col: dict,
         img_start_id=-1,
         img_end_id=-1,
+        seq_to_samples=None,
         _gt_data_dict=None,
         raw_det_data_dict=None,
         eval_result_dict=None,
@@ -3126,6 +3130,14 @@ def run(params, *argv):
     nms_thresh = params.nms_thresh  # type: float
     labels_path = params.labels_path
 
+    load_samples = params.load_samples
+    load_samples_root = params.load_samples_root
+    if len(load_samples) == 1:
+        if load_samples[0] == 1:
+            load_samples = ['seq_to_samples.txt', ]
+        elif load_samples[0] == 0:
+            load_samples = []
+
     if params.labels_root:
         labels_path = utils.linux_path(params.labels_root, labels_path)
 
@@ -3133,10 +3145,10 @@ def run(params, *argv):
     assert os.path.isfile(labels_path), f"invalid labels_path: {labels_path}"
 
     gt_paths = params.gt_paths
-    img_path_list_file = params.img_paths
+    seq_path_list_file = params.img_paths
 
     if params.img_paths_suffix:
-        img_path_list_file = utils.add_suffix(img_path_list_file, params.img_paths_suffix)
+        seq_path_list_file = utils.add_suffix(seq_path_list_file, params.img_paths_suffix)
 
     _det_path_list_file = params.det_paths
     if det_nms > 0:
@@ -3199,44 +3211,49 @@ def run(params, *argv):
         print('Using automatically generated suffix in the absence of a custom one')
         params.auto_suffix = 1
 
-    img_path_list_file_temp = img_path_list_file
-    if params.img_root_dir:
-        img_path_list_file_temp = utils.linux_path(params.img_root_dir, img_path_list_file_temp)
+    seq_to_samples = None
 
-    if os.path.isdir(img_path_list_file_temp):
-        if params.all_img_dirs:
-            img_path_list = [utils.linux_path(img_path_list_file_temp, name) for name in
-                             os.listdir(img_path_list_file_temp)
-                             if
-                             os.path.isdir(utils.linux_path(img_path_list_file_temp, name))]
-            img_path_list.sort(key=utils.sortKey)
-        else:
-            img_path_list = [img_path_list_file_temp, ]
-        img_path_list_file_temp = os.path.abspath(img_path_list_file_temp)
-
-        if params.auto_suffix:
-            db_name = os.path.basename(img_path_list_file_temp)
-            db_root_name = os.path.basename(os.path.dirname(img_path_list_file_temp))
-            out_dir_name = f'{out_dir_name}_{db_root_name}_{db_name}'
-
-    elif os.path.isfile(img_path_list_file):
-        img_path_list = utils.file_lines_to_list(img_path_list_file)
-        if img_root_dir:
-            img_path_list = [utils.linux_path(img_root_dir, name) for name in img_path_list]
-        if params.auto_suffix:
-            db_name = os.path.splitext(os.path.basename(img_path_list_file))[0]
-            out_dir_name = f'{out_dir_name}_{db_name}'
-
+    if load_samples:
+        seq_path_list, seq_to_samples = utils.load_samples_from_txt(load_samples, None, load_samples_root)
     else:
-        raise IOError('invalid img_path_list_file: {}'.format(img_path_list_file))
+        seq_path_list_file_temp = seq_path_list_file
+        if params.img_root_dir:
+            seq_path_list_file_temp = utils.linux_path(params.img_root_dir, seq_path_list_file_temp)
 
-    print(f'img_path_list:\n{utils.to_str(img_path_list)}\n')
+        if os.path.isdir(seq_path_list_file_temp):
+            if params.all_img_dirs:
+                seq_path_list = [utils.linux_path(seq_path_list_file_temp, name) for name in
+                                 os.listdir(seq_path_list_file_temp)
+                                 if
+                                 os.path.isdir(utils.linux_path(seq_path_list_file_temp, name))]
+                seq_path_list.sort(key=utils.sortKey)
+            else:
+                seq_path_list = [seq_path_list_file_temp, ]
+            seq_path_list_file_temp = os.path.abspath(seq_path_list_file_temp)
+
+            if params.auto_suffix:
+                db_name = os.path.basename(seq_path_list_file_temp)
+                db_root_name = os.path.basename(os.path.dirname(seq_path_list_file_temp))
+                out_dir_name = f'{out_dir_name}_{db_root_name}_{db_name}'
+
+        elif os.path.isfile(seq_path_list_file):
+            seq_path_list = utils.file_lines_to_list(seq_path_list_file)
+            if img_root_dir:
+                seq_path_list = [utils.linux_path(img_root_dir, name) for name in seq_path_list]
+            if params.auto_suffix:
+                db_name = os.path.splitext(os.path.basename(seq_path_list_file))[0]
+                out_dir_name = f'{out_dir_name}_{db_name}'
+
+        else:
+            raise IOError('invalid seq_path_list_file: {}'.format(seq_path_list_file))
+
+    print(f'seq_path_list:\n{utils.to_str(seq_path_list)}\n')
 
     if params.gt_csv_suffix:
         params.gt_csv_name = utils.add_suffix(params.gt_csv_name, params.gt_csv_suffix)
 
     if not gt_paths:
-        gt_path_list = [utils.linux_path(img_path, params.gt_csv_name) for img_path in img_path_list]
+        gt_path_list = [utils.linux_path(img_path, params.gt_csv_name) for img_path in seq_path_list]
     elif gt_paths.endswith('.csv'):
         if not os.path.isfile(gt_paths) and gt_root_dir:
             gt_paths = utils.linux_path(gt_root_dir, gt_paths)
@@ -3276,10 +3293,10 @@ def run(params, *argv):
             all_detection_names.append(detection_names)
         _det_path_list_file = ''
 
-    n_seq = len(img_path_list)
+    n_seq = len(seq_path_list)
     n_gts = len(gt_path_list)
 
-    assert n_seq == n_gts, f"mismatch between len of img_path_list: {n_seq} and gt_path_list: {n_gts}"
+    assert n_seq == n_gts, f"mismatch between len of seq_path_list: {n_seq} and gt_path_list: {n_gts}"
 
     if end_id < start_id:
         end_id = n_seq - 1
@@ -3310,13 +3327,13 @@ def run(params, *argv):
 
     for _detection_names in all_detection_names:
 
-        _img_path_list = img_path_list[start_id:end_id + 1]
+        _img_path_list = seq_path_list[start_id:end_id + 1]
 
         det_path_list_file = _det_path_list_file
 
         if not det_path_list_file:
             det_path_list = [[utils.linux_path(img_path, detection_name) for detection_name in _detection_names]
-                             for img_path in img_path_list]
+                             for img_path in seq_path_list]
         elif det_path_list_file.endswith('.csv'):
             det_path_list = [det_path_list_file, ]
         elif os.path.isdir(det_path_list_file):
@@ -3336,14 +3353,14 @@ def run(params, *argv):
 
         if n_seq != n_dets:
             if len(_img_path_list) == n_dets:
-                print(f'n_dets = curtailed img_path_list = {n_dets} so assuming it is already curtailed')
+                print(f'n_dets = curtailed seq_path_list = {n_dets} so assuming it is already curtailed')
             elif 0 < n_dets < n_seq and params.allow_missing_dets and not params.combine_dets:
                 det_seq_names = [os.path.splitext(os.path.basename(k))[0]
                                  for k in det_path_list]
                 assert len(set(det_seq_names)) == n_dets, "missing dets can only be handled when det file names " \
                                                           "are sequence names"
 
-                img_seq_names = [os.path.basename(k) for k in img_path_list]
+                img_seq_names = [os.path.basename(k) for k in seq_path_list]
                 missing_det_seq_names = list(set(img_seq_names) - set(det_seq_names))
                 print(
                     f"\n\ncreating empty det files for {len(missing_det_seq_names)} missing sequences:\n"
@@ -3446,6 +3463,7 @@ def run(params, *argv):
                     out_root_dir=img_out_root_dir,
                     img_start_id=img_id,
                     img_end_id=img_id,
+                    seq_to_samples=seq_to_samples,
                     class_name_to_col=class_name_to_col,
                     fps_to_gt=params.fps_to_gt,
                     show_pbar=params.show_pbar,
@@ -3524,6 +3542,7 @@ def run(params, *argv):
                 class_name_to_col=class_name_to_col,
                 img_start_id=img_start_id,
                 img_end_id=img_end_id,
+                seq_to_samples=seq_to_samples,
                 fps_to_gt=params.fps_to_gt,
                 show_pbar=params.show_pbar,
             )

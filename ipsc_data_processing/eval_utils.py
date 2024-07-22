@@ -1201,14 +1201,15 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
             curr_seq_to_samples = ast.literal_eval(fid.read())
             # curr_seq_to_samples = json.load(fid)
         for _seq in curr_seq_to_samples:
-            _dir_img_names = [(os.path.dirname(_sample), os.path.splitext(os.path.basename(_sample))[0])
-                              for _sample in curr_seq_to_samples[_seq]]
-            curr_seq_to_samples[_seq] = [os.path.join(_dir_name, xml_dir_name, f'{_img_name}.xml')
-                                         for _dir_name, _img_name in _dir_img_names]
-            # curr_seq_to_samples[_seq] = [
-            #     '.xml'.join(_sample.rsplit('.jpg', 1))
-            #     for _sample in  curr_seq_to_samples[_seq]
-            # ]
+            if xml_dir_name is not None:
+                _dir_img_names = [(os.path.dirname(_sample), os.path.splitext(os.path.basename(_sample))[0])
+                                  for _sample in curr_seq_to_samples[_seq]]
+                curr_seq_to_samples[_seq] = [os.path.join(_dir_name, xml_dir_name, f'{_img_name}.xml')
+                                             for _dir_name, _img_name in _dir_img_names]
+                # curr_seq_to_samples[_seq] = [
+                #     '.xml'.join(_sample.rsplit('.jpg', 1))
+                #     for _sample in  curr_seq_to_samples[_seq]
+                # ]
             if _seq in seq_to_samples:
                 seq_to_samples[_seq] += curr_seq_to_samples[_seq]
             else:
