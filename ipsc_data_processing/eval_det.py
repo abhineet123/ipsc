@@ -479,10 +479,13 @@ def evaluate(
         else:
             seq_img_dir = seq_path
 
-        seq_img_gen = [[os.path.join(dirpath, f) for f in filenames if
-                        os.path.splitext(f.lower())[1][1:] in img_exts]
-                       for (dirpath, dirnames, filenames) in os.walk(seq_img_dir, followlinks=True)]
-        seq_img_paths = [item for sublist in seq_img_gen for item in sublist]
+        if seq_to_samples is not None:
+            seq_img_paths = seq_to_samples[seq_path]
+        else:
+            seq_img_gen = [[os.path.join(dirpath, f) for f in filenames if
+                            os.path.splitext(f.lower())[1][1:] in img_exts]
+                           for (dirpath, dirnames, filenames) in os.walk(seq_img_dir, followlinks=True)]
+            seq_img_paths = [item for sublist in seq_img_gen for item in sublist]
 
         seq_img_name_to_path = {
             os.path.basename(seq_img_path): seq_img_path for seq_img_path in seq_img_paths
@@ -3327,7 +3330,7 @@ def run(params, *argv):
 
     for _detection_names in all_detection_names:
 
-        _img_path_list = seq_path_list[start_id:end_id + 1]
+        _seq_path_list = seq_path_list[start_id:end_id + 1]
 
         det_path_list_file = _det_path_list_file
 
@@ -3352,7 +3355,7 @@ def run(params, *argv):
             n_dets = 1
 
         if n_seq != n_dets:
-            if len(_img_path_list) == n_dets:
+            if len(_seq_path_list) == n_dets:
                 print(f'n_dets = curtailed seq_path_list = {n_dets} so assuming it is already curtailed')
             elif 0 < n_dets < n_seq and params.allow_missing_dets and not params.combine_dets:
                 det_seq_names = [os.path.splitext(os.path.basename(k))[0]
@@ -3412,7 +3415,7 @@ def run(params, *argv):
         ]
 
         if params.check_seq_name:
-            img_seq_names = [os.path.basename(x) for x in _img_path_list]
+            img_seq_names = [os.path.basename(x) for x in _seq_path_list]
             img_temp = sorted(enumerate(img_seq_names), key=lambda x: x[1])
             img_seq_names_idx, img_seq_names = zip(*img_temp)
 
@@ -3428,7 +3431,7 @@ def run(params, *argv):
             assert img_seq_names == gt_seq_names, "mismatch between img_seq_names and gt_seq_names"
             assert img_seq_names == det_seq_names, "mismatch between img_seq_names and det_seq_names"
 
-            _img_path_list = [_img_path_list[i] for i in img_seq_names_idx]
+            _seq_path_list = [_seq_path_list[i] for i in img_seq_names_idx]
             gt_path_list = [gt_path_list[i] for i in gt_seq_names_idx]
             det_path_list = [det_path_list[i] for i in det_seq_names_idx]
 
@@ -3456,7 +3459,7 @@ def run(params, *argv):
 
                 img_eval_dict = evaluate(
                     params=params,
-                    seq_paths=_img_path_list,
+                    seq_paths=_seq_path_list,
                     gt_path_list=gt_path_list,
                     all_seq_det_paths=det_path_list,
                     gt_classes=gt_classes,
@@ -3534,7 +3537,7 @@ def run(params, *argv):
 
             eval_dict = evaluate(
                 params=params,
-                seq_paths=_img_path_list,
+                seq_paths=_seq_path_list,
                 gt_path_list=gt_path_list,
                 all_seq_det_paths=det_path_list,
                 gt_classes=gt_classes,
