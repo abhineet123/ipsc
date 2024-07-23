@@ -894,19 +894,30 @@ def evaluate(
                             )
                         out_csv_rows.append(csv_row)
                     det_dir, det_name = os.path.dirname(det_paths[0]), os.path.basename(det_paths[0])
-                    out_det_dir = utils.add_suffix(det_dir, f'nms_{int(params.nms_thresh * 100):02d}')
-                    os.makedirs(out_det_dir, exist_ok=True)
 
-                    out_det_path = os.path.join(out_det_dir, det_name)
-                    csv_columns = [
-                        "ImageID", "LabelName",
-                        "XMin", "XMax", "YMin", "YMax", "Confidence",
-                    ]
-                    if params.enable_mask:
-                        csv_columns += ['mask_w', 'mask_h', 'mask_counts']
-                    df = pd.DataFrame(out_csv_rows, columns=csv_columns)
-                    print(f'writing nms {params.nms_thresh} results to {out_det_path}')
-                    df.to_csv(out_det_path, index=False)
+                    out_suffix = []
+                    if params.vid_nms_thresh > 0:
+                        out_suffix.append(f'vnms_{int(params.vid_nms_thresh * 100):02d}')
+
+                    if params.nms_thresh > 0:
+                        out_suffix.append(f'nms_{int(params.nms_thresh * 100):02d}')
+
+                    if out_suffix:
+                        out_suffix = '_'.join(out_suffix)
+                        out_det_dir = utils.add_suffix(det_dir, out_suffix)
+
+                        os.makedirs(out_det_dir, exist_ok=True)
+                        out_det_path = os.path.join(out_det_dir, det_name)
+                        csv_columns = [
+                            "ImageID", "LabelName",
+                            "XMin", "XMax", "YMin", "YMax", "Confidence",
+                            'VideoID'
+                        ]
+                        if params.enable_mask:
+                            csv_columns += ['mask_w', 'mask_h', 'mask_counts']
+                        df = pd.DataFrame(out_csv_rows, columns=csv_columns)
+                        print(f'writing postproc results to {out_det_path}')
+                        df.to_csv(out_det_path, index=False)
                 else:
                     print(f'n_det_paths: {n_det_paths}')
 
