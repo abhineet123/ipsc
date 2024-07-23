@@ -87,7 +87,7 @@ class Params(paramparse.CFG):
         self.img_paths_suffix = ''
         self.img_root_dir = ''
         self.all_img_dirs = 1
-        
+
         self.load_samples = []
         self.load_samples_root = ''
 
@@ -95,7 +95,8 @@ class Params(paramparse.CFG):
         self.labels_root = 'lists/classes/'
         self.labels_path = ''
 
-        self.out_root_dir = f'/data/mAP'
+        self.out_root_dir = '/data/mAP'
+        self.out_root_suffix = []
 
         self.no_animation = False
         self.no_plot = False
@@ -160,7 +161,7 @@ class Params(paramparse.CFG):
 
         self.vid_det = 0
 
-        self.n_proc = 1
+        self.n_proc = 12
 
         self.save_vis = 0
         self.save_classes = []
@@ -182,17 +183,11 @@ class Params(paramparse.CFG):
         self.nms_thresh = [0., ]
         self.vid_nms_thresh = [0., ]
 
-        self._sweep_mode = 0
-
         self._sweep_params = [
             'det_nms',
             'nms_thresh',
             'vid_nms_thresh',
         ]
-
-    @property
-    def sweep_mode(self):
-        return self._sweep_mode
 
     @property
     def sweep_params(self):
@@ -863,7 +858,6 @@ def evaluate(
                         vid_nms_thresh=params.vid_nms_thresh
                     )
                     seq_bbox_ids_to_delete += img_bbox_ids_to_delete
-
 
                 # n_bbox_ids_to_delete = len(bbox_ids_to_delete)
                 # n_total_bbox_ids = len(seq_det_bboxes_list)
@@ -3126,20 +3120,13 @@ def evaluate(
         return text_table
 
 
-def run(params, *argv):
-    """
-
-    :param Params params:
-    :param argv:
-    :return:
-    """
+def run(params: Params, sweep_mode: dict, *argv):
     params = copy.deepcopy(params)
 
     for i, sweep_param in enumerate(params.sweep_params):
 
         if argv[i] is not None:
             setattr(params, sweep_param, argv[i])
-            params._sweep_mode = 1
 
         param_val = getattr(params, sweep_param)
 
@@ -3212,20 +3199,21 @@ def run(params, *argv):
     save_suffix = params.save_suffix
     save_suffix = save_suffix.replace(':', '-')
 
-    assert det_nms == 0 or nms_thresh == 0, "both nms_thresh and det_nms should not be nonzero"
+    assert det_nms == 0 or nms_thresh == 0, "both nms_thresh and det_nms cannot be nonzero"
 
     sweep_suffixes = []
 
-    if det_nms > 0 or params.sweep_mode:
+    if det_nms > 0 or sweep_mode['det_nms']:
         sweep_suffixes.append(f'nms_{int(det_nms * 100):02d}')
 
-    if nms_thresh > 0 or params.sweep_mode:
+    if nms_thresh > 0 or sweep_mode['nms_thresh']:
         sweep_suffixes.append(f'nms_{int(nms_thresh * 100):02d}')
 
-    if vid_nms_thresh > 0 or params.sweep_mode:
+    if vid_nms_thresh > 0 or sweep_mode['vid_nms_thresh']:
         sweep_suffixes.append(f'vnms_{int(vid_nms_thresh * 100):02d}')
 
     sweep_suffix = '-'.join(sweep_suffixes)
+    is_sweep = any(sweep_mode.values())
 
     out_dir_name = None
 
@@ -3237,13 +3225,13 @@ def run(params, *argv):
 
         out_dir_name = f'{save_suffix}'
 
-        if params.sweep_mode:
-            assert sweep_suffix, "sweep_suffix must be non-empty in sweep_mode"
-            out_dir_name = os.path.join(out_dir_name, sweep_suffix)
-        else:
-            out_dir_name = f'{out_dir_name}-{sweep_suffix}'
+        if sweep_suffix:
+            if is_sweep:
+                out_dir_name = os.path.join(out_dir_name, sweep_suffix)
+            else:
+                out_dir_name = f'{out_dir_name}-{sweep_suffix}'
     else:
-        print('Using automatically generated suffix in the absence of a custom one')
+        print('Using automatically generated suffix')
         params.auto_suffix = 1
 
     seq_to_samples = None
@@ -3416,6 +3404,10 @@ def run(params, *argv):
         print(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
 
         # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
+        if params.out_root_suffix:
+            out_root_suffix = '_'.join(params.out_root_suffix)
+            out_dir_name = utils.linux_path(out_root_suffix, out_dir_name)
+            
         out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
         os.makedirs(out_root_dir, exist_ok=True)
 
@@ -3611,8 +3603,11 @@ def main():
         params.class_agnostic = [0, 1]
 
     sweep_vals = []
+    sweep_mode = {}
     for i, sweep_param in enumerate(params.sweep_params):
         param_val = getattr(params, sweep_param)
+
+        sweep_mode[sweep_param] = len(param_val) > 1
 
         sweep_vals.append(param_val)
 
@@ -3636,12 +3631,12 @@ def main():
         print(f'running in parallel over {n_proc} processes')
         # pool = multiprocessing.Pool(n_proc)
         pool = ThreadPool(n_proc)
-        func = functools.partial(run, params)
+        func = functools.partial(run, params, sweep_mode)
 
         pool.starmap(func, sweep_val_combos)
     else:
         for sweep_val_combo in sweep_val_combos:
-            run(params, *sweep_val_combo)
+            run(params, sweep_mode, *sweep_val_combo)
 
 
 if __name__ == '__main__':
