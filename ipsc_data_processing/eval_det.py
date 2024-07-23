@@ -856,7 +856,8 @@ def evaluate(
                 for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
                     img_bbox_ids_to_delete = utils.perform_nms(
                         _bbox_info,
-                        enable_mask=params.enable_mask, nms_thresh=params.nms_thresh,
+                        enable_mask=params.enable_mask,
+                        nms_thresh=params.nms_thresh,
                         vid_nms_thresh=params.vid_nms_thresh
                     )
                     seq_bbox_ids_to_delete += img_bbox_ids_to_delete

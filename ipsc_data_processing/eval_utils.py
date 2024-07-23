@@ -1175,18 +1175,18 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
     return objs_to_delete, global_objs_to_delete
 
 
-def perform_nms(bboxes, enable_mask, nms_thresh, vid_nms_thresh):
+def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh):
     pred_objs = [
         dict(
             local_id=local_id,
-            bbox=bbox_dict['bbox'],
-            mask=bbox_dict['mask'],
-            score=bbox_dict['confidence'],
-            class_=bbox_dict['class'],
-            video_id=bbox_dict['video_id'],
+            bbox=obj['bbox'],
+            mask=obj['mask'],
+            score=obj['confidence'],
+            class_=obj['class'],
+            video_id=obj['video_id'],
             global_id=global_id
         )
-        for local_id, (bbox_dict, global_id) in enumerate(bboxes)
+        for local_id, (obj, global_id) in enumerate(objs)
     ]
 
     pred_obj_pairs = list(itertools.combinations(pred_objs, 2))
