@@ -262,7 +262,7 @@ python3 eval_det.py cfg=ipsc:54_126:det-0:gt-1:nms:agn,p2s:vid:_in_-resnet_640_e
 <a id="49_68___detrac_0_9_resnet_640_vi_d_"></a>
 <a id="on_train___acamp_1k8_vid_entire_seq_resnet_64_0_"></a>
 ### on-train       @ acamp-1k8_vid_entire_seq/resnet-640-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq:nms-0:agn:gt-0:proc-12:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_18/ckpt-77082-1k8_vid_entire_seq-length-2-stride-1/csv-batch_2:_out_-p2s-resnet_640-acamp-1k8_vid_entire_seq-len-2-strd-1-strd-1-train
+python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq:vnms-1:nms-0:agn:gt-0:proc-12:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_18/ckpt-77082-1k8_vid_entire_seq-length-2-stride-1/csv-batch_2:_out_-p2s-resnet_640-acamp-1k8_vid_entire_seq-len-2-strd-1-strd-1-train
 <a id="detrac_0_9___resnet_640_"></a>
 ## detrac-0_9       @ resnet-640-->eval_det_p2s_vid
 <a id="49_68___detrac_0_9_resnet_640_vi_d_"></a>

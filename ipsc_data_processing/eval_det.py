@@ -810,8 +810,10 @@ def evaluate(
                         try:
                             video_id = int(row['video_id'])
                         except KeyError:
-                            assert not params.vid_det, "vid_det csv must have video_id"
                             video_id = -1
+
+                        if params.vid_det:
+                            assert video_id >= 0, "vid_det csv must have valid video_id"
 
                         bbox_dict = {
                             "class": det_class,
@@ -3149,13 +3151,13 @@ def run(params, *argv):
     print('img_paths', params.img_paths)
     print('labels_path', params.labels_path)
 
-    if params.vid_nms_thresh > 0:
-        assert params.vid_det, "vid_nms can only be performed with vid_det data"
-
-
     det_nms = params.det_nms  # type: float
     nms_thresh = params.nms_thresh  # type: float
+    vid_nms_thresh = params.vid_nms_thresh  # type: float
     labels_path = params.labels_path
+
+    if vid_nms_thresh > 0:
+        assert params.vid_det, "vid_nms can only be performed with vid_det data"
 
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
@@ -3209,15 +3211,21 @@ def run(params, *argv):
 
     save_suffix = params.save_suffix
     save_suffix = save_suffix.replace(':', '-')
-    sweep_suffix = ''
 
     assert det_nms == 0 or nms_thresh == 0, "both nms_thresh and det_nms should not be nonzero"
 
+    sweep_suffixes = []
+
     if det_nms > 0 or params.sweep_mode:
-        sweep_suffix = f'nms_{int(det_nms * 100):02d}'
+        sweep_suffixes.append(f'nms_{int(det_nms * 100):02d}')
 
     if nms_thresh > 0 or params.sweep_mode:
-        sweep_suffix = f'nms_{int(nms_thresh * 100):02d}'
+        sweep_suffixes.append(f'nms_{int(nms_thresh * 100):02d}')
+
+    if vid_nms_thresh > 0 or params.sweep_mode:
+        sweep_suffixes.append(f'vnms_{int(vid_nms_thresh * 100):02d}')
+
+    sweep_suffix = '-'.join(sweep_suffixes)
 
     out_dir_name = None
 
