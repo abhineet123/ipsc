@@ -158,7 +158,7 @@ class Params(paramparse.CFG):
         self.compute_rec_prec = 1
         self.img_dir_name = ''
 
-        self.vid_nms = 0
+        self.vid_det = 0
 
         self.n_proc = 1
 
@@ -180,12 +180,14 @@ class Params(paramparse.CFG):
         self.monitor_scale = 1.25
 
         self.nms_thresh = [0., ]
+        self.vid_nms_thresh = [0., ]
 
         self._sweep_mode = 0
 
         self._sweep_params = [
             'det_nms',
             'nms_thresh',
+            'vid_nms_thresh',
         ]
 
     @property
@@ -452,6 +454,7 @@ def evaluate(
             # assert len(gt_seq_names) == len(unique_gt_seq_names), "unable to find gt_seq_names"
 
         csv_rename_dict = {
+            'VideoID': 'video_id',
             'ImageID': 'filename',
             'XMin': 'xmin',
             'YMin': 'ymin',
@@ -708,6 +711,7 @@ def evaluate(
                 # df_dets.append(_df_det)
 
                 # df_det = pd.concat(df_dets, axis=0)
+
                 if fix_det_cols:
                     df_det = df_det.rename(columns=csv_rename_dict)
 
@@ -806,6 +810,7 @@ def evaluate(
                         try:
                             video_id = int(row['video_id'])
                         except KeyError:
+                            assert not params.vid_det, "vid_det csv must have video_id"
                             video_id = -1
 
                         bbox_dict = {
@@ -846,19 +851,22 @@ def evaluate(
 
                             det_pbar.set_description(det_pbar_msg)
 
-            if params.nms_thresh > 0:
-                bbox_ids_to_delete = []
+            if params.nms_thresh > 0 or params.vid_nms_thresh > 0:
+                seq_bbox_ids_to_delete = []
                 for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
-                    bbox_ids_to_delete += utils.perform_nms(
-                        _det_filename, _bbox_info,
-                        enable_mask=params.enable_mask, nms_thresh=params.nms_thresh
+                    img_bbox_ids_to_delete = utils.perform_nms(
+                        _bbox_info,
+                        enable_mask=params.enable_mask, nms_thresh=params.nms_thresh,
+                        vid_nms_thresh=params.vid_nms_thresh
                     )
+                    seq_bbox_ids_to_delete += img_bbox_ids_to_delete
+
 
                 # n_bbox_ids_to_delete = len(bbox_ids_to_delete)
                 # n_total_bbox_ids = len(seq_det_bboxes_list)
                 # print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
 
-                seq_det_bboxes_list = [k for i, k in enumerate(seq_det_bboxes_list) if i not in bbox_ids_to_delete]
+                seq_det_bboxes_list = [k for i, k in enumerate(seq_det_bboxes_list) if i not in seq_bbox_ids_to_delete]
 
                 if n_det_paths == 1:
                     out_csv_rows = []
@@ -3129,6 +3137,10 @@ def run(params, *argv):
     print('img_paths', params.img_paths)
     print('labels_path', params.labels_path)
 
+    if params.vid_nms_thresh > 0:
+        assert params.vid_det, "vid_nms can only be performed with vid_det data"
+
+
     det_nms = params.det_nms  # type: float
     nms_thresh = params.nms_thresh  # type: float
     labels_path = params.labels_path
@@ -3575,11 +3587,11 @@ def main():
     paramparse.process(params)
 
     if params.class_agnostic == 2:
-        params._sweep_params.append('class_agnostic')
+        params.sweep_params.append('class_agnostic')
         params.class_agnostic = [0, 1]
 
     sweep_vals = []
-    for i, sweep_param in enumerate(params._sweep_params):
+    for i, sweep_param in enumerate(params.sweep_params):
         param_val = getattr(params, sweep_param)
 
         sweep_vals.append(param_val)

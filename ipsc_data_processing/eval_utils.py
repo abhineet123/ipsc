@@ -1132,10 +1132,61 @@ def to_str(iter_, sep='\n'):
     return sep.join(iter_)
 
 
-def perform_nms(_det_filename, _bbox_info, enable_mask, nms_thresh):
+def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
+                            filter_ids=None,
+                            objs_to_delete=None, global_objs_to_delete=None):
+    if objs_to_delete is None:
+        objs_to_delete = []
+        assert global_objs_to_delete is None, "either both or neither of objs_to_delete must be None"
+        global_objs_to_delete = []
+
+    for pair_id, pred_obj_pair in enumerate(pred_obj_pairs):
+        if filter_ids is not None and pair_id not in filter_ids:
+            continue
+
+        obj1, obj2 = pred_obj_pair
+
+        # local_id1, bbox1, mask1, score1, label1, vid_id1, global_id1 = obj1
+        # local_id2, bbox2, mask2, score2, label2, vid_id2, global_id2 = obj2
+
+        assert obj1['local_id'] != obj2['local_id'], "invalid object pair with identical IDs"
+
+        if obj1['local_id'] in objs_to_delete or obj2['local_id'] in objs_to_delete:
+            continue
+
+        if enable_mask:
+            pred_iou = get_mask_iou(obj1['mask'], obj2['mask'], obj1['bbox'], obj2['bbox'])
+        else:
+            pred_iou = get_iou(obj1['bbox'], obj2['bbox'], xywh=False)
+
+            # mask_iou2 = get_mask_iou(mask1, mask2, bbox1, bbox2, giou=False)
+            # assert pred_iou == mask_iou2, "mask_iou2 mismatch found"
+
+        if pred_iou >= nms_thresh:
+            # print(f'found matching object pair with iou {pred_iou:.3f}')
+            if obj1['score'] > obj2['score']:
+                objs_to_delete.append(obj2['local_id'])
+                global_objs_to_delete.append(obj2['global_id'])
+                # print(f'removing obj {local_id2} with score {score2} < {score1}')
+            else:
+                objs_to_delete.append(obj1['local_id'])
+                global_objs_to_delete.append(obj1['global_id'])
+                # print(f'removing obj {local_id1} with score {score1} < {score2}')
+    return objs_to_delete, global_objs_to_delete
+
+
+def perform_nms(bboxes, enable_mask, nms_thresh, vid_nms_thresh):
     pred_objs = [
-        (local_id, bbox_dict['bbox'], bbox_dict['mask'], bbox_dict['confidence'], bbox_dict['class'], global_id)
-        for local_id, (bbox_dict, global_id) in enumerate(_bbox_info)
+        dict(
+            local_id=local_id,
+            bbox=bbox_dict['bbox'],
+            mask=bbox_dict['mask'],
+            score=bbox_dict['confidence'],
+            class_=bbox_dict['class'],
+            video_id=bbox_dict['video_id'],
+            global_id=global_id
+        )
+        for local_id, (bbox_dict, global_id) in enumerate(bboxes)
     ]
 
     pred_obj_pairs = list(itertools.combinations(pred_objs, 2))
@@ -1143,35 +1194,22 @@ def perform_nms(_det_filename, _bbox_info, enable_mask, nms_thresh):
     objs_to_delete = []
     global_objs_to_delete = []
 
-    for pred_obj_pair in pred_obj_pairs:
-        obj1, obj2 = pred_obj_pair
+    if vid_nms_thresh > 0:
+        vid_pair_ids = [pair_id for pair_id, (obj1, obj2) in enumerate(pred_obj_pairs)
+                        if obj1['video_id'] != obj2['video_id']]
+        find_matching_obj_pairs(
+            pred_obj_pairs, enable_mask, vid_nms_thresh,
+            filter_ids=vid_pair_ids,
+            objs_to_delete=objs_to_delete,
+            global_objs_to_delete=global_objs_to_delete,
+        )
 
-        idx1, bbox1, mask1, score1, label1, global_id1 = obj1
-        idx2, bbox2, mask2, score2, label2, global_id2 = obj2
-
-        assert idx1 != idx2, "invalid object pair with identical IDs"
-
-        if idx1 in objs_to_delete or idx2 in objs_to_delete:
-            continue
-
-        if enable_mask:
-            pred_iou = get_mask_iou(mask1, mask2, bbox1, bbox2)
-        else:
-            pred_iou = get_iou(bbox1, bbox2, xywh=False)
-
-            # mask_iou2 = get_mask_iou(mask1, mask2, bbox1, bbox2, giou=False)
-            # assert pred_iou == mask_iou2, "mask_iou2 mismatch found"
-
-        if pred_iou >= nms_thresh:
-            # print(f'found matching object pair with iou {pred_iou:.3f}')
-            if score1 > score2:
-                objs_to_delete.append(idx2)
-                global_objs_to_delete.append(global_id2)
-                # print(f'removing obj {idx2} with score {score2} < {score1}')
-            else:
-                objs_to_delete.append(idx1)
-                global_objs_to_delete.append(global_id1)
-                # print(f'removing obj {idx1} with score {score1} < {score2}')
+    if nms_thresh > 0:
+        find_matching_obj_pairs(
+            pred_obj_pairs, enable_mask, nms_thresh,
+            objs_to_delete=objs_to_delete,
+            global_objs_to_delete=global_objs_to_delete,
+        )
 
     return global_objs_to_delete
 
@@ -1179,12 +1217,13 @@ def perform_nms(_det_filename, _bbox_info, enable_mask, nms_thresh):
 def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
 
+
 def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
     from pprint import pformat
     from collections import OrderedDict
     import ast
 
-    seq_to_samples=OrderedDict()
+    seq_to_samples = OrderedDict()
 
     # if load_samples == '1':
     #     load_samples = 'seq_to_samples.txt'
@@ -1218,6 +1257,7 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
     seq_to_samples = {_seq: seq_to_samples[_seq] for _seq in seq_paths}
 
     return seq_paths, seq_to_samples
+
 
 def add_suffix(src_path, suffix, dst_ext='', sep='_'):
     # abs_src_path = os.path.abspath(src_path)
