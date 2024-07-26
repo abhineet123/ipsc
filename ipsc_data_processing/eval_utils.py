@@ -1128,6 +1128,11 @@ def profile(_id, _times=None, _rel_times=None, enable=1, show=1, _fps=None):
                     _rel_times[__id] = rel__time
 
 
+def print_with_time(*argv):
+    time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
+    print(f'{time_stamp}:', *argv)
+
+
 def to_str(iter_, sep='\n'):
     return sep.join(iter_)
 

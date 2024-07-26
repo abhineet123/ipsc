@@ -178,6 +178,7 @@ sudo nvidia-smi -i 2 -pl 120
 
 sudo nvidia-smi -i 0,1,2 -pl 150
 sudo nvidia-smi -i 0,1,2 -pl 170
+sudo nvidia-smi -i 0,1,2 -pl 200
 
 sudo nvidia-smi -i 0,1 -pl 100
 sudo nvidia-smi -i 0,1 -pl 150

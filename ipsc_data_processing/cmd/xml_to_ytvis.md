@@ -188,7 +188,7 @@ python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-3:strd-3:gap-1:mask-0:proc-1
 <a id="len_6___54_126_ips_c_"></a>
 ### len-6       @ 54_126/ipsc-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-1:gap-1:mask-0:proc-1:zip-0 
-python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0 
+python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strds-6:gap-1:mask-0:proc-1:zip-0 
 <a id="sample_8___len_6_54_126_ips_c_"></a>
 #### sample-8       @ len-6/54_126/ipsc-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:2_class:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0:sample-8 

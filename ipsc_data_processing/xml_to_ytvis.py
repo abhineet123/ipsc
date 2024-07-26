@@ -98,6 +98,8 @@ class Params(paramparse.CFG):
 
         self.vis = 0
 
+        self.strides = []
+
 
 def offset_target_ids(vid_to_target_ids, annotations, set_type):
     print(f'adding offsets to {set_type} targets IDs')
@@ -826,9 +828,9 @@ def get_xml_files(
             all_train_files.append(train_xml_files)
 
 
-def main():
-    params: Params = paramparse.process(Params)
 
+
+def run(params):
     seq_paths = params.seq_paths
     root_dir = params.root_dir
 
@@ -1255,6 +1257,15 @@ def main():
                     for img_path, img_stat in tqdm(img_path_to_stats.items()):
                         pix_vals_mean, pix_vals_std = img_stat
                         fid.write(f'{img_path}\t{pix_vals_mean}\t{pix_vals_std}\n')
+
+def main():
+    params: Params = paramparse.process(Params)
+    if params.strides:
+        for stride in params.strides:
+            params.stride = stride
+            run(params)
+    else:
+        run(params)
 
 
 if __name__ == '__main__':
