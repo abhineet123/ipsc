@@ -57,7 +57,6 @@ class Params(paramparse.CFG):
     :ivar show_stats: 'None',
     :ivar show_text: 'None',
     :ivar vid_fmt: 'comma separated triple to specify the output video format: codec, FPS, extension',
-    :ivar vis_out_fname: 'file to save the animation result in',
     :ivar a: 'no animation is shown.',
     :ivar p: 'no plot is shown.',
     :ivar eval_sim: evaluate already created simulated detections,
@@ -180,6 +179,7 @@ class Params(paramparse.CFG):
 
         self.monitor_scale = 1.25
 
+        self.vid_stride = []
         self.nms_thresh = [0., ]
         self.vid_nms_thresh = [0., ]
 
@@ -224,6 +224,7 @@ def evaluate(
         fps_to_gt=1,
         json_out_dir=None,
         show_pbar=False,
+        video_ids=None,
 ):
     """general init"""
     if True:
@@ -709,6 +710,9 @@ def evaluate(
 
                 if fix_det_cols:
                     df_det = df_det.rename(columns=csv_rename_dict)
+
+                if video_ids is not None:
+                    df_det = df_det.loc[df_det['video_id'].isin(video_ids)]
 
                 if params.class_agnostic:
                     df_det['class'] = 'agnostic'
@@ -3138,6 +3142,7 @@ def run(params: Params, sweep_mode: dict, *argv):
     print('img_paths', params.img_paths)
     print('labels_path', params.labels_path)
 
+    vid_stride = params.vid_stride  # type: int
     det_nms = params.det_nms  # type: float
     nms_thresh = params.nms_thresh  # type: float
     vid_nms_thresh = params.vid_nms_thresh  # type: float
@@ -3158,7 +3163,9 @@ def run(params: Params, sweep_mode: dict, *argv):
         labels_path = utils.linux_path(params.labels_root, labels_path)
 
     assert labels_path, f"labels_path must be provided"
-    assert os.path.isfile(labels_path), f"invalid labels_path: {labels_path}"
+    assert os.path.isfile(labels_path), f"nonexistent labels_path: {labels_path}"
+
+    video_ids = None
 
     gt_paths = params.gt_paths
     seq_path_list_file = params.img_paths
@@ -3173,14 +3180,26 @@ def run(params: Params, sweep_mode: dict, *argv):
     if params.det_root_dir:
         _det_path_list_file = os.path.join(params.det_root_dir, _det_path_list_file)
 
+    if vid_stride > 0:
+        assert os.path.isdir(_det_path_list_file), "invalid det_path_list_file for vid_stride filtering"
+        assert params.vid_det, "vid_stride filtering can only be performed with vid_det data"
+
+        vid_info_path = utils.linux_path(os.path.dirname(_det_path_list_file), f"vid_info.json.gz")
+        assert os.path.isfile(vid_info_path), f"nonexistent vid_info_path: {vid_info_path}"
+
+        import compress_json
+        vid_info = compress_json.load(vid_info_path)
+        stride_to_video_ids = vid_info['stride_to_video_ids']
+        video_ids = list(map(int, stride_to_video_ids[str(vid_stride)].split(',')))
+
     img_root_dir = params.img_root_dir
     gt_root_dir = params.gt_root_dir
 
     img_start_id = params.img_start_id
     img_end_id = params.img_end_id
 
-    start_id = params.start_id
-    end_id = params.end_id
+    seq_start_id = params.start_id
+    seq_end_id = params.end_id
 
     eval_sim = params.eval_sim
     detection_names = params.detection_names
@@ -3202,6 +3221,9 @@ def run(params: Params, sweep_mode: dict, *argv):
     assert det_nms == 0 or nms_thresh == 0, "both nms_thresh and det_nms cannot be nonzero"
 
     sweep_suffixes = []
+
+    if vid_stride > 0:
+        sweep_suffixes.append(f'strd_{vid_stride:02d}')
 
     if det_nms > 0 or sweep_mode['det_nms']:
         sweep_suffixes.append(f'nms_{int(det_nms * 100):02d}')
@@ -3321,20 +3343,20 @@ def run(params: Params, sweep_mode: dict, *argv):
 
     assert n_seq == n_gts, f"mismatch between len of seq_path_list: {n_seq} and gt_path_list: {n_gts}"
 
-    if end_id < start_id:
-        end_id = n_seq - 1
+    if seq_end_id < seq_start_id:
+        seq_end_id = n_seq - 1
 
     if params.auto_suffix:
         if params.enable_mask:
             out_dir_name = f'{out_dir_name}_mask'
 
         out_dir_name = f'{out_dir_name}_assoc_{params.assoc_method}'
-        out_dir_name = f'{out_dir_name}_{start_id}_{end_id}'
+        out_dir_name = f'{out_dir_name}_{seq_start_id}_{seq_end_id}'
 
         if params.iw:
             out_dir_name = f'{out_dir_name}-iw'
 
-    gt_path_list = gt_path_list[start_id:end_id + 1]
+    gt_path_list = gt_path_list[seq_start_id:seq_end_id + 1]
 
     class_info = open(labels_path, 'r').read().splitlines()
     gt_classes, gt_class_cols = zip(*[k.split('\t') for k in class_info if k])
@@ -3350,7 +3372,7 @@ def run(params: Params, sweep_mode: dict, *argv):
 
     for _detection_names in all_detection_names:
 
-        _seq_path_list = seq_path_list[start_id:end_id + 1]
+        _seq_path_list = seq_path_list[seq_start_id:seq_end_id + 1]
 
         det_path_list_file = _det_path_list_file
 
@@ -3399,7 +3421,7 @@ def run(params: Params, sweep_mode: dict, *argv):
             else:
                 raise AssertionError(f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}")
         else:
-            det_path_list = det_path_list[start_id:end_id + 1]
+            det_path_list = det_path_list[seq_start_id:seq_end_id + 1]
 
         print(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
 
@@ -3407,7 +3429,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         if params.out_root_suffix:
             out_root_suffix = '_'.join(params.out_root_suffix)
             out_dir_name = utils.linux_path(out_root_suffix, out_dir_name)
-            
+
         out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
         os.makedirs(out_root_dir, exist_ok=True)
 
@@ -3494,6 +3516,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                     class_name_to_col=class_name_to_col,
                     fps_to_gt=params.fps_to_gt,
                     show_pbar=params.show_pbar,
+                    video_ids=video_ids,
                 )
                 if img_eval_dict is None:
                     break
@@ -3572,6 +3595,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                 seq_to_samples=seq_to_samples,
                 fps_to_gt=params.fps_to_gt,
                 show_pbar=params.show_pbar,
+                video_ids=video_ids,
             )
             for gt_class in gt_classes:
                 eval_ = eval_dict[gt_class]
@@ -3597,6 +3621,9 @@ def run(params: Params, sweep_mode: dict, *argv):
 def main():
     params = Params()
     paramparse.process(params)
+
+    if params.vid_stride:
+        params.sweep_params.append('vid_stride')
 
     if params.class_agnostic == 2:
         params.sweep_params.append('class_agnostic')

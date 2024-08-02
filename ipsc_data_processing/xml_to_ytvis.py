@@ -81,7 +81,7 @@ class Params(paramparse.CFG):
 
         self.frame_gap = 1
         self.length = 0
-        self.stride = 0
+        self.stride = 1
         self.sample = -1
 
         self.max_length = 0
@@ -828,9 +828,7 @@ def get_xml_files(
             all_train_files.append(train_xml_files)
 
 
-
-
-def run(params):
+def run(params: Params):
     seq_paths = params.seq_paths
     root_dir = params.root_dir
 
@@ -923,7 +921,6 @@ def run(params):
     if params.incremental:
         print(f'saving incremental clips')
         description = f'{description}-incremental'
-
 
     if load_samples:
         seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
@@ -1258,9 +1255,12 @@ def run(params):
                         pix_vals_mean, pix_vals_std = img_stat
                         fid.write(f'{img_path}\t{pix_vals_mean}\t{pix_vals_std}\n')
 
+
 def main():
     params: Params = paramparse.process(Params)
     if params.strides:
+        if len(params.strides) == 1 and params.strides[0] == 0:
+            params.strides = list(range(1, params.length + 1))
         for stride in params.strides:
             params.stride = stride
             run(params)
