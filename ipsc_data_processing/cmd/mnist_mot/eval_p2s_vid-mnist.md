@@ -88,8 +88,6 @@
         - [on-54_126       @ ipsc-16_53-len-2/mid](#on_54_126___ipsc_16_53_len_2_mid_)
             - [stride-1       @ on-54_126/ipsc-16_53-len-2/mid](#stride_1___on_54_126_ipsc_16_53_len_2_mid_)
             - [stride-2       @ on-54_126/ipsc-16_53-len-2/mid](#stride_2___on_54_126_ipsc_16_53_len_2_mid_)
-    - [ipsc-16_53-len-6-aug       @ mid](#ipsc_16_53_len_6_aug___mi_d_)
-        - [on-54_126       @ ipsc-16_53-len-6-aug/mid](#on_54_126___ipsc_16_53_len_6_aug_mid_)
     - [ipsc-16_53-len-6       @ mid](#ipsc_16_53_len_6___mi_d_)
         - [on-train       @ ipsc-16_53-len-6/mid](#on_train___ipsc_16_53_len_6_mid_)
             - [stride-1       @ on-train/ipsc-16_53-len-6/mid](#stride_1___on_train_ipsc_16_53_len_6_mi_d_)
@@ -97,24 +95,16 @@
         - [on-54_126       @ ipsc-16_53-len-6/mid](#on_54_126___ipsc_16_53_len_6_mid_)
             - [stride-1       @ on-54_126/ipsc-16_53-len-6/mid](#stride_1___on_54_126_ipsc_16_53_len_6_mid_)
             - [stride-6       @ on-54_126/ipsc-16_53-len-6/mid](#stride_6___on_54_126_ipsc_16_53_len_6_mid_)
-    - [ipsc-0_37       @ mid](#ipsc_0_37___mi_d_)
-        - [len-2       @ ipsc-0_37/mid](#len_2___ipsc_0_37_mi_d_)
-            - [stride-1       @ len-2/ipsc-0_37/mid](#stride_1___len_2_ipsc_0_37_mi_d_)
-            - [stride-2       @ len-2/ipsc-0_37/mid](#stride_2___len_2_ipsc_0_37_mi_d_)
     - [ipsc-16_53-jtr-res-1280       @ mid](#ipsc_16_53_jtr_res_1280___mi_d_)
         - [on-train       @ ipsc-16_53-jtr-res-1280/mid](#on_train___ipsc_16_53_jtr_res_1280_mi_d_)
-            - [stride-1       @ on-train/ipsc-16_53-jtr-res-1280/mid](#stride_1___on_train_ipsc_16_53_jtr_res_1280_mid_)
-            - [stride-2       @ on-train/ipsc-16_53-jtr-res-1280/mid](#stride_2___on_train_ipsc_16_53_jtr_res_1280_mid_)
         - [on-54_126       @ ipsc-16_53-jtr-res-1280/mid](#on_54_126___ipsc_16_53_jtr_res_1280_mi_d_)
-            - [stride-1       @ on-54_126/ipsc-16_53-jtr-res-1280/mid](#stride_1___on_54_126_ipsc_16_53_jtr_res_1280_mi_d_)
-            - [stride-2       @ on-54_126/ipsc-16_53-jtr-res-1280/mid](#stride_2___on_54_126_ipsc_16_53_jtr_res_1280_mi_d_)
-    - [ipsc-16_53-len-6-jtr-res-1280       @ mid](#ipsc_16_53_len_6_jtr_res_1280___mi_d_)
-        - [on-train       @ ipsc-16_53-len-6-jtr-res-1280/mid](#on_train___ipsc_16_53_len_6_jtr_res_1280_mi_d_)
-            - [stride-1       @ on-train/ipsc-16_53-len-6-jtr-res-1280/mid](#stride_1___on_train_ipsc_16_53_len_6_jtr_res_1280_mid_)
-            - [stride-6       @ on-train/ipsc-16_53-len-6-jtr-res-1280/mid](#stride_6___on_train_ipsc_16_53_len_6_jtr_res_1280_mid_)
-        - [on-54_126       @ ipsc-16_53-len-6-jtr-res-1280/mid](#on_54_126___ipsc_16_53_len_6_jtr_res_1280_mi_d_)
-            - [stride-1       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/mid](#stride_1___on_54_126_ipsc_16_53_len_6_jtr_res_1280_mi_d_)
-            - [stride-2       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/mid](#stride_2___on_54_126_ipsc_16_53_len_6_jtr_res_1280_mi_d_)
+    - [ipsc-16_53-len-6-aug-buggy       @ mid](#ipsc_16_53_len_6_aug_buggy___mi_d_)
+        - [on-train       @ ipsc-16_53-len-6-aug-buggy/mid](#on_train___ipsc_16_53_len_6_aug_buggy_mid_)
+        - [on-54_126       @ ipsc-16_53-len-6-aug-buggy/mid](#on_54_126___ipsc_16_53_len_6_aug_buggy_mid_)
+    - [ipsc-16_53-len-6-aug       @ mid](#ipsc_16_53_len_6_aug___mi_d_)
+        - [on-54_126       @ ipsc-16_53-len-6-aug/mid](#on_54_126___ipsc_16_53_len_6_aug_mid_)
+    - [ipsc-0_37-len-2       @ mid](#ipsc_0_37_len_2___mi_d_)
+        - [on-54_126       @ ipsc-0_37-len-2/mid](#on_54_126___ipsc_0_37_len_2_mi_d_)
 
 <!-- /MarkdownTOC -->
 
@@ -356,7 +346,6 @@ python3 eval_det.py cfg=mnist:640-5:12_1000:test:gt-0:det-0:nms:agn:_in_-resnet_
 ### test-strd-2       @ mnist-640-5/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=mnist:640-5:12_1000:test:gt-1:nms:agn:_in_-resnet_640_mnist_640_5_12_1000_var-length-2-stride-1-train-batch_18/ckpt-581418-mnist_640_5_12_1000_var-length-2-stride-2-test/csv-batch_48:_out_-p2s-resnet_640-mnist-640-5-12-len-2-strd-1-test-strd-2-581418
 
-
 <a id="ipsc_16_53_len_2___mi_d_"></a>
 ## ipsc-16_53-len-2       @ mid-->eval_det_p2s_vid
 <a id="on_train___ipsc_16_53_len_2_mid_"></a>
@@ -375,12 +364,6 @@ python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_e
 <a id="stride_2___on_54_126_ipsc_16_53_len_2_mid_"></a>
 #### stride-2       @ on-54_126/ipsc-16_53-len-2/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_9/ckpt-39751-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_4:_out_-p2s-resnet_640-ipsc-16_53-len-2-strd-2-54_126-39751
-
-<a id="ipsc_16_53_len_6_aug___mi_d_"></a>
-## ipsc-16_53-len-6-aug       @ mid-->eval_det_p2s_vid
-<a id="on_54_126___ipsc_16_53_len_6_aug_mid_"></a>
-### on-54_126       @ ipsc-16_53-len-6-aug/mid-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strd-6:nms-1:vnms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-839630-ext_reorg_roi_g2-54_126-length-6-stride-1/csv-batch_4:_out_-p2s-mid-ipsc-16_53-len-6-aug
 
 <a id="ipsc_16_53_len_6___mi_d_"></a>
 ## ipsc-16_53-len-6       @ mid-->eval_det_p2s_vid
@@ -401,55 +384,51 @@ python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_e
 #### stride-6       @ on-54_126/ipsc-16_53-len-6/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_3/ckpt-176297-ext_reorg_roi_g2-54_126-length-6-stride-6/csv-batch_4:_out_-p2s-resnet_640-ipsc-16_53-len-6-strd-6-54_126-176297
 
-<a id="ipsc_0_37___mi_d_"></a>
-## ipsc-0_37       @ mid-->eval_det_p2s_vid
-<a id="len_2___ipsc_0_37_mi_d_"></a>
-### len-2       @ ipsc-0_37/mid-->eval_det_p2s_vid
-<a id="stride_1___len_2_ipsc_0_37_mi_d_"></a>
-#### stride-1       @ len-2/ipsc-0_37/mid-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-1-54_126-batch_18-133568
-<a id="stride_2___len_2_ipsc_0_37_mi_d_"></a>
-#### stride-2       @ len-2/ipsc-0_37/mid-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-2-54_126-batch_18-133568
-
 <a id="ipsc_16_53_jtr_res_1280___mi_d_"></a>
 ## ipsc-16_53-jtr-res-1280       @ mid-->eval_det_p2s_vid
 <a id="on_train___ipsc_16_53_jtr_res_1280_mi_d_"></a>
 ### on-train       @ ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
-<a id="stride_1___on_train_ipsc_16_53_jtr_res_1280_mid_"></a>
-#### stride-1       @ on-train/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
+`stride-1`       @ on-train/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:16_53:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_9-jtr-res_1280/ckpt-270002-ext_reorg_roi_g2-16_53-length-2-stride-1/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-1-train-270002
-<a id="stride_2___on_train_ipsc_16_53_jtr_res_1280_mid_"></a>
-#### stride-2       @ on-train/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
+`stride-2 `      @ on-train/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:16_53:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_9-jtr-res_1280/ckpt-270002-ext_reorg_roi_g2-16_53-length-2-stride-2/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-2-train-270002
 <a id="on_54_126___ipsc_16_53_jtr_res_1280_mi_d_"></a>
 ### on-54_126       @ ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
-<a id="stride_1___on_54_126_ipsc_16_53_jtr_res_1280_mi_d_"></a>
-#### stride-1       @ on-54_126/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
+`stride-1`       @ on-54_126/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_9-jtr-res_1280/ckpt-270002-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-1-54_126-270002
-<a id="stride_2___on_54_126_ipsc_16_53_jtr_res_1280_mi_d_"></a>
-#### stride-2       @ on-54_126/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
+`stride-2`       @ on-54_126/ipsc-16_53-jtr-res-1280/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_9-jtr-res_1280/ckpt-270002-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-2-strd-2-54_126-270002
 
-<a id="ipsc_16_53_len_6_jtr_res_1280___mi_d_"></a>
-## ipsc-16_53-len-6-jtr-res-1280       @ mid-->eval_det_p2s_vid
-<a id="on_train___ipsc_16_53_len_6_jtr_res_1280_mi_d_"></a>
-### on-train       @ ipsc-16_53-len-6-jtr-res-1280/mid-->eval_det_p2s_vid
-<a id="stride_1___on_train_ipsc_16_53_len_6_jtr_res_1280_mid_"></a>
-#### stride-1       @ on-train/ipsc-16_53-len-6-jtr-res-1280/mid-->eval_det_p2s_vid
+<a id="ipsc_16_53_len_6_aug_buggy___mi_d_"></a>
+## ipsc-16_53-len-6-aug-buggy       @ mid-->eval_det_p2s_vid
+<a id="on_train___ipsc_16_53_len_6_aug_buggy_mid_"></a>
+### on-train       @ ipsc-16_53-len-6-aug-buggy/mid-->eval_det_p2s_vid
+`stride-1`       @ on-train/ipsc-16_53-len-6-aug-buggy/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:16_53:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-16_53-length-6-stride-1/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-6-strd-1-train-530740
-<a id="stride_6___on_train_ipsc_16_53_len_6_jtr_res_1280_mid_"></a>
-#### stride-6       @ on-train/ipsc-16_53-len-6-jtr-res-1280/mid-->eval_det_p2s_vid
+`stride-6`       @ on-train/ipsc-16_53-len-6-aug-buggy/mid-->eval_det_p2s_vid
 python3 eval_det.py cfg=p2s:vid,ipsc:16_53:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-16_53-length-6-stride-6/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-6-strd-6-train-530740
+<a id="on_54_126___ipsc_16_53_len_6_aug_buggy_mid_"></a>
+### on-54_126       @ ipsc-16_53-len-6-aug-buggy/mid-->eval_det_p2s_vid
+python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strd-6:vnms:nms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-54_126-length-6-stride-1/csv-batch_4:_out_-p2s-mid-ipsc-16_53-len-6-aug-strd-6-530740
+`stride-2`       @ on-54_126/ipsc-16_53-len-6-aug-buggy/mid-->eval_det_p2s_vid
+python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-54_126-length-6-stride-6/csv-batch_4:_out_-p2s-mid-ipsc-16_53-len-6-aug-strd-6-530740
 
-<a id="on_54_126___ipsc_16_53_len_6_jtr_res_1280_mi_d_"></a>
-### on-54_126       @ ipsc-16_53-len-6-jtr-res-1280/mid-->eval_det_p2s_vid
-<a id="stride_1___on_54_126_ipsc_16_53_len_6_jtr_res_1280_mi_d_"></a>
-#### stride-1       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/mid-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-54_126-length-6-stride-1/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-6-strd-1-54_126-530740
-<a id="stride_2___on_54_126_ipsc_16_53_len_6_jtr_res_1280_mi_d_"></a>
-#### stride-2       @ on-54_126/ipsc-16_53-len-6-jtr-res-1280/mid-->eval_det_p2s_vid
-python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-530740-ext_reorg_roi_g2-54_126-length-6-stride-6/csv-batch_4:_out_-p2s-resnet_640-jtr-res-1280-ipsc-16_53-len-6-strd-6-54_126-530740
+<a id="ipsc_16_53_len_6_aug___mi_d_"></a>
+## ipsc-16_53-len-6-aug       @ mid-->eval_det_p2s_vid
+<a id="on_54_126___ipsc_16_53_len_6_aug_mid_"></a>
+### on-54_126       @ ipsc-16_53-len-6-aug/mid-->eval_det_p2s_vid
+python3 eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strd-6:vnms:nms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_6-jtr-res_1280/ckpt-839630-ext_reorg_roi_g2-54_126-length-6-stride-1/csv-batch_4:_out_-p2s-mid-ipsc-16_53-len-6-aug
+
+<a id="ipsc_0_37_len_2___mi_d_"></a>
+## ipsc-0_37-len-2       @ mid-->eval_det_p2s_vid
+<a id="on_54_126___ipsc_0_37_len_2_mi_d_"></a>
+### on-54_126       @ ipsc-0_37-len-2/mid-->eval_det_p2s_vid
+`stride-1`      @ len-2/ipsc-0_37/mid-->eval_det_p2s_vid
+python3 eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-1-54_126-batch_18-133568
+`stride-2`       @ len-2/ipsc-0_37/mid-->eval_det_p2s_vid
+python3 eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-2-54_126-batch_18-133568
+
+
 
 
 

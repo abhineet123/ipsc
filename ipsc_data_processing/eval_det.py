@@ -3143,6 +3143,9 @@ def run(params: Params, sweep_mode: dict, *argv):
     print('labels_path', params.labels_path)
 
     vid_stride = params.vid_stride  # type: int
+    if not isinstance(vid_stride, int):
+        vid_stride = 0
+
     det_nms = params.det_nms  # type: float
     nms_thresh = params.nms_thresh  # type: float
     vid_nms_thresh = params.vid_nms_thresh  # type: float
