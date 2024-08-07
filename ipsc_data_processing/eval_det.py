@@ -690,11 +690,10 @@ def evaluate(
                 except pd.errors.EmptyDataError:
                     continue
 
-                df_det_orig = df_det.copy(deep=True)
-                df_det_orig_copy = df_det.copy(deep=True)
+                # df_det_orig = df_det.copy(deep=True)
+                # df_det_orig_copy = df_det.copy(deep=True)
 
                 # df_dets.append(_df_det)
-
                 # df_det = pd.concat(df_dets, axis=0)
 
                 if fix_det_cols:
@@ -703,18 +702,18 @@ def evaluate(
                 if vid_info is not None:
                     seq_to_video_ids, seq_to_filenames = vid_info
                     video_ids = seq_to_video_ids[seq_name]
-                    video_filenames = seq_to_filenames[seq_name]
 
                     video_ids = list(map(int, video_ids.split(',')))
-                    video_filenames = [video_filenames_.split(',') for video_filenames_ in video_filenames]
-
                     df_det = df_det.loc[df_det['video_id'].isin(video_ids)]
 
-                    vid_filtered_csv = utils.add_suffix(_det_path, 'vid_filtered')
-                    print(f'vid_filtered_csv: {vid_filtered_csv}')
-                    df_det.to_csv(vid_filtered_csv, index=False, sep=',')
+                    # video_filenames = seq_to_filenames[seq_name]
+                    # video_filenames = [video_filenames_.split(',') for video_filenames_ in video_filenames]
 
-                df_det_copy = df_det.copy(deep=True)
+                    # vid_filtered_csv = utils.add_suffix(_det_path, 'vid_filtered')
+                    # print(f'vid_filtered_csv: {vid_filtered_csv}')
+                    # df_det.to_csv(vid_filtered_csv, index=False, sep=',')
+
+                # df_det_copy = df_det.copy(deep=True)
 
                 if params.class_agnostic:
                     df_det['class'] = 'agnostic'
