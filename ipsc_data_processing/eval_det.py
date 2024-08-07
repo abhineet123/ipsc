@@ -193,20 +193,6 @@ class Params(paramparse.CFG):
     def sweep_params(self):
         return self._sweep_params
 
-
-def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
-    temp_vis = np.concatenate((src_img,) * mult, axis=1)
-    temp_vis_res = utils.resize_ar_tf_api(temp_vis, save_w, save_h - bottom_border, crop=1)
-    temp_vis_h, temp_vis_w = temp_vis_res.shape[:2]
-
-    vis_h, vis_w = temp_vis_h, int(temp_vis_w / mult)
-
-    assert vis_h <= save_h and vis_w <= save_w, \
-        f"vis size {vis_w} x {vis_h} > save size {save_w} x {save_h}"
-
-    return vis_h, vis_w
-
-
 def evaluate(
         params: Params,
         seq_paths: list[str],
@@ -224,7 +210,7 @@ def evaluate(
         fps_to_gt=1,
         json_out_dir=None,
         show_pbar=False,
-        video_ids=None,
+        vid_info=None,
 ):
     """general init"""
     if True:
@@ -704,6 +690,9 @@ def evaluate(
                 except pd.errors.EmptyDataError:
                     continue
 
+                df_det_orig = df_det.copy(deep=True)
+                df_det_orig_copy = df_det.copy(deep=True)
+
                 # df_dets.append(_df_det)
 
                 # df_det = pd.concat(df_dets, axis=0)
@@ -711,8 +700,21 @@ def evaluate(
                 if fix_det_cols:
                     df_det = df_det.rename(columns=csv_rename_dict)
 
-                if video_ids is not None:
+                if vid_info is not None:
+                    seq_to_video_ids, seq_to_filenames = vid_info
+                    video_ids = seq_to_video_ids[seq_name]
+                    video_filenames = seq_to_filenames[seq_name]
+
+                    video_ids = list(map(int, video_ids.split(',')))
+                    video_filenames = [video_filenames_.split(',') for video_filenames_ in video_filenames]
+
                     df_det = df_det.loc[df_det['video_id'].isin(video_ids)]
+
+                    vid_filtered_csv = utils.add_suffix(_det_path, 'vid_filtered')
+                    print(f'vid_filtered_csv: {vid_filtered_csv}')
+                    df_det.to_csv(vid_filtered_csv, index=False, sep=',')
+
+                df_det_copy = df_det.copy(deep=True)
 
                 if params.class_agnostic:
                     df_det['class'] = 'agnostic'
@@ -1634,9 +1636,9 @@ def evaluate(
                         # src_img = Image.open(img_full_path)
                         # src_h, src_w = src_img.shape[:2]
 
-                        vis_h, vis_w = get_vis_size(src_img, 3, save_w, save_h, bottom_border)
+                        vis_h, vis_w = utils.get_vis_size(src_img, 3, save_w, save_h, bottom_border)
 
-                        vis_h_all, vis_w_all = get_vis_size(src_img, 2, save_w, save_h, bottom_border)
+                        vis_h_all, vis_w_all = utils.get_vis_size(src_img, 2, save_w, save_h, bottom_border)
 
                         # vert_ar = src_w / (src_h * 3)
                         # horz_ar = (src_w * 3) / src_h
@@ -3168,7 +3170,7 @@ def run(params: Params, sweep_mode: dict, *argv):
     assert labels_path, f"labels_path must be provided"
     assert os.path.isfile(labels_path), f"nonexistent labels_path: {labels_path}"
 
-    video_ids = None
+    vid_info = None
 
     gt_paths = params.gt_paths
     seq_path_list_file = params.img_paths
@@ -3190,10 +3192,15 @@ def run(params: Params, sweep_mode: dict, *argv):
         vid_info_path = utils.linux_path(os.path.dirname(_det_path_list_file), f"vid_info.json.gz")
         assert os.path.isfile(vid_info_path), f"nonexistent vid_info_path: {vid_info_path}"
 
+        print(f'loading vid_info from {vid_info_path}')
+
         import compress_json
-        vid_info = compress_json.load(vid_info_path)
-        stride_to_video_ids = vid_info['stride_to_video_ids']
-        video_ids = list(map(int, stride_to_video_ids[str(vid_stride)].split(',')))
+        vid_info_dict = compress_json.load(vid_info_path)
+        stride_to_video_ids = vid_info_dict['stride_to_video_ids']
+        stride_to_filenames = vid_info_dict['stride_to_file_names']
+
+        # seq_to_video_ids = list(map(int, stride_to_video_ids[str(vid_stride)].split(',')))
+        vid_info = [stride_to_video_ids[str(vid_stride)],  stride_to_filenames[str(vid_stride)]]
 
     img_root_dir = params.img_root_dir
     gt_root_dir = params.gt_root_dir
@@ -3519,7 +3526,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                     class_name_to_col=class_name_to_col,
                     fps_to_gt=params.fps_to_gt,
                     show_pbar=params.show_pbar,
-                    video_ids=video_ids,
+                    vid_info=vid_info,
                 )
                 if img_eval_dict is None:
                     break
@@ -3598,7 +3605,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                 seq_to_samples=seq_to_samples,
                 fps_to_gt=params.fps_to_gt,
                 show_pbar=params.show_pbar,
-                video_ids=video_ids,
+                vid_info=vid_info,
             )
             for gt_class in gt_classes:
                 eval_ = eval_dict[gt_class]

@@ -1127,7 +1127,17 @@ def profile(_id, _times=None, _rel_times=None, enable=1, show=1, _fps=None):
                     rel__time = _times[__id] / total_time
                     _rel_times[__id] = rel__time
 
+def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
+    temp_vis = np.concatenate((src_img,) * mult, axis=1)
+    temp_vis_res = resize_ar_tf_api(temp_vis, save_w, save_h - bottom_border, crop=1)
+    temp_vis_h, temp_vis_w = temp_vis_res.shape[:2]
 
+    vis_h, vis_w = temp_vis_h, int(temp_vis_w / mult)
+
+    assert vis_h <= save_h and vis_w <= save_w, \
+        f"vis size {vis_w} x {vis_h} > save size {save_w} x {save_h}"
+
+    return vis_h, vis_w
 def print_with_time(*argv):
     time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
     print(f'{time_stamp}:', *argv)
