@@ -1,18 +1,46 @@
 <!-- MarkdownTOC -->
 
 - [mid](#mid_)
-    - [acamp-1k8_vid_entire_seq       @ mid](#acamp_1k8_vid_entire_seq___mi_d_)
-        - [on-train       @ acamp-1k8_vid_entire_seq/mid](#on_train___acamp_1k8_vid_entire_seq_mid_)
+    - [1k8_vid_entire_seq       @ mid](#1k8_vid_entire_seq___mi_d_)
+        - [on-train       @ 1k8_vid_entire_seq/mid](#on_train___1k8_vid_entire_seq_mid_)
+        - [on-inv       @ 1k8_vid_entire_seq/mid](#on_inv___1k8_vid_entire_seq_mid_)
+    - [1k8_vid_entire_seq-aug       @ mid](#1k8_vid_entire_seq_aug___mi_d_)
+        - [on-inv       @ 1k8_vid_entire_seq-aug/mid](#on_inv___1k8_vid_entire_seq_aug_mid_)
+    - [10k6_vid_entire_seq-aug       @ mid](#10k6_vid_entire_seq_aug___mi_d_)
+        - [on-inv       @ 10k6_vid_entire_seq-aug/mid](#on_inv___10k6_vid_entire_seq_aug_mi_d_)
+    - [20k6_5_video-aug       @ mid](#20k6_5_video_aug___mi_d_)
+        - [on-inv       @ 20k6_5_video-aug/mid](#on_inv___20k6_5_video_aug_mid_)
 
 <!-- /MarkdownTOC -->
 <a id="mid_"></a>
 # mid
-<a id="acamp_1k8_vid_entire_seq___mi_d_"></a>
-## acamp-1k8_vid_entire_seq       @ mid-->eval_det_p2s_vid-acamp
+<a id="1k8_vid_entire_seq___mi_d_"></a>
+## 1k8_vid_entire_seq       @ mid-->eval_p2s_vid-acamp
 <a id="49_68___detrac_0_9_resnet_640_vi_d_"></a>
-<a id="on_train___acamp_1k8_vid_entire_seq_mid_"></a>
-### on-train       @ acamp-1k8_vid_entire_seq/mid-->eval_det_p2s_vid-acamp
-python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq:vnms-0:nms-0:agn:gt-0:proc-0:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_18/ckpt-77082-1k8_vid_entire_seq-length-2-stride-1/csv-batch_2:_out_-p2s-resnet_640-acamp-1k8_vid_entire_seq-len-2-strd-1-strd-1-train
+<a id="on_train___1k8_vid_entire_seq_mid_"></a>
+### on-train       @ 1k8_vid_entire_seq/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq:vnms-0:nms-0:agn:gt-0:proc-0:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_18/ckpt-77082-1k8_vid_entire_seq-length-2-stride-1/csv-batch_2:_out_-p2s-mid-acamp-1k8_vid_entire_seq-len-2-train
+<a id="on_inv___1k8_vid_entire_seq_mid_"></a>
+### on-inv       @ 1k8_vid_entire_seq/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv:vnms-1:nms-1:agn:gt-0:proc-0:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_18/ckpt-77082-1k8_vid_entire_seq-length-2-stride-1/csv-batch_8:_out_-p2s-mid-acamp-1k8_vid_entire_seq-len-2
+
+<a id="1k8_vid_entire_seq_aug___mi_d_"></a>
+## 1k8_vid_entire_seq-aug       @ mid-->eval_p2s_vid-acamp
+<a id="on_inv___1k8_vid_entire_seq_aug_mid_"></a>
+### on-inv       @ 1k8_vid_entire_seq-aug/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv:strds-2:vnms-1:nms-1:agn:gt-0:proc-12:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_18-jtr-res_1280/ckpt-1229325-1k8_vid_entire_seq_inv-length-2-stride-1/csv-batch_12:_out_-p2s-mid-acamp-1k8_vid_entire_seq-len-2-aug
+
+<a id="10k6_vid_entire_seq_aug___mi_d_"></a>
+## 10k6_vid_entire_seq-aug       @ mid-->eval_p2s_vid-acamp
+<a id="on_inv___10k6_vid_entire_seq_aug_mi_d_"></a>
+### on-inv       @ 10k6_vid_entire_seq-aug/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv:strds-2:vnms-1:nms-1:agn:gt-0:proc-12:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_18-jtr-res_1280/ckpt-1145745-10k6_vid_entire_seq_inv-length-2-stride-1/csv-batch_12:_out_-p2s-mid-acamp-10k6_vid_entire_seq-len-2-aug
+
+<a id="20k6_5_video_aug___mi_d_"></a>
+## 20k6_5_video-aug       @ mid-->eval_p2s_vid-acamp
+<a id="on_inv___20k6_5_video_aug_mid_"></a>
+### on-inv       @ 20k6_5_video-aug/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:20k6_5_video_inv:strds-2:vnms-1:nms-1:agn:gt-0:proc-0:show-0:_in_-resnet_640_20k6_5_video-length-2-stride-1-batch_18-jtr-res_1280/ckpt-1176528-20k6_5_video_inv-length-2-stride-1/csv-batch_16:_out_-p2s-mid-acamp-20k6_5_video-len-2-aug
 
 
 

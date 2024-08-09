@@ -508,6 +508,10 @@ def evaluate(
 
             df_gt = pd.read_csv(gt_path)
 
+            if seq_to_samples is not None:
+                sampled_filenames =  [os.path.basename(seq_img_path) for seq_img_path in seq_img_paths]
+                df_gt = df_gt.loc[df_gt['filename'].isin(sampled_filenames)]
+
             if params.class_agnostic:
                 df_gt['class'] = 'agnostic'
 
@@ -515,6 +519,7 @@ def evaluate(
 
             if fix_gt_cols:
                 df_gt = df_gt.rename(columns=csv_rename_dict)
+
 
             df_gt["filename"] = df_gt["filename"].apply(lambda x: seq_img_name_to_path[os.path.basename(x)])
 
