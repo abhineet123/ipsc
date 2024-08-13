@@ -5,6 +5,9 @@
 - [persistence](#persistence_)
 - [power_limit](#power_limit_)
   - [pc](#p_c_)
+- [sudo_no_pwd](#sudo_no_pwd_)
+- [ssh](#ssh_)
+- [nomachine](#nomachine_)
 - [install nvidia drivers](#install_nvidia_driver_s_)
   - [418_for_cuda_10.1](#418_for_cuda_10_1_)
   - [410_for_cuda_10.0](#410_for_cuda_10_0_)
@@ -13,35 +16,9 @@
     - [470_for_cuda_11](#470_for_cuda_11_)
     - [others](#other_s_)
 - [install cuda](#install_cuda_)
-  - [uninstall_10.0](#uninstall_10__0_)
-  - [ubuntu_20.04](#ubuntu_20_0_4_)
-      - [run](#run_)
-    - [cuda_11.3.1](#cuda_11_3_1_)
-      - [deb](#deb_)
-    - [cuda_11.8](#cuda_11_8_)
-      - [deb](#deb__1)
-  - [status](#statu_s_)
-  - [cuda_11.8-ubuntu 22.04](#cuda_11_8_ubuntu_22_0_4_)
-    - [runfile](#runfile_)
-    - [deb](#deb__2)
   - [cuda-12.3](#cuda_12_3_)
   - [windows](#windows_)
     - [10.2](#10__2_)
-  - [ubuntu_16.04](#ubuntu_16_0_4_)
-    - [cuda_10.0_for_tensorflow_1.14](#cuda_10_0_for_tensorflow_1_14_)
-    - [cuda_10.2_with_driver_440](#cuda_10_2_with_driver_440_)
-  - [ubuntu_18.04](#ubuntu_18_0_4_)
-    - [cuda_10.0](#cuda_10_0_)
-  - [cuda_10.1](#cuda_10_1_)
-    - [cuda_10.2](#cuda_10_2_)
-- [install cudnn](#install_cudn_n_)
-  - [cuda_10.0](#cuda_10_0__1)
-    - [cudnn_7.4.1](#cudnn_7_4_1_)
-    - [cudnn_7.6.1](#cudnn_7_6_1_)
-    - [cudnn_7.6.5](#cudnn_7_6_5_)
-      - [check_version](#check_version_)
-  - [cuda_9.0/cudnn_7_for_tensorflow_1.6_\(assuming_Ubuntu_16.04\)](#cuda_9_0_cudnn_7_for_tensorflow_1_6__assuming_ubuntu_16_04_)
-  - [cuda_8.0/cudnn_6_for_tensorflow_1.4_\(assuming_Ubuntu_14.04\)](#cuda_8_0_cudnn_6_for_tensorflow_1_4__assuming_ubuntu_14_04_)
 - [install git](#install_gi_t_)
 - [install protobuf compiler](#install_protobuf_compiler_)
 - [install misc packages](#install_misc_packages_)
@@ -193,9 +170,30 @@ watch nvidia-smi
 nvidia-smi -i 0 -pl 300
 nvidia-smi -i 1,2 -pl 100
 
+<a id="sudo_no_pwd_"></a>
+# sudo_no_pwd
+https://linuxhint.com/setup-sudo-no-password-linux/
+sudo visudo
+add at end of file (and that means the end, i.e. after the @includedir /etc/sudoers.d line);
+
+abhineet ALL=(ALL) NOPASSWD:ALL
+
+<a id="ssh_"></a>
+# ssh
+https://www.cyberciti.biz/faq/ubuntu-linux-install-openssh-server/
+sudo apt-get install openssh-server
+sudo systemctl enable ssh
+sudo systemctl enable ssh --now
+sudo systemctl start ssh
+
+<a id="nomachine_"></a>
+# nomachine
+https://www.nomachine.com/getting-started-with-nomachine
+https://downloads.nomachine.com/linux/?id=1
+sudo dpkg -i nomachine_8.13.1_1_amd64.deb
+
 <a id="install_nvidia_driver_s_"></a>
 # install nvidia drivers
-
 **DO NOT RESTART OR LOGOUT BEFORE noveau HAS BEEN REMOVED AND BLACKLISTED OR YOU WON'T BE ABLE TO LOG BACK IN (OR EVEN ACCESS TERMINAL) in 18.04.**
 
 1. uninstall noveau drivers:
@@ -280,6 +278,8 @@ sudo apt install nvidia-driver-515
 sudo apt install nvidia-driver-520
 sudo apt install nvidia-driver-525
 sudo apt install nvidia-driver-535
+sudo apt install nvidia-driver-545
+sudo apt install nvidia-driver-555
 ```
 
 4. restart
@@ -289,93 +289,8 @@ sudo shutdown -r now
 
 <a id="install_cuda_"></a>
 # install cuda
-
 nvcc --version
 /usr/local/cuda/bin/nvcc --version
-
-<a id="uninstall_10__0_"></a>
-## uninstall_10.0
-apt-get remove cuda-*-10-0
-
-<a id="ubuntu_20_0_4_"></a>
-## ubuntu_20.04
-
-<a id="run_"></a>
-#### run
-wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda_11.3.1_465.19.01_linux.run
-sudo sh cuda_11.3.1_465.19.01_linux.run
-
-deselect driver
-
-```
-Driver:   Not Selected
-Toolkit:  Installed in /usr/local/cuda-11.3/
-Samples:  Installed in /root/
-
-Please make sure that
- -   PATH includes /usr/local/cuda-11.3/bin
- -   LD_LIBRARY_PATH includes /usr/local/cuda-11.3/lib64, or, add /usr/local/cuda-11.3/lib64 to /etc/ld.so.conf and run ldconfig as root
-
-To uninstall the CUDA Toolkit, run cuda-uninstaller in /usr/local/cuda-11.3/bin
-***WARNING: Incomplete installation! This installation did not install the CUDA Driver. A driver of version at least 465.00 is required for CUDA 11.3 functionality to work.
-To install the driver using this installer, run the following command, replacing <CudaInstaller> with the name of this run file:
-    sudo <CudaInstaller>.run --silent --driver
-Logfile is /var/log/cuda-installer.log
-
-
-```
-<a id="cuda_11_3_1_"></a>
-### cuda_11.3.1
-<a id="deb_"></a>
-#### deb
-__buggy_crap__
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/11.3.1/local_installers/cuda-repo-ubuntu2004-11-3-local_11.3.1-465.19.01-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu2004-11-3-local_11.3.1-465.19.01-1_amd64.deb
-sudo apt-key add /var/cuda-repo-ubuntu2004-11-3-local/7fa2af80.pub
-sudo apt-get update
-sudo apt-get -y install cuda-11-3
-
-sudo apt-get install cuda-drivers
-sudo apt-get install cuda-runtime-11-3
-
-<a id="cuda_11_8_"></a>
-### cuda_11.8
-<a id="deb__1"></a>
-#### deb
-__buggy_crap__
-https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=20.04&target_type=deb_local
-
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
-sudo cp /var/cuda-repo-ubuntu2004-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
-sudo apt-get update
-
-<a id="statu_s_"></a>
-## status
-/usr/local/cuda-11.3/extras/demo_suite/deviceQuery
-
-<a id="cuda_11_8_ubuntu_22_0_4_"></a>
-## cuda_11.8-ubuntu 22.04
-<a id="runfile_"></a>
-### runfile
-wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run
-sudo sh cuda_11.8.0_520.61.05_linux.run
-deselect driver
-
-<a id="deb__2"></a>
-### deb
-__installs 520 driver too__
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
-sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-ubuntu2204-11-8-local_11.8.0-520.61.05-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu2204-11-8-local_11.8.0-520.61.05-1_amd64.deb
-sudo cp /var/cuda-repo-ubuntu2204-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
-sudo apt-get update
-sudo apt-get install cuda
 
 <a id="cuda_12_3_"></a>
 ## cuda-12.3
@@ -391,7 +306,6 @@ sudo apt-get -y install cuda-toolkit-12-3
 ## windows 
 <a id="10__2_"></a>
 ### 10.2  
-
 ```
 https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_441.22_win10.exe
 https://developer.download.nvidia.com/compute/cuda/10.2/Prod/patches/1/cuda_10.2.1_win10.exe
@@ -400,232 +314,9 @@ https://developer.download.nvidia.com/compute/cuda/10.2/Prod/patches/2/cuda_10.2
 https://developer.nvidia.com/compute/machine-learning/cudnn/secure/8.2.2/10.2_07062021/cudnn-10.2-windows10-x64-v8.2.2.26.zip
 ```
 
-<a id="ubuntu_16_0_4_"></a>
-## ubuntu_16.04 
-
-<a id="cuda_10_0_for_tensorflow_1_14_"></a>
-### cuda_10.0_for_tensorflow_1.14
-```
-wget https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda-repo-ubuntu1604-10-0-local-10.0.130-410.48_1.0-1_amd64
-sudo dpkg -i cuda-repo-ubuntu1604-10-0-local-10.0.130-410.48_1.0-1_amd64
-sudo apt-key add /var/cuda-repo-10-0-local-10.0.130-410.48/7fa2af80.pub
-
-sudo apt-get update
-sudo apt-get install cuda-10-0
-```
-
-<a id="cuda_10_2_with_driver_440_"></a>
-### cuda_10.2_with_driver_440
-nvidia-settings is broken in 440 for 16.04. Need to manually install from 18.04 deb:
-```
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/nvidia-settings_440.33.01-0ubuntu1_amd64.deb
-
-sudo dpkg -i nvidia-settings_440.33.01-0ubuntu1_amd64.deb
-```
-
-<a id="ubuntu_18_0_4_"></a>
-## ubuntu_18.04 
-
-<a id="cuda_10_0_"></a>
-### cuda_10.0 
-
-```
-wget https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
-sudo dpkg -i cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64
-sudo apt-key add /var/cuda-repo-10-0-local-10.0.130-410.48/7fa2af80.pub 
-sudo apt-get update
-sudo apt-get install cuda-toolkit-10-0
-```
-
-<a id="cuda_10_1_"></a>
-## cuda_10.1
-```
-wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-ubuntu1604-10-1-local-10.1.168-418.67_1.0-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu1604-10-1-local-10.1.168-418.67_1.0-1_amd64.deb
-sudo apt-key add /var/cuda-repo-10-1-local-10.1.168-418.67/7fa2af80.pub
-sudo apt-get update
-sudo apt-get install cuda-10-1
-```
-
-<a id="cuda_10_2_"></a>
-### cuda_10.2
-
-```
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
-sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
-wget http://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
-sudo dpkg -i cuda-repo-ubuntu1804-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
-sudo apt-key add /var/cuda-repo-10-2-local-10.2.89-440.33.01/7fa2af80.pub
-sudo apt-get update
-sudo apt-get -y install cuda
-```
-
-<a id="install_cudn_n_"></a>
-# install cudnn
-
-download: cuDNN Runtime Library for Ubuntu 16.04 or 18.04 (Deb) from 
-```
-https://developer.nvidia.com/rdp/cudnn-download
-```
-
-<a id="cuda_10_0__1"></a>
-## cuda_10.0 
-
-<a id="cudnn_7_4_1_"></a>
-### cudnn_7.4.1 
-download: Download cuDNN v7.4.1 (Nov 8, 2018), for CUDA 10.0 from
-```
-https://developer.nvidia.com/rdp/cudnn-archive
-```
-```
-apt install ./libcudnn7_7.6.1.34-1+cuda10.0_amd64.deb
-```
-
-<a id="cudnn_7_6_1_"></a>
-### cudnn_7.6.1
-
-```
-apt install ./libcudnn7_7.6.1.34-1+cuda10.1_amd64.deb
-```
-<a id="cudnn_7_6_5_"></a>
-### cudnn_7.6.5 
-
-```
-apt install ./libcudnn7_7.6.5.32-1+cuda10.2_amd64.deb
-apt install ./libcudnn7_7.6.5.32-1+cuda10.0_amd64.deb
-```
-
-<a id="check_version_"></a>
-#### check_version 
-
-```
-cat /usr/local/cuda/version.txt
-cat /usr/local/cuda/include/cudnn.h | grep CUDNN_MAJOR -A 2
-
-cat /usr/include/cudnn.h | grep CUDNN_MAJOR -A 2
-cat /usr/local/cuda-10.0/include/cudnn.h | grep CUDNN_MAJOR -A 2
-```
-
-<a id="cuda_9_0_cudnn_7_for_tensorflow_1_6__assuming_ubuntu_16_04_"></a>
-## cuda_9.0/cudnn_7_for_tensorflow_1.6_(assuming_Ubuntu_16.04)
-
-1. download the local run file for cuda 9.0 from here:
-```
-wget https://developer.nvidia.com/cuda-90-download-archive
-```
-select:
-```
-Linux->x86_64->Ubuntu->16.04->runfile(local)
-```
-Download the base installer and all three patches
-https://developer.nvidia.com/cuda-90-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1604&target_type=runfilelocal
-2. install it using:
-
-```
-sudo chmod +x cuda_9.0.176_384.81_linux.run
-sudo ./cuda_9.0.176_384.81_linux.run
-```
-
-select no to installing nvidia driver and yes to everything else.
-```
-sudo chmod +x cuda_9.0.176.1_linux.run
-sudo ./cuda_9.0.176.1_linux.run
-
-sudo chmod +x cuda_9.0.176.2_linux.run
-sudo ./cuda_9.0.176.2_linux.run
-
-sudo chmod +x cuda_9.0.176.3_linux.run
-sudo ./cuda_9.0.176.3_linux.run
-```
-
-3. download cudnn 7 for cuda 9.0 from here:
-
-https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v7.0.5/prod/9.0_20171129/cudnn-9.0-linux-x64-v7
-
-you will have to create an nvidia account to access the downloads
-
-4. install it using:
-
-```
-tar -xvzf cudnn-9.0-linux-x64-v7.tgz
-
-sudo mv cuda/include/* /usr/local/cuda-9.0/include/
-
-sudo mv cuda/lib64/* /usr/local/cuda-9.0/lib64/
-```
-
-5. Add following lines to `~/.bashrc`:
-
-```
-export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/lib:/usr/lib64:/usr/local/cuda-9.0/lib64:/usr/local/cuda-9.0/cuda/lib64:/usr/local/cuda-9.0/targets/x86_64-linux/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib64:/usr/local/cuda-9.0/lib64:/usr/local/cuda-9.0/cuda/lib64:/usr/local/cuda-9.0/targets/x86_64-linux/lib
-export PATH=$PATH:$HOME/bin:$HOME/.local/bin:$HOME/bin:$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:$HOME/scripts:/usr/local/cuda-9.0/bin:/usr/local/cuda-9.0/cuda/include:/usr/local/cuda-9.0/targets/x86_64-linux/include
-export CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-9.0
-export PYTHONPATH=$PYTHONPATH:$HOME/models/research:$HOME/models/research/slim
-export CUDNN_PATH=/usr/local/cuda-9.0/cuda/lib64/libcudnn.so.7
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu/hdf5/serial
-```
-
-<a id="cuda_8_0_cudnn_6_for_tensorflow_1_4__assuming_ubuntu_14_04_"></a>
-## cuda_8.0/cudnn_6_for_tensorflow_1.4_(assuming_Ubuntu_14.04)
-
-
-1. download the local run file for cuda 8.0 from here:
-```
-https://developer.nvidia.com/cuda-80-ga2-download-archive
-```
-select:
-```
-Linux->x86_64->Ubuntu->14.04->runfile(local)
-```
-Download the base installer and the patch.
-
-2. install it using:
-
-```
-sudo chmod +x cuda_8.0.61_375.26_linux.run
-sudo ./cuda_8.0.61_375.26_linux.run
-```
-
-select no to installing nvidia driver and yes to everything else.
-```
-sudo chmod +x cuda_8.0.61.2_linux.run
-sudo ./cuda_8.0.61.2_linux.run
-```
-
-3. download cudnn 6 for cuda 8.0 from here:
-
-https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v7.0.5/prod/9.0_20171129/cudnn-9.0-linux-x64-v7
-
-you will have to create an nvidia account to access the downloads
-
-4. install it using:
-
-```
-tar -xvzf cudnn-8.0-linux-x64-v6.0.tgz
-
-sudo mv cuda/include/* /usr/local/cuda-8.0/include/
-
-sudo mv cuda/lib64/* /usr/local/cuda-8.0/lib64/
-```
-
-5. Add following lines to `~/.bashrc`:
-
-```
-export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/lib:/usr/lib64:/usr/local/cuda-8.0/lib64:/usr/local/cuda-8.0/cuda/lib64:/usr/local/cuda-8.0/targets/x86_64-linux/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/usr/lib64:/usr/local/cuda-8.0/lib64:/usr/local/cuda-8.0/cuda/lib64:/usr/local/cuda-8.0/targets/x86_64-linux/lib
-export PATH=$PATH:$HOME/bin:$HOME/.local/bin:$HOME/bin:$HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:$HOME/scripts:/usr/local/cuda-8.0/bin:/usr/local/cuda-8.0/cuda/include:/usr/local/cuda-8.0/targets/x86_64-linux/include
-export CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-8.0
-export PYTHONPATH=$PYTHONPATH:$HOME/models/research:$HOME/models/research/slim
-export CUDNN_PATH=/usr/local/cuda-8.0/cuda/lib64/libcudnn.so.6
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu/hdf5/serial
-```
-
 <a id="install_gi_t_"></a>
 # install git
-
 ```
-
 git config --global credential.helper store
 ```
 
@@ -749,19 +440,16 @@ sudo apt install libpython3.8:amd64=3.8.2-1ubuntu1 libpython3.8-dev:amd64=3.8.2-
 
 ```
 sudo apt-get install python3-dev
-
 ```
 
 <a id="python_3__6__1"></a>
 #### python_3.6  
 ```
 sudo apt-get install python3.6-dev
-
 ```
 
 <a id="ubuntu_14_0_4_"></a>
 ### Ubuntu_14.04
-
 On Ubuntu 14.04, running the above command usually installs python 3.4.3 which is too old to run the labeling tool and some of the batch scripts.
 Following commands should be used to install python 3.5 instead:
 
@@ -814,10 +502,7 @@ pip install pycocotools
 
 <a id="lapsolver_"></a>
 #### lapsolver  
-
-<a id="install_cmake___all_install_packages_setup_python_3_"></a>
-__install_cmake___       @ all/install_packages/setup_python_3-->install
-
+__install_cmake__
 ```
 apt install cmake
 ```
@@ -856,10 +541,7 @@ python36 -m pip install --upgrade PyNaCl
 
 <a id="windows__1"></a>
 ### windows
-
-<a id="vcredist___windows_install_packages_setup_python_3_"></a>
-__vcredist__       @ windows/install_packages/setup_python_3-->install
-
+__vcredist__
 ```
 https://aka.ms/vs/16/release/vc_redist.x64.exe
 ```
@@ -870,9 +552,7 @@ python3 -m pip install pywin32 pywinauto pyautogui pyexcel pyexcel-ods3 winrt op
 ```
 <a id="aes_"></a>
 #### AES
-
 __Build Tools for Visual Studio 2019__
-
 ```
 https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019
 ```
