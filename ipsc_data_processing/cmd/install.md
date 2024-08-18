@@ -2,6 +2,8 @@
 
 <!-- MarkdownTOC -->
 
+- [init](#ini_t_)
+- [flags](#flags_)
 - [persistence](#persistence_)
 - [power_limit](#power_limit_)
   - [pc](#p_c_)
@@ -15,13 +17,19 @@
   - [20.04](#20_04_)
     - [470_for_cuda_11](#470_for_cuda_11_)
     - [others](#other_s_)
-- [install cuda](#install_cuda_)
+- [cuda](#cud_a_)
+  - [bugs](#bug_s_)
+  - [CUDA 12.2:](#cuda_12_2__)
+    - [all       @ tensorflow/install](#all___tensorflow_install_)
+      - [12.2       @ all/tensorflow/install](#12_2___all_tensorflow_install_)
+      - [12.3       @ all/tensorflow/install](#12_3___all_tensorflow_install_)
   - [cuda-12.3](#cuda_12_3_)
-  - [windows](#windows_)
-    - [10.2](#10__2_)
-- [install git](#install_gi_t_)
-- [install protobuf compiler](#install_protobuf_compiler_)
-- [install misc packages](#install_misc_packages_)
+  - [cudnn-deb](#cudnn_deb_)
+- [disks](#disks_)
+- [tmux](#tmu_x_)
+- [git](#git_)
+- [protobuf compiler](#protobuf_compiler_)
+- [misc packages](#misc_packages_)
   - [18.04](#18_04_)
 - [update pip](#update_pi_p_)
   - [18.04](#18_04__1)
@@ -41,7 +49,7 @@
       - [pycocotools](#pycocotools_)
       - [lapsolver](#lapsolver_)
       - [paramiko_issue](#paramiko_issu_e_)
-    - [windows](#windows__1)
+    - [windows](#windows_)
       - [AES](#aes_)
       - [x32](#x32_)
   - [ffmpeg](#ffmpe_g_)
@@ -121,27 +129,19 @@
 
 <!-- /MarkdownTOC -->
 
+<a id="ini_t_"></a>
+# init
 sudo apt-get purge unattended-upgrades
 sudo apt install nautilus-share
-sudo apt install nvtop
 sudo apt install thunar-archive-plugin
+sudo apt install nvtop
 
-`CUDA stops working after waking up from suspend`
-https://askubuntu.com/questions/1228423/how-do-i-fix-cuda-breaking-after-suspend
-
-sudo nano /etc/modprobe.d/nvidia-power-management.conf
-
-options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/tmp
-
-sudo update-initramfs -u
-sudo shutdown -r now
-
-no need to enable the suspend service in the newest drivers
-sudo systemctl enable nvidia-suspend.service
-
+<a id="flags_"></a>
+# flags
 CUDA_VISIBLE_DEVICES=0
 CUDA_VISIBLE_DEVICES=1
 DISPLAY=localhost:10.0
+
 <a id="persistence_"></a>
 # persistence
 sudo nvidia-smi -pm 1 
@@ -287,10 +287,75 @@ sudo apt install nvidia-driver-555
 sudo shutdown -r now
 ```
 
-<a id="install_cuda_"></a>
-# install cuda
+<a id="cud_a_"></a>
+# cuda
 nvcc --version
 /usr/local/cuda/bin/nvcc --version
+
+<a id="bug_s_"></a>
+## bugs
+`CUDA stops working after waking up from suspend`
+https://askubuntu.com/questions/1228423/how-do-i-fix-cuda-breaking-after-suspend
+
+sudo nano /etc/modprobe.d/nvidia-power-management.conf
+
+options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/tmp
+
+sudo update-initramfs -u
+sudo shutdown -r now
+
+no need to enable the suspend service in the newest drivers
+sudo systemctl enable nvidia-suspend.service
+
+
+<a id="cuda_12_2__"></a>
+## CUDA 12.2:
+`from p2s`
+https://developer.nvidia.com/cuda-12-2-2-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=deb_local
+```
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/12.2.2/local_installers/cuda-repo-ubuntu2204-12-2-local_12.2.2-535.104.05-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2204-12-2-local_12.2.2-535.104.05-1_amd64.deb
+sudo cp /var/cuda-repo-ubuntu2204-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get install cuda-12-2
+
+```
+
+<a id="all___tensorflow_install_"></a>
+### all       @ tensorflow/install-->p2s_setup
+download cudnn tar from
+https://developer.nvidia.com/rdp/cudnn-download
+<a id="12_2___all_tensorflow_install_"></a>
+```
+wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
+```
+and extract into cuda-12.2/targets/ folder
+```
+tar xvf cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
+```
+<a id="12_2___all_tensorflow_install_"></a>
+#### 12.2       @ all/tensorflow/install-->p2s_setup
+```
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.2/targets/x86_64-linux/lib/
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.2/targets/x86_64-linux/include/
+```
+<a id="12_3___all_tensorflow_install_"></a>
+#### 12.3       @ all/tensorflow/install-->p2s_setup
+```
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.3/targets/x86_64-linux/lib/
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.3/targets/x86_64-linux/include/
+
+```
+
+add following environment variables to bashrc as well as the pycharm debug configuration window
+```
+export LD_LIBRARY_PATH=/usr/local/cuda-12.2/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
+export PATH=$PATH:/usr/local/cuda-12.2/bin
+export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.2
+```
+
 
 <a id="cuda_12_3_"></a>
 ## cuda-12.3
@@ -302,35 +367,39 @@ sudo cp /var/cuda-repo-ubuntu2204-12-3-local/cuda-*-keyring.gpg /usr/share/keyri
 sudo apt-get update
 sudo apt-get -y install cuda-toolkit-12-3
 
-<a id="windows_"></a>
-## windows 
-<a id="10__2_"></a>
-### 10.2  
-```
-https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_441.22_win10.exe
-https://developer.download.nvidia.com/compute/cuda/10.2/Prod/patches/1/cuda_10.2.1_win10.exe
-https://developer.download.nvidia.com/compute/cuda/10.2/Prod/patches/2/cuda_10.2.2_win10.exe
+export LD_LIBRARY_PATH=/usr/local/cuda-12.3/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
+export PATH=$PATH:/usr/local/cuda-12.3/bin
+export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.3
 
-https://developer.nvidia.com/compute/machine-learning/cudnn/secure/8.2.2/10.2_07062021/cudnn-10.2-windows10-x64-v8.2.2.26.zip
-```
+<a id="cudnn_deb_"></a>
+## cudnn-deb
+https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local
 
-<a id="install_gi_t_"></a>
-# install git
-```
+wget https://developer.download.nvidia.com/compute/cudnn/9.3.0/local_installers/cudnn-local-repo-ubuntu2204-9.3.0_1.0-1_amd64.deb
+sudo dpkg -i cudnn-local-repo-ubuntu2204-9.3.0_1.0-1_amd64.deb
+sudo cp /var/cudnn-local-repo-ubuntu2204-9.3.0/cudnn-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cudnn-cuda-12
+
+<a id="disks_"></a>
+# disks
+sudo apt-get install gnome-disk-utility
+
+<a id="tmu_x_"></a>
+# tmux
+sudo apt-get install tmux
+
+<a id="git_"></a>
+# git
+sudo apt-get install git
 git config --global credential.helper store
-```
 
-<a id="install_protobuf_compiler_"></a>
-# install protobuf compiler
-
-```
+<a id="protobuf_compiler_"></a>
+# protobuf compiler
 sudo apt-get install protobuf-compiler
-```
 
-<a id="install_misc_packages_"></a>
-# install misc packages
-
-```
+<a id="misc_packages_"></a>
+# misc packages
 sudo apt-get install libboost-all-dev
 sudo apt install libboost1.58-dev
 sudo apt-get install libzip-dev
@@ -340,21 +409,15 @@ apt-get install libsnappy-dev
 apt-get install liblmdb-dev
 sudo apt-get install libatlas-base-dev
 
-```
-
 <a id="18_04_"></a>
 ## 18.04 
-
-```
 sudo apt install caffe-cuda
-```
 
 <a id="update_pi_p_"></a>
 # update pip
 
 <a id="18_04__1"></a>
 ## 18.04 
-
 ```
 sudo apt-get install python3-distutils
 sudo apt-get install python3-apt
@@ -371,14 +434,12 @@ sudo apt install python3-testresources
 wget https://bootstrap.pypa.io/get-pip.py
 
 python3 get-pip.py
+python36 get-pip.py
 python3.7 get-pip.py
+python3.9 get-pip.py
+python3.10 get-pip.py
 
 python3 -m pip install --upgrade pip
-
-python3 get-pip.py
-python3.9 get-pip.py
-
-python36 get-pip.py
 ```
 
 <a id="setup_python_3_"></a>
@@ -539,7 +600,7 @@ AttributeError: cffi library '_sodium' has no function, constant or global varia
 python36 -m pip install --upgrade PyNaCl
 ```
 
-<a id="windows__1"></a>
+<a id="windows_"></a>
 ### windows
 __vcredist__
 ```
@@ -644,7 +705,6 @@ python36 -m pip install packaging tensorboardX visdom pytorch-ignite pytorch-lig
 
 <a id="linux_python3_6_cuda_10_0_"></a>
 #### linux_python3.6/cuda_10.0  
-
 ```
 python36 -m pip install https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
 python36 -m pip install https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl
@@ -652,7 +712,6 @@ python36 -m pip install https://download.pytorch.org/whl/cu100/torchvision-0.3.0
 
 <a id="ape_x_"></a>
 ##### apex 
-
 ```
 git clone https://www.github.com/nvidia/apex
 cd apex
@@ -665,7 +724,6 @@ python36 - m "import torch; print(torch.__version__)"
 
 <a id="windows_python3_7_cuda_10_0___pytorch_and_vis_tools_setup_python_3_"></a>
 ### windows_python3.7/cuda_10.0       @ pytorch_and_vis_tools/setup_python_3-->install
-
 ```
 
 https://download.pytorch.org/whl/cu100/
@@ -680,9 +738,7 @@ python36 -m pip install https://download.pytorch.org/whl/cu100/torchvision-0.4.0
 
 <a id="4_5_4_60___opencv_setup_python_3_"></a>
 ### 4.5.4.60       @ opencv/setup_python_3-->install
-
 needed for fiftyone
-
 ```
 python36 -m pip install opencv-python==4.5.4.60 opencv-contrib-python==4.5.4.60
 
@@ -690,7 +746,6 @@ python36 -m pip install opencv-python==4.5.4.60 opencv-contrib-python==4.5.4.60
 
 <a id="4_1_0___opencv_setup_python_3_"></a>
 ### 4.1.0       @ opencv/setup_python_3-->install
-
 ```
 python36 -m pip install opencv-python==4.1.0.25 opencv-contrib-python==4.1.0.25
 python36 -m pip install opencv-python==4.1.0.25 opencv-contrib-python==4.1.0.25
@@ -699,13 +754,11 @@ python36 -m pip install opencv-python==4.1.0.25 opencv-contrib-python==4.1.0.25
 
 <a id="3_4_11_45___opencv_setup_python_3_"></a>
 ### 3.4.11.45       @ opencv/setup_python_3-->install
-
 ```
 python -m pip install opencv-python==3.4.11.45 opencv-contrib-python==3.4.11.45
 ```
 <a id="3_4_5___opencv_setup_python_3_"></a>
 ### 3.4.5       @ opencv/setup_python_3-->install
-
 ```
 python3 -m pip install opencv-python==3.4.18.65 opencv-contrib-python==3.4.18.65
 
@@ -718,7 +771,6 @@ python36 -m pip uninstall opencv-python opencv-contrib-python
 ```
 <a id="uninstall___3_4_5_opencv_setup_python_3_"></a>
 #### uninstall       @ 3.4.5/opencv/setup_python_3-->install
-
 ```
 python36 -m pip uninstall opencv-python opencv-contrib-python
 ```
@@ -726,7 +778,6 @@ opencv 4 might have compatibility issues so opencv 3 is recommended
 
 <a id="3_4_4_19_cc___opencv_setup_python_3_"></a>
 ### 3.4.4.19_CC       @ opencv/setup_python_3-->install
-
 ```
 python36 -m pip install opencv-python==3.4.4.19 opencv-contrib-python==3.4.4.19
 ```
@@ -736,7 +787,6 @@ python36 -m pip install opencv-python==3.4.4.19 opencv-contrib-python==3.4.4.19
 
 <a id="check_version___tensorflow_setup_python_3_"></a>
 ### check_version       @ tensorflow/setup_python_3-->install
-
 ```
 python3 -c "import tensorflow as tf; print(tf.__version__)"
 python3 -c "import tensorflow as tf; print(tf.sysconfig.get_build_info())"
@@ -745,7 +795,6 @@ python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'
 
 <a id="check_gpu___tensorflow_setup_python_3_"></a>
 ### check_gpu       @ tensorflow/setup_python_3-->install
-
 ```
 python3 -c "import tensorflow as tf; sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))"
 ```

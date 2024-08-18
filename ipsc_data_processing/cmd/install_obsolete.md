@@ -2,6 +2,8 @@
 
 - [cuda](#cud_a_)
     - [uninstall_10.0       @ cuda](#uninstall_10_0___cuda_)
+    - [windows       @ cuda](#windows___cuda_)
+        - [10.2       @ windows/cuda](#10_2___windows_cuda_)
     - [ubuntu_20.04       @ cuda](#ubuntu_20_04___cuda_)
             - [run       @ ubuntu_20.04/cuda](#run___ubuntu_20_04_cud_a_)
         - [cuda_11.3.1       @ ubuntu_20.04/cuda](#cuda_11_3_1___ubuntu_20_04_cud_a_)
@@ -51,6 +53,20 @@
 <a id="uninstall_10_0___cuda_"></a>
 ## uninstall_10.0       @ cuda-->install_obsolete
 apt-get remove cuda-*-10-0
+
+
+<a id="windows___cuda_"></a>
+## windows       @ cuda-->install_obsolete
+<a id="10_2___windows_cuda_"></a>
+### 10.2       @ windows/cuda-->install_obsolete
+```
+https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda_10.2.89_441.22_win10.exe
+https://developer.download.nvidia.com/compute/cuda/10.2/Prod/patches/1/cuda_10.2.1_win10.exe
+https://developer.download.nvidia.com/compute/cuda/10.2/Prod/patches/2/cuda_10.2.2_win10.exe
+
+https://developer.nvidia.com/compute/machine-learning/cudnn/secure/8.2.2/10.2_07062021/cudnn-10.2-windows10-x64-v8.2.2.26.zip
+```
+
 
 <a id="ubuntu_20_04___cuda_"></a>
 ## ubuntu_20.04       @ cuda-->install_obsolete
