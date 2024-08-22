@@ -373,6 +373,7 @@ export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.3
 
 <a id="cudnn_deb_"></a>
 ## cudnn-deb
+`does not work`
 https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local
 
 wget https://developer.download.nvidia.com/compute/cudnn/9.3.0/local_installers/cudnn-local-repo-ubuntu2204-9.3.0_1.0-1_amd64.deb

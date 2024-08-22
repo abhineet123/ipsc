@@ -223,6 +223,8 @@ python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/e
 
 <a id="0_15___ext_reorg_roi_ipsc_"></a>
 ### 0_15       @ ext_reorg_roi/ipsc-->xml_to_coco
+python xml_to_coco.py cfg=ipsc:0_15:zip-0 
+
 python xml_to_coco.py root_dir=/data/ipsc/well3/all_frames_roi seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_15.json start_frame_id=0 end_frame_id=15 ignore_invalid_label=1 val_ratio=0 get_img_stats=0
 __only_list__
 python xml_to_coco.py root_dir=/data/ipsc/well3/images seq_paths=lists/ext_reorg_roi.txt class_names_path=lists/classes/predefined_classes_ipsc_2_class.txt output_json=ext_reorg_roi_g2_0_15.json start_frame_id=0 end_frame_id=15 ignore_invalid_label=1 val_ratio=0 get_img_stats=0 only_list=1

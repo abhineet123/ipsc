@@ -18,7 +18,9 @@
             - [on-g2_54_126       @ batch_4-scratch/16_53-buggy/resnet-640](#on_g2_54_126___batch_4_scratch_16_53_buggy_resnet_640_)
     - [16_53       @ resnet-640](#16_53___resnet_640_)
     - [16_53-aug       @ resnet-640](#16_53_aug___resnet_640_)
-        - [acc       @ 16_53-aug/resnet-640](#acc___16_53_aug_resnet_640_)
+        - [on-0_15       @ 16_53-aug/resnet-640](#on_0_15___16_53_aug_resnet_640_)
+        - [on-54_126       @ 16_53-aug/resnet-640](#on_54_126___16_53_aug_resnet_640_)
+            - [acc       @ on-54_126/16_53-aug/resnet-640](#acc___on_54_126_16_53_aug_resnet_640_)
     - [0_37-gxe       @ resnet-640](#0_37_gxe___resnet_640_)
         - [on-g2_38_53       @ 0_37-gxe/resnet-640](#on_g2_38_53___0_37_gxe_resnet_64_0_)
         - [on-g2_38_53-conf_0       @ 0_37-gxe/resnet-640](#on_g2_38_53_conf_0___0_37_gxe_resnet_64_0_)
@@ -104,9 +106,14 @@ python3 eval_det.py cfg=p2s,ipsc:16_53:agn:nms:gt-0:_in_-resnet_640_ext_reorg_ro
 
 <a id="16_53_aug___resnet_640_"></a>
 ## 16_53-aug       @ resnet-640-->eval_p2s-ipsc
-python3 eval_det.py cfg=p2s,ipsc:54_126:agn:nms-1:gt-0:show-0:_in_-resnet_640_ext_reorg_roi_g2-16_53-batch_18-jtr-res_1280/ckpt-312000-ext_reorg_roi_g2-54_126/csv-batch_2:_out_-p2s-ipsc-16_53-aug
-<a id="acc___16_53_aug_resnet_640_"></a>
-### acc       @ 16_53-aug/resnet-640-->eval_p2s-ipsc
+<a id="on_0_15___16_53_aug_resnet_640_"></a>
+### on-0_15       @ 16_53-aug/resnet-640-->eval_p2s-ipsc
+python3 eval_det.py cfg=p2s,ipsc:0_15:agn:nms-1:gt-1:show-0:_in_-resnet_640_ext_reorg_roi_g2-16_53-batch_18-jtr-res_1280/ckpt-312000-ext_reorg_roi_g2-0_15/csv-batch_2:_out_-p2s-ipsc-16_53-aug-0_15
+<a id="on_54_126___16_53_aug_resnet_640_"></a>
+### on-54_126       @ 16_53-aug/resnet-640-->eval_p2s-ipsc
+python3 eval_det.py cfg=p2s,ipsc:54_126:agn:nms-1:gt-1:show-0:_in_-resnet_640_ext_reorg_roi_g2-16_53-batch_18-jtr-res_1280/ckpt-312000-ext_reorg_roi_g2-54_126/csv-batch_2:_out_-p2s-ipsc-16_53-aug
+<a id="acc___on_54_126_16_53_aug_resnet_640_"></a>
+#### acc       @ on-54_126/16_53-aug/resnet-640-->eval_p2s-ipsc
 python3 eval_det.py cfg=p2s,ipsc:54_126:agn:nms:gt-0:_in_-resnet_640_ext_reorg_roi_g2-16_53-batch_18-jtr-res_1280/best-val-accuracy_notpad/ckpt-65195-ext_reorg_roi_g2-54_126/csv-batch_16:_out_-p2s-resnet_640-ipsc-640-16_53-54_126-jtr-res_1280-65195-acc
 
 
