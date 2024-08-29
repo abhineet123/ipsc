@@ -180,6 +180,15 @@ col_bgr = {
 
 bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
 
+def sleep_with_pbar(sleep_mins):
+    for _ in tqdm(range(sleep_mins), desc='sleeping', ncols=100):
+        try:
+            time.sleep(60)
+        except KeyboardInterrupt:
+            print('sleep interrupted')
+            return False
+    return True
+
 
 def print_stats(stats, name='', fmt='.3f'):
     if name:

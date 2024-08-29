@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 import pickle
@@ -71,6 +72,8 @@ class Params(paramparse.CFG):
         self.check_seq_name = 1
         self.delete_tmp_files = 0
 
+        self.sleep = 30
+
         self.det_root_dir = ''
         self.det_paths = ''
         self.det_nms = [0, ]
@@ -104,6 +107,7 @@ class Params(paramparse.CFG):
         self.load_gt = 0
         self.gt_pkl = ''
         self.load_det = 0
+        self.save_det_pkl = 0
         self.det_pkl = ''
         self.quiet = False
 
@@ -192,6 +196,7 @@ class Params(paramparse.CFG):
     @property
     def sweep_params(self):
         return self._sweep_params
+
 
 def evaluate(
         params: Params,
@@ -509,7 +514,7 @@ def evaluate(
             df_gt = pd.read_csv(gt_path)
 
             if seq_to_samples is not None:
-                sampled_filenames =  [os.path.basename(seq_img_path) for seq_img_path in seq_img_paths]
+                sampled_filenames = [os.path.basename(seq_img_path) for seq_img_path in seq_img_paths]
                 df_gt = df_gt.loc[df_gt['filename'].isin(sampled_filenames)]
 
             if params.class_agnostic:
@@ -519,7 +524,6 @@ def evaluate(
 
             if fix_gt_cols:
                 df_gt = df_gt.rename(columns=csv_rename_dict)
-
 
             df_gt["filename"] = df_gt["filename"].apply(lambda x: seq_img_name_to_path[os.path.basename(x)])
 
@@ -932,7 +936,7 @@ def evaluate(
 
     """save pkl and detection post-proc"""
     if True:
-        if not det_loaded:
+        if not det_loaded and params.save_det_pkl:
             print(f'\nSaving detection data to {det_pkl}')
             os.makedirs(det_pkl_dir, exist_ok=True)
             with open(det_pkl, 'wb') as f:
@@ -3204,7 +3208,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         stride_to_filenames = vid_info_dict['stride_to_file_names']
 
         # seq_to_video_ids = list(map(int, stride_to_video_ids[str(vid_stride)].split(',')))
-        vid_info = [stride_to_video_ids[str(vid_stride)],  stride_to_filenames[str(vid_stride)]]
+        vid_info = [stride_to_video_ids[str(vid_stride)], stride_to_filenames[str(vid_stride)]]
 
     img_root_dir = params.img_root_dir
     gt_root_dir = params.gt_root_dir
@@ -3632,10 +3636,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                 f.write(output_json_data)
 
 
-def main():
-    params = Params()
-    paramparse.process(params)
-
+def sweep(params: Params):
     if params.vid_stride:
         params.sweep_params.append('vid_stride')
 
@@ -3678,6 +3679,59 @@ def main():
     else:
         for sweep_val_combo in sweep_val_combos:
             run(params, sweep_mode, *sweep_val_combo)
+
+
+def main():
+    params = Params()
+    paramparse.process(params)
+
+    wc = '__var__'
+
+    if wc in params.det_paths:
+        det_paths = params.det_paths
+        wc_start_idx = det_paths.find(wc)
+        wc_end_idx = wc_start_idx + len(wc)
+        pre_wc = det_paths[:wc_start_idx]
+        post_wc = det_paths[wc_end_idx:]
+        rep1, rep2 = (pre_wc, post_wc) if len(pre_wc) > len(post_wc) else (post_wc, pre_wc)
+
+        det_paths = det_paths.replace(wc, '*')
+
+        if params.det_root_dir:
+            det_paths = os.path.join(params.det_root_dir, det_paths)
+
+        proc_det_paths = []
+        while True:
+            matching_paths = glob.glob(det_paths)
+            new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
+
+            if not new_det_paths:
+                if not utils.sleep_with_pbar(params.sleep):
+                    break
+
+            det_paths_ = new_det_paths.pop()
+            if params.det_root_dir:
+                det_paths_ = os.path.relpath(det_paths_, params.det_root_dir)
+
+            match_substr = det_paths_.replace(rep1, '').replace(rep2, '')
+
+            params_ = copy.deepcopy(params)
+
+            params_.det_paths =  det_paths_
+            params_.save_suffix =  f'{params.save_suffix}-{match_substr}'
+
+            try:
+                sweep(params_)
+            except AssertionError as e:
+                print(f'evaluation did not succeed on {det_paths_}: {e}')
+                pass
+            else:
+                proc_det_paths.append(det_paths_)
+    else:
+        sweep(params)
+
+
+
 
 
 if __name__ == '__main__':
