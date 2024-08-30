@@ -73,7 +73,7 @@ class Params(paramparse.CFG):
         self.delete_tmp_files = 0
 
         self.verbose = 1
-        self.save_csv = 0
+        self.save_dets = 0
 
         self.sleep = 30
 
@@ -509,7 +509,7 @@ def evaluate(
                 print(os.listdir('/'))
                 print(os.listdir(os.path.dirname(gt_path)))
 
-                raise IOError(f'GT file: {gt_path} does not exist')
+                raise AssertionError(f'GT file: {gt_path} does not exist')
 
             print(f'\ngt_path: {gt_path:s}')
 
@@ -565,7 +565,7 @@ def evaluate(
             else:
                 print('reading GT')
 
-            valid_rows = 0
+            valid_gts = 0
             total_rows = 0
 
             for gt_filename in gt_iter:
@@ -582,7 +582,7 @@ def evaluate(
 
                 if show_pbar:
                     gt_iter.set_description(f'seq {seq_idx + 1} / {n_seq}: '
-                                            f'valid_rows: {valid_rows} / {total_rows}')
+                                            f'valid_gts: {valid_gts} / {total_rows}')
 
                 for _, row in img_df.iterrows():
                     total_rows += 1
@@ -608,13 +608,14 @@ def evaluate(
                     except KeyError:
                         target_id = -1
 
-                    valid_rows += 1
                     if gt_class not in gt_classes:
                         msg = f'{seq_name}: {gt_filename} :: invalid gt_class: {gt_class}'
                         if ignore_invalid_class:
                             # print(msg)
                             continue
                         raise AssertionError(msg)
+
+                    valid_gts += 1
 
                     bbox = [xmin, ymin, xmax, ymax]
 
@@ -659,6 +660,8 @@ def evaluate(
                 if curr_frame_gt_data:
                     seq_gt_data_dict[file_path] = curr_frame_gt_data
 
+            assert valid_gts > 0, "no valid_gts found"
+
             gt_data_dict[seq_path] = seq_gt_data_dict
 
             gt_img_paths = sorted(list(seq_gt_data_dict.keys()))
@@ -696,7 +699,7 @@ def evaluate(
             for _det_path_id, _det_path in enumerate(det_paths_iter):
                 det_seq_name = os.path.splitext(os.path.basename(_det_path))[0]
                 if check_seq_name and (det_seq_name != seq_name or gt_seq_name != seq_name):
-                    raise IOError(f'Mismatch between GT, detection and image sequences: '
+                    raise AssertionError(f'Mismatch between GT, detection and image sequences: '
                                   f'{gt_seq_name}, {det_seq_name}, {seq_name}')
 
                 _det_name = os.path.basename(_det_path)
@@ -768,6 +771,7 @@ def evaluate(
                 if n_det_paths > 1:
                     det_pbar_base_msg += f"csv {_det_path_id + 1} / {n_det_paths} "
 
+                valid_dets = 0
                 for det_filename_id, det_filename in enumerate(det_filename_iter):
 
                     assert os.path.isfile(det_filename), f"det_filename does not exist: {det_filename}"
@@ -812,6 +816,8 @@ def evaluate(
                                 # print(msg)
                                 continue
                             raise AssertionError(msg)
+
+                        valid_dets += 1
 
                         det_w = xmax - xmin
                         det_h = ymax - ymin
@@ -869,6 +875,8 @@ def evaluate(
 
                             det_pbar.set_description(det_pbar_msg)
 
+                assert valid_dets > 0, "no valid_dets found"
+
             if params.nms_thresh > 0 or params.vid_nms_thresh > 0:
                 seq_bbox_ids_to_delete = []
                 for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
@@ -919,7 +927,7 @@ def evaluate(
                     if params.nms_thresh > 0:
                         out_suffix.append(f'nms_{int(params.nms_thresh * 100):02d}')
 
-                    if out_suffix and params.save_csv:
+                    if out_suffix and params.save_dets:
                         out_suffix = '_'.join(out_suffix)
                         out_det_dir = utils.add_suffix(det_dir, out_suffix)
 
@@ -1665,7 +1673,7 @@ def evaluate(
                         #     vert_stack = 1
 
                         if src_img is None:
-                            raise IOError(f'Image could not be read: {img_full_path}')
+                            raise AssertionError(f'Image could not be read: {img_full_path}')
 
                     img, resize_factor, _, _ = utils.resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
 
@@ -3324,7 +3332,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                 out_dir_name = f'{out_dir_name}_{db_name}'
 
         else:
-            raise IOError('invalid seq_path_list_file: {}'.format(seq_path_list_file))
+            raise AssertionError('invalid seq_path_list_file: {}'.format(seq_path_list_file))
 
     print(f'seq_path_list:\n{utils.to_str(seq_path_list)}\n')
 
@@ -3423,7 +3431,7 @@ def run(params: Params, sweep_mode: dict, *argv):
             det_path_list = utils.file_lines_to_list(det_path_list_file)
             # det_path_list = [name + '.csv' for name in det_path_list]
         else:
-            raise IOError('invalid det_path_list_file: {}'.format(det_path_list_file))
+            raise AssertionError('invalid det_path_list_file: {}'.format(det_path_list_file))
 
         n_dets = len(det_path_list)
         if n_dets > 0 and params.combine_dets:
@@ -3453,7 +3461,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                 det_path_list.sort(key=utils.sortKey)
                 n_dets = len(det_path_list)
             else:
-                raise AssertionError(f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}")
+                raise IOError(f"mismatch between n_seq: {n_seq} and n_dets: {n_dets}")
         else:
             det_path_list = det_path_list[seq_start_id:seq_end_id + 1]
 
@@ -3715,21 +3723,23 @@ def main():
         rep1, rep2 = (pre_wc, post_wc) if len(pre_wc) > len(post_wc) else (post_wc, pre_wc)
 
         det_paths = det_paths.replace(wc, '*')
-
         if params.det_root_dir:
             det_paths = os.path.join(params.det_root_dir, det_paths)
 
         proc_det_paths = []
+        sleep = False
         while True:
             matching_paths = glob.glob(det_paths)
             if params.det_root_dir:
                 matching_paths = [os.path.relpath(k, params.det_root_dir) for k in matching_paths]
 
             new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
+            new_det_paths.sort(reverse=True)
 
-            if not new_det_paths:
+            if sleep or not new_det_paths:
                 if not utils.sleep_with_pbar(params.sleep):
                     break
+                sleep = False
 
             det_paths_ = new_det_paths.pop()
 
@@ -3746,9 +3756,14 @@ def main():
 
             try:
                 sweep(params_)
+            except IOError as e:
+                if len(new_det_paths) == 0:
+                    print(f'incomplete dets in {det_paths_}')
+                    sleep = True
+
+                continue
             except AssertionError as e:
                 print(f'evaluation did not succeed on {det_paths_}: {e}')
-                continue
 
             proc_det_paths.append(det_paths_)
     else:
