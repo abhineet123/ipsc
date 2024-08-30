@@ -73,6 +73,7 @@ class Params(paramparse.CFG):
         self.delete_tmp_files = 0
 
         self.verbose = 1
+        self.save_csv = 0
 
         self.sleep = 30
 
@@ -220,7 +221,8 @@ def evaluate(
         vid_info=None,
 ):
     if not params.verbose:
-        print = lambda x: None
+        print = dummy_print
+        # tqdm = dummy_tqdm
 
     """general init"""
     if True:
@@ -917,7 +919,7 @@ def evaluate(
                     if params.nms_thresh > 0:
                         out_suffix.append(f'nms_{int(params.nms_thresh * 100):02d}')
 
-                    if out_suffix:
+                    if out_suffix and params.save_csv:
                         out_suffix = '_'.join(out_suffix)
                         out_det_dir = utils.add_suffix(det_dir, out_suffix)
 
@@ -3138,12 +3140,18 @@ def evaluate(
     else:
         return text_table
 
+def dummy_tqdm(iter_, *args, **kwargs):
+    return iter_
+
+def dummy_print(*argv):
+    pass
 
 def run(params: Params, sweep_mode: dict, *argv):
     params = copy.deepcopy(params)
 
     if not params.verbose:
-        print = lambda x: None
+        print = dummy_print
+        # tqdm = dummy_tqdm
 
     for i, sweep_param in enumerate(params.sweep_params):
 
@@ -3697,7 +3705,8 @@ def main():
 
     if wc in params.det_paths:
         params.verbose = 0
-        
+        params.show_pbar = 0
+
         det_paths = params.det_paths
         wc_start_idx = det_paths.find(wc)
         wc_end_idx = wc_start_idx + len(wc)
@@ -3733,13 +3742,15 @@ def main():
             params_.det_paths = det_paths_
             params_.save_suffix = f'{params.save_suffix}-{match_substr}'
 
+            sweep(params_)
+
             try:
                 sweep(params_)
             except AssertionError as e:
                 print(f'evaluation did not succeed on {det_paths_}: {e}')
-                print()
-            else:
-                proc_det_paths.append(det_paths_)
+                continue
+
+            proc_det_paths.append(det_paths_)
     else:
         sweep(params)
 
