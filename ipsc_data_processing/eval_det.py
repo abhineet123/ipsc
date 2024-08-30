@@ -72,6 +72,8 @@ class Params(paramparse.CFG):
         self.check_seq_name = 1
         self.delete_tmp_files = 0
 
+        self.verbose = 1
+
         self.sleep = 30
 
         self.det_root_dir = ''
@@ -217,6 +219,9 @@ def evaluate(
         show_pbar=False,
         vid_info=None,
 ):
+    if not params.verbose:
+        print = lambda x: None
+
     """general init"""
     if True:
         assert out_root_dir, "out_root_dir must be provided"
@@ -3137,6 +3142,9 @@ def evaluate(
 def run(params: Params, sweep_mode: dict, *argv):
     params = copy.deepcopy(params)
 
+    if not params.verbose:
+        print = lambda x: None
+
     for i, sweep_param in enumerate(params.sweep_params):
 
         if argv[i] is not None:
@@ -3688,6 +3696,8 @@ def main():
     wc = '__var__'
 
     if wc in params.det_paths:
+        params.verbose = 0
+        
         det_paths = params.det_paths
         wc_start_idx = det_paths.find(wc)
         wc_end_idx = wc_start_idx + len(wc)
@@ -3703,6 +3713,9 @@ def main():
         proc_det_paths = []
         while True:
             matching_paths = glob.glob(det_paths)
+            if params.det_root_dir:
+                matching_paths = [os.path.relpath(k, params.det_root_dir) for k in matching_paths]
+
             new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
 
             if not new_det_paths:
@@ -3710,28 +3723,25 @@ def main():
                     break
 
             det_paths_ = new_det_paths.pop()
-            if params.det_root_dir:
-                det_paths_ = os.path.relpath(det_paths_, params.det_root_dir)
 
             match_substr = det_paths_.replace(rep1, '').replace(rep2, '')
 
             params_ = copy.deepcopy(params)
+            
+            print(f'evaluating {det_paths_}')
 
-            params_.det_paths =  det_paths_
-            params_.save_suffix =  f'{params.save_suffix}-{match_substr}'
+            params_.det_paths = det_paths_
+            params_.save_suffix = f'{params.save_suffix}-{match_substr}'
 
             try:
                 sweep(params_)
             except AssertionError as e:
                 print(f'evaluation did not succeed on {det_paths_}: {e}')
-                pass
+                print()
             else:
                 proc_det_paths.append(det_paths_)
     else:
         sweep(params)
-
-
-
 
 
 if __name__ == '__main__':
