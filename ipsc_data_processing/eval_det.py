@@ -3751,8 +3751,6 @@ def main():
             params_.det_paths = det_paths_
             params_.save_suffix = f'{params.save_suffix}-{match_substr}'
 
-            sweep(params_)
-
             try:
                 sweep(params_)
             except IOError as e:
