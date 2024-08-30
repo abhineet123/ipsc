@@ -3737,8 +3737,7 @@ def main():
             new_det_paths.sort(reverse=True)
 
             if sleep or not new_det_paths:
-                if not utils.sleep_with_pbar(params.sleep):
-                    break
+                utils.sleep_with_pbar(params.sleep)
                 sleep = False
 
             det_paths_ = new_det_paths.pop()
@@ -3757,11 +3756,10 @@ def main():
             try:
                 sweep(params_)
             except IOError as e:
+                print(f'incomplete dets in {det_paths_}')
                 if len(new_det_paths) == 0:
-                    print(f'incomplete dets in {det_paths_}')
                     sleep = True
-
-                continue
+                    continue
             except AssertionError as e:
                 print(f'evaluation did not succeed on {det_paths_}: {e}')
 
