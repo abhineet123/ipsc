@@ -173,6 +173,7 @@ class Params(paramparse.CFG):
         self.save_classes = []
         self.save_cats = ['fn_det', 'fn_cls', 'fp_nex-whole', 'fp_nex-part', 'fp_cls', 'fp_dup']
         self.auto_suffix = 0
+        self.batch_name = ''
         self.save_suffix = ''
         self.save_file_res = '1920x1080'
         # self.save_file_res = '1600x900'
@@ -3277,6 +3278,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         sweep_suffixes.append(f'vnms_{int(vid_nms_thresh * 100):02d}')
 
     sweep_suffix = '-'.join(sweep_suffixes)
+
     is_sweep = any(sweep_mode.values())
 
     out_dir_name = None
@@ -3288,6 +3290,10 @@ def run(params: Params, sweep_mode: dict, *argv):
             save_suffix = f'{save_suffix}-agn'
 
         out_dir_name = f'{save_suffix}'
+
+        batch_name = params.batch_name
+        if batch_name:
+            out_dir_name = os.path.join(out_dir_name, batch_name)
 
         if sweep_suffix:
             if is_sweep:
@@ -3737,8 +3743,10 @@ def main():
             new_det_paths.sort(reverse=True)
 
             if sleep or not new_det_paths:
-                utils.sleep_with_pbar(params.sleep)
+                if not utils.sleep_with_pbar(params.sleep):
+                    break
                 sleep = False
+                continue
 
             det_paths_ = new_det_paths.pop()
 
@@ -3749,7 +3757,7 @@ def main():
             print(f'evaluating {det_paths_}')
 
             params_.det_paths = det_paths_
-            params_.save_suffix = f'{params.save_suffix}-{match_substr}'
+            params_.batch_name = match_substr
 
             try:
                 sweep(params_)
