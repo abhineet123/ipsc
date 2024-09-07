@@ -1,5 +1,8 @@
-import glob
 import os
+import sys
+
+import glob
+import shutil
 import sys
 import pickle
 import copy
@@ -75,6 +78,7 @@ class Params(paramparse.CFG):
         self.verbose = 1
         self.save_dets = 0
 
+        self.concat = 0
         self.sleep = 30
 
         self.det_root_dir = ''
@@ -701,7 +705,7 @@ def evaluate(
                 det_seq_name = os.path.splitext(os.path.basename(_det_path))[0]
                 if check_seq_name and (det_seq_name != seq_name or gt_seq_name != seq_name):
                     raise AssertionError(f'Mismatch between GT, detection and image sequences: '
-                                  f'{gt_seq_name}, {det_seq_name}, {seq_name}')
+                                         f'{gt_seq_name}, {det_seq_name}, {seq_name}')
 
                 _det_name = os.path.basename(_det_path)
 
@@ -3149,11 +3153,14 @@ def evaluate(
     else:
         return text_table
 
+
 def dummy_tqdm(iter_, *args, **kwargs):
     return iter_
 
+
 def dummy_print(*argv):
     pass
+
 
 def run(params: Params, sweep_mode: dict, *argv):
     params = copy.deepcopy(params)
@@ -3479,7 +3486,10 @@ def run(params: Params, sweep_mode: dict, *argv):
             out_dir_name = utils.linux_path(out_root_suffix, out_dir_name)
 
         out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
+
         os.makedirs(out_root_dir, exist_ok=True)
+
+        # return out_root_dir
 
         """FP threshold vs AUC for all image IDs"""
         roc_auc_metrics = [
@@ -3667,17 +3677,18 @@ def run(params: Params, sweep_mode: dict, *argv):
 
 
 def sweep(params: Params):
-    if params.vid_stride:
-        params.sweep_params.append('vid_stride')
+    params_ = copy.deepcopy(params)
+    if params_.vid_stride:
+        params_.sweep_params.append('vid_stride')
 
-    if params.class_agnostic == 2:
-        params.sweep_params.append('class_agnostic')
-        params.class_agnostic = [0, 1]
+    if params_.class_agnostic == 2:
+        params_.sweep_params.append('class_agnostic')
+        params_.class_agnostic = [0, 1]
 
     sweep_vals = []
     sweep_mode = {}
-    for i, sweep_param in enumerate(params.sweep_params):
-        param_val = getattr(params, sweep_param)
+    for i, sweep_param in enumerate(params_.sweep_params):
+        param_val = getattr(params_, sweep_param)
 
         sweep_mode[sweep_param] = len(param_val) > 1
 
@@ -3690,7 +3701,7 @@ def sweep(params: Params):
     sweep_val_combos = list(itertools.product(*sweep_vals))
 
     n_sweep_val_combos = len(sweep_val_combos)
-    n_proc = min(params.n_proc, n_sweep_val_combos)
+    n_proc = min(params_.n_proc, n_sweep_val_combos)
 
     print(f'testing over {n_sweep_val_combos} param combos')
     if n_proc > 1:
@@ -3698,17 +3709,33 @@ def sweep(params: Params):
         # import multiprocessing
         import functools
 
-        params.show_pbar = False
+        params_.show_pbar = False
 
         print(f'running in parallel over {n_proc} processes')
         # pool = multiprocessing.Pool(n_proc)
         pool = ThreadPool(n_proc)
-        func = functools.partial(run, params, sweep_mode)
+        func = functools.partial(run, params_, sweep_mode)
 
-        pool.starmap(func, sweep_val_combos)
+        out_root_dirs = pool.starmap(func, sweep_val_combos)
     else:
+        out_root_dirs = []
         for sweep_val_combo in sweep_val_combos:
-            run(params, sweep_mode, *sweep_val_combo)
+            out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
+            out_root_dirs.append(out_root_dir)
+
+    out_zip_paths = []
+    if params.class_agnostic == 2:
+        agn_root_dirs = [out_root_dir for out_root_dir in out_root_dirs if '-agn/' in out_root_dir]
+        agn_zip_path = utils.zip_dirs(agn_root_dirs)
+
+        out_zip_paths.append(agn_zip_path)
+
+        out_root_dirs = [out_root_dir for out_root_dir in out_root_dirs if '-agn/' not in out_root_dir]
+
+    out_zip_path = utils.zip_dirs(out_root_dirs)
+    out_zip_paths.append(out_zip_path)
+
+    return out_zip_paths
 
 
 def main():
@@ -3717,61 +3744,77 @@ def main():
 
     wc = '__var__'
 
-    if wc in params.det_paths:
-        params.verbose = 0
-        params.show_pbar = 0
+    if wc not in params.det_paths:
+        out_root_dirs = sweep(params)
 
-        det_paths = params.det_paths
-        wc_start_idx = det_paths.find(wc)
-        wc_end_idx = wc_start_idx + len(wc)
-        pre_wc = det_paths[:wc_start_idx]
-        post_wc = det_paths[wc_end_idx:]
-        rep1, rep2 = (pre_wc, post_wc) if len(pre_wc) > len(post_wc) else (post_wc, pre_wc)
+    params.verbose = 0
+    params.show_pbar = 0
 
-        det_paths = det_paths.replace(wc, '*')
+    det_paths = params.det_paths
+    wc_start_idx = det_paths.find(wc)
+    wc_end_idx = wc_start_idx + len(wc)
+    pre_wc = det_paths[:wc_start_idx]
+    post_wc = det_paths[wc_end_idx:]
+    rep1, rep2 = (pre_wc, post_wc) if len(pre_wc) > len(post_wc) else (post_wc, pre_wc)
+
+    det_paths = det_paths.replace(wc, '*')
+    if params.det_root_dir:
+        det_paths = os.path.join(params.det_root_dir, det_paths)
+
+    proc_det_paths = []
+    sleep = False
+
+    concat_metrics = None
+    if params.concat:
+        sys.path.append(utils.linux_path(os.path.expanduser('~'), '617', 'plotting'))
+        import concat_metrics
+
+    while True:
+        matching_paths = glob.glob(det_paths)
         if params.det_root_dir:
-            det_paths = os.path.join(params.det_root_dir, det_paths)
+            matching_paths = [os.path.relpath(k, params.det_root_dir) for k in matching_paths]
 
-        proc_det_paths = []
-        sleep = False
-        while True:
-            matching_paths = glob.glob(det_paths)
-            if params.det_root_dir:
-                matching_paths = [os.path.relpath(k, params.det_root_dir) for k in matching_paths]
+        new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
+        new_det_paths.sort(reverse=True)
 
-            new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
-            new_det_paths.sort(reverse=True)
+        if sleep or not new_det_paths:
+            if not utils.sleep_with_pbar(params.sleep):
+                break
+            sleep = False
+            continue
 
-            if sleep or not new_det_paths:
-                if not utils.sleep_with_pbar(params.sleep):
-                    break
-                sleep = False
+        det_paths_ = new_det_paths.pop()
+
+        match_substr = det_paths_.replace(rep1, '').replace(rep2, '')
+
+        params_ = copy.deepcopy(params)
+
+        print(f'evaluating {det_paths_}')
+
+        params_.det_paths = det_paths_
+        params_.batch_name = match_substr
+
+        try:
+            out_zip_paths = sweep(params_)
+        except IOError as e:
+            print(f'incomplete dets in {det_paths_}')
+            if len(new_det_paths) == 0:
+                sleep = True
                 continue
+        except AssertionError as e:
+            print(f'evaluation did not succeed on {det_paths_}: {e}')
 
-            det_paths_ = new_det_paths.pop()
+        proc_det_paths.append(det_paths_)
 
-            match_substr = det_paths_.replace(rep1, '').replace(rep2, '')
+        if params.concat:
+            concat_params = concat_metrics.Params()
+            concat_params.list_dir = ''
+            concat_params.list_ext = ''
+            concat_params.list_from_cb = 0
 
-            params_ = copy.deepcopy(params)
-            
-            print(f'evaluating {det_paths_}')
-
-            params_.det_paths = det_paths_
-            params_.batch_name = match_substr
-
-            try:
-                sweep(params_)
-            except IOError as e:
-                print(f'incomplete dets in {det_paths_}')
-                if len(new_det_paths) == 0:
-                    sleep = True
-                    continue
-            except AssertionError as e:
-                print(f'evaluation did not succeed on {det_paths_}: {e}')
-
-            proc_det_paths.append(det_paths_)
-    else:
-        sweep(params)
+            for out_zip_path in out_zip_paths:
+                concat_params.list_path = out_zip_path
+                concat_metrics.main(concat_params)
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ import os
 import traceback
 import logging
 
+import shutil
 import random
 import cv2
 import numpy as np
@@ -180,8 +181,38 @@ col_bgr = {
 
 bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
 
+def zip_dirs(agn_root_dirs, del_src=True):
+    agn_prefix = os.path.commonpath(agn_root_dirs)
+    agn_rel_dirs = [os.path.relpath(k, agn_prefix) for k in agn_root_dirs]
+    agn_rel_dirs.sort()
+
+    switches = '-r'
+    in_paths = ' '.join(agn_rel_dirs)
+    out_path = agn_prefix + '.zip'
+    out_path = os.path.abspath(out_path)
+    zip_cmd = f'cd {agn_prefix} && zip {switches} {out_path} {in_paths}'
+    os.system(zip_cmd)
+
+    if os.path.exists(out_path):
+        from zipfile import ZipFile, Path
+        list_zip_file = ZipFile(out_path, 'r')
+        zip_subdirs = [k.name for k in Path(list_zip_file).iterdir() if k.is_dir()]
+        zip_subdirs.sort()
+
+        assert zip_subdirs == agn_rel_dirs, "zip_subdirs mismatch"
+
+        if del_src:
+            for agn_root_dir in agn_root_dirs:
+                shutil.rmtree(agn_root_dir)
+        print()
+
+    if del_src and not os.listdir(agn_prefix):
+        shutil.rmtree(agn_prefix)
+
+    return out_path
+
 def sleep_with_pbar(sleep_mins):
-    for _ in tqdm(range(sleep_mins), desc='sleeping', ncols=100):
+    for _ in tqdm(range(sleep_mins), desc='sleeping', ncols=50):
         try:
             time.sleep(60)
         except KeyboardInterrupt:
