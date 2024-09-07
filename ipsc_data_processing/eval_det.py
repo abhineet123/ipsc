@@ -12,6 +12,7 @@ from multiprocessing.pool import ThreadPool
 import json
 
 import functools
+from datetime import datetime
 from contextlib import closing
 
 import imagesize
@@ -78,7 +79,7 @@ class Params(paramparse.CFG):
         self.verbose = 1
         self.save_dets = 0
 
-        self.concat = 0
+        self.concat = 1
         self.sleep = 30
 
         self.det_root_dir = ''
@@ -3411,6 +3412,16 @@ def run(params: Params, sweep_mode: dict, *argv):
         if params.iw:
             out_dir_name = f'{out_dir_name}-iw'
 
+    if params.out_root_suffix:
+        out_root_suffix = '_'.join(params.out_root_suffix)
+        out_dir_name = utils.linux_path(out_root_suffix, out_dir_name)
+
+    out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
+
+    os.makedirs(out_root_dir, exist_ok=True)
+
+    # return out_root_dir
+
     gt_path_list = gt_path_list[seq_start_id:seq_end_id + 1]
 
     class_info = open(labels_path, 'r').read().splitlines()
@@ -3481,15 +3492,6 @@ def run(params: Params, sweep_mode: dict, *argv):
         print(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
 
         # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
-        if params.out_root_suffix:
-            out_root_suffix = '_'.join(params.out_root_suffix)
-            out_dir_name = utils.linux_path(out_root_suffix, out_dir_name)
-
-        out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
-
-        os.makedirs(out_root_dir, exist_ok=True)
-
-        # return out_root_dir
 
         """FP threshold vs AUC for all image IDs"""
         roc_auc_metrics = [
@@ -3674,6 +3676,7 @@ def run(params: Params, sweep_mode: dict, *argv):
             with open(eval_dict_path, 'w') as f:
                 output_json_data = json.dumps(eval_dict, indent=4)
                 f.write(output_json_data)
+    return out_root_dir
 
 
 def sweep(params: Params):
@@ -3701,8 +3704,8 @@ def sweep(params: Params):
     sweep_val_combos = list(itertools.product(*sweep_vals))
 
     n_sweep_val_combos = len(sweep_val_combos)
-    n_proc = min(params_.n_proc, n_sweep_val_combos)
-
+    n_proc = params_.n_proc
+    # n_proc = min(n_proc, n_sweep_val_combos)
     print(f'testing over {n_sweep_val_combos} param combos')
     if n_proc > 1:
 
@@ -3717,6 +3720,7 @@ def sweep(params: Params):
         func = functools.partial(run, params_, sweep_mode)
 
         out_root_dirs = pool.starmap(func, sweep_val_combos)
+        print()
     else:
         out_root_dirs = []
         for sweep_val_combo in sweep_val_combos:
@@ -3769,6 +3773,8 @@ def main():
         sys.path.append(utils.linux_path(os.path.expanduser('~'), '617', 'plotting'))
         import concat_metrics
 
+    out_zip_paths = None
+
     while True:
         matching_paths = glob.glob(det_paths)
         if params.det_root_dir:
@@ -3801,18 +3807,30 @@ def main():
             if len(new_det_paths) == 0:
                 sleep = True
                 continue
-        except AssertionError as e:
-            print(f'evaluation did not succeed on {det_paths_}: {e}')
+        # except AssertionError as e:
+        #     print(f'evaluation did not succeed on {det_paths_}: {e}')
 
         proc_det_paths.append(det_paths_)
 
-        if params.concat:
+        if params.concat and out_zip_paths is not None:
             concat_params = concat_metrics.Params()
             concat_params.list_dir = ''
             concat_params.list_ext = ''
             concat_params.list_from_cb = 0
+            concat_params.list_path_id = 0
+            concat_params.class_name = ''
+            concat_params.csv_mode = 1
+            concat_params.csv_metrics = ['rec_prec', ]
 
             for out_zip_path in out_zip_paths:
+                out_zip_dir = os.path.dirname(out_zip_path)
+                out_zip_name = os.path.splitext(os.path.basename(out_zip_path))[0]
+                concat_params.out_dir = out_zip_dir
+                concat_params.out_name = f'{out_zip_name}'
+
+                # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
+                # concat_params.out_name = f'{time_stamp}_{concat_params.out_name}'
+
                 concat_params.list_path = out_zip_path
                 concat_metrics.main(concat_params)
 

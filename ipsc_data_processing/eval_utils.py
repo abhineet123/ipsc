@@ -181,16 +181,23 @@ col_bgr = {
 
 bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
 
-def zip_dirs(agn_root_dirs, del_src=True):
-    agn_prefix = os.path.commonpath(agn_root_dirs)
+def zip_dirs(agn_root_dirs, del_src=False):
+    if len(agn_root_dirs) > 1:
+        agn_prefix = os.path.commonpath(agn_root_dirs)
+    else:
+        agn_prefix = os.path.dirname(agn_root_dirs[0])
+
+    assert agn_prefix not in agn_root_dirs, "agn_prefix cannot be same as an agn_root_dir"
+
     agn_rel_dirs = [os.path.relpath(k, agn_prefix) for k in agn_root_dirs]
     agn_rel_dirs.sort()
 
-    switches = '-r'
+    switches = '-r -q'
     in_paths = ' '.join(agn_rel_dirs)
     out_path = agn_prefix + '.zip'
     out_path = os.path.abspath(out_path)
     zip_cmd = f'cd {agn_prefix} && zip {switches} {out_path} {in_paths}'
+    print(f'{zip_cmd}')
     os.system(zip_cmd)
 
     if os.path.exists(out_path):
