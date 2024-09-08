@@ -3783,7 +3783,7 @@ def main():
         new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
         new_det_paths.sort(reverse=True)
 
-        if sleep or not new_det_paths:
+        if sleep and not new_det_paths:
             if not utils.sleep_with_pbar(params.sleep):
                 break
             sleep = False

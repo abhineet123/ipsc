@@ -181,7 +181,7 @@ col_bgr = {
 
 bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
 
-def zip_dirs(agn_root_dirs, del_src=False):
+def zip_dirs(agn_root_dirs, del_src=1):
     if len(agn_root_dirs) > 1:
         agn_prefix = os.path.commonpath(agn_root_dirs)
     else:
