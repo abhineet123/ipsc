@@ -3766,8 +3766,6 @@ def main():
         det_paths = os.path.join(params.det_root_dir, det_paths)
 
     proc_det_paths = []
-    sleep = False
-
     concat_metrics = None
     if params.concat:
         sys.path.append(utils.linux_path(os.path.expanduser('~'), '617', 'plotting'))
@@ -3783,10 +3781,9 @@ def main():
         new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
         new_det_paths.sort(reverse=True)
 
-        if sleep and not new_det_paths:
+        if not new_det_paths:
             if not utils.sleep_with_pbar(params.sleep):
                 break
-            sleep = False
             continue
 
         det_paths_ = new_det_paths.pop()
@@ -3805,7 +3802,8 @@ def main():
         except IOError as e:
             print(f'incomplete dets in {det_paths_}')
             if len(new_det_paths) == 0:
-                sleep = True
+                if not utils.sleep_with_pbar(params.sleep):
+                    break
                 continue
         # except AssertionError as e:
         #     print(f'evaluation did not succeed on {det_paths_}: {e}')

@@ -433,11 +433,12 @@ python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms-1:vnms-1:agn:proc-12:_
 ### on-0_53       @ len-2-aug-pt/swin-54_126-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_53:det-0:gt-1:nms-1:vnms-1:agn:proc-12:_in_-swin_t_pt_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_20-jtr-res_1280/ckpt-__var__-ext_reorg_roi_g2-0_53-length-2-stride-1/csv-batch_2:_out_-p2s-swin_t-pt-ipsc-54_126-len-2-aug-0_53
 
+
 <a id="len_2_aug_pt_fbb___swin_54_12_6_"></a>
 ## len-2-aug-pt-fbb       @ swin-54_126-->eval_p2s_vid-ipsc
 <a id="on_0_15___len_2_aug_pt_fbb_swin_54_126_"></a>
 ### on-0_15       @ len-2-aug-pt-fbb/swin-54_126-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:proc-12:_in_-swin_t_pt_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_64-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-swin_t-pt-ipsc-54_126-len-2-aug-fbb
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:proc-2:_in_-swin_t_pt_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_64-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-swin_t-pt-ipsc-54_126-len-2-aug-fbb
 
 
 <a id="mid_54_12_6_"></a>
@@ -456,11 +457,12 @@ python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:vnms-1:nms-1:agn:proc-12:_
 ### on-0_53       @ len-2-aug/mid-54_126-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_53:det-0:gt-1:vnms-1:nms-1:agn:proc-12:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_20-jtr-res_1280/ckpt-__var__-ext_reorg_roi_g2-0_53-length-2-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-2-aug-0_53
 
+
 <a id="len_2_aug_fbb___mid_54_126_"></a>
 ## len-2-aug-fbb       @ mid-54_126-->eval_p2s_vid-ipsc
 <a id="on_0_15___len_2_aug_fbb_mid_54_126_"></a>
 ### on-0_15       @ len-2-aug-fbb/mid-54_126-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-20:nms-20:agn:proc-2:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_64-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-2-aug-fbb
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-2:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_64-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-2-aug-fbb
 
 
 
