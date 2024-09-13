@@ -3418,9 +3418,11 @@ def run(params: Params, sweep_mode: dict, *argv):
 
     out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
 
-    os.makedirs(out_root_dir, exist_ok=True)
+    if os.path.exists(out_root_dir):
+        print(f'\n\nskipping eval with existing out_root_dir: {out_root_dir}\n\n')
+        return out_root_dir
 
-    # return out_root_dir
+    os.makedirs(out_root_dir, exist_ok=True)
 
     gt_path_list = gt_path_list[seq_start_id:seq_end_id + 1]
 
