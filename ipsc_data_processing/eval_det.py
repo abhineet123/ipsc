@@ -33,6 +33,10 @@ import itertools
 
 import eval_utils as utils
 
+sys.path.append(utils.linux_path(os.path.expanduser('~'), '617', 'plotting'))
+
+import concat_metrics
+
 
 class Params(paramparse.CFG):
     """
@@ -3751,7 +3755,8 @@ def main():
     wc = '__var__'
 
     if wc not in params.det_paths:
-        out_root_dirs = sweep(params)
+        out_zip_paths = sweep(params)
+        return
 
     params.verbose = 0
     params.show_pbar = 0
@@ -3768,11 +3773,6 @@ def main():
         det_paths = os.path.join(params.det_root_dir, det_paths)
 
     proc_det_paths = []
-    concat_metrics = None
-    if params.concat:
-        sys.path.append(utils.linux_path(os.path.expanduser('~'), '617', 'plotting'))
-        import concat_metrics
-
     out_zip_paths = None
 
     while True:
@@ -3820,6 +3820,7 @@ def main():
             concat_params.list_path_id = 0
             concat_params.class_name = ''
             concat_params.csv_mode = 1
+            concat_params.auc_mode = 3
             concat_params.csv_metrics = ['rec_prec', ]
 
             for out_zip_path in out_zip_paths:
