@@ -2762,6 +2762,7 @@ def evaluate(
                 out_root_dir,
                 misc_out_root_dir,
                 eval_result_dict,
+                verbose=params.verbose,
             )
 
         if save_sim_dets:
@@ -3423,9 +3424,10 @@ def run(params: Params, sweep_mode: dict, *argv):
     out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
 
     if os.path.exists(out_root_dir):
-        print(f'\n\nskipping eval with existing out_root_dir: {out_root_dir}\n\n')
+        utils.print_(f'\n\nskipping existing eval: {out_root_dir}\n\n')
         return out_root_dir
 
+    utils.print_(f'\nrunning eval: {out_root_dir}\n')
     os.makedirs(out_root_dir, exist_ok=True)
 
     gt_path_list = gt_path_list[seq_start_id:seq_end_id + 1]
@@ -3685,7 +3687,7 @@ def run(params: Params, sweep_mode: dict, *argv):
     return out_root_dir
 
 
-def sweep(params: Params):
+def sweep(params: Params, ret_val=None):
     params_ = copy.deepcopy(params)
     if params_.vid_stride:
         params_.sweep_params.append('vid_stride')
@@ -3730,7 +3732,12 @@ def sweep(params: Params):
     else:
         out_root_dirs = []
         for sweep_val_combo in sweep_val_combos:
-            out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
+            try:
+                out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
+            except IOError:
+                if ret_val is not None:
+                    ret_val[0] = 1
+                return
             out_root_dirs.append(out_root_dir)
 
     out_zip_paths = []
@@ -3745,8 +3752,28 @@ def sweep(params: Params):
     out_zip_path = utils.zip_dirs(out_root_dirs)
     out_zip_paths.append(out_zip_path)
 
-    return out_zip_paths
+    if params.concat and out_zip_paths is not None:
+        concat_params = concat_metrics.Params()
+        concat_params.list_dir = ''
+        concat_params.list_ext = ''
+        concat_params.list_from_cb = 0
+        concat_params.list_path_id = 0
+        concat_params.class_name = ''
+        concat_params.csv_mode = 1
+        concat_params.auc_mode = 3
+        concat_params.csv_metrics = ['rec_prec', ]
 
+        for out_zip_path in out_zip_paths:
+            out_zip_dir = os.path.dirname(out_zip_path)
+            out_zip_name = os.path.splitext(os.path.basename(out_zip_path))[0]
+            concat_params.out_dir = out_zip_dir
+            concat_params.out_name = f'{out_zip_name}'
+
+            # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
+            # concat_params.out_name = f'{time_stamp}_{concat_params.out_name}'
+
+            concat_params.list_path = out_zip_path
+            concat_metrics.main(concat_params)
 
 def main():
     params = Params()
@@ -3799,9 +3826,13 @@ def main():
         params_.det_paths = det_paths_
         params_.batch_name = match_substr
 
-        try:
-            out_zip_paths = sweep(params_)
-        except IOError as e:
+        ret_val = [0, ]
+
+        p = multiprocessing.Process(target=sweep, args=(params_,ret_val))
+        p.start()
+        p.join()
+
+        if ret_val[0] == 1:
             print(f'incomplete dets in {det_paths_}')
             if len(new_det_paths) == 0:
                 if not utils.sleep_with_pbar(params.sleep):
@@ -3811,30 +3842,6 @@ def main():
         #     print(f'evaluation did not succeed on {det_paths_}: {e}')
 
         proc_det_paths.append(det_paths_)
-
-        if params.concat and out_zip_paths is not None:
-            concat_params = concat_metrics.Params()
-            concat_params.list_dir = ''
-            concat_params.list_ext = ''
-            concat_params.list_from_cb = 0
-            concat_params.list_path_id = 0
-            concat_params.class_name = ''
-            concat_params.csv_mode = 1
-            concat_params.auc_mode = 3
-            concat_params.csv_metrics = ['rec_prec', ]
-
-            for out_zip_path in out_zip_paths:
-                out_zip_dir = os.path.dirname(out_zip_path)
-                out_zip_name = os.path.splitext(os.path.basename(out_zip_path))[0]
-                concat_params.out_dir = out_zip_dir
-                concat_params.out_name = f'{out_zip_name}'
-
-                # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
-                # concat_params.out_name = f'{time_stamp}_{concat_params.out_name}'
-
-                concat_params.list_path = out_zip_path
-                concat_metrics.main(concat_params)
-
 
 if __name__ == '__main__':
     main()

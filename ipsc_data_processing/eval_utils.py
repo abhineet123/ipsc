@@ -1,5 +1,6 @@
 import operator
 import os
+import sys
 import traceback
 import logging
 
@@ -181,6 +182,7 @@ col_bgr = {
 
 bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
 
+
 def zip_dirs(agn_root_dirs, del_src=1):
     if len(agn_root_dirs) > 1:
         agn_prefix = os.path.commonpath(agn_root_dirs)
@@ -217,6 +219,7 @@ def zip_dirs(agn_root_dirs, del_src=1):
         shutil.rmtree(agn_prefix)
 
     return out_path
+
 
 def sleep_with_pbar(sleep_mins):
     for _ in tqdm(range(sleep_mins), desc='sleeping', ncols=50):
@@ -1174,6 +1177,7 @@ def profile(_id, _times=None, _rel_times=None, enable=1, show=1, _fps=None):
                     rel__time = _times[__id] / total_time
                     _rel_times[__id] = rel__time
 
+
 def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
     temp_vis = np.concatenate((src_img,) * mult, axis=1)
     temp_vis_res = resize_ar_tf_api(temp_vis, save_w, save_h - bottom_border, crop=1)
@@ -1185,6 +1189,8 @@ def get_vis_size(src_img, mult, save_w, save_h, bottom_border):
         f"vis size {vis_w} x {vis_h} > save size {save_w} x {save_h}"
 
     return vis_h, vis_w
+
+
 def print_with_time(*argv):
     time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
     print(f'{time_stamp}:', *argv)
@@ -1275,6 +1281,9 @@ def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh):
 
     return global_objs_to_delete
 
+def print_(*args, **kwargs):
+    sys.stdout.write(*args, **kwargs)
+    sys.stdout.write('\n')
 
 def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
@@ -1321,6 +1330,7 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
     return seq_paths, seq_to_samples
 
 
+
 def add_suffix(src_path, suffix, dst_ext='', sep='_'):
     # abs_src_path = os.path.abspath(src_path)
     src_dir = os.path.dirname(src_path)
@@ -1334,7 +1344,9 @@ def add_suffix(src_path, suffix, dst_ext='', sep='_'):
 
 def compute_binary_cls_metrics(
         thresholds, probs, labels, class_names,
-        fp_thresholds=(0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5)):
+        fp_thresholds=(0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5),
+        show_pbar=False
+):
     if len(probs.shape) == 1:
         """assume only class 0 probs are provided"""
         probs = np.stack((probs, 1 - probs), axis=1)
@@ -1357,7 +1369,11 @@ def compute_binary_cls_metrics(
 
     conf_to_acc[:, 0] = thresholds.squeeze()
 
-    for conf_id, conf_threshold in enumerate(tqdm(thresholds, ncols=70)):
+    thresh_iter = thresholds
+    if show_pbar:
+        thresh_iter = tqdm(thresholds, ncols=70)
+
+    for conf_id, conf_threshold in enumerate(thresh_iter):
         is_class_1 = probs[:, 1] >= conf_threshold
         predictions = np.zeros((n_val, 1), dtype=np.int32)
         predictions[is_class_1] = 1
@@ -1562,7 +1578,8 @@ def binary_cls_metrics(
         out_root_dir,
         misc_out_root_dir,
         eval_result_dict,
-        enable_tests=True
+        enable_tests=True,
+        verbose=True,
 ):
     assert len(gt_classes) == 2, "Number of classes must be 2"
 
@@ -1782,20 +1799,21 @@ def binary_cls_metrics(
             gt_ex_pc = [gt_ex_pc_0, gt_ex_pc_1]
             gt_uex_pc = [gt_uex_pc_0, gt_uex_pc_1]
 
-            print(f'\nn_gt_ex_all: {n_gt_ex_all} :: '
-                  f'{gt_classes[0]}: {n_gt_ex_0} ({gt_ex_pc_0:.2f} %), '
-                  f'{gt_classes[1]}: {n_gt_ex_1} ({gt_ex_pc_1:.2f} %)\n')
+            if verbose:
+                print(f'\nn_gt_ex_all: {n_gt_ex_all} :: '
+                      f'{gt_classes[0]}: {n_gt_ex_0} ({gt_ex_pc_0:.2f} %), '
+                      f'{gt_classes[1]}: {n_gt_ex_1} ({gt_ex_pc_1:.2f} %)\n')
 
-            print(f'\nn_gt_uex_all: {n_gt_uex_all} :: '
-                  f'{gt_classes[0]}: {n_gt_uex_0} ({gt_uex_pc_0:.2f} %), '
-                  f'{gt_classes[1]}: {n_gt_uex_1} ({gt_uex_pc_1:.2f} %)\n')
+                print(f'\nn_gt_uex_all: {n_gt_uex_all} :: '
+                      f'{gt_classes[0]}: {n_gt_uex_0} ({gt_uex_pc_0:.2f} %), '
+                      f'{gt_classes[1]}: {n_gt_uex_1} ({gt_uex_pc_1:.2f} %)\n')
 
-            print(f'\nn_fn_dets_0: {n_fn_dets_0}')
-            print(f'n_fn_dets_1: {n_fn_dets_1}')
+                print(f'\nn_fn_dets_0: {n_fn_dets_0}')
+                print(f'n_fn_dets_1: {n_fn_dets_1}')
 
-            print(f'\nn_gt: {n_gt} :: '
-                  f'{gt_classes[0]}: {n_gt_0}, '
-                  f'{gt_classes[1]}: {n_gt_1}\n')
+                print(f'\nn_gt: {n_gt} :: '
+                      f'{gt_classes[0]}: {n_gt_0}, '
+                      f'{gt_classes[1]}: {n_gt_1}\n')
 
     """compute and save binary cls metrics"""
     if True:
@@ -2052,7 +2070,7 @@ def get_intersection(val1, val2, conf_class, score_thresh, name1, name2):
         _txt = f'No intersection between {name1} and {name2} found; ' \
                f'min_difference: {_diff[idx]} at {(val1[idx], val2[idx])} ' \
                f'for confidence: {conf_class[idx]}'
-        print(_txt)
+        # print(_txt)
         if not idx.size:
             _rec_prec = _score = 0
         else:
@@ -2060,7 +2078,7 @@ def get_intersection(val1, val2, conf_class, score_thresh, name1, name2):
             _score = conf_class[idx]
     else:
         _txt = f'Intersection at {val1[idx]} for confidence: {conf_class[idx]} with idx: {idx}'
-        print(_txt)
+        # print(_txt)
         _rec_prec = val1[idx[0]]
         _score = conf_class[idx][0]
 
