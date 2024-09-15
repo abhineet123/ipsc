@@ -3717,7 +3717,6 @@ def sweep(params: Params, ret_val=None):
     print(f'testing over {n_sweep_val_combos} param combos')
     if n_proc > 1:
 
-        # import multiprocessing
         import functools
 
         params_.show_pbar = False
@@ -3787,6 +3786,7 @@ def main():
 
     params.verbose = 0
     params.show_pbar = 0
+    params.n_threads = 1
 
     det_paths = params.det_paths
     wc_start_idx = det_paths.find(wc)
@@ -3824,13 +3824,15 @@ def main():
         print(f'evaluating {det_paths_}')
 
         params_.det_paths = det_paths_
-        params_.batch_name = match_substr
+        params_.batch_name = f'ckpt-{match_substr}'
 
         ret_val = [0, ]
 
-        p = multiprocessing.Process(target=sweep, args=(params_,ret_val))
-        p.start()
-        p.join()
+        # p = multiprocessing.Process(target=sweep, args=(params_,ret_val))
+        # p.start()
+        # p.join()
+
+        sweep(params_,ret_val)
 
         if ret_val[0] == 1:
             print(f'incomplete dets in {det_paths_}')

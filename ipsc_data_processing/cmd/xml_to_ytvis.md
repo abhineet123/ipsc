@@ -55,10 +55,13 @@
 - [acamp](#acamp_)
     - [1k8_vid_entire_seq       @ acamp](#1k8_vid_entire_seq___acam_p_)
     - [1k8_vid_entire_seq_inv       @ acamp](#1k8_vid_entire_seq_inv___acam_p_)
+    - [1k8_vid_entire_seq_inv_2_per_seq       @ acamp](#1k8_vid_entire_seq_inv_2_per_seq___acam_p_)
     - [10k6_vid_entire_seq       @ acamp](#10k6_vid_entire_seq___acam_p_)
     - [10k6_vid_entire_seq_inv       @ acamp](#10k6_vid_entire_seq_inv___acam_p_)
+    - [10k6_vid_entire_seq_inv_2_per_seq       @ acamp](#10k6_vid_entire_seq_inv_2_per_seq___acam_p_)
     - [20k6_5_video       @ acamp](#20k6_5_video___acam_p_)
     - [20k6_5_video_inv       @ acamp](#20k6_5_video_inv___acam_p_)
+    - [20k6_5_video_inv_2_per_seq       @ acamp](#20k6_5_video_inv_2_per_seq___acam_p_)
     - [2_per_seq_dbg_bear       @ acamp](#2_per_seq_dbg_bear___acam_p_)
 
 <!-- /MarkdownTOC -->
@@ -268,21 +271,23 @@ python3 xml_to_ytvis.py cfg=ipsc:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0:s
 # acamp
 <a id="1k8_vid_entire_seq___acam_p_"></a>
 ## 1k8_vid_entire_seq       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq:proc-0:len-2:strd-1:gap-1
-python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq:proc-0:len-2:strd-2:gap-1
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq:proc-0:len-2:strds:gap-1
 <a id="1k8_vid_entire_seq_inv___acam_p_"></a>
 ## 1k8_vid_entire_seq_inv       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-1:gap-1
-python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strd-2:gap-1
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strds:gap-1
+<a id="1k8_vid_entire_seq_inv_2_per_seq___acam_p_"></a>
+## 1k8_vid_entire_seq_inv_2_per_seq       @ acamp-->xml_to_ytvis
+python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv_2_per_seq:proc-0:len-2:strds:gap-1
 
 <a id="10k6_vid_entire_seq___acam_p_"></a>
 ## 10k6_vid_entire_seq       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strd-1:gap-1
-python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strd-2:gap-1
+python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq:proc-0:len-2:strds:gap-1
 <a id="10k6_vid_entire_seq_inv___acam_p_"></a>
 ## 10k6_vid_entire_seq_inv       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv:proc-0:len-2:strd-1:gap-1
-python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv:proc-0:len-2:strd-2:gap-1
+python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv:proc-0:len-2:strds:gap-1
+<a id="10k6_vid_entire_seq_inv_2_per_seq___acam_p_"></a>
+## 10k6_vid_entire_seq_inv_2_per_seq       @ acamp-->xml_to_ytvis
+python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv_2_per_seq:proc-0:len-2:strds:gap-1
 
 <a id="20k6_5_video___acam_p_"></a>
 ## 20k6_5_video       @ acamp-->xml_to_ytvis
@@ -290,8 +295,10 @@ python xml_to_ytvis.py cfg=acamp:20k6_5_video:proc-0:len-2:strd-1:gap-1
 python xml_to_ytvis.py cfg=acamp:20k6_5_video:proc-0:len-2:strd-2:gap-1
 <a id="20k6_5_video_inv___acam_p_"></a>
 ## 20k6_5_video_inv       @ acamp-->xml_to_ytvis
-python xml_to_ytvis.py cfg=acamp:20k6_5_video_inv:proc-0:len-2:strd-1:gap-1
-python xml_to_ytvis.py cfg=acamp:20k6_5_video_inv:proc-0:len-2:strd-2:gap-1
+python xml_to_ytvis.py cfg=acamp:20k6_5_video_inv:proc-0:len-2:strds:gap-1
+<a id="20k6_5_video_inv_2_per_seq___acam_p_"></a>
+## 20k6_5_video_inv_2_per_seq       @ acamp-->xml_to_ytvis
+python xml_to_ytvis.py cfg=acamp:20k6_5_video_inv_2_per_seq:proc-0:len-2:strds:gap-1
 
 <a id="2_per_seq_dbg_bear___acam_p_"></a>
 ## 2_per_seq_dbg_bear       @ acamp-->xml_to_ytvis
