@@ -3771,6 +3771,7 @@ def sweep(params: Params):
             concat_params.list_path = out_zip_path
             concat_metrics.main(concat_params)
 
+
 def main():
     params = Params()
     paramparse.process(params)
@@ -3804,9 +3805,9 @@ def main():
         # all_matching_dirs = [os.path.dirname(k) for k in all_matching_paths]
 
         new_matching_paths = [_path for _path in all_matching_paths
-                          if os.path.isfile(utils.linux_path(_path, '__inference')) and
-                          not os.path.isfile(utils.linux_path(_path, '__eval'))]
-
+                              if
+                              os.path.isfile(utils.linux_path(_path, '__inference')) and
+                              not os.path.isfile(utils.linux_path(_path, '__eval'))]
 
         if params.det_root_dir:
             new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
@@ -3862,7 +3863,6 @@ def main():
             flag_path = utils.linux_path(params.det_root_dir, flag_path)
         with open(flag_path, 'w') as f:
             f.write(time_stamp + '\n')
-
 
 
 if __name__ == '__main__':
