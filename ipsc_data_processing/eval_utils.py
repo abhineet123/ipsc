@@ -182,6 +182,8 @@ col_bgr = {
 
 bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
 
+def list_to_str(k):
+    return '\n'.join(k)
 
 def zip_dirs(agn_root_dirs, del_src=1):
     if len(agn_root_dirs) > 1:
@@ -1289,7 +1291,7 @@ def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
 
 
-def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
+def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=True):
     from pprint import pformat
     from collections import OrderedDict
     import ast
@@ -1299,11 +1301,13 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root=''):
     # if load_samples == '1':
     #     load_samples = 'seq_to_samples.txt'
 
-    print('load_samples: {}'.format(pformat(load_paths)))
+    if verbose:
+        print('load_samples: {}'.format(pformat(load_paths)))
     if load_path_root:
         load_paths = [linux_path(load_path_root, k) for k in load_paths]
 
-    print('Loading samples from : {}'.format(load_paths))
+    if verbose:
+        print('Loading samples from : {}'.format(load_paths))
     for _f in load_paths:
         if os.path.isdir(_f):
             _f = linux_path(_f, 'seq_to_samples.txt')

@@ -885,7 +885,7 @@ def evaluate(
 
                             det_pbar.set_description(det_pbar_msg)
 
-                assert valid_dets > 0, "no valid_dets found"
+                # assert valid_dets > 0, "no valid_dets found"
 
             if params.nms_thresh > 0 or params.vid_nms_thresh > 0:
                 seq_bbox_ids_to_delete = []
@@ -3320,7 +3320,8 @@ def run(params: Params, sweep_mode: dict, *argv):
     seq_to_samples = None
 
     if load_samples:
-        seq_path_list, seq_to_samples = utils.load_samples_from_txt(load_samples, None, load_samples_root)
+        seq_path_list, seq_to_samples = utils.load_samples_from_txt(load_samples, None, load_samples_root,
+                                                                    verbose=params.verbose)
     else:
         seq_path_list_file_temp = seq_path_list_file
         if params.img_root_dir:
@@ -3423,11 +3424,12 @@ def run(params: Params, sweep_mode: dict, *argv):
 
     out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
 
-    if os.path.exists(out_root_dir):
-        utils.print_(f'\n\nskipping existing eval: {out_root_dir}\n\n')
-        return out_root_dir
+    # if os.path.exists(out_root_dir):
+    #     utils.print_(f'\n\nskipping existing eval: {out_root_dir}\n\n')
+    #     return out_root_dir
 
-    utils.print_(f'\nrunning eval: {out_root_dir}\n')
+    print(f'\nrunning eval: {out_root_dir}\n')
+
     os.makedirs(out_root_dir, exist_ok=True)
 
     gt_path_list = gt_path_list[seq_start_id:seq_end_id + 1]
@@ -3687,7 +3689,7 @@ def run(params: Params, sweep_mode: dict, *argv):
     return out_root_dir
 
 
-def sweep(params: Params, ret_val=None):
+def sweep(params: Params):
     params_ = copy.deepcopy(params)
     if params_.vid_stride:
         params_.sweep_params.append('vid_stride')
@@ -3730,13 +3732,8 @@ def sweep(params: Params, ret_val=None):
         print()
     else:
         out_root_dirs = []
-        for sweep_val_combo in sweep_val_combos:
-            try:
-                out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
-            except IOError:
-                if ret_val is not None:
-                    ret_val[0] = 1
-                return
+        for sweep_val_combo in tqdm(sweep_val_combos):
+            out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
             out_root_dirs.append(out_root_dir)
 
     out_zip_paths = []
@@ -3781,7 +3778,7 @@ def main():
     wc = '__var__'
 
     if wc not in params.det_paths:
-        out_zip_paths = sweep(params)
+        sweep(params)
         return
 
     params.verbose = 0
@@ -3803,14 +3800,26 @@ def main():
     out_zip_paths = None
 
     while True:
-        matching_paths = glob.glob(det_paths)
-        if params.det_root_dir:
-            matching_paths = [os.path.relpath(k, params.det_root_dir) for k in matching_paths]
+        all_matching_paths = glob.glob(det_paths)
+        # all_matching_dirs = [os.path.dirname(k) for k in all_matching_paths]
 
-        new_det_paths = [k for k in matching_paths if k not in proc_det_paths]
+        new_matching_paths = [_path for _path in all_matching_paths
+                          if os.path.isfile(utils.linux_path(_path, '__inference')) and
+                          not os.path.isfile(utils.linux_path(_path, '__eval'))]
+
+
+        if params.det_root_dir:
+            new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
+
+        new_det_paths = [k for k in new_matching_paths if k not in proc_det_paths]
         new_det_paths.sort(reverse=True)
 
         if not new_det_paths:
+            print('no new_det_paths found')
+
+            print(f'all_matching_paths:\n{utils.list_to_str(all_matching_paths)}\n')
+            print(f'new_matching_paths:\n{utils.list_to_str(new_matching_paths)}\n')
+
             if not utils.sleep_with_pbar(params.sleep):
                 break
             continue
@@ -3826,24 +3835,36 @@ def main():
         params_.det_paths = det_paths_
         params_.batch_name = f'ckpt-{match_substr}'
 
-        ret_val = [0, ]
+        # ret_val = [0, ]
 
         # p = multiprocessing.Process(target=sweep, args=(params_,ret_val))
         # p.start()
         # p.join()
 
-        sweep(params_,ret_val)
+        sweep(params_)
 
-        if ret_val[0] == 1:
-            print(f'incomplete dets in {det_paths_}')
-            if len(new_det_paths) == 0:
-                if not utils.sleep_with_pbar(params.sleep):
-                    break
-                continue
+        # if ret_val[0] == 1:
+        #     print(f'incomplete dets in {det_paths_}')
+        #     if len(new_det_paths) == 0:
+        #         if not utils.sleep_with_pbar(params.sleep):
+        #             break
+        #         continue
         # except AssertionError as e:
         #     print(f'evaluation did not succeed on {det_paths_}: {e}')
 
         proc_det_paths.append(det_paths_)
+
+        from datetime import datetime
+        time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
+
+        print(f'finished eval at {time_stamp}')
+        flag_path = utils.linux_path(det_paths_, '__eval')
+        if params.det_root_dir:
+            flag_path = utils.linux_path(params.det_root_dir, flag_path)
+        with open(flag_path, 'w') as f:
+            f.write(time_stamp + '\n')
+
+
 
 if __name__ == '__main__':
     main()
