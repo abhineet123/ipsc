@@ -9,11 +9,13 @@
     - [cuda_version       @ virtualenv](#cuda_version___virtualenv_)
 - [install](#install_)
     - [pytorch       @ install](#pytorch___instal_l_)
-        - [latest       @ pytorch/install](#latest___pytorch_instal_l_)
-        - [py3.10       @ pytorch/install](#py3_10___pytorch_instal_l_)
         - [from_readme/1.8.0       @ pytorch/install](#from_readme_1_8_0___pytorch_instal_l_)
             - [compat_list       @ from_readme/1.8.0/pytorch/install](#compat_list___from_readme_1_8_0_pytorch_instal_l_)
             - [windows       @ from_readme/1.8.0/pytorch/install](#windows___from_readme_1_8_0_pytorch_instal_l_)
+        - [latest       @ pytorch/install](#latest___pytorch_instal_l_)
+        - [py3.10       @ pytorch/install](#py3_10___pytorch_instal_l_)
+            - [2024-09-16       @ py3.10/pytorch/install](#2024_09_16___py3_10_pytorch_install_)
+        - [uninstall       @ pytorch/install](#uninstall___pytorch_instal_l_)
     - [mmcv       @ install](#mmcv___instal_l_)
         - [py3.10       @ mmcv/install](#py3_10___mmcv_install_)
         - [latest       @ mmcv/install](#latest___mmcv_install_)
@@ -52,18 +54,18 @@ source /usr/local/bin/virtualenvwrapper.sh
 
 source ~/.bashrc
 
-mkvirtualenv swin_s
-workon swin_s
+mkvirtualenv sws
+workon sws
 
-alias sws='workon swin_s'
+alias sws='workon sws'
 
 <a id="ubuntu22_04_py3_10___virtualenv_"></a>
-## ubuntu22.04/py3.10       @ virtualenv-->swin_seg_setup
+## ubuntu22.04/py3.10       @ virtualenv-->sws_setup
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
 
 <a id="python3_8___ubuntu22_04_py3_10_virtualen_v_"></a>
-### python3.8       @ ubuntu22.04/py3.10/virtualenv-->swin_seg_setup
+### python3.8       @ ubuntu22.04/py3.10/virtualenv-->sws_setup
 sudo apt install python3.8
 sudo apt-get install python3.8-dev
 sudo apt-get install python3.8-distutils
@@ -76,7 +78,7 @@ mkvirtualenv -p python3.8 swin_s
 pip install --upgrade pip
 
 <a id="python3_7___ubuntu22_04_py3_10_virtualen_v_"></a>
-### python3.7       @ ubuntu22.04/py3.10/virtualenv-->swin_seg_setup
+### python3.7       @ ubuntu22.04/py3.10/virtualenv-->sws_setup
 sudo apt install python3.7
 sudo apt-get install python3.7-distutils
 sudo apt-get install python3.7-dev
@@ -88,13 +90,13 @@ mkvirtualenv -p python3.7 swin_s
 pip install --upgrade pip
 
 <a id="windows___virtualenv_"></a>
-## windows       @ virtualenv-->swin_seg_setup
-virtualenv swin_s
-cd swin_s/Scripts
+## windows       @ virtualenv-->sws_setup
+virtualenv sws
+cd sws/Scripts
 activate
 
 <a id="cuda_version___virtualenv_"></a>
-## cuda_version       @ virtualenv-->swin_seg_setup
+## cuda_version       @ virtualenv-->sws_setup
 nvcc --version
 /usr/local/cuda/bin/nvcc --version
 
@@ -102,63 +104,69 @@ nvcc --version
 # install
 
 <a id="pytorch___instal_l_"></a>
-## pytorch       @ install-->swin_seg_setup
+## pytorch       @ install-->sws_setup
 __only 1.8.0 works__
 
-python -m pip uninstall -y torch torchvision torchaudio 
-
-<a id="latest___pytorch_instal_l_"></a>
-### latest       @ pytorch/install-->swin_seg_setup
-python -m pip install torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio===0.10.2+cu113 -f https://download.pytorch.org/whl/torch_stable.html
-
-<a id="py3_10___pytorch_instal_l_"></a>
-### py3.10       @ pytorch/install-->swin_seg_setup
-pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu113/torch_stable.html
-
 <a id="from_readme_1_8_0___pytorch_instal_l_"></a>
-### from_readme/1.8.0       @ pytorch/install-->swin_seg_setup
+### from_readme/1.8.0       @ pytorch/install-->sws_setup
 python -m pip install torch==1.8.0+cu111 torchvision==0.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 
 <a id="compat_list___from_readme_1_8_0_pytorch_instal_l_"></a>
-#### compat_list       @ from_readme/1.8.0/pytorch/install-->swin_seg_setup
+#### compat_list       @ from_readme/1.8.0/pytorch/install-->sws_setup
 https://pypi.org/project/torchvision/
 https://github.com/pytorch/audio
 
 <a id="windows___from_readme_1_8_0_pytorch_instal_l_"></a>
-#### windows       @ from_readme/1.8.0/pytorch/install-->swin_seg_setup
+#### windows       @ from_readme/1.8.0/pytorch/install-->sws_setup
 python -m pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 
+<a id="latest___pytorch_instal_l_"></a>
+### latest       @ pytorch/install-->sws_setup
+python -m pip install torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio===0.10.2+cu113 -f https://download.pytorch.org/whl/torch_stable.html
+
+<a id="py3_10___pytorch_instal_l_"></a>
+### py3.10       @ pytorch/install-->sws_setup
+pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+<a id="2024_09_16___py3_10_pytorch_install_"></a>
+#### 2024-09-16       @ py3.10/pytorch/install-->sws_setup
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113, -f https://download.pytorch.org/whl/cu113/torch_stable.html
+
+<a id="uninstall___pytorch_instal_l_"></a>
+### uninstall       @ pytorch/install-->sws_setup
+python -m pip uninstall -y torch torchvision torchaudio 
+
+
 <a id="mmcv___instal_l_"></a>
-## mmcv       @ install-->swin_seg_setup
+## mmcv       @ install-->sws_setup
 python -m pip uninstall -y mmcv-full
 
 <a id="py3_10___mmcv_install_"></a>
-### py3.10       @ mmcv/install-->swin_seg_setup
+### py3.10       @ mmcv/install-->sws_setup
 python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
 
 <a id="latest___mmcv_install_"></a>
-### latest       @ mmcv/install-->swin_seg_setup
+### latest       @ mmcv/install-->sws_setup
 python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.0/index.html
 
 <a id="1_8_0___mmcv_install_"></a>
-### 1.8.0       @ mmcv/install-->swin_seg_setup
+### 1.8.0       @ mmcv/install-->sws_setup
 <a id="manual___1_8_0_mmcv_install_"></a>
-#### manual       @ 1.8.0/mmcv/install-->swin_seg_setup
+#### manual       @ 1.8.0/mmcv/install-->sws_setup
 wget https://download.openmmlab.com/mmcv/dist/1.3.5/torch1.8.0/cu111/mmcv_full-latest%2Btorch1.8.0%2Bcu111-cp38-cp38-manylinux1_x86_64.whl
 python -m pip install mmcv_full-latest+torch1.8.0+cu111-cp38-cp38-manylinux1_x86_64.whl
 
 <a id="windows___1_8_0_mmcv_install_"></a>
-#### windows       @ 1.8.0/mmcv/install-->swin_seg_setup
+#### windows       @ 1.8.0/mmcv/install-->sws_setup
 https://download.openmmlab.com/mmcv/dist/1.1.5/torch1.6.0/cu102/mmcv_full-1.1.5%2Btorch1.6.0%2Bcu102-cp37-cp37m-win_amd64.whl
 python -m pip install mmcv_full-1.1.5+torch1.6.0+cu102-cp37-cp37m-win_amd64.whl
 
 <a id="from_readme___1_8_0_mmcv_install_"></a>
-#### from_readme       @ 1.8.0/mmcv/install-->swin_seg_setup
+#### from_readme       @ 1.8.0/mmcv/install-->sws_setup
 __does not work___
 python -m pip install mmcv-full==latest+torch1.8.0+cu111 -f https://download.openmmlab.com/mmcv/dist/index.html
 
 <a id="mmsegmentation___instal_l_"></a>
-## mmsegmentation       @ install-->swin_seg_setup
+## mmsegmentation       @ install-->sws_setup
 __do not install mmsegmentation__
 
 nano ~/.bashrc
@@ -169,7 +177,7 @@ python -m pip install mmsegmentation
 python -m pip uninstall mmsegmentation
 
 <a id="rest___instal_l_"></a>
-## rest       @ install-->swin_seg_setup
+## rest       @ install-->sws_setup
 python -m pip install matplotlib numpy terminaltables timm
 python -m pip install tensorflow tensorboard
 python -m pip install pycocotools
@@ -218,7 +226,7 @@ use pytorch 1.8.0 with corresponding mmcv
 
 
 <a id="enable_tensorboard___bugs_"></a>
-## enable_tensorboard       @ bugs-->swin_seg_setup
+## enable_tensorboard       @ bugs-->sws_setup
 `configs/_base_/default_runtime.py`
 comment out:
 `dict(type='TensorboardLoggerHook')`
@@ -228,11 +236,11 @@ comment out:
 # convert_datasets
 
 <a id="chasedb1___convert_datasets_"></a>
-## CHASEDB1       @ convert_datasets-->swin_seg_setup
+## CHASEDB1       @ convert_datasets-->sws_setup
 python tools/convert_datasets/chase_db1.py /data/CHASEDB1.zip
 
 <a id="pascal_context___convert_datasets_"></a>
-## pascal_context       @ convert_datasets-->swin_seg_setup
+## pascal_context       @ convert_datasets-->sws_setup
 cd ~
 git clone https://github.com/zhanghang1989/detail-api
 cd detail-api/PythonAPI
@@ -249,19 +257,19 @@ python tools/convert_datasets/pascal_context.py /data/VOCdevkit /data/VOCdevkit/
 # from_mojow_rocks       @ convert_datasets-->swin_seg
 
 <a id="db3_part1___from_mojow_rocks_"></a>
-## db3-part1       @ from_mojow_rocks-->swin_seg_setup
+## db3-part1       @ from_mojow_rocks-->sws_setup
 python tools/convert_datasets/from_mojow_rocks.py root_dir=/data/mojow_rock/rock_dataset3 csv_paths=part1 sizes=large,huge img_list_name=part1.txt  write_masks=0 show=0 class_info=lists/classes_rock.txt
 
 <a id="db3_part10___from_mojow_rocks_"></a>
-## db3-part10       @ from_mojow_rocks-->swin_seg_setup
+## db3-part10       @ from_mojow_rocks-->sws_setup
 python tools/convert_datasets/from_mojow_rocks.py root_dir=/data/mojow_rock/rock_dataset3 csv_paths=part10 sizes=large,huge img_list_name=part10.txt  write_masks=1 show=0 class_info=lists/classes_rock.txt
 
 <a id="syn_part4_on_part5_on_september_5_2020_2k_100___from_mojow_rocks_"></a>
-## syn-part4_on_part5_on_september_5_2020_2K_100       @ from_mojow_rocks-->swin_seg_setup
+## syn-part4_on_part5_on_september_5_2020_2K_100       @ from_mojow_rocks-->sws_setup
 python tools/convert_datasets/from_mojow_rocks.py root_dir=/data/mojow_rock/rock_dataset3 csv_paths=syn/part4_on_part5_on_september_5_2020_2K_100 sizes=large,huge class_info=lists/classes_rock_with_syn.txt
 
 <a id="syn_part2_on_part8___from_mojow_rocks_"></a>
-## syn-part2_on_part8       @ from_mojow_rocks-->swin_seg_setup
+## syn-part2_on_part8       @ from_mojow_rocks-->sws_setup
 python tools/convert_datasets/from_mojow_rocks.py root_dir=/data/mojow_rock/rock_dataset3 csv_paths=syn/part2_on_part8 sizes=large,huge class_info=lists/classes_rock_with_syn.txt
 
 <a id="scp_"></a>
