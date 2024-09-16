@@ -3815,10 +3815,9 @@ def main():
         new_det_paths.sort(reverse=True)
 
         if not new_det_paths:
-            print('no new_det_paths found')
-
-            print(f'all_matching_paths:\n{utils.list_to_str(all_matching_paths)}\n')
-            print(f'new_matching_paths:\n{utils.list_to_str(new_matching_paths)}\n')
+            # print('no new_det_paths found')
+            # print(f'all_matching_paths:\n{utils.list_to_str(all_matching_paths)}\n')
+            # print(f'new_matching_paths:\n{utils.list_to_str(new_matching_paths)}\n')
 
             if not utils.sleep_with_pbar(params.sleep):
                 break
