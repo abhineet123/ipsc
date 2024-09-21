@@ -17,12 +17,12 @@
             - [2024-09-16       @ py3.10/pytorch/install](#2024_09_16___py3_10_pytorch_install_)
         - [uninstall       @ pytorch/install](#uninstall___pytorch_instal_l_)
     - [mmcv       @ install](#mmcv___instal_l_)
-        - [py3.10       @ mmcv/install](#py3_10___mmcv_install_)
-        - [latest       @ mmcv/install](#latest___mmcv_install_)
         - [1.8.0       @ mmcv/install](#1_8_0___mmcv_install_)
             - [manual       @ 1.8.0/mmcv/install](#manual___1_8_0_mmcv_install_)
             - [windows       @ 1.8.0/mmcv/install](#windows___1_8_0_mmcv_install_)
             - [from_readme       @ 1.8.0/mmcv/install](#from_readme___1_8_0_mmcv_install_)
+        - [py3.10       @ mmcv/install](#py3_10___mmcv_install_)
+        - [latest       @ mmcv/install](#latest___mmcv_install_)
     - [mmsegmentation       @ install](#mmsegmentation___instal_l_)
     - [rest       @ install](#rest___instal_l_)
 - [bugs](#bug_s_)
@@ -74,8 +74,8 @@ sudo apt-get install python3.8-apt
 wget https://bootstrap.pypa.io/get-pip.py
 python3.8 get-pip.py
 python3.8 -m pip install virtualenv virtualenvwrapper
-mkvirtualenv -p python3.8 swin_s
-pip install --upgrade pip
+mkvirtualenv -p python3.8 sws
+python -m pip install pip==23
 
 <a id="python3_7___ubuntu22_04_py3_10_virtualen_v_"></a>
 ### python3.7       @ ubuntu22.04/py3.10/virtualenv-->sws_setup
@@ -106,6 +106,7 @@ nvcc --version
 <a id="pytorch___instal_l_"></a>
 ## pytorch       @ install-->sws_setup
 __only 1.8.0 works__
+__python 3.8 must be installed for 1.8.0__
 
 <a id="from_readme_1_8_0___pytorch_instal_l_"></a>
 ### from_readme/1.8.0       @ pytorch/install-->sws_setup
@@ -126,10 +127,11 @@ python -m pip install torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio==
 
 <a id="py3_10___pytorch_instal_l_"></a>
 ### py3.10       @ pytorch/install-->sws_setup
+__does not work__
 pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 <a id="2024_09_16___py3_10_pytorch_install_"></a>
 #### 2024-09-16       @ py3.10/pytorch/install-->sws_setup
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113, -f https://download.pytorch.org/whl/cu113/torch_stable.html
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
 <a id="uninstall___pytorch_instal_l_"></a>
 ### uninstall       @ pytorch/install-->sws_setup
@@ -140,21 +142,12 @@ python -m pip uninstall -y torch torchvision torchaudio
 ## mmcv       @ install-->sws_setup
 python -m pip uninstall -y mmcv-full
 
-<a id="py3_10___mmcv_install_"></a>
-### py3.10       @ mmcv/install-->sws_setup
-python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
-
-<a id="latest___mmcv_install_"></a>
-### latest       @ mmcv/install-->sws_setup
-python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.0/index.html
-
 <a id="1_8_0___mmcv_install_"></a>
 ### 1.8.0       @ mmcv/install-->sws_setup
 <a id="manual___1_8_0_mmcv_install_"></a>
 #### manual       @ 1.8.0/mmcv/install-->sws_setup
 wget https://download.openmmlab.com/mmcv/dist/1.3.5/torch1.8.0/cu111/mmcv_full-latest%2Btorch1.8.0%2Bcu111-cp38-cp38-manylinux1_x86_64.whl
 python -m pip install mmcv_full-latest+torch1.8.0+cu111-cp38-cp38-manylinux1_x86_64.whl
-
 <a id="windows___1_8_0_mmcv_install_"></a>
 #### windows       @ 1.8.0/mmcv/install-->sws_setup
 https://download.openmmlab.com/mmcv/dist/1.1.5/torch1.6.0/cu102/mmcv_full-1.1.5%2Btorch1.6.0%2Bcu102-cp37-cp37m-win_amd64.whl
@@ -165,10 +158,20 @@ python -m pip install mmcv_full-1.1.5+torch1.6.0+cu102-cp37-cp37m-win_amd64.whl
 __does not work___
 python -m pip install mmcv-full==latest+torch1.8.0+cu111 -f https://download.openmmlab.com/mmcv/dist/index.html
 
+<a id="py3_10___mmcv_install_"></a>
+### py3.10       @ mmcv/install-->sws_setup
+__does not work__
+sudo apt install python3.10-distutils
+python -m pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
+
+<a id="latest___mmcv_install_"></a>
+### latest       @ mmcv/install-->sws_setup
+__does not work__
+python -m pip install mmcv-full==1.4.2 -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10.0/index.html
+
 <a id="mmsegmentation___instal_l_"></a>
 ## mmsegmentation       @ install-->sws_setup
 __do not install mmsegmentation__
-
 nano ~/.bashrc
 export PYTHONPATH=$PYTHONPATH:/home/abhineet/ipsc_segmentation/swin_semantic
 . ~/.bashrc
@@ -181,12 +184,26 @@ python -m pip uninstall mmsegmentation
 python -m pip install matplotlib numpy terminaltables timm
 python -m pip install tensorflow tensorboard
 python -m pip install pycocotools
-python -m pip install imagesize pandas
+python -m pip install imagesize pandas paramparse
+python -m pip install yapf==0.40.1
+
 python -m pip install setuptools==59.5.0
 
 
 <a id="bug_s_"></a>
 # bugs
+`ERROR: Invalid requirement: 'mmcv-full==latest+torch1.8.0+cu111': Expected end or semicolon (after name and no valid version specifier)`
+https://stackoverflow.com/questions/78658585/pip-invalid-requirement
+use older version of pip < 24
+python -m pip install pip==23
+python -m pip install setuptools==59.5.0
+
+`TypeError: FormatCode() got an unexpected keyword argument 'verify'`
+https://github.com/open-mmlab/mmdetection/issues/10962
+python -m pip install yapf==0.40.1
+
+
+
 `RuntimeError: Default process group has not been initialized, please make sure to call init_process_group.`
 
 add

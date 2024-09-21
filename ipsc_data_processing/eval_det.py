@@ -3830,7 +3830,7 @@ def main():
 
         params_ = copy.deepcopy(params)
 
-        print(f'evaluating {det_paths_}')
+        print(f'evaluating {det_paths_}') 
 
         params_.det_paths = det_paths_
         params_.batch_name = f'ckpt-{match_substr}'
