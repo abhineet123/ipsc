@@ -57,5 +57,5 @@ python3 eval_det.py cfg=p2s,acamp:10k6_vid_entire_seq_inv_2_per_seq:nms-1:agn:gt
 ## 20k6_5_video       @ resnet-640-->eval_p2s-acamp
 <a id="on_inv_2_per_seq___20k6_5_video_resnet_64_0_"></a>
 ### on-inv-2_per_seq       @ 20k6_5_video/resnet-640-->eval_p2s-acamp
-python3 eval_det.py cfg=p2s,acamp:20k6_5_video_inv_2_per_seq:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-batch_48-jtr-res_1280-fbb/ckpt-__var__-20k6_5_video_inv_2_per_seq/csv-batch_2:_out_-p2s-20k6-aug-fbb-2_per_seq
+python3 eval_det.py cfg=p2s,acamp:20k6_5_video_inv_2_per_seq:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_20k6_5_video-batch_48-jtr-res_1280-fbb/ckpt-__var__-20k6_5_video_inv_2_per_seq/csv-batch_2:_out_-p2s-20k6-aug-fbb-2_per_seq
 
