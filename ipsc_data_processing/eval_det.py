@@ -176,7 +176,7 @@ class Params(paramparse.CFG):
 
         self.vid_det = 0
 
-        self.n_proc = 12
+        self.n_proc = 1
 
         self.save_vis = 0
         self.save_classes = []
@@ -3785,6 +3785,7 @@ def main():
     params.verbose = 0
     params.show_pbar = 0
     params.n_threads = 1
+    params.n_proc = 1
 
     det_paths = params.det_paths
     wc_start_idx = det_paths.find(wc)
