@@ -150,7 +150,7 @@ class Params(paramparse.CFG):
         self.compute_opt = 0
         self.rec_ratios = ()
         self.wt_avg = 0
-        self.n_threads = 0
+        self.n_threads = 1
 
         """allow_missing_gt=2 skips detections for files without GT"""
         self.allow_missing_gt = 1
