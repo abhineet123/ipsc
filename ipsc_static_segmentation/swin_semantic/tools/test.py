@@ -125,7 +125,17 @@ def main():
     # build the model and load checkpoint
     cfg.model.train_cfg = None
     model = build_segmentor(cfg.model, test_cfg=cfg.get('test_cfg'))
-    checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
+
+    ckpt_path = args.checkpoint
+    if os.path.isdir(ckpt_path):
+        ckpt_path = os.path.join(ckpt_path, 'latest.pth')
+        
+    ckpt_path_abs = os.readlink(ckpt_path)
+    ckpt_name = os.path.basename(ckpt_path_abs)
+
+    args.show_dir = f'{args.show_dir}-{ckpt_name}'
+
+    checkpoint = load_checkpoint(model, ckpt_path_abs, map_location='cpu')
     model.CLASSES = checkpoint['meta']['CLASSES']
     model.PALETTE = checkpoint['meta']['PALETTE']
 

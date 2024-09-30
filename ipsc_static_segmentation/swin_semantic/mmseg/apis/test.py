@@ -72,8 +72,6 @@ def single_gpu_test(model,
     palette = dataset.PALETTE
     palette_flat = [value for color in palette for value in color]
 
-
-
     csv_columns = [
         "ImageID", "LabelName",
         "XMin", "XMax", "YMin", "YMax",
