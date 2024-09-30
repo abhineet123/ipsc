@@ -132,8 +132,11 @@ def main():
 
     ckpt_path_abs = os.readlink(ckpt_path)
     ckpt_name = os.path.basename(ckpt_path_abs)
-
     args.show_dir = f'{args.show_dir}-{ckpt_name}'
+
+    print(f'ckpt_path: {ckpt_path}')
+    print(f'ckpt_path_abs: {ckpt_path_abs}')
+    print(f'show_dir: {args.show_dir}')
 
     checkpoint = load_checkpoint(model, ckpt_path_abs, map_location='cpu')
     model.CLASSES = checkpoint['meta']['CLASSES']
