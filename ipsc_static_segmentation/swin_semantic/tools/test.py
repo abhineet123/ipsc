@@ -59,6 +59,7 @@ def parse_args():
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument('--write_masks', action='store_true')
     parser.add_argument('--blended_vis', action='store_true')
+    parser.add_argument('--write_empty', action='store_true')
     parser.add_argument('--collect_results', action='store_true')
 
     # paramparse.from_parser(parser, to_clipboard=1)
@@ -142,7 +143,8 @@ def main():
         efficient_test,
         args.write_masks,
         args.blended_vis,
-        args.collect_results
+        args.collect_results,
+        args.write_empty,
     )
     # else:
     # model = MMDistributedDataParallel(

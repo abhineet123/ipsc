@@ -48,6 +48,7 @@ def single_gpu_test(model,
                     write_masks=False,
                     blended_vis=False,
                     collect_results=False,
+                    write_empty=False,
                     ):
     """Test with single GPU.
 
@@ -82,14 +83,14 @@ def single_gpu_test(model,
     mask_out_dir = out_csv_dir = None
 
     if out_dir:
-        os.makedirs(out_dir, exist_ok=1)
+        os.makedirs(out_dir, exist_ok=True)
 
         mask_out_dir = os.path.join(out_dir, 'masks')
 
-        os.makedirs(mask_out_dir, exist_ok=1)
+        os.makedirs(mask_out_dir, exist_ok=True)
 
         out_csv_dir = os.path.join(out_dir, "csv")
-        os.makedirs(out_csv_dir, exist_ok=1)
+        os.makedirs(out_csv_dir, exist_ok=True)
         print(f'out_csv_dir: {out_csv_dir}')
 
         if write_masks:
@@ -214,7 +215,7 @@ def single_gpu_test(model,
                         df.to_csv(out_csv_path, index=False, mode='a', header=False)
                         seq_to_csv_rows[out_csv_path] = []
 
-                if write_masks and not is_empty:
+                if write_masks and (write_empty or not is_empty):
                     seg_pil = PIL.Image.fromarray(seg)
                     seg_pil = seg_pil.convert('P')
                     seg_pil.putpalette(palette_flat)
@@ -222,7 +223,7 @@ def single_gpu_test(model,
 
                 # print(f'api:test :: out_file: {out_file}')
 
-                if not is_empty:
+                if write_empty or not is_empty:
                     if blended_vis:
                         model.module.show_result(
                         img_show,

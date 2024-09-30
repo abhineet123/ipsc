@@ -3836,13 +3836,13 @@ def main():
         params_.det_paths = det_paths_
         params_.batch_name = f'ckpt-{match_substr}'
 
-        # ret_val = [0, ]
+        # sweep(params_)
 
-        # p = multiprocessing.Process(target=sweep, args=(params_,ret_val))
-        # p.start()
-        # p.join()
-
-        sweep(params_)
+        p = multiprocessing.Process(target=sweep, args=(params_,))
+        p.start()
+        p.join()
+        if p.is_alive():
+            p.terminate()
 
         # if ret_val[0] == 1:
         #     print(f'incomplete dets in {det_paths_}')

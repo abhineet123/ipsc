@@ -1,10 +1,5 @@
 <!-- MarkdownTOC -->
 
-- [swin-0_37](#swin_0_37_)
-    - [len-2-aug-pt       @ swin-0_37](#len_2_aug_pt___swin_0_3_7_)
-        - [on-54_126       @ len-2-aug-pt/swin-0_37](#on_54_126___len_2_aug_pt_swin_0_37_)
-    - [len-3-aug-pt       @ swin-0_37](#len_3_aug_pt___swin_0_3_7_)
-        - [on-54_126       @ len-3-aug-pt/swin-0_37](#on_54_126___len_3_aug_pt_swin_0_37_)
 - [swin-16_53](#swin_16_5_3_)
     - [len-2       @ swin-16_53](#len_2___swin_16_53_)
         - [on-train       @ len-2/swin-16_53](#on_train___len_2_swin_16_53_)
@@ -53,13 +48,9 @@
         - [on-54_126       @ len-6-aug-buggy/mid-16_53](#on_54_126___len_6_aug_buggy_mid_16_5_3_)
     - [len-2-aug-fbb       @ mid-16_53](#len_2_aug_fbb___mid_16_5_3_)
         - [on-0_15       @ len-2-aug-fbb/mid-16_53](#on_0_15___len_2_aug_fbb_mid_16_5_3_)
-- [mid-0_37](#mid_0_3_7_)
-    - [len-2       @ mid-0_37](#len_2___mid_0_37_)
-        - [on-54_126       @ len-2/mid-0_37](#on_54_126___len_2_mid_0_37_)
-    - [len-2-aug       @ mid-0_37](#len_2_aug___mid_0_37_)
-        - [on-54_126       @ len-2-aug/mid-0_37](#on_54_126___len_2_aug_mid_0_37_)
-    - [len-3-aug       @ mid-0_37](#len_3_aug___mid_0_37_)
-        - [on-54_126       @ len-3-aug/mid-0_37](#on_54_126___len_3_aug_mid_0_37_)
+    - [len-6-aug-fbb       @ mid-16_53](#len_6_aug_fbb___mid_16_5_3_)
+        - [on-0_15       @ len-6-aug-fbb/mid-16_53](#on_0_15___len_6_aug_fbb_mid_16_5_3_)
+        - [on-16_53       @ len-6-aug-fbb/mid-16_53](#on_16_53___len_6_aug_fbb_mid_16_5_3_)
 - [lfn-16_53](#lfn_16_53_)
     - [len-2       @ lfn-16_53](#len_2___lfn_16_5_3_)
         - [on-train       @ len-2/lfn-16_53](#on_train___len_2_lfn_16_5_3_)
@@ -75,6 +66,8 @@
         - [on-54_126       @ len-2-aug/lfn-16_53](#on_54_126___len_2_aug_lfn_16_5_3_)
     - [len-2-aug-fbb       @ lfn-16_53](#len_2_aug_fbb___lfn_16_5_3_)
         - [on-0_15       @ len-2-aug-fbb/lfn-16_53](#on_0_15___len_2_aug_fbb_lfn_16_5_3_)
+    - [len-6-aug-fbb       @ lfn-16_53](#len_6_aug_fbb___lfn_16_5_3_)
+        - [on-0_15       @ len-6-aug-fbb/lfn-16_53](#on_0_15___len_6_aug_fbb_lfn_16_5_3_)
     - [len-6-aug       @ lfn-16_53](#len_6_aug___lfn_16_5_3_)
         - [on-0_15       @ len-6-aug/lfn-16_53](#on_0_15___len_6_aug_lfn_16_5_3_)
         - [on-54_126       @ len-6-aug/lfn-16_53](#on_54_126___len_6_aug_lfn_16_5_3_)
@@ -92,6 +85,8 @@
         - [on-0_53       @ len-2-aug/mid-54_126](#on_0_53___len_2_aug_mid_54_126_)
     - [len-2-aug-fbb       @ mid-54_126](#len_2_aug_fbb___mid_54_126_)
         - [on-0_15       @ len-2-aug-fbb/mid-54_126](#on_0_15___len_2_aug_fbb_mid_54_126_)
+    - [len-6-aug-fbb       @ mid-54_126](#len_6_aug_fbb___mid_54_126_)
+        - [on-0_15       @ len-6-aug-fbb/mid-54_126](#on_0_15___len_6_aug_fbb_mid_54_126_)
 - [lfn-54_126](#lfn_54_12_6_)
     - [len-2-aug       @ lfn-54_126](#len_2_aug___lfn_54_126_)
         - [on-0_15       @ len-2-aug/lfn-54_126](#on_0_15___len_2_aug_lfn_54_126_)
@@ -99,27 +94,24 @@
         - [on-0_53       @ len-2-aug/lfn-54_126](#on_0_53___len_2_aug_lfn_54_126_)
     - [len-2-aug-fbb       @ lfn-54_126](#len_2_aug_fbb___lfn_54_126_)
         - [on-0_15       @ len-2-aug-fbb/lfn-54_126](#on_0_15___len_2_aug_fbb_lfn_54_126_)
+    - [len-2-aug-fenc       @ lfn-54_126](#len_2_aug_fenc___lfn_54_126_)
+        - [on-0_15       @ len-2-aug-fenc/lfn-54_126](#on_0_15___len_2_aug_fenc_lfn_54_12_6_)
+    - [len-6-aug-fbb       @ lfn-54_126](#len_6_aug_fbb___lfn_54_126_)
+        - [on-0_15       @ len-6-aug-fbb/lfn-54_126](#on_0_15___len_6_aug_fbb_lfn_54_126_)
+- [swin-0_37](#swin_0_37_)
+    - [len-2-aug-pt       @ swin-0_37](#len_2_aug_pt___swin_0_3_7_)
+        - [on-54_126       @ len-2-aug-pt/swin-0_37](#on_54_126___len_2_aug_pt_swin_0_37_)
+    - [len-3-aug-pt       @ swin-0_37](#len_3_aug_pt___swin_0_3_7_)
+        - [on-54_126       @ len-3-aug-pt/swin-0_37](#on_54_126___len_3_aug_pt_swin_0_37_)
+- [mid-0_37](#mid_0_3_7_)
+    - [len-2       @ mid-0_37](#len_2___mid_0_37_)
+        - [on-54_126       @ len-2/mid-0_37](#on_54_126___len_2_mid_0_37_)
+    - [len-2-aug       @ mid-0_37](#len_2_aug___mid_0_37_)
+        - [on-54_126       @ len-2-aug/mid-0_37](#on_54_126___len_2_aug_mid_0_37_)
+    - [len-3-aug       @ mid-0_37](#len_3_aug___mid_0_37_)
+        - [on-54_126       @ len-3-aug/mid-0_37](#on_54_126___len_3_aug_mid_0_37_)
 
 <!-- /MarkdownTOC -->
-
-<a id="swin_0_37_"></a>
-# swin-0_37
-
-<a id="len_2_aug_pt___swin_0_3_7_"></a>
-## len-2-aug-pt       @ swin-0_37-->eval_p2s_vid-ipsc
-<a id="on_54_126___len_2_aug_pt_swin_0_37_"></a>
-### on-54_126       @ len-2-aug-pt/swin-0_37-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:nms-1:vnms:agn:_in_-swin_t_pt_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_10-jtr-res_1280/ckpt-718635-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_8:_out_-p2s-swin_t-pt-ipsc-0_37-len-2-aug
-
-<a id="len_3_aug_pt___swin_0_3_7_"></a>
-## len-3-aug-pt       @ swin-0_37-->eval_p2s_vid-ipsc
-<a id="on_54_126___len_3_aug_pt_swin_0_37_"></a>
-### on-54_126       @ len-3-aug-pt/swin-0_37-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:nms-1:vnms:agn:_in_-swin_t_pt_640_ext_reorg_roi_g2-0_37-length-3-stride-1-batch_10-jtr-res_1280/ckpt-700896-ext_reorg_roi_g2-54_126-length-3-stride-1/csv-batch_8:_out_-p2s-swin_t-pt-ipsc-0_37-len-3-aug
-
-
-
-
 <a id="swin_16_5_3_"></a>
 # swin-16_53
 
@@ -208,7 +200,6 @@ python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:nms-1:vnms:agn:_in
 <a id="on_0_15___len_2_aug_pt_fbb_swin_16_5_3_"></a>
 ### on-0_15       @ len-2-aug-pt-fbb/swin-16_53-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:proc-1:_in_-swin_t_pt_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_64-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-swin_t-pt-ipsc-16_53-len-2-aug-fbb
-
 
 <a id="len_3_aug_pt___swin_16_53_"></a>
 ## len-3-aug-pt       @ swin-16_53-->eval_p2s_vid-ipsc
@@ -340,30 +331,16 @@ python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:nms:agn:_in_-resnet_640_ex
 ### on-0_15       @ len-2-aug-fbb/mid-16_53-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_64-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-16_53-len-2-aug-fbb
 
-
-<a id="mid_0_3_7_"></a>
-# mid-0_37
-<a id="len_2___mid_0_37_"></a>
-## len-2       @ mid-0_37-->eval_p2s_vid-ipsc
-<a id="on_54_126___len_2_mid_0_37_"></a>
-### on-54_126       @ len-2/mid-0_37-->eval_p2s_vid-ipsc
-`stride-1`
-python eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-1-54_126-batch_18-133568
-`stride-2`  
-python eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-2-54_126-batch_18-133568
-
-
-<a id="len_2_aug___mid_0_37_"></a>
-## len-2-aug       @ mid-0_37-->eval_p2s_vid-ipsc
-<a id="on_54_126___len_2_aug_mid_0_37_"></a>
-### on-54_126       @ len-2-aug/mid-0_37-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:vnms:nms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_10-jtr-res_1280/ckpt-729560-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_8:_out_-p2s-mid-ipsc-0_37-len-2-aug
-
-<a id="len_3_aug___mid_0_37_"></a>
-## len-3-aug       @ mid-0_37-->eval_p2s_vid-ipsc
-<a id="on_54_126___len_3_aug_mid_0_37_"></a>
-### on-54_126       @ len-3-aug/mid-0_37-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:vnms:nms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-3-stride-1-batch_6-jtr-res_1280/ckpt-804450-ext_reorg_roi_g2-54_126-length-3-stride-1/csv-batch_8:_out_-p2s-mid-ipsc-0_37-len-3-aug
+<a id="len_6_aug_fbb___mid_16_5_3_"></a>
+## len-6-aug-fbb       @ mid-16_53-->eval_p2s_vid-ipsc
+<a id="on_0_15___len_6_aug_fbb_mid_16_5_3_"></a>
+### on-0_15       @ len-6-aug-fbb/mid-16_53-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_16-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-16_53-len-6-aug-fbb
+`strd-6`
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:strd-6:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_16-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-16_53-len-6-aug-fbb-strd-6
+<a id="on_16_53___len_6_aug_fbb_mid_16_5_3_"></a>
+### on-16_53       @ len-6-aug-fbb/mid-16_53-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:16_53:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_16-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-16_53-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-16_53-len-6-aug-fbb-train
 
 
 <a id="lfn_16_53_"></a>
@@ -432,7 +409,15 @@ python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:nms-1:vnms:agn:_in
 ## len-2-aug-fbb       @ lfn-16_53-->eval_p2s_vid-ipsc
 <a id="on_0_15___len_2_aug_fbb_lfn_16_5_3_"></a>
 ### on-0_15       @ len-2-aug-fbb/lfn-16_53-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_64-lfn-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_4:_out_-p2s-lfn-ipsc-16_53-len-2-aug-fbb
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_64-lfn-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_4:_out_-p2s-lfn-ipsc-16_53-len-2-aug-fbb
+
+<a id="len_6_aug_fbb___lfn_16_5_3_"></a>
+## len-6-aug-fbb       @ lfn-16_53-->eval_p2s_vid-ipsc
+<a id="on_0_15___len_6_aug_fbb_lfn_16_5_3_"></a>
+### on-0_15       @ len-6-aug-fbb/lfn-16_53-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_16-lfn-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-lfn-ipsc-16_53-len-6-aug-fbb
+`strd-6`
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:strd-6:nms-1:vnms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-6-stride-1-batch_16-lfn-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-lfn-ipsc-16_53-len-6-aug-fbb-strd-6
 
 
 <a id="len_6_aug___lfn_16_5_3_"></a>
@@ -493,6 +478,15 @@ python eval_det.py cfg=p2s:vid,ipsc:0_53:det-0:gt-1:vnms-1:nms-1:agn:proc-12:_in
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_64-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-2-aug-fbb
 
 
+<a id="len_6_aug_fbb___mid_54_126_"></a>
+## len-6-aug-fbb       @ mid-54_126-->eval_p2s_vid-ipsc
+<a id="on_0_15___len_6_aug_fbb_mid_54_126_"></a>
+### on-0_15       @ len-6-aug-fbb/mid-54_126-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-6-aug-fbb
+`strd-6`
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:strd-6:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-6-aug-fbb-strd-6
+
+
 
 <a id="lfn_54_12_6_"></a>
 # lfn-54_126
@@ -515,4 +509,59 @@ python eval_det.py cfg=p2s:vid,ipsc:0_53:det-0:gt-1:nms-1:vnms-1:agn:proc-12:_in
 ### on-0_15       @ len-2-aug-fbb/lfn-54_126-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_64-lfn-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_4:_out_-p2s-lfn-ipsc-54_126-len-2-aug-fbb
 
+<a id="len_2_aug_fenc___lfn_54_126_"></a>
+## len-2-aug-fenc       @ lfn-54_126-->eval_p2s_vid-ipsc
+<a id="on_0_15___len_2_aug_fenc_lfn_54_12_6_"></a>
+### on-0_15       @ len-2-aug-fenc/lfn-54_126-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-batch_64-lfn-jtr-res_1280-fenc/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-lfn-ipsc-54_126-len-2-aug-fenc
+
+<a id="len_6_aug_fbb___lfn_54_126_"></a>
+## len-6-aug-fbb       @ lfn-54_126-->eval_p2s_vid-ipsc
+<a id="on_0_15___len_6_aug_fbb_lfn_54_126_"></a>
+### on-0_15       @ len-6-aug-fbb/lfn-54_126-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_16-lfn-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-lfn-ipsc-54_126-len-6-aug-fbb
+`strd-6`
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:strd-6:nms-1:vnms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_16-lfn-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-lfn-ipsc-54_126-len-6-aug-fbb-strd-6
+
+
+
+<a id="swin_0_37_"></a>
+# swin-0_37
+
+<a id="len_2_aug_pt___swin_0_3_7_"></a>
+## len-2-aug-pt       @ swin-0_37-->eval_p2s_vid-ipsc
+<a id="on_54_126___len_2_aug_pt_swin_0_37_"></a>
+### on-54_126       @ len-2-aug-pt/swin-0_37-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:nms-1:vnms:agn:_in_-swin_t_pt_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_10-jtr-res_1280/ckpt-718635-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_8:_out_-p2s-swin_t-pt-ipsc-0_37-len-2-aug
+
+<a id="len_3_aug_pt___swin_0_3_7_"></a>
+## len-3-aug-pt       @ swin-0_37-->eval_p2s_vid-ipsc
+<a id="on_54_126___len_3_aug_pt_swin_0_37_"></a>
+### on-54_126       @ len-3-aug-pt/swin-0_37-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:nms-1:vnms:agn:_in_-swin_t_pt_640_ext_reorg_roi_g2-0_37-length-3-stride-1-batch_10-jtr-res_1280/ckpt-700896-ext_reorg_roi_g2-54_126-length-3-stride-1/csv-batch_8:_out_-p2s-swin_t-pt-ipsc-0_37-len-3-aug
+
+
+<a id="mid_0_3_7_"></a>
+# mid-0_37
+<a id="len_2___mid_0_37_"></a>
+## len-2       @ mid-0_37-->eval_p2s_vid-ipsc
+<a id="on_54_126___len_2_mid_0_37_"></a>
+### on-54_126       @ len-2/mid-0_37-->eval_p2s_vid-ipsc
+`stride-1`
+python eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-1-54_126-batch_18-133568
+`stride-2`  
+python eval_det.py cfg=p2s:vid,ipsc:0_37:det-0:gt-0:nms:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_18/ckpt-133568-ext_reorg_roi_g2-54_126-length-2-stride-2/csv-batch_36:_out_-p2s-resnet_640-ipsc-0_37-len-2-strd-2-54_126-batch_18-133568
+
+
+<a id="len_2_aug___mid_0_37_"></a>
+## len-2-aug       @ mid-0_37-->eval_p2s_vid-ipsc
+<a id="on_54_126___len_2_aug_mid_0_37_"></a>
+### on-54_126       @ len-2-aug/mid-0_37-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:vnms:nms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-2-stride-1-batch_10-jtr-res_1280/ckpt-729560-ext_reorg_roi_g2-54_126-length-2-stride-1/csv-batch_8:_out_-p2s-mid-ipsc-0_37-len-2-aug
+
+<a id="len_3_aug___mid_0_37_"></a>
+## len-3-aug       @ mid-0_37-->eval_p2s_vid-ipsc
+<a id="on_54_126___len_3_aug_mid_0_37_"></a>
+### on-54_126       @ len-3-aug/mid-0_37-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:54_126:det-0:gt-1:strds-2:vnms:nms-1:agn:_in_-resnet_640_ext_reorg_roi_g2-0_37-length-3-stride-1-batch_6-jtr-res_1280/ckpt-804450-ext_reorg_roi_g2-54_126-length-3-stride-1/csv-batch_8:_out_-p2s-mid-ipsc-0_37-len-3-aug
 
