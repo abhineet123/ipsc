@@ -129,7 +129,7 @@ def main():
     ckpt_path = args.checkpoint
     if os.path.isdir(ckpt_path):
         ckpt_path = os.path.join(ckpt_path, 'latest.pth')
-        
+
     ckpt_path_abs = os.readlink(ckpt_path)
     ckpt_name = os.path.basename(ckpt_path_abs)
 
