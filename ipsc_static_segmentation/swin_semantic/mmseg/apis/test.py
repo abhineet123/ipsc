@@ -215,25 +215,23 @@ def single_gpu_test(model,
                         df.to_csv(out_csv_path, index=False, mode='a', header=False)
                         seq_to_csv_rows[out_csv_path] = []
 
-                if write_masks and (write_empty or not is_empty):
-                    seg_pil = PIL.Image.fromarray(seg)
-                    seg_pil = seg_pil.convert('P')
-                    seg_pil.putpalette(palette_flat)
-                    seg_pil.save(mask_out_file)
-
-                # print(f'api:test :: out_file: {out_file}')
+                if is_empty:
+                    n_empty += 1
 
                 if write_empty or not is_empty:
-                    if blended_vis:
+                    if write_masks:
+                        seg_pil = PIL.Image.fromarray(seg)
+                        seg_pil = seg_pil.convert('P')
+                        seg_pil.putpalette(palette_flat)
+                        seg_pil.save(mask_out_file)
+
+                    if blended_vis :
                         model.module.show_result(
                         img_show,
                         result,
                         palette=palette,
                         show=show,
                         out_file=out_file)
-
-                else:
-                    n_empty += 1
 
                 n_images += 1
                 empty_percent = (float(n_empty) / n_images) * 100
