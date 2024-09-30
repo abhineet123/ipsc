@@ -130,8 +130,8 @@ def main():
     if os.path.isdir(ckpt_path):
         ckpt_path = os.path.join(ckpt_path, 'latest.pth')
 
-    ckpt_path_abs = os.readlink(ckpt_path)
-    ckpt_name = os.path.basename(ckpt_path_abs)
+    ckpt_path_abs = os.path.realpath(ckpt_path)
+    ckpt_name = os.path.splitext(os.path.basename(ckpt_path_abs))[0]
     args.show_dir = f'{args.show_dir}-{ckpt_name}'
 
     print(f'ckpt_path: {ckpt_path}')
