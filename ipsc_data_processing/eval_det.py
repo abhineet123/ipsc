@@ -3801,6 +3801,12 @@ def main():
     proc_det_paths = []
     out_zip_paths = None
 
+    eval_name = '__eval'
+    if params.save_suffix:
+        eval_name = f'{eval_name}-{params.save_suffix}'
+
+    print(f'eval_name: {eval_name}')
+
     while True:
         all_matching_paths = glob.glob(det_paths)
         # all_matching_dirs = [os.path.dirname(k) for k in all_matching_paths]
@@ -3808,7 +3814,7 @@ def main():
         new_matching_paths = [_path for _path in all_matching_paths
                               if
                               os.path.isfile(utils.linux_path(_path, '__inference')) and
-                              not os.path.isfile(utils.linux_path(_path, '__eval'))]
+                              not os.path.isfile(utils.linux_path(_path, eval_name))]
 
         if params.det_root_dir:
             new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
@@ -3859,7 +3865,7 @@ def main():
         time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
 
         print(f'finished eval at {time_stamp}')
-        flag_path = utils.linux_path(det_paths_, '__eval')
+        flag_path = utils.linux_path(det_paths_, eval_name)
         if params.det_root_dir:
             flag_path = utils.linux_path(params.det_root_dir, flag_path)
         with open(flag_path, 'w') as f:
