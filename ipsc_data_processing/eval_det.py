@@ -3794,18 +3794,24 @@ def main():
     post_wc = det_paths[wc_end_idx:]
     rep1, rep2 = (pre_wc, post_wc) if len(pre_wc) > len(post_wc) else (post_wc, pre_wc)
 
-    det_paths = det_paths.replace(wc, '*')
     if params.det_root_dir:
         det_paths = os.path.join(params.det_root_dir, det_paths)
+
+    det_paths_parent = det_paths
+    while wc in det_paths_parent:
+        det_paths_parent = os.path.dirname(det_paths_parent)
+    assert os.path.isdir(det_paths_parent), f"non-existent det_paths_parent: {det_paths_parent}"
+
+    det_paths = det_paths.replace(wc, '*')
 
     proc_det_paths = []
     out_zip_paths = None
 
-    eval_name = '__eval'
+    eval_flag_id = '__eval'
     if params.save_suffix:
-        eval_name = f'{eval_name}-{params.save_suffix}'
+        eval_flag_id = f'{eval_flag_id}-{params.save_suffix}'
 
-    print(f'eval_name: {eval_name}')
+    print(f'eval_flag_id: {eval_flag_id}')
 
     while True:
         all_matching_paths = glob.glob(det_paths)
@@ -3814,7 +3820,7 @@ def main():
         new_matching_paths = [_path for _path in all_matching_paths
                               if
                               os.path.isfile(utils.linux_path(_path, '__inference')) and
-                              not os.path.isfile(utils.linux_path(_path, eval_name))]
+                              not os.path.isfile(utils.linux_path(_path, eval_flag_id))]
 
         if params.det_root_dir:
             new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
@@ -3837,7 +3843,7 @@ def main():
 
         params_ = copy.deepcopy(params)
 
-        print(f'evaluating {det_paths_}') 
+        print(f'evaluating {det_paths_}')
 
         params_.det_paths = det_paths_
         params_.batch_name = f'ckpt-{match_substr}'
@@ -3865,7 +3871,7 @@ def main():
         time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
 
         print(f'finished eval at {time_stamp}')
-        flag_path = utils.linux_path(det_paths_, eval_name)
+        flag_path = utils.linux_path(det_paths_, eval_flag_id)
         if params.det_root_dir:
             flag_path = utils.linux_path(params.det_root_dir, flag_path)
         with open(flag_path, 'w') as f:
