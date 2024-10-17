@@ -439,6 +439,7 @@ python36 get-pip.py
 python3.7 get-pip.py
 python3.9 get-pip.py
 python3.10 get-pip.py
+python3.11 get-pip.py
 
 python3 -m pip install --upgrade pip
 ```

@@ -192,6 +192,9 @@ class Params(paramparse.CFG):
 
         self.fps_to_gt = 0
 
+        self.ignore_inference_flag = 0
+        self.ignore_eval_flag = 0
+
         self.show_pbar = True
 
         self.monitor_scale = 1.25
@@ -3817,10 +3820,13 @@ def main():
         all_matching_paths = glob.glob(det_paths)
         # all_matching_dirs = [os.path.dirname(k) for k in all_matching_paths]
 
-        new_matching_paths = [_path for _path in all_matching_paths
-                              if
-                              os.path.isfile(utils.linux_path(_path, '__inference')) and
-                              not os.path.isfile(utils.linux_path(_path, eval_flag_id))]
+        new_matching_paths = all_matching_paths
+        if not params.ignore_inference_flag:
+            new_matching_paths = [_path for _path in new_matching_paths
+                                  if os.path.isfile(utils.linux_path(_path, '__inference'))]
+        if not params.ignore_eval_flag:
+            new_matching_paths = [_path for _path in new_matching_paths
+                                  if not os.path.isfile(utils.linux_path(_path, eval_flag_id))]
 
         if params.det_root_dir:
             new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
