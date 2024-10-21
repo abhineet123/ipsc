@@ -992,13 +992,15 @@ def run(params: Params):
         else:
             raise IOError('Either seq_paths or root_dir must be provided')
 
-    if 0 < n_seq < len(seq_paths):
+    n_seq_paths = len(seq_paths)
+    if 0 < n_seq < n_seq_paths:
         assert end_seq_id < 0, "n_seq cannot be specified along with end_seq_id"
         end_seq_id = start_seq_id + n_seq - 1
 
     if start_seq_id > 0 or end_seq_id >= 0:
         if end_seq_id < 0:
-            end_seq_id = len(seq_paths) - 1
+            end_seq_id = n_seq_paths - 1
+        assert end_seq_id < len(seq_paths), f"invalid end_seq_id: {end_seq_id} for n_seq_paths: {n_seq_paths}"
         seq_paths = seq_paths[start_seq_id:end_seq_id + 1]
         seq_suffix = f'seq-{start_seq_id}_{end_seq_id}'
         description = f'{description}-{seq_suffix}'
