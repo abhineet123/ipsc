@@ -711,9 +711,14 @@ def get_xml_files(
             n_subseq_xml_files = len(subseq_xml_files)
 
             if n_subseq_xml_files < params.min_length:
-                print(f'skipping {seq_name} subseq {subseq_id + 1} ({start_id} -> {end_id})'
-                      f' with length {n_subseq_xml_files} < {params.min_length}')
-                continue
+                print(f'out of range subseq {subseq_id + 1} ({start_id} -> {end_id})'
+                      f' with length {n_subseq_xml_files} < {params.min_length} ')
+                gap = params.min_length - n_subseq_xml_files
+                assert gap <= start_id, "subseq shifting is not possible"
+                start_id -= gap
+                print(f'shifting to ({start_id} -> {end_id})')
+                subseq_xml_files = all_xml_files[start_id:end_id + 1]
+                n_subseq_xml_files = len(subseq_xml_files)
             elif n_subseq_xml_files > params.max_length > 0:
                 # n_subsubseq = int(round(float(n_subseq_xml_files) / params.max_length))
                 # subsubseq_start_id = 0
@@ -777,8 +782,17 @@ def get_xml_files(
                 n_subseq_xml_files = len(subseq_xml_files)
 
                 if n_subseq_xml_files < params.min_length:
-                    print(f'skipping subseq {subseq_id + 1} - with length {n_subseq_xml_files}')
-                    continue
+                    print(f'\nout of range subseq {subseq_id + 1} ({subseq_start_id} -> {subseq_end_id})'
+                          f' with length {n_subseq_xml_files} < {params.min_length} ')
+                    gap = params.min_length - n_subseq_xml_files
+                    assert gap <= subseq_start_id, "subseq shifting is not possible"
+                    subseq_start_id -= gap
+                    print( f'\tshifting to ({subseq_start_id} -> {subseq_end_id})\n')
+                    subseq_xml_files = all_xml_files[subseq_start_id:subseq_end_id + 1:params.frame_gap]
+                    n_subseq_xml_files = len(subseq_xml_files)
+
+                    # print(f'skipping subseq {subseq_id + 1} with length {n_subseq_xml_files}')
+                    # continue
 
                 print(f'{seq_name} :: subseq {subseq_id + 1} length {n_subseq_xml_files} '
                       f'({subseq_start_id} -> {subseq_end_id})')
