@@ -205,21 +205,21 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
             raise AssertionError(msg)
 
     size_from_xml = ann_root.find('size')
-    w = int(size_from_xml.findtext('width'))
-    h = int(size_from_xml.findtext('height'))
+    img_w = int(size_from_xml.findtext('width'))
+    img_h = int(size_from_xml.findtext('height'))
 
     if check_img_size:
-        w_, h_ = imagesize.get(img_path)
-        assert h_ == h and w_ == w, f"mismatch between image dimensions in XML: {(h, w)} and actual: ({h_, w_})"
+        img_w_, img_h_ = imagesize.get(img_path)
+        assert img_h_ == img_h and img_w_ == img_w, f"mismatch between image dimensions in XML: {(img_h, img_w)} and actual: ({img_h_, img_w_})"
 
     if get_img_stats:
         try:
             img_stat = img_path_to_stats[img_path]
         except KeyError:
             img = cv2.imread(img_path)
-            h, w = img.shape[:2]
+            img_h, img_w = img.shape[:2]
 
-            img_reshaped = np.reshape(img, (h * w, 3))
+            img_reshaped = np.reshape(img, (img_h * img_w, 3))
 
             pix_vals_mean = list(np.mean(img_reshaped, axis=0))
             pix_vals_std = list(np.std(img_reshaped, axis=0))
@@ -232,7 +232,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         all_pix_vals_std.append(pix_vals_std)
 
     objs = ann_root.findall('object')
-    src_shape = (h, w)
+    src_shape = (img_h, img_w)
 
     xml_dict = dict(
         img_path=img_path,
@@ -273,9 +273,9 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         ymax = bbox.find('ymax')
 
         xmin, ymin, xmax, ymax = float(xmin.text), float(ymin.text), float(xmax.text), float(ymax.text)
-        w, h = xmax - xmin, ymax - ymin
+        bbox_w, bbox_h = xmax - xmin, ymax - ymin
 
-        bbox = [xmin, ymin, w, h]
+        bbox = [xmin, ymin, bbox_w, bbox_h]
 
         xml_data = dict(
             label=label,
@@ -316,9 +316,9 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         all_xml_files = seq_name_to_xml_paths[seq_name]
         seq_name_to_info[seq_name] = dict(
             name=seq_name,
-            height=h,
-            width=w,
-            aspect_ratio=float(w) / float(h),
+            height=img_h,
+            width=img_w,
+            aspect_ratio=float(img_w) / float(img_h),
             length=len(all_xml_files),
             n_objs=[n_objs, ],
         )
