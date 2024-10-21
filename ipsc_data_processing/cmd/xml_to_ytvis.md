@@ -127,6 +127,8 @@ python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gap-10
 ## 0_0       @ detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gap-1:vis 
 
+python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-64:strd-1:gap-1 
+
 
 <a id="0_19___detrac_"></a>
 ## 0_19       @ detrac-->xml_to_ytvis

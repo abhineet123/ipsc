@@ -323,7 +323,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
             n_objs=[n_objs, ],
         )
     else:
-        seq_name_to_info['n_objs'].append(n_objs)
+        seq_name_to_info[seq_name]['n_objs'].append(n_objs)
 
     xml_dict['objs'] = xml_data_list
 
@@ -1147,7 +1147,7 @@ def run(params: Params):
                 # xml_out_data.append(None)
 
         for seq_name, seq_info in seq_name_to_info.items():
-            n_objs_list = seq_info['n_objs']
+            n_objs_list = np.asarray(seq_info['n_objs'])
             n_seq_frames = len(n_objs_list)
             assert n_seq_frames >= 1, "n_objs_list must have non-zero length"
 
@@ -1155,16 +1155,18 @@ def run(params: Params):
             seq_info['median']  = np.median(n_objs_list)
             seq_info['min'] = np.amin(n_objs_list)
             seq_info['max'] = np.amax(n_objs_list)
+            n_tokens_per_obj = 4*params.length + 1
 
-            seq_len_threshs = [256 * i for i in range(32)]
-            bbox_threshs = [int(seq_len // 5) for seq_len in seq_len_threshs]
-            exceed_percent_list = [np.count_nonzero(n_objs_list > bbox_thresh) / n_seq_frames * 100 for bbox_thresh in
-                              bbox_threshs]
+            seq_len_threshs = [256 * i for i in range(2, 33)]
+            bbox_threshs = [int(seq_len // n_tokens_per_obj) for seq_len in seq_len_threshs]
+            n_exceed_list = [int(np.count_nonzero(n_objs_list > bbox_thresh)) for bbox_thresh in bbox_threshs]
+            exceed_percent_list = [n_exceed / n_seq_frames * 100 for n_exceed in n_exceed_list]
             seq_info.update(
                 {
                     f'{seq_len}': exceed_percent for seq_len, exceed_percent in zip(seq_len_threshs, exceed_percent_list)
                 }
             )
+            del(seq_info['n_objs'])
         seq_name_to_info_df = pd.DataFrame.from_dict(seq_name_to_info, orient='index')
         seq_name_to_info_dir = os.path.join(db_root_dir, out_dir_name)
         os.makedirs(seq_name_to_info_dir, exist_ok=True)
