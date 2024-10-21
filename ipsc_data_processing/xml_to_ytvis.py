@@ -831,14 +831,17 @@ def get_xml_files(
                     all_train_files.append(_train_xml_files)
             all_train_files.append(train_xml_files)
 
+
 def get_n_objs_stats(seq_info, n_tokens_per_obj):
     n_objs_list = np.asarray(seq_info['n_objs'])
 
     n_seq_frames = len(n_objs_list)
     assert n_seq_frames >= 1, "n_objs_list must have non-zero length"
+    n_frames = seq_info['length']
+    assert n_seq_frames == n_frames, "n_seq_frames match mismatch"
 
     seq_info['mean'] = np.mean(n_objs_list)
-    seq_info['median']  = np.median(n_objs_list)
+    seq_info['median'] = np.median(n_objs_list)
     seq_info['min'] = np.amin(n_objs_list)
     seq_info['max'] = np.amax(n_objs_list)
 
@@ -851,7 +854,9 @@ def get_n_objs_stats(seq_info, n_tokens_per_obj):
             f'{seq_len}': exceed_percent for seq_len, exceed_percent in zip(seq_len_threshs, exceed_percent_list)
         }
     )
-    del(seq_info['n_objs'])
+    del (seq_info['n_objs'])
+
+
 def run(params: Params):
     seq_paths = params.seq_paths
     root_dir = params.root_dir

@@ -15,6 +15,7 @@
     - [8_8       @ idot](#8_8___idot_)
 - [detrac](#detra_c_)
     - [0_0       @ detrac](#0_0___detrac_)
+    - [0_1       @ detrac](#0_1___detrac_)
     - [0_19       @ detrac](#0_19___detrac_)
         - [strd-2       @ 0_19/detrac](#strd_2___0_19_detra_c_)
     - [0_9       @ detrac](#0_9___detrac_)
@@ -131,9 +132,11 @@ python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gap-10
 # detrac
 <a id="0_0___detrac_"></a>
 ## 0_0       @ detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gap-1:vis 
-
+python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gap-1:vis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-64:strd-1:gap-1 
+<a id="0_1___detrac_"></a>
+## 0_1       @ detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:0_1:proc-1:len-64:strd-1:gap-1 
 
 
 <a id="0_19___detrac_"></a>
