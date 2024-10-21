@@ -208,16 +208,6 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     w = int(size_from_xml.findtext('width'))
     h = int(size_from_xml.findtext('height'))
 
-    if seq_name not in seq_name_to_info:
-        all_xml_files = seq_name_to_xml_paths[seq_name]
-        seq_name_to_info[seq_name] = dict(
-            name=seq_name,
-            height=h,
-            width=w,
-            aspect_ratio=float(w) / float(h),
-            length=len(all_xml_files)
-        )
-
     if check_img_size:
         w_, h_ = imagesize.get(img_path)
         assert h_ == h and w_ == w, f"mismatch between image dimensions in XML: {(h, w)} and actual: ({h_, w_})"
@@ -320,6 +310,20 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
             ))
 
         xml_data_list.append(xml_data)
+
+    n_objs = len(xml_data_list)
+    if seq_name not in seq_name_to_info:
+        all_xml_files = seq_name_to_xml_paths[seq_name]
+        seq_name_to_info[seq_name] = dict(
+            name=seq_name,
+            height=h,
+            width=w,
+            aspect_ratio=float(w) / float(h),
+            length=len(all_xml_files),
+            n_objs=[n_objs, ],
+        )
+    else:
+        seq_name_to_info['n_objs'].append(n_objs)
 
     xml_dict['objs'] = xml_data_list
 
@@ -1142,6 +1146,25 @@ def run(params: Params):
                 xml_out_data.append(read_xml_func(xml_info))
                 # xml_out_data.append(None)
 
+        for seq_name, seq_info in seq_name_to_info.items():
+            n_objs_list = seq_info['n_objs']
+            n_seq_frames = len(n_objs_list)
+            assert n_seq_frames >= 1, "n_objs_list must have non-zero length"
+
+            seq_info['mean'] = np.mean(n_objs_list)
+            seq_info['median']  = np.median(n_objs_list)
+            seq_info['min'] = np.amin(n_objs_list)
+            seq_info['max'] = np.amax(n_objs_list)
+
+            seq_len_threshs = [256 * i for i in range(32)]
+            bbox_threshs = [int(seq_len // 5) for seq_len in seq_len_threshs]
+            exceed_percent_list = [np.count_nonzero(n_objs_list > bbox_thresh) / n_seq_frames * 100 for bbox_thresh in
+                              bbox_threshs]
+            seq_info.update(
+                {
+                    f'{seq_len}': exceed_percent for seq_len, exceed_percent in zip(seq_len_threshs, exceed_percent_list)
+                }
+            )
         seq_name_to_info_df = pd.DataFrame.from_dict(seq_name_to_info, orient='index')
         seq_name_to_info_dir = os.path.join(db_root_dir, out_dir_name)
         os.makedirs(seq_name_to_info_dir, exist_ok=True)
