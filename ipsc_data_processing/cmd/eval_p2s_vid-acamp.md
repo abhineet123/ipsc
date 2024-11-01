@@ -15,12 +15,15 @@
     - [1k8_vid_entire_seq-aug-fbb       @ mid](#1k8_vid_entire_seq_aug_fbb___mi_d_)
         - [on-inv-2_per_seq       @ 1k8_vid_entire_seq-aug-fbb/mid](#on_inv_2_per_seq___1k8_vid_entire_seq_aug_fbb_mid_)
         - [on-inv-6_per_seq       @ 1k8_vid_entire_seq-aug-fbb/mid](#on_inv_6_per_seq___1k8_vid_entire_seq_aug_fbb_mid_)
+        - [on-inv       @ 1k8_vid_entire_seq-aug-fbb/mid](#on_inv___1k8_vid_entire_seq_aug_fbb_mid_)
     - [10k6_vid_entire_seq-aug-fbb       @ mid](#10k6_vid_entire_seq_aug_fbb___mi_d_)
         - [on-inv-2_per_seq       @ 10k6_vid_entire_seq-aug-fbb/mid](#on_inv_2_per_seq___10k6_vid_entire_seq_aug_fbb_mi_d_)
         - [on-inv-12_per_seq       @ 10k6_vid_entire_seq-aug-fbb/mid](#on_inv_12_per_seq___10k6_vid_entire_seq_aug_fbb_mi_d_)
+        - [on-inv       @ 10k6_vid_entire_seq-aug-fbb/mid](#on_inv___10k6_vid_entire_seq_aug_fbb_mi_d_)
     - [20k6_5_video-aug-fbb       @ mid](#20k6_5_video_aug_fbb___mi_d_)
         - [on-inv-2_per_seq       @ 20k6_5_video-aug-fbb/mid](#on_inv_2_per_seq___20k6_5_video_aug_fbb_mid_)
         - [on-inv-12_per_seq       @ 20k6_5_video-aug-fbb/mid](#on_inv_12_per_seq___20k6_5_video_aug_fbb_mid_)
+        - [on-inv       @ 20k6_5_video-aug-fbb/mid](#on_inv___20k6_5_video_aug_fbb_mid_)
 
 <!-- /MarkdownTOC -->
 <a id="mid_"></a>
@@ -77,6 +80,9 @@ python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv_2_per_seq:vnms-1:nm
 <a id="on_inv_6_per_seq___1k8_vid_entire_seq_aug_fbb_mid_"></a>
 ### on-inv-6_per_seq       @ 1k8_vid_entire_seq-aug-fbb/mid-->eval_p2s_vid-acamp
 python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv_6_per_seq:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_80-jtr-res_1280-fbb/ckpt-__var__-1k8_vid_entire_seq_inv_6_per_seq-length-2-stride-1/csv-batch_8:_out_-p2s-mid-1k8-len-2-aug-fbb-6_per_seq
+<a id="on_inv___1k8_vid_entire_seq_aug_fbb_mid_"></a>
+### on-inv       @ 1k8_vid_entire_seq-aug-fbb/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_80-jtr-res_1280-fbb/ckpt-__var__-1k8_vid_entire_seq_inv-length-2-stride-1/csv-batch_2:_out_-p2s-mid-1k8-len-2-aug-fbb
 
 <a id="10k6_vid_entire_seq_aug_fbb___mi_d_"></a>
 ## 10k6_vid_entire_seq-aug-fbb       @ mid-->eval_p2s_vid-acamp
@@ -86,6 +92,9 @@ python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv_2_per_seq:vnms-1:n
 <a id="on_inv_12_per_seq___10k6_vid_entire_seq_aug_fbb_mi_d_"></a>
 ### on-inv-12_per_seq       @ 10k6_vid_entire_seq-aug-fbb/mid-->eval_p2s_vid-acamp
 python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv_12_per_seq:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_72-jtr-res_1280-fbb/ckpt-__var__-10k6_vid_entire_seq_inv_12_per_seq-length-2-stride-1/csv-batch_2:_out_-p2s-mid-10k6-len-2-aug-fbb-12_per_seq
+<a id="on_inv___10k6_vid_entire_seq_aug_fbb_mi_d_"></a>
+### on-inv       @ 10k6_vid_entire_seq-aug-fbb/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_72-jtr-res_1280-fbb/ckpt-__var__-10k6_vid_entire_seq_inv-length-2-stride-1/csv-batch_2:_out_-p2s-mid-10k6-len-2-aug-fbb
 
 <a id="20k6_5_video_aug_fbb___mi_d_"></a>
 ## 20k6_5_video-aug-fbb       @ mid-->eval_p2s_vid-acamp
@@ -95,6 +104,11 @@ python3 eval_det.py cfg=p2s:vid,acamp:20k6_5_video_inv_2_per_seq:vnms-1:nms-1:ag
 <a id="on_inv_12_per_seq___20k6_5_video_aug_fbb_mid_"></a>
 ### on-inv-12_per_seq       @ 20k6_5_video-aug-fbb/mid-->eval_p2s_vid-acamp
 python3 eval_det.py cfg=p2s:vid,acamp:20k6_5_video_inv_12_per_seq:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_20k6_5_video-length-2-stride-1-batch_72-jtr-res_1280-fbb/ckpt-__var__-20k6_5_video_inv_12_per_seq-length-2-stride-1/csv-batch_8:_out_-p2s-mid-20k6-len-2-aug-fbb-12_per_seq
+<a id="on_inv___20k6_5_video_aug_fbb_mid_"></a>
+### on-inv       @ 20k6_5_video-aug-fbb/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:20k6_5_video_inv:vnms-1:nms-1:gt-1:proc-1:show-0:_in_-resnet_640_20k6_5_video-length-2-stride-1-batch_72-jtr-res_1280-fbb/ckpt-__var__-20k6_5_video_inv-length-2-stride-1/csv-batch_2:_out_-p2s-mid-20k6-len-2-aug-fbb
+`agn`
+python3 eval_det.py cfg=p2s:vid,acamp:20k6_5_video_inv:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_20k6_5_video-length-2-stride-1-batch_72-jtr-res_1280-fbb/ckpt-__var__-20k6_5_video_inv-length-2-stride-1/csv-batch_2:_out_-p2s-mid-20k6-len-2-aug-fbb:iif
 
 
 

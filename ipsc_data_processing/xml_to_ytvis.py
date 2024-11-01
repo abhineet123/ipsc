@@ -16,7 +16,7 @@ from tqdm import tqdm
 import imagesize
 import paramparse
 
-from eval_utils import col_bgr, sortKey, linux_path, draw_box, annotate, load_samples_from_txt
+from eval_utils import col_bgr, sortKey, linux_path, draw_box, annotate, load_samples_from_txt, get_iou
 
 from itertools import groupby
 import pycocotools.mask as mask_util
@@ -192,6 +192,8 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
     # img_file_path = linux_path(seq_path, img_file_name)
 
+    quant_bins = [24, 32, 40, 48, 64, 80, 128, 160, 200, 256, 320]
+
     if excluded_images is not None and img_name in excluded_images[seq_path]:
         print(f'\n{seq_name} :: skipping excluded image {img_name}')
         return None
@@ -210,7 +212,8 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
     if check_img_size:
         img_w_, img_h_ = imagesize.get(img_path)
-        assert img_h_ == img_h and img_w_ == img_w, f"mismatch between image dimensions in XML: {(img_h, img_w)} and actual: ({img_h_, img_w_})"
+        assert img_h_ == img_h and img_w_ == img_w, (f"mismatch between image dimensions in XML: {(img_h, img_w)} and "
+                                                     f"actual: ({img_h_, img_w_})")
 
     if get_img_stats:
         try:
@@ -243,6 +246,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     )
 
     xml_data_list = []
+    quant_bin_to_ious = {}
 
     for obj_id, obj in enumerate(objs):
 
@@ -276,6 +280,25 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         bbox_w, bbox_h = xmax - xmin, ymax - ymin
 
         bbox = [xmin, ymin, bbox_w, bbox_h]
+
+        xmin_norm, ymin_norm, xmax_norm, ymax_norm = xmin / img_w, ymin / img_h, xmax / img_w, ymax / img_h
+        bbox_norm = [xmin_norm, ymin_norm, xmax_norm, ymax_norm]
+
+        for quant_bin in quant_bins:
+            bbox_quant = [int(k * quant_bin) for k in bbox_norm]
+            xmin_rec, ymin_rec, xmax_rec, ymax_rec = [float(k) / quant_bin for k in bbox_quant]
+
+            xmin_rec, ymin_rec, xmax_rec, ymax_rec = xmin_rec * img_w, ymin_rec * img_h, xmax_rec * img_w, ymax_rec * img_h
+            iou = get_iou(
+                [xmin, ymin, xmax, ymax],
+                [xmin_rec, ymin_rec, xmax_rec, ymax_rec],
+                xywh=False
+            )
+            if quant_bin not in quant_bin_to_ious:
+                quant_bin_to_ious[quant_bin] = []
+            quant_bin_to_ious[quant_bin].append(iou)
+
+
 
         xml_data = dict(
             label=label,
@@ -787,7 +810,7 @@ def get_xml_files(
                     gap = params.min_length - n_subseq_xml_files
                     assert gap <= subseq_start_id, "subseq shifting is not possible"
                     subseq_start_id -= gap
-                    print( f'\tshifting to ({subseq_start_id} -> {subseq_end_id})\n')
+                    print(f'\tshifting to ({subseq_start_id} -> {subseq_end_id})\n')
                     subseq_xml_files = all_xml_files[subseq_start_id:subseq_end_id + 1:params.frame_gap]
                     n_subseq_xml_files = len(subseq_xml_files)
 
@@ -859,13 +882,19 @@ def get_n_objs_stats(seq_info, n_tokens_per_obj):
     seq_info['min'] = np.amin(n_objs_list)
     seq_info['max'] = np.amax(n_objs_list)
 
-    seq_len_threshs = [256 * i for i in range(2, 33)]
-    bbox_threshs = [int(seq_len // n_tokens_per_obj) for seq_len in seq_len_threshs]
+    # seq_len_threshs = [256 * i for i in range(2, 33)]
+    # bbox_threshs = [int(seq_len // n_tokens_per_obj) for seq_len in seq_len_threshs]
+
+    bbox_threshs = list(range(10, 51))
+
     n_exceed_list = [int(np.count_nonzero(n_objs_list > bbox_thresh)) for bbox_thresh in bbox_threshs]
     exceed_percent_list = [n_exceed / n_seq_frames * 100 for n_exceed in n_exceed_list]
     seq_info.update(
         {
-            f'{seq_len}': exceed_percent for seq_len, exceed_percent in zip(seq_len_threshs, exceed_percent_list)
+            f'{k}': exceed_percent for k, exceed_percent in zip(
+            # seq_len_threshs,
+            bbox_threshs,
+            exceed_percent_list)
         }
     )
     del (seq_info['n_objs'])

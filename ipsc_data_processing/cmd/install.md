@@ -19,6 +19,7 @@
     - [others](#other_s_)
 - [cuda](#cud_a_)
   - [bugs](#bug_s_)
+  - [CUDA 12.4:](#cuda_12_4__)
   - [CUDA 12.2:](#cuda_12_2__)
     - [all       @ tensorflow/install](#all___tensorflow_install_)
       - [12.2       @ all/tensorflow/install](#12_2___all_tensorflow_install_)
@@ -307,7 +308,11 @@ sudo shutdown -r now
 no need to enable the suspend service in the newest drivers
 sudo systemctl enable nvidia-suspend.service
 
-
+<a id="cuda_12_4__"></a>
+## CUDA 12.4:
+```
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pinsudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600wget https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda-repo-ubuntu2204-12-4-local_12.4.0-550.54.14-1_amd64.debsudo dpkg -i cuda-repo-ubuntu2204-12-4-local_12.4.0-550.54.14-1_amd64.debsudo cp /var/cuda-repo-ubuntu2204-12-4-local/cuda-*-keyring.gpg /usr/share/keyrings/sudo apt-get updatesudo apt-get -y install cuda-toolkit-12-4
+```
 <a id="cuda_12_2__"></a>
 ## CUDA 12.2:
 `from p2s`
@@ -441,7 +446,7 @@ python3.9 get-pip.py
 python3.10 get-pip.py
 python3.11 get-pip.py
 
-python3 -m pip install --upgrade pip
+python -m pip install --upgrade pip
 ```
 
 <a id="setup_python_3_"></a>

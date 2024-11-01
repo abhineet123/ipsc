@@ -234,8 +234,10 @@ def evaluate(
         vid_info=None,
 ):
     if not params.verbose:
-        print = dummy_print
+        print_ = dummy_print
         # tqdm = dummy_tqdm
+    else:
+        print_ = print
 
     """general init"""
     if True:
@@ -336,7 +338,7 @@ def evaluate(
 
         if raw_det_data_dict is None:
             if n_seq < n_seq_det_paths:
-                print(f'Mismatch between n_seq ({n_seq}) and n_seq_det_paths ({n_seq_det_paths})')
+                print_(f'Mismatch between n_seq ({n_seq}) and n_seq_det_paths ({n_seq_det_paths})')
                 all_seq_det_paths = all_seq_det_paths[:n_seq]
 
         seq_root_dirs = [os.path.dirname(x) for x in seq_paths]
@@ -352,7 +354,7 @@ def evaluate(
 
         plots_out_dir = utils.linux_path(out_root_dir, 'plots')
         if draw_plot:
-            print('Saving plots to: {}'.format(plots_out_dir))
+            print_('Saving plots to: {}'.format(plots_out_dir))
             os.makedirs(plots_out_dir, exist_ok=True)
 
         if not det_pkl_dir:
@@ -398,11 +400,11 @@ def evaluate(
             if not os.path.exists(gt_pkl):
                 msg = f"gt_pkl does not exist: {gt_pkl}"
                 if params.iw:
-                    print('\n' + msg + '\n')
+                    print_('\n' + msg + '\n')
                     return None
                 raise AssertionError(msg)
 
-            print(f'loading GT data from {gt_pkl}')
+            print_(f'loading GT data from {gt_pkl}')
             with open(gt_pkl, 'rb') as f:
                 gt_data_dict = pickle.load(f)
 
@@ -410,7 +412,7 @@ def evaluate(
         else:
             gt_data_dict = {}
             gt_loaded = 0
-            print('Generating GT data')
+            print_('Generating GT data')
         if gt_loaded:
             for _seq_path, _seq_gt_data_dict in gt_data_dict.items():
                 if _seq_path == "counter_per_class":
@@ -436,7 +438,7 @@ def evaluate(
             if params.load_det:
                 assert os.path.isfile(det_pkl), f"nonexistent det_pkl: {det_pkl}"
 
-                print(f'loading detection data from {det_pkl}')
+                print_(f'loading detection data from {det_pkl}')
                 with open(det_pkl, 'rb') as f:
                     raw_det_data_dict = pickle.load(f)
                 det_loaded = 1
@@ -447,7 +449,7 @@ def evaluate(
         det_data_dict = {}
 
         if not det_loaded:
-            print('Generating detection data')
+            print_('Generating detection data')
 
         _pause = 1
         gt_counter_per_class = {}
@@ -507,8 +509,8 @@ def evaluate(
 
             all_img_paths += gt_img_paths
 
-        print(f'\n\nProcessing sequence {seq_idx + 1:d}/{n_seq:d}')
-        print(f'seq_path: {seq_path:s}')
+        print_(f'\n\nProcessing sequence {seq_idx + 1:d}/{n_seq:d}')
+        print_(f'seq_path: {seq_path:s}')
 
         """read GT from csv"""
         if not gt_loaded:
@@ -519,12 +521,12 @@ def evaluate(
                 # os.system(f'ls {gt_path}')
                 # os.system(f'ls {os.path.dirname(gt_path)}')
 
-                print(os.listdir('/'))
-                print(os.listdir(os.path.dirname(gt_path)))
+                print_(os.listdir('/'))
+                print_(os.listdir(os.path.dirname(gt_path)))
 
                 raise AssertionError(f'GT file: {gt_path} does not exist')
 
-            print(f'\ngt_path: {gt_path:s}')
+            print_(f'\ngt_path: {gt_path:s}')
 
             seq_gt_data_dict = {}
 
@@ -554,20 +556,20 @@ def evaluate(
 
             n_gt_filenames = len(gt_filenames)
 
-            print(f'{gt_path} --> {n_gt} labels for {n_gt_filenames} images')
+            print_(f'{gt_path} --> {n_gt} labels for {n_gt_filenames} images')
 
             n_gt_filenames = len(gt_filenames)
 
             if img_start_id >= 0 and img_end_id >= 0:
                 if img_end_id >= n_gt_filenames:
                     if params.iw:
-                        print('img_end_id exceeds n_gt_filenames')
+                        print_('img_end_id exceeds n_gt_filenames')
                         return None
                     raise AssertionError('img_end_id exceeds n_gt_filenames')
 
                 gt_filenames = gt_filenames[img_start_id:img_end_id + 1]
                 n_gt_filenames = len(gt_filenames)
-                print(f'selecting {n_gt_filenames} image(s) from ID {img_start_id} to {img_end_id}')
+                print_(f'selecting {n_gt_filenames} image(s) from ID {img_start_id} to {img_end_id}')
 
             # gt_file_paths = [utils.linux_path(seq_path, gt_filename) for gt_filename in gt_filenames]
 
@@ -576,7 +578,7 @@ def evaluate(
             if show_pbar:
                 gt_iter = tqdm(gt_iter, total=n_gt_filenames, ncols=100)
             else:
-                print('reading GT')
+                print_('reading GT')
 
             valid_gts = 0
             total_rows = 0
@@ -682,7 +684,7 @@ def evaluate(
         """read det from csv"""
         if not det_loaded:
             if params.nms_thresh > 0:
-                print(f'performing NMS with threshold {params.nms_thresh:.2f}')
+                print_(f'performing NMS with threshold {params.nms_thresh:.2f}')
 
             det_paths = all_seq_det_paths[seq_idx]
 
@@ -703,7 +705,7 @@ def evaluate(
                 det_pbar = det_paths_iter = tqdm(det_paths, ncols=100)
             else:
                 det_paths_iter = det_paths
-                print('reading dets')
+                print_('reading dets')
 
             n_invalid_dets = 0
             n_total_dets = 0
@@ -769,7 +771,7 @@ def evaluate(
                         raise AssertionError('det_filenames without corresponding gt_filenames found')
 
                     if allow_missing_gt == 2:
-                        print(f'\n\nskipping {len(non_gt_det_filenames)} non_gt_det_filenames')
+                        print_(f'\n\nskipping {len(non_gt_det_filenames)} non_gt_det_filenames')
                         det_filenames = [det_filename for det_filename in det_filenames if det_filename in gt_filenames]
                         n_det_filenames = len(det_filenames)
 
@@ -954,10 +956,10 @@ def evaluate(
                         if params.enable_mask:
                             csv_columns += ['mask_w', 'mask_h', 'mask_counts']
                         df = pd.DataFrame(out_csv_rows, columns=csv_columns)
-                        print(f'writing postproc results to {out_det_path}')
+                        print_(f'writing postproc results to {out_det_path}')
                         df.to_csv(out_det_path, index=False)
                 else:
-                    print(f'n_det_paths: {n_det_paths}')
+                    print_(f'n_det_paths: {n_det_paths}')
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
@@ -965,7 +967,7 @@ def evaluate(
     """save pkl and detection post-proc"""
     if True:
         if not det_loaded and params.save_det_pkl:
-            print(f'\nSaving detection data to {det_pkl}')
+            print_(f'\nSaving detection data to {det_pkl}')
             os.makedirs(det_pkl_dir, exist_ok=True)
             with open(det_pkl, 'wb') as f:
                 pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
@@ -974,13 +976,13 @@ def evaluate(
             gt_data_dict['counter_per_class'] = gt_counter_per_class
             os.makedirs(gt_pkl_dir, exist_ok=True)
 
-            print(f'\nSaving GT data to {gt_pkl}')
+            print_(f'\nSaving GT data to {gt_pkl}')
             with open(gt_pkl, 'wb') as f:
                 pickle.dump(gt_data_dict, f, pickle.HIGHEST_PROTOCOL)
 
         gt_end_t = time.time()
         if not (gt_loaded and det_loaded):
-            print('Time taken: {} sec'.format(gt_end_t - gt_start_t))
+            print_('Time taken: {} sec'.format(gt_end_t - gt_start_t))
 
         gt_counter_per_class = gt_data_dict['counter_per_class']
 
@@ -998,8 +1000,8 @@ def evaluate(
             try:
                 _gt_fraction = float(gt_counter_per_class[_class_name]) / float(total_gt)
             except ZeroDivisionError:
-                print('gt_counter_per_class: ', gt_counter_per_class)
-                print('total_gt: ', total_gt)
+                print_('gt_counter_per_class: ', gt_counter_per_class)
+                print_('total_gt: ', total_gt)
                 _gt_fraction = 0
 
             gt_fraction_per_class[_class_name] = _gt_fraction
@@ -1010,21 +1012,21 @@ def evaluate(
 
         n_classes = len(gt_classes)
 
-        print('gt_classes: ', gt_classes)
-        print('n_classes: ', n_classes)
-        print('gt_counter_per_class: ', gt_counter_per_class)
+        print_('gt_classes: ', gt_classes)
+        print_('n_classes: ', n_classes)
+        print_('gt_counter_per_class: ', gt_counter_per_class)
 
         log_dir = 'pprint_log'
         if not os.path.isdir(log_dir):
             os.makedirs(log_dir)
 
         if score_thresh > 0:
-            print('Discarding detections with score < {}'.format(score_thresh))
+            print_('Discarding detections with score < {}'.format(score_thresh))
 
         for gt_class_idx, gt_class in enumerate(gt_classes):
 
             class_det_data_dict = {}
-            print(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
+            print_(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
 
             det_start_t = time.time()
             det_post_proc_pbar = range(n_seq)
@@ -1132,7 +1134,7 @@ def evaluate(
             det_end_t = time.time()
             det_data_dict[gt_class] = class_det_data_dict
 
-            print('Time taken: {} sec'.format(det_end_t - det_start_t))
+            print_('Time taken: {} sec'.format(det_end_t - det_start_t))
 
         """
          Calculate the AP for each class
@@ -1144,7 +1146,7 @@ def evaluate(
         min_overlap = iou_thresh
 
         # ap_dictionary = {}
-        print('Calculating the AP for each class')
+        print_('Calculating the AP for each class')
 
         # colors (OpenCV works with BGR)
         # white = (255, 255, 255)
@@ -1178,7 +1180,7 @@ def evaluate(
 
         if write_summary:
             summary_path = utils.linux_path(out_root_dir, "summary.txt")
-            print('Writing result summary to {}'.format(summary_path))
+            print_('Writing result summary to {}'.format(summary_path))
 
         out_template = utils.linux_path(out_root_dir).replace('/', '_')
         out_text = out_template
@@ -1265,7 +1267,7 @@ def evaluate(
 
         other_classes = [k for k in gt_classes if k != gt_class]
 
-        print(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
+        print_(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
 
         count_true_positives[gt_class] = 0
         end_class = 0
@@ -1314,7 +1316,7 @@ def evaluate(
                 vis_root_dir = out_root_dir
 
             os.makedirs(vis_root_dir, exist_ok=True)
-            print(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
+            print_(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
 
             vis_out_fnames = {
                 cat: utils.linux_path(vis_root_dir, f'{cat}.{vid_ext}')
@@ -1331,7 +1333,7 @@ def evaluate(
         if show_pbar:
             seq_iter = tqdm(seq_iter, desc="sequence", ncols=70)
         else:
-            print('computing mAP')
+            print_('computing mAP')
 
         for seq_idx in seq_iter:
             seq_path = seq_paths[seq_idx]
@@ -1351,9 +1353,9 @@ def evaluate(
             n_seq_class_dets = len(seq_class_det_data)
             n_class_dets += n_seq_class_dets
 
-            print(f'n_seq_gts: {n_seq_gts}')
-            print(f'n_seq_class_gts: {n_seq_class_gts}')
-            print(f'n_seq_class_dets: {n_seq_class_dets}')
+            print_(f'n_seq_gts: {n_seq_gts}')
+            print_(f'n_seq_class_gts: {n_seq_class_gts}')
+            print_(f'n_seq_class_dets: {n_seq_class_dets}')
 
             seq_gt_file_ids = set(seq_gt_data_dict.keys())
             n_seq_gt_file_ids = len(seq_gt_file_ids)
@@ -1364,9 +1366,9 @@ def evaluate(
             seq_class_det_file_ids = set([obj['file_id'] for obj in seq_class_det_data])
             n_seq_det_file_ids = len(seq_class_det_file_ids)
 
-            print(f'n_seq_gt_file_ids: {n_seq_gt_file_ids}')
-            print(f'n_seq_class_gt_file_ids: {n_seq_class_gt_file_ids}')
-            print(f'n_seq_det_file_ids: {n_seq_det_file_ids}')
+            print_(f'n_seq_gt_file_ids: {n_seq_gt_file_ids}')
+            print_(f'n_seq_class_gt_file_ids: {n_seq_class_gt_file_ids}')
+            print_(f'n_seq_det_file_ids: {n_seq_det_file_ids}')
 
             """all frames with no det of this class but containing gt of this class"""
             missing_class_det_file_ids = seq_class_gt_file_ids - seq_class_det_file_ids
@@ -1385,7 +1387,7 @@ def evaluate(
                 if not allow_missing_gt:
                     raise AssertionError(msg)
 
-                print('\n' + msg)
+                print_('\n' + msg)
 
                 seq_gt_data_dict.update(
                     {k: [] for k in missing_gt_file_ids}
@@ -1398,7 +1400,7 @@ def evaluate(
                 them for all images with any class GT too"""
 
                 n_missing_class_det_file_ids = len(missing_class_det_file_ids)
-                print(f'\n{seq_name}: no {gt_class} detections found for {n_missing_class_det_file_ids} images'
+                print_(f'\n{seq_name}: no {gt_class} detections found for {n_missing_class_det_file_ids} images'
                       f' with {gt_class} GT\n')
 
                 """add one dummy detection for each missing image"""
@@ -1413,8 +1415,8 @@ def evaluate(
             seq_class_det_file_ids_with_dummy = set([obj['file_id'] for obj in seq_class_det_data])
             n_seq_class_det_file_ids_with_dummy = len(seq_class_det_file_ids_with_dummy)
 
-            print(f'n_seq_gt_file_ids_with_dummy: {n_seq_gt_file_ids_with_dummy}')
-            print(f'n_seq_class_det_file_ids_with_dummy: {n_seq_class_det_file_ids_with_dummy}')
+            print_(f'n_seq_gt_file_ids_with_dummy: {n_seq_gt_file_ids_with_dummy}')
+            print_(f'n_seq_class_det_file_ids_with_dummy: {n_seq_class_det_file_ids_with_dummy}')
 
             """sort detections by frame"""
             seq_class_det_data.sort(key=lambda x: x['file_id'])
@@ -1564,7 +1566,7 @@ def evaluate(
                                 vis_out_fname = vis_out_fnames[_cls_cat]
                                 _save_dir = os.path.dirname(vis_out_fname)
 
-                                print(f'\n\nsaving video for {_cls_cat} at {vis_out_fname}\n\n')
+                                print_(f'\n\nsaving video for {_cls_cat} at {vis_out_fname}\n\n')
 
                                 if _save_dir and not os.path.isdir(_save_dir):
                                     os.makedirs(_save_dir)
@@ -1842,8 +1844,8 @@ def evaluate(
                     assert fn_det_sum + fn_cls_sum == fn_sum, "fn_sum mismatch"
 
                     if n_total_gt != n_used_gt + fn_sum:
-                        print('fn_gts:\n{}'.format(pformat(fn_gts)))
-                        print('all_class_gt:\n{}'.format(pformat(all_class_gt)))
+                        print_('fn_gts:\n{}'.format(pformat(fn_gts)))
+                        print_('all_class_gt:\n{}'.format(pformat(all_class_gt)))
 
                         raise AssertionError(
                             f'{gt_class} : {file_id} :: '
@@ -2084,8 +2086,8 @@ def evaluate(
                     assert fn_det_sum + fn_cls_sum == fn_sum, "fn_sum mismatch"
 
                     if n_total_gt != n_used_gt + fn_sum:
-                        print('fn_gts:\n{}'.format(pformat(fn_gts)))
-                        print('all_class_gt:\n{}'.format(pformat(all_class_gt)))
+                        print_('fn_gts:\n{}'.format(pformat(fn_gts)))
+                        print_('all_class_gt:\n{}'.format(pformat(all_class_gt)))
 
                         raise AssertionError(
                             f'{gt_class} : {file_id} :: '
@@ -2212,7 +2214,7 @@ def evaluate(
                             json_dict['annotations'].append(_gt_json_ann)
 
                     n_gt_objs = len(gt_csv_rows)
-                    print(f'\nfps_to_gt::{seq_name} n_gt_objs: {n_gt_objs}')
+                    print_(f'\nfps_to_gt::{seq_name} n_gt_objs: {n_gt_objs}')
 
                     n_all_gt_objs += n_gt_objs
 
@@ -2224,7 +2226,7 @@ def evaluate(
                 n_fp_nex_whole_dets = len(fp_nex_whole_dets)
                 n_all_fp_nex_whole_dets += n_fp_nex_whole_dets
 
-                print(f'\n{gt_class}:{seq_name} :: n_fp_nex_whole_dets : {n_fp_nex_whole_dets}')
+                print_(f'\n{gt_class}:{seq_name} :: n_fp_nex_whole_dets : {n_fp_nex_whole_dets}')
 
                 det_csv_rows = []
 
@@ -2308,7 +2310,7 @@ def evaluate(
                     json_dict['annotations'].append(_det_json_ann)
 
                 n_det_objs = len(det_csv_rows)
-                print(f'fps_to_gt: n_det_objs: {n_det_objs}\n')
+                print_(f'fps_to_gt: n_det_objs: {n_det_objs}\n')
                 det_csv_rows.sort(key=lambda x: x['filename'])
 
                 seq_name_to_csv_rows[seq_name] += det_csv_rows
@@ -2361,7 +2363,7 @@ def evaluate(
         n_imgs = len(all_img_paths)
 
         if compute_rec_prec and n_score_thresholds > 1:
-            print(
+            print_(
                 f'\n{gt_class}: Computing recall and precision '
                 f'over {n_score_thresholds} thresholds, '
                 f'{n_imgs} images, '
@@ -2370,7 +2372,7 @@ def evaluate(
             )
 
             if n_threads == 1:
-                print('Not using multi threading')
+                print_('Not using multi threading')
                 _start_t = time.time()
                 _rec_prec_list = []
                 for __thresh_idx in range(n_score_thresholds):
@@ -2390,7 +2392,7 @@ def evaluate(
                 if n_threads == 0:
                     n_threads = multiprocessing.cpu_count()
 
-                print(f'Using {n_threads} threads')
+                print_(f'Using {n_threads} threads')
 
                 _start_t = time.time()
                 with closing(ThreadPool(n_threads)) as pool:
@@ -2417,7 +2419,7 @@ def evaluate(
             del _rec_prec_list
 
             _end_t = time.time()
-            print('\nTime taken: {:.4f}'.format(_end_t - _start_t))
+            print_('\nTime taken: {:.4f}'.format(_end_t - _start_t))
             # print()
 
             tp_class_cum = tp_class.copy()
@@ -2501,7 +2503,7 @@ def evaluate(
 
                 # save the plot
                 plot_out_fname = utils.linux_path(plots_out_dir, gt_class + ".png")
-                print('Saving plot to: {}'.format(plot_out_fname))
+                print_('Saving plot to: {}'.format(plot_out_fname))
                 fig1.savefig(plot_out_fname)
 
                 plt.close(fig1)
@@ -2526,7 +2528,7 @@ def evaluate(
                 class_summary_path = summary_path + '.{}'.format(gt_class)
                 with open(class_summary_path, 'w') as out_file:
                     out_file.write(out_text_class)
-                print('Saved {} result summary to {}'.format(gt_class, class_summary_path))
+                print_('Saved {} result summary to {}'.format(gt_class, class_summary_path))
 
             if tp_sum > 0 and n_class_gt > 0:
                 _rec = float(tp_sum) / n_class_gt
@@ -2594,7 +2596,7 @@ def evaluate(
                 # pprint(duplicate_gt)
 
                 # print('skipped_gt:\n{}'.format(pformat(skipped_gt)))
-                print('gt_counter_per_class:\n{}'.format(pformat(gt_counter_per_class)))
+                print_('gt_counter_per_class:\n{}'.format(pformat(gt_counter_per_class)))
 
                 raise AssertionError(f'{gt_class} :: Mismatch between '
                                      f'n_all_considered_gt: {n_all_considered_gt} '
@@ -2836,7 +2838,7 @@ def evaluate(
         cmb_summary_text = ''
 
         if n_score_thresholds > 1:
-            print('Computing combined results over {} thresholds'.format(n_score_thresholds))
+            print_('Computing combined results over {} thresholds'.format(n_score_thresholds))
             # m_rec_thresh = [0] * n_score_thresholds
             # m_prec_thresh = [0] * n_score_thresholds
 
@@ -2862,16 +2864,16 @@ def evaluate(
                 itsc_idx = np.argmin(np.abs(wm_diff_thresh))
                 if itsc_idx.size > 1:
                     itsc_idx = itsc_idx[0]
-                    print('No intersection between recall and precision found; ' \
+                    print_('No intersection between recall and precision found; ' \
                           'min_difference: {} at {} for confidence: {}'.format(
                         wm_diff_thresh[itsc_idx], (wm_rec_thresh[itsc_idx], wm_prec_thresh[itsc_idx]),
                         score_thresholds[itsc_idx])
                     )
             else:
-                print('intersection at {} for confidence: {} with idx: {}'.format(
+                print_('intersection at {} for confidence: {} with idx: {}'.format(
                     wm_rec_thresh[itsc_idx], score_thresholds[itsc_idx], itsc_idx))
 
-            print('overall_ap: {}'.format(overall_ap_thresh))
+            print_('overall_ap: {}'.format(overall_ap_thresh))
 
             if draw_plot:
                 fig1 = plt.figure(figsize=(18, 9), dpi=80)
@@ -2919,7 +2921,7 @@ def evaluate(
 
                 # save the plot
                 plot_out_fname = utils.linux_path(plots_out_dir, "overall.png")
-                print('Saving plot to: {}'.format(plot_out_fname))
+                print_('Saving plot to: {}'.format(plot_out_fname))
                 fig1.savefig(plot_out_fname)
 
                 plt.close(fig1)
@@ -2968,7 +2970,7 @@ def evaluate(
 
                 opt_data = np.asarray(opt_data)
                 opt_headers = ['score_thresh', 'recall', 'precision', 'inc_rec', 'dec_prec', 'diff_rec_prec']
-                print(tabulate(opt_data, opt_headers, tablefmt="fancy_grid"))
+                print_(tabulate(opt_data, opt_headers, tablefmt="fancy_grid"))
 
                 if opt_idx != itsc_idx:
                     _idx_threshs.append(opt_idx)
@@ -2976,12 +2978,12 @@ def evaluate(
             # out_text += 'rec_ratio_data\n{}\n'.format(
             #     pd.DataFrame(data=opt_data, columns=opt_headers).to_csv(sep='\t', index=False))
 
-            print('itsc_idx: {}'.format(itsc_idx))
+            print_('itsc_idx: {}'.format(itsc_idx))
             if isinstance(itsc_idx, list) and not itsc_idx:
                 _score_threshold = 0
             else:
                 _score_threshold = score_thresholds[itsc_idx]
-                print('_score_threshold: {}'.format(_score_threshold))
+                print_('_score_threshold: {}'.format(_score_threshold))
 
             cmb_summary_text = '\tClass Specific\t\t\tmRP threshold {:.2f} %\t\t\n'.format(
                 _score_threshold * 100)
@@ -3095,7 +3097,7 @@ def evaluate(
                     rec_ratio_data[_id, :] = (rec_ratio, score_thresholds[max_id] * 100, wm_rec_thresh[max_id] * 100,
                                               wm_prec_thresh[max_id] * 100, avg_rec_prec[max_id] * 100)
                 rec_ratio_headers = ['rec_ratio', 'score_thresh', 'recall', 'precision', 'average']
-                print(tabulate(rec_ratio_data, rec_ratio_headers, tablefmt="fancy_grid"))
+                print_(tabulate(rec_ratio_data, rec_ratio_headers, tablefmt="fancy_grid"))
                 out_text += 'rec_ratio_data\n{}\n'.format(
                     pd.DataFrame(data=rec_ratio_data, columns=rec_ratio_headers).to_csv(sep='\t', index=False))
 
@@ -3114,26 +3116,26 @@ def evaluate(
 
         if write_summary:
             cmb_summary_text = '{}\n{}'.format(out_template, cmb_summary_text)
-            print(cmb_summary_text)
+            print_(cmb_summary_text)
 
-            print(text_table)
+            print_(text_table)
             # out_file.write(text_table.get_string() + '\n')
-            print(f'saving result summary to {summary_path}')
+            print_(f'saving result summary to {summary_path}')
 
             with open(summary_path, 'w') as out_file:
                 out_file.write(cmb_summary_text)
                 out_file.write(out_text)
 
         if fps_to_gt:
-            print(f'\nfps_to_gt: n_all_gt_objs: {n_all_gt_objs}')
-            print(f'\nn_all_fp_nex_whole_dets : {n_all_fp_nex_whole_dets}')
+            print_(f'\nfps_to_gt: n_all_gt_objs: {n_all_gt_objs}')
+            print_(f'\nn_all_fp_nex_whole_dets : {n_all_fp_nex_whole_dets}')
 
             for seq_name, out_csv_rows in seq_name_to_csv_rows.items():
                 if not out_csv_rows:
                     continue
 
                 csv_out_path = os.path.join(out_root_dir, f'{seq_name}_gt_with_fp_nex_whole.csv')
-                print(f'\nsaving fps_to_gt csv to: {csv_out_path}\n')
+                print_(f'\nsaving fps_to_gt csv to: {csv_out_path}\n')
 
                 # out_csv_rows.sort(key=lambda x: x['filename'])
                 csv_columns = ['filename', 'class', 'xmin', 'xmax', 'ymin', 'ymax', 'width', 'height']
@@ -3147,7 +3149,7 @@ def evaluate(
 
             n_json_imgs = len(json_dict['images'])
             n_json_objs = len(json_dict['annotations'])
-            print(f'saving fps_to_gt json with {n_json_imgs} images and {n_json_objs} objects to: {json_out_path}')
+            print_(f'saving fps_to_gt json with {n_json_imgs} images and {n_json_objs} objects to: {json_out_path}')
 
             with open(json_out_path, 'w') as f:
                 json_dict_str = json.dumps(json_dict, indent=4)
@@ -3175,8 +3177,10 @@ def run(params: Params, sweep_mode: dict, *argv):
     params = copy.deepcopy(params)
 
     if not params.verbose:
-        print = dummy_print
+        print_ = dummy_print
         # tqdm = dummy_tqdm
+    else:
+        print_ = print
 
     for i, sweep_param in enumerate(params.sweep_params):
 
@@ -3189,9 +3193,9 @@ def run(params: Params, sweep_mode: dict, *argv):
             setattr(params, sweep_param, param_val[0])
 
     # print('gt_paths', params.gt_paths)
-    print('det_paths', params.det_paths)
-    print('img_paths', params.img_paths)
-    print('labels_path', params.labels_path)
+    print_('det_paths', params.det_paths)
+    print_('img_paths', params.img_paths)
+    print_('labels_path', params.labels_path)
 
     vid_stride = params.vid_stride  # type: int
     if not isinstance(vid_stride, int):
@@ -3241,7 +3245,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         vid_info_path = utils.linux_path(os.path.dirname(_det_path_list_file), f"vid_info.json.gz")
         assert os.path.isfile(vid_info_path), f"nonexistent vid_info_path: {vid_info_path}"
 
-        print(f'loading vid_info from {vid_info_path}')
+        print_(f'loading vid_info from {vid_info_path}')
 
         import compress_json
         vid_info_dict = compress_json.load(vid_info_path)
@@ -3317,7 +3321,7 @@ def run(params: Params, sweep_mode: dict, *argv):
             else:
                 out_dir_name = f'{out_dir_name}-{sweep_suffix}'
     else:
-        print('Using automatically generated suffix')
+        print_('Using automatically generated suffix')
         params.auto_suffix = 1
 
     seq_to_samples = None
@@ -3357,7 +3361,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         else:
             raise AssertionError('invalid seq_path_list_file: {}'.format(seq_path_list_file))
 
-    print(f'seq_path_list:\n{utils.to_str(seq_path_list)}\n')
+    print_(f'seq_path_list:\n{utils.to_str(seq_path_list)}\n')
 
     if params.gt_csv_suffix:
         params.gt_csv_name = utils.add_suffix(params.gt_csv_name, params.gt_csv_suffix)
@@ -3386,7 +3390,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                         if os.path.isdir(utils.linux_path(gt_paths, name))]
         gt_path_list.sort(key=utils.sortKey)
 
-    print(f'gt_path_list:\n{utils.to_str(gt_path_list)}\n')
+    print_(f'gt_path_list:\n{utils.to_str(gt_path_list)}\n')
 
     if not detection_names:
         detection_names = ['detections.csv', ]
@@ -3431,7 +3435,7 @@ def run(params: Params, sweep_mode: dict, *argv):
     #     utils.print_(f'\n\nskipping existing eval: {out_root_dir}\n\n')
     #     return out_root_dir
 
-    print(f'\nrunning eval: {out_root_dir}\n')
+    print_(f'\nrunning eval: {out_root_dir}\n')
 
     os.makedirs(out_root_dir, exist_ok=True)
 
@@ -3477,7 +3481,7 @@ def run(params: Params, sweep_mode: dict, *argv):
 
         if n_seq != n_dets:
             if len(_seq_path_list) == n_dets:
-                print(f'n_dets = curtailed seq_path_list = {n_dets} so assuming it is already curtailed')
+                print_(f'n_dets = curtailed seq_path_list = {n_dets} so assuming it is already curtailed')
             elif 0 < n_dets < n_seq and params.allow_missing_dets and not params.combine_dets:
                 det_seq_names = [os.path.splitext(os.path.basename(k))[0]
                                  for k in det_path_list]
@@ -3486,7 +3490,7 @@ def run(params: Params, sweep_mode: dict, *argv):
 
                 img_seq_names = [os.path.basename(k) for k in seq_path_list]
                 missing_det_seq_names = list(set(img_seq_names) - set(det_seq_names))
-                print(
+                print_(
                     f"\n\ncreating empty det files for {len(missing_det_seq_names)} missing sequences:\n"
                     f"{missing_det_seq_names}\n\n")
                 for missing_det_seq_name in missing_det_seq_names:
@@ -3502,7 +3506,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         else:
             det_path_list = det_path_list[seq_start_id:seq_end_id + 1]
 
-        print(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
+        print_(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
 
         # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
 
@@ -3634,7 +3638,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                 open(img_eval_dict_path, 'w').write(json.dumps(img_eval_dict, indent=4))
 
             eval_dicts_path = utils.linux_path(out_root_dir, 'eval_dict.json')
-            print(f'saving eval_dict to {eval_dicts_path}')
+            print_(f'saving eval_dict to {eval_dicts_path}')
             with open(eval_dicts_path, 'w') as f:
                 output_json_data = json.dumps(eval_dicts, indent=4)
                 f.write(output_json_data)
@@ -3685,7 +3689,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                     pass
 
             eval_dict_path = utils.linux_path(out_root_dir, 'eval_dict.json')
-            print(f'saving eval_dict to {eval_dict_path}')
+            print_(f'saving eval_dict to {eval_dict_path}')
             with open(eval_dict_path, 'w') as f:
                 output_json_data = json.dumps(eval_dict, indent=4)
                 f.write(output_json_data)
