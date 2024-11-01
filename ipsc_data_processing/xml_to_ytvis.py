@@ -144,6 +144,7 @@ def binary_mask_to_rle(binary_mask):
 def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
                   get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip,
                   enable_masks, check_img_size, seq_name_to_xml_paths, seq_name_to_info,
+                  quant_bin_to_ious,
                   class_dict, ignore_invalid_label, ignore_missing_target,
                   xml_data):
     xml_path, xml_path_id, seq_path, seq_name = xml_data
@@ -246,7 +247,6 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     )
 
     xml_data_list = []
-    quant_bin_to_ious = {}
 
     for obj_id, obj in enumerate(objs):
 
@@ -288,17 +288,14 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
             bbox_quant = [int(k * quant_bin) for k in bbox_norm]
             xmin_rec, ymin_rec, xmax_rec, ymax_rec = [float(k) / quant_bin for k in bbox_quant]
 
-            xmin_rec, ymin_rec, xmax_rec, ymax_rec = xmin_rec * img_w, ymin_rec * img_h, xmax_rec * img_w, ymax_rec * img_h
+            xmin_rec, ymin_rec, xmax_rec, ymax_rec = (xmin_rec * img_w, ymin_rec * img_h, xmax_rec * img_w,
+                                                      ymax_rec * img_h)
             iou = get_iou(
                 [xmin, ymin, xmax, ymax],
                 [xmin_rec, ymin_rec, xmax_rec, ymax_rec],
                 xywh=False
             )
-            if quant_bin not in quant_bin_to_ious:
-                quant_bin_to_ious[quant_bin] = []
             quant_bin_to_ious[quant_bin].append(iou)
-
-
 
         xml_data = dict(
             label=label,
@@ -869,6 +866,21 @@ def get_xml_files(
             all_train_files.append(train_xml_files)
 
 
+def get_iou_stats(ious, bins=100):
+    stats = dict(
+    mean = np.mean(ious),
+    median = np.median(ious),
+    min = np.amin(ious),
+    max = np.amax(ious),
+    )
+    hist, bin_edges = np.histogram(ious, bins=100, range=(0, 1))
+    bin_edges = bin_edges[:-1]
+    stats.update({
+        f'hist-{bin_edge:.2f}':hist_val for bin_edge, hist_val in zip(bin_edges, hist, strict=True)
+    })
+
+    return stats
+
 def get_n_objs_stats(seq_info, n_tokens_per_obj):
     n_objs_list = np.asarray(seq_info['n_objs'])
 
@@ -1186,6 +1198,8 @@ def run(params: Params):
 
         all_data_xml_paths = list(set([item for sublist in all_split_files for item in sublist]))
         seq_name_to_info = {}
+        from collections import defaultdict
+        quant_bin_to_ious = defaultdict(list)
 
         read_xml_func = functools.partial(
             read_xml_file,
@@ -1201,6 +1215,7 @@ def run(params: Params):
             params.check_img_size,
             seq_name_to_xml_paths,
             seq_name_to_info,
+            quant_bin_to_ious,
             class_dict,
             params.ignore_invalid_label,
             params.ignore_invalid_label,
@@ -1241,6 +1256,14 @@ def run(params: Params):
         seq_name_to_info_csv = os.path.join(seq_name_to_info_dir, f"{out_json_name}-seq_name_to_info.csv")
         print(f'\nseq_name_to_info_csv: {seq_name_to_info_csv}\n')
         seq_name_to_info_df.to_csv(seq_name_to_info_csv, index=False)
+
+        for quant_bin, ious in quant_bin_to_ious.items():
+            quant_bin_to_ious[quant_bin] = get_iou_stats(np.asarray(ious))
+
+        quant_bin_to_ious_df = pd.DataFrame.from_dict(quant_bin_to_ious, orient='columns')
+        quant_bin_to_ious_csv = os.path.join(seq_name_to_info_dir, f"{out_json_name}-quant_bin_to_ious.csv")
+        print(f'\nquant_bin_to_ious_csv: {quant_bin_to_ious_csv}\n')
+        quant_bin_to_ious_df.to_csv(quant_bin_to_ious_csv, index=False)
 
         xml_data_dict = {}
 
