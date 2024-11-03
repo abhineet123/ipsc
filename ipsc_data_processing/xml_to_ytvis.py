@@ -1263,7 +1263,7 @@ def run(params: Params):
         quant_bin_to_ious_df = pd.DataFrame.from_dict(quant_bin_to_ious, orient='columns')
         quant_bin_to_ious_csv = os.path.join(seq_name_to_info_dir, f"{out_json_name}-quant_bin_to_ious.csv")
         print(f'\nquant_bin_to_ious_csv: {quant_bin_to_ious_csv}\n')
-        quant_bin_to_ious_df.to_csv(quant_bin_to_ious_csv, index=False)
+        quant_bin_to_ious_df.to_csv(quant_bin_to_ious_csv, index=True)
 
         xml_data_dict = {}
 
