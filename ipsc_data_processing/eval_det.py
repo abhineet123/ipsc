@@ -702,7 +702,7 @@ def evaluate(
             det_pbar = None
 
             if show_pbar and n_det_paths > 1:
-                det_pbar = det_paths_iter = tqdm(det_paths, ncols=100)
+                det_pbar = det_paths_iter = tqdm(det_paths, ncols=80)
             else:
                 det_paths_iter = det_paths
                 print_('reading dets')
@@ -886,7 +886,9 @@ def evaluate(
                         seq_det_file_to_bboxes[det_filename].append((bbox_dict, seq_det_bbox_id))
 
                         if det_pbar is not None:
-                            det_pbar_msg = det_pbar_base_msg + f"invalid dets: {n_invalid_dets} / {n_total_dets}"
+                            invalid_pc = (n_invalid_dets / n_total_dets) * 100
+                            det_pbar_msg = det_pbar_base_msg + (f"invalid dets: {n_invalid_dets} / {n_total_dets} ("
+                                                                f"{invalid_pc:.2f}%)")
 
                             det_pbar.set_description(det_pbar_msg)
 
@@ -1401,7 +1403,7 @@ def evaluate(
 
                 n_missing_class_det_file_ids = len(missing_class_det_file_ids)
                 print_(f'\n{seq_name}: no {gt_class} detections found for {n_missing_class_det_file_ids} images'
-                      f' with {gt_class} GT\n')
+                       f' with {gt_class} GT\n')
 
                 """add one dummy detection for each missing image"""
                 seq_class_det_data += [
@@ -2865,7 +2867,7 @@ def evaluate(
                 if itsc_idx.size > 1:
                     itsc_idx = itsc_idx[0]
                     print_('No intersection between recall and precision found; ' \
-                          'min_difference: {} at {} for confidence: {}'.format(
+                           'min_difference: {} at {} for confidence: {}'.format(
                         wm_diff_thresh[itsc_idx], (wm_rec_thresh[itsc_idx], wm_prec_thresh[itsc_idx]),
                         score_thresholds[itsc_idx])
                     )

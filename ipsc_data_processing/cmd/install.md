@@ -19,7 +19,6 @@
     - [others](#other_s_)
 - [cuda](#cud_a_)
   - [bugs](#bug_s_)
-  - [CUDA 12.4:](#cuda_12_4__)
   - [CUDA 12.2:](#cuda_12_2__)
     - [all       @ tensorflow/install](#all___tensorflow_install_)
       - [12.2       @ all/tensorflow/install](#12_2___all_tensorflow_install_)
@@ -199,9 +198,17 @@ sudo dpkg -i nomachine_8.13.1_1_amd64.deb
 
 1. uninstall noveau drivers:
 ```
-sudo apt-get purge *nvidia*
-sudo apt-get purge cuda
+sudo apt-get remove --purge '^nvidia-.*'
+sudo apt-get remove --purge '^libnvidia-.*'
+sudo apt-get remove --purge '^cuda-.*'
 ```
+
+messed up nvidia xorg, e.g. blank screen at login as if login bar is out of sight and nomachine not working correctly
+```
+sudo mv /etc/X11/xorg.conf /etc/X11/xorg.conf.backup
+sudo reboot
+```
+
 2. blacklist noveau drivers using instructions here:
 
 https://askubuntu.com/questions/841876/how-to-disable-nouveau-kernel-driver
@@ -280,6 +287,7 @@ sudo apt install nvidia-driver-520
 sudo apt install nvidia-driver-525
 sudo apt install nvidia-driver-535
 sudo apt install nvidia-driver-545
+sudo apt install nvidia-driver-550
 sudo apt install nvidia-driver-555
 ```
 
@@ -309,10 +317,6 @@ no need to enable the suspend service in the newest drivers
 sudo systemctl enable nvidia-suspend.service
 
 <a id="cuda_12_4__"></a>
-## CUDA 12.4:
-```
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pinsudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600wget https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda-repo-ubuntu2204-12-4-local_12.4.0-550.54.14-1_amd64.debsudo dpkg -i cuda-repo-ubuntu2204-12-4-local_12.4.0-550.54.14-1_amd64.debsudo cp /var/cuda-repo-ubuntu2204-12-4-local/cuda-*-keyring.gpg /usr/share/keyrings/sudo apt-get updatesudo apt-get -y install cuda-toolkit-12-4
-```
 <a id="cuda_12_2__"></a>
 ## CUDA 12.2:
 `from p2s`
@@ -325,6 +329,8 @@ sudo dpkg -i cuda-repo-ubuntu2204-12-2-local_12.2.2-535.104.05-1_amd64.deb
 sudo cp /var/cuda-repo-ubuntu2204-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/
 sudo apt-get update
 sudo apt-get install cuda-12-2
+
+sudo apt-get remove cuda-12-2
 
 ```
 
