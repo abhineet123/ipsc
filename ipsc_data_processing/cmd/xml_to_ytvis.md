@@ -82,6 +82,7 @@
         - [len-3       @ 0_15/ipsc](#len_3___0_15_ips_c_)
         - [len-4       @ 0_15/ipsc](#len_4___0_15_ips_c_)
         - [len-6       @ 0_15/ipsc](#len_6___0_15_ips_c_)
+        - [len-8       @ 0_15/ipsc](#len_8___0_15_ips_c_)
     - [0_53       @ ipsc](#0_53___ipsc_)
         - [len-2       @ 0_53/ipsc](#len_2___0_53_ips_c_)
     - [54_126       @ ipsc](#54_126___ipsc_)
@@ -93,6 +94,7 @@
             - [strd-6       @ len-6/54_126/ipsc](#strd_6___len_6_54_126_ips_c_)
             - [sample-8       @ len-6/54_126/ipsc](#sample_8___len_6_54_126_ips_c_)
             - [sample-4       @ len-6/54_126/ipsc](#sample_4___len_6_54_126_ips_c_)
+        - [len-8       @ 54_126/ipsc](#len_8___54_126_ips_c_)
 - [acamp](#acamp_)
     - [1k8_vid_entire_seq       @ acamp](#1k8_vid_entire_seq___acam_p_)
         - [inv       @ 1k8_vid_entire_seq/acamp](#inv___1k8_vid_entire_seq_acamp_)
@@ -397,6 +399,9 @@ python3 xml_to_ytvis.py cfg=ipsc:0_15:len-4:strds:gap-1:mask-0:proc-1
 <a id="len_6___0_15_ips_c_"></a>
 ### len-6       @ 0_15/ipsc-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:0_15:len-6:strds:gap-1:mask-0:proc-1 
+<a id="len_8___0_15_ips_c_"></a>
+### len-8       @ 0_15/ipsc-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:0_15:len-8:strds:gap-1:mask-0:proc-1 
 
 <a id="0_53___ipsc_"></a>
 ## 0_53       @ ipsc-->xml_to_ytvis
@@ -439,6 +444,10 @@ python3 xml_to_ytvis.py cfg=ipsc:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0:s
 <a id="sample_4___len_6_54_126_ips_c_"></a>
 #### sample-4       @ len-6/54_126/ipsc-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:54_126:len-6:strd-6:gap-1:mask-0:proc-1:zip-0:sample-4 
+
+<a id="len_8___54_126_ips_c_"></a>
+### len-8       @ 54_126/ipsc-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:54_126:len-8:strds:gap-1:mask-0:proc-1:zip-0 
 
 <a id="acamp_"></a>
 # acamp

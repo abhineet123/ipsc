@@ -63,7 +63,7 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_68:gt-1:det-0:vnms-1:nms-0:s
 `strd-16`
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-0:nms-1:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_6-seq3k-exp/ckpt-__var__-detrac-length-16-stride-16-non_empty-seq-49_85/csv-batch_6:_out_-p2s-detrac-0_48-len-16-49_85-strd-16-seq3k
 `strd-1`
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-0:nms-1:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_6-seq3k-exp/ckpt-__var__-detrac-length-16-stride-1-non_empty-seq-49_85/csv-batch_6:_out_-p2s-detrac-0_48-len-16-49_85-strd-1-seq3k
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-0:nms-1:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_6-seq3k-exp/ckpt-__var__-detrac-length-16-stride-1-non_empty-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-strd-1-seq3k
 
 <a id="detrac_0_48_len_32_fbb_seq5k___mi_d_"></a>
 ## detrac-0_48-len-32-fbb-seq5k       @ mid-->eval_p2s_vid-isl

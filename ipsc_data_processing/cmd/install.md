@@ -10,6 +10,8 @@
 - [sudo_no_pwd](#sudo_no_pwd_)
 - [ssh](#ssh_)
 - [nomachine](#nomachine_)
+- [docker](#docke_r_)
+  - [nvidia-container-toolkit](#nvidia_container_toolki_t_)
 - [install nvidia drivers](#install_nvidia_driver_s_)
   - [418_for_cuda_10.1](#418_for_cuda_10_1_)
   - [410_for_cuda_10.0](#410_for_cuda_10_0_)
@@ -191,6 +193,36 @@ sudo systemctl start ssh
 https://www.nomachine.com/getting-started-with-nomachine
 https://downloads.nomachine.com/linux/?id=1
 sudo dpkg -i nomachine_8.13.1_1_amd64.deb
+
+<a id="docke_r_"></a>
+# docker
+https://docs.docker.com/engine/install/ubuntu/
+```
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+<a id="nvidia_container_toolki_t_"></a>
+## nvidia-container-toolkit
+https://stackoverflow.com/questions/25185405/using-gpu-from-a-docker-container/58432877#58432877
+```
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update 
+sudo apt-get install -y nvidia-container-toolkit
+```
+
 
 <a id="install_nvidia_driver_s_"></a>
 # install nvidia drivers

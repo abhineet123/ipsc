@@ -663,9 +663,6 @@ def get_xml_files(
 
                 all_xml_files = glob.glob(linux_path(xml_dir_path, '*.xml'), recursive=params.recursive)
 
-        if seq_name not in seq_name_to_xml_paths:
-            seq_name_to_xml_paths[seq_name] = all_xml_files
-
         if params.shuffle:
             random.shuffle(all_xml_files)
         else:
@@ -684,6 +681,9 @@ def get_xml_files(
         end_frame_id = len(all_xml_files) - 1
 
     all_xml_files = all_xml_files[start_frame_id:end_frame_id + 1:frame_stride]
+
+    if seq_name not in seq_name_to_xml_paths:
+        seq_name_to_xml_paths[seq_name] = all_xml_files
 
     n_all_files = len(all_xml_files)
 
@@ -887,7 +887,7 @@ def get_n_objs_stats(seq_info, n_tokens_per_obj):
     n_seq_frames = len(n_objs_list)
     assert n_seq_frames >= 1, "n_objs_list must have non-zero length"
     n_frames = seq_info['length']
-    assert n_seq_frames == n_frames, "n_seq_frames match mismatch"
+    assert n_seq_frames == n_frames, "n_seq_frames mismatch"
 
     seq_info['mean'] = np.mean(n_objs_list)
     seq_info['median'] = np.median(n_objs_list)
