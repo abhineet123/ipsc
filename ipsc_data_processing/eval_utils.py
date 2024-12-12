@@ -1220,12 +1220,14 @@ def num_to_words(num):
 
 
 def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
-                            objs_to_delete=None, global_objs_to_delete=None):
-    if objs_to_delete is None:
-        objs_to_delete = []
-        assert global_objs_to_delete is None, "either both or neither of objs_to_delete must be None"
-        global_objs_to_delete = []
+                            # objs_to_delete=None, global_objs_to_delete=None
+                            ):
+    # if objs_to_delete is None:
+    #     objs_to_delete = []
+    #     assert global_objs_to_delete is None, "either both or neither of objs_to_delete must be None"
+    #     global_objs_to_delete = []
 
+    n_del = 0
 
     for pair_id, pred_obj_pair in enumerate(pred_obj_pairs):
         obj1, obj2 = pred_obj_pair
@@ -1235,7 +1237,7 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
 
         assert obj1['local_id'] != obj2['local_id'], "invalid object pair with identical IDs"
 
-        if obj1['local_id'] in objs_to_delete or obj2['local_id'] in objs_to_delete:
+        if obj1['to_delete'] or obj2['to_delete']:
             continue
 
         if enable_mask:
@@ -1247,62 +1249,61 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
             # assert pred_iou == mask_iou2, "mask_iou2 mismatch found"
 
         if pred_iou >= nms_thresh:
+            n_del += 1
             # print(f'found matching object pair with iou {pred_iou:.3f}')
-            if obj1['score'] > obj2['score']:
-                objs_to_delete.append(obj2['local_id'])
-                global_objs_to_delete.append(obj2['global_id'])
+            if obj1['confidence'] > obj2['confidence']:
+                obj2['to_delete'] = 1
+
+                # objs_to_delete.append(obj2['local_id'])
+                # global_objs_to_delete.append(obj2['global_id'])
+
                 # print(f'removing obj {local_id2} with score {score2} < {score1}')
             else:
-                objs_to_delete.append(obj1['local_id'])
-                global_objs_to_delete.append(obj1['global_id'])
+                obj1['to_delete'] = 1
+
+                # objs_to_delete.append(obj1['local_id'])
+                # global_objs_to_delete.append(obj1['global_id'])
+
                 # print(f'removing obj {local_id1} with score {score1} < {score2}')
-    return objs_to_delete, global_objs_to_delete
+    # return objs_to_delete, global_objs_to_delete
+    return n_del
 
 
 def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh):
-    pred_objs = [
-        dict(
-            local_id=local_id,
-            bbox=obj['bbox'],
-            mask=obj['mask'],
-            score=obj['confidence'],
-            class_=obj['class'],
-            video_id=obj['video_id'],
-            global_id=global_id
-        )
-        for local_id, (obj, global_id) in enumerate(objs)
-    ]
 
-    pred_obj_pairs = list(itertools.combinations(pred_objs, 2))
+    pred_obj_pairs = list(itertools.combinations(objs, 2))
 
-    objs_to_delete = []
-    global_objs_to_delete = []
+    # objs_to_delete = []
+    # global_objs_to_delete = []
 
     n_vid_pairs = 0
+    n_del = 0
 
     if vid_nms_thresh > 0:
         vid_pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
                         if obj1['video_id'] != obj2['video_id']]
         n_vid_pairs = len(vid_pred_obj_pairs)
 
-        find_matching_obj_pairs(
+        n_match = find_matching_obj_pairs(
             vid_pred_obj_pairs, enable_mask, vid_nms_thresh,
-            objs_to_delete=objs_to_delete,
-            global_objs_to_delete=global_objs_to_delete,
+            # objs_to_delete=objs_to_delete,
+            # global_objs_to_delete=global_objs_to_delete,
         )
+        n_del += n_match
         pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
                         if obj1['video_id'] == obj2['video_id']]
 
     n_pairs = len(pred_obj_pairs)
 
     if nms_thresh > 0:
-        find_matching_obj_pairs(
+        n_match = find_matching_obj_pairs(
             pred_obj_pairs, enable_mask, nms_thresh,
-            objs_to_delete=objs_to_delete,
-            global_objs_to_delete=global_objs_to_delete,
+            # objs_to_delete=objs_to_delete,
+            # global_objs_to_delete=global_objs_to_delete,
         )
+        n_del += n_match
 
-    return global_objs_to_delete, n_pairs, n_vid_pairs
+    return n_del, n_pairs, n_vid_pairs
 
 def print_(*args, **kwargs):
     sys.stdout.write(*args, **kwargs)

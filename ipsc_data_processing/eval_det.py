@@ -882,10 +882,16 @@ def evaluate(
                                 )
                             bbox_dict["mask"] = mask_rle
 
-                        seq_det_bboxes_list.append(bbox_dict)
-                        seq_det_bbox_id = len(seq_det_bboxes_list) - 1
 
-                        seq_det_file_to_bboxes[det_filename].append((bbox_dict, seq_det_bbox_id))
+                        seq_det_bboxes_list.append(bbox_dict)
+                        seq_det_file_to_bboxes[det_filename].append(bbox_dict)
+
+                        global_id = len(seq_det_bboxes_list) - 1
+                        local_id = len(seq_det_file_to_bboxes[det_filename]) - 1
+
+                        bbox_dict['local_id'] = local_id
+                        bbox_dict['global_id'] = global_id
+                        bbox_dict['to_delete'] = 0
 
                         if det_pbar is not None:
                             time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
@@ -905,17 +911,18 @@ def evaluate(
                 if show_pbar:
                     nms_pbar = nms_iter = tqdm(nms_iter)
                     print_('\nperforming nms')
-                seq_bbox_ids_to_delete = []
+                # seq_bbox_ids_to_delete = []
                 total_bboxes = 0
+                del_bboxes = 0
                 for _det_filename, _bbox_info in nms_iter:
-                    img_bbox_ids_to_delete, n_pairs, n_vid_pairs = utils.perform_nms(
+                    n_del, n_pairs, n_vid_pairs = utils.perform_nms(
                         _bbox_info,
                         enable_mask=params.enable_mask,
                         nms_thresh=params.nms_thresh,
                         vid_nms_thresh=params.vid_nms_thresh
                     )
-                    seq_bbox_ids_to_delete += img_bbox_ids_to_delete
-                    del_bboxes = len(seq_bbox_ids_to_delete)
+                    # seq_bbox_ids_to_delete += img_bbox_ids_to_delete
+                    del_bboxes += n_del
                     n_bboxes = len(_bbox_info)
                     total_bboxes += n_bboxes
 
@@ -934,7 +941,7 @@ def evaluate(
                 # n_total_bbox_ids = len(seq_det_bboxes_list)
                 # print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
 
-                seq_det_bboxes_list = [k for i, k in enumerate(seq_det_bboxes_list) if i not in seq_bbox_ids_to_delete]
+                seq_det_bboxes_list = [k for k in seq_det_bboxes_list if k['to_delete']]
 
                 if n_det_paths == 1:
                     out_csv_rows = []
