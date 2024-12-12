@@ -702,7 +702,7 @@ def evaluate(
             det_pbar = None
 
             if show_pbar and n_det_paths > 1:
-                det_pbar = det_paths_iter = tqdm(det_paths, ncols=80)
+                det_pbar = det_paths_iter = tqdm(det_paths)
             else:
                 det_paths_iter = det_paths
                 print_('reading dets')
@@ -775,10 +775,12 @@ def evaluate(
                         det_filenames = [det_filename for det_filename in det_filenames if det_filename in gt_filenames]
                         n_det_filenames = len(det_filenames)
 
+                # det_filenames = det_filenames[:50]
+
                 if not show_pbar or n_det_paths > 1:
                     det_filename_iter = det_filenames
                 else:
-                    det_pbar = det_filename_iter = tqdm(det_filenames, ncols=100)
+                    det_pbar = det_filename_iter = tqdm(det_filenames)
 
                 det_pbar_base_msg = ''
                 if n_seq > 1:
@@ -886,24 +888,47 @@ def evaluate(
                         seq_det_file_to_bboxes[det_filename].append((bbox_dict, seq_det_bbox_id))
 
                         if det_pbar is not None:
+                            time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
                             invalid_pc = (n_invalid_dets / n_total_dets) * 100
-                            det_pbar_msg = det_pbar_base_msg + (f"invalid dets: {n_invalid_dets} / {n_total_dets} ("
-                                                                f"{invalid_pc:.2f}%)")
+                            det_pbar_msg = (f"{time_stamp} {det_pbar_base_msg} "
+                                            f"invalid: {utils.num_to_words(n_invalid_dets)} / "
+                                            f"{utils.num_to_words(n_total_dets)} "
+                                            f"({invalid_pc:.2f}%)")
 
                             det_pbar.set_description(det_pbar_msg)
 
                 # assert valid_dets > 0, "no valid_dets found"
 
             if params.nms_thresh > 0 or params.vid_nms_thresh > 0:
+                nms_iter = seq_det_file_to_bboxes.items()
+                nms_pbar = None
+                if show_pbar:
+                    nms_pbar = nms_iter = tqdm(nms_iter)
+                    print_('\nperforming nms')
                 seq_bbox_ids_to_delete = []
-                for _det_filename, _bbox_info in seq_det_file_to_bboxes.items():
-                    img_bbox_ids_to_delete = utils.perform_nms(
+                total_bboxes = 0
+                for _det_filename, _bbox_info in nms_iter:
+                    img_bbox_ids_to_delete, n_pairs, n_vid_pairs = utils.perform_nms(
                         _bbox_info,
                         enable_mask=params.enable_mask,
                         nms_thresh=params.nms_thresh,
                         vid_nms_thresh=params.vid_nms_thresh
                     )
                     seq_bbox_ids_to_delete += img_bbox_ids_to_delete
+                    del_bboxes = len(seq_bbox_ids_to_delete)
+                    n_bboxes = len(_bbox_info)
+                    total_bboxes += n_bboxes
+
+                    if nms_pbar is not None:
+                        time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
+                        del_pc = (del_bboxes / total_bboxes) * 100 if total_bboxes > 0 else 0
+                        nms_pbar_msg = (f"{time_stamp} nms "
+                                        f"del: {utils.num_to_words(del_bboxes)} / "
+                                        f"{utils.num_to_words(total_bboxes)} "
+                                        f"({del_pc:.2f}%) "
+                                        f"boxes: {utils.num_to_words(n_bboxes)},{utils.num_to_words(n_pairs)},"
+                                        f"{utils.num_to_words(n_vid_pairs)}")
+                        nms_pbar.set_description(nms_pbar_msg)
 
                 # n_bbox_ids_to_delete = len(bbox_ids_to_delete)
                 # n_total_bbox_ids = len(seq_det_bboxes_list)
@@ -3791,8 +3816,10 @@ def main():
         sweep(params)
         return
 
-    params.verbose = 0
-    params.show_pbar = 0
+    if params.verbose != 2:
+        params.verbose = 0
+        params.show_pbar = 0
+
     params.n_threads = 1
     params.n_proc = 1
 

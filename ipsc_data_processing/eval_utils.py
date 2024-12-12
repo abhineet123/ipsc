@@ -1201,19 +1201,33 @@ def print_with_time(*argv):
 def to_str(iter_, sep='\n'):
     return sep.join(iter_)
 
+def num_to_words(num):
+    if num >= 1e12:
+        num_tril = num / 1e12
+        words = f'{num_tril:.1f}T'
+    elif num >= 1e9:
+        num_bil = num / 1e9
+        words = f'{num_bil:.1f}B'
+    elif num >= 1e6:
+        num_mil = num / 1e6
+        words = f'{num_mil:.1f}M'
+    elif num >= 1e3:
+        num_th = num / 1e3
+        words = f'{num_th:.1f}K'
+    else:
+        words = f'{num}'
+    return words
+
 
 def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
-                            filter_ids=None,
                             objs_to_delete=None, global_objs_to_delete=None):
     if objs_to_delete is None:
         objs_to_delete = []
         assert global_objs_to_delete is None, "either both or neither of objs_to_delete must be None"
         global_objs_to_delete = []
 
-    for pair_id, pred_obj_pair in enumerate(pred_obj_pairs):
-        if filter_ids is not None and pair_id not in filter_ids:
-            continue
 
+    for pair_id, pred_obj_pair in enumerate(pred_obj_pairs):
         obj1, obj2 = pred_obj_pair
 
         # local_id1, bbox1, mask1, score1, label1, vid_id1, global_id1 = obj1
@@ -1264,15 +1278,22 @@ def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh):
     objs_to_delete = []
     global_objs_to_delete = []
 
+    n_vid_pairs = 0
+
     if vid_nms_thresh > 0:
-        vid_pair_ids = [pair_id for pair_id, (obj1, obj2) in enumerate(pred_obj_pairs)
+        vid_pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
                         if obj1['video_id'] != obj2['video_id']]
+        n_vid_pairs = len(vid_pred_obj_pairs)
+
         find_matching_obj_pairs(
-            pred_obj_pairs, enable_mask, vid_nms_thresh,
-            filter_ids=vid_pair_ids,
+            vid_pred_obj_pairs, enable_mask, vid_nms_thresh,
             objs_to_delete=objs_to_delete,
             global_objs_to_delete=global_objs_to_delete,
         )
+        pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
+                        if obj1['video_id'] == obj2['video_id']]
+
+    n_pairs = len(pred_obj_pairs)
 
     if nms_thresh > 0:
         find_matching_obj_pairs(
@@ -1281,7 +1302,7 @@ def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh):
             global_objs_to_delete=global_objs_to_delete,
         )
 
-    return global_objs_to_delete
+    return global_objs_to_delete, n_pairs, n_vid_pairs
 
 def print_(*args, **kwargs):
     sys.stdout.write(*args, **kwargs)
