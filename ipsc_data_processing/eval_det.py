@@ -3912,8 +3912,8 @@ def main():
         proc_det_paths.append(det_paths_)
 
         if p.exception:
+            print(f'\n\nckpt failed to run: {match_substr}\n\n')
             if params.ignore_exceptions:
-                print(f'\n\nckpt failed to run: {match_substr}\n\n')
                 continue
             break
         else:
