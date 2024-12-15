@@ -1474,8 +1474,10 @@ def compute_binary_cls_metrics(
             class_tp[conf_id, class_id] = class_tp_
             class_fp[conf_id, 1 - class_id] = non_class_fp_
 
-    y_true = 1 - labels.squeeze()
-    y_score = probs[:, 0].squeeze()
+    y_score = probs[:, 0].reshape((n_val,))
+    y_true = (1 - labels).reshape((n_val,))
+
+
 
     fpr, tpr, thresholds = roc_curve(y_true, y_score)
 
