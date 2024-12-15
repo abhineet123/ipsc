@@ -192,7 +192,7 @@ class Params(paramparse.CFG):
 
         self.fps_to_gt = 0
 
-        self.ignore_exceptions = 1
+        self.ignore_exceptions = 0
         self.ignore_inference_flag = 0
         self.ignore_eval_flag = 0
 
