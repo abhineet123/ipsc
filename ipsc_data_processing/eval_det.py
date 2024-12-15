@@ -197,7 +197,8 @@ class Params(paramparse.CFG):
 
         self.show_pbar = True
 
-        self.monitor_scale = 1.25
+        self.monitor_scale = 1.5
+        self.dup_nms = 0
 
         self.vid_stride = []
         self.nms_thresh = [0., ]
@@ -919,7 +920,8 @@ def evaluate(
                         _bbox_info,
                         enable_mask=params.enable_mask,
                         nms_thresh=params.nms_thresh,
-                        vid_nms_thresh=params.vid_nms_thresh
+                        vid_nms_thresh=params.vid_nms_thresh,
+                        dup=params.dup_nms,
                     )
                     # seq_bbox_ids_to_delete += img_bbox_ids_to_delete
                     del_bboxes += n_del
@@ -3872,7 +3874,7 @@ def main():
             new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
 
         new_det_paths = [k for k in new_matching_paths if k not in proc_det_paths]
-        new_det_paths.sort(reverse=True)
+        new_det_paths.sort(reverse=True, key=lambda x:int(x.replace(rep1, '').replace(rep2, '')))
 
         if not new_det_paths:
             # print('no new_det_paths found')

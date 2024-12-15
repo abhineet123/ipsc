@@ -1269,7 +1269,7 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
     return n_del
 
 
-def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh):
+def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
 
     pred_obj_pairs = list(itertools.combinations(objs, 2))
 
@@ -1290,8 +1290,9 @@ def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh):
             # global_objs_to_delete=global_objs_to_delete,
         )
         n_del += n_match
-        pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
-                        if obj1['video_id'] == obj2['video_id']]
+        if not dup:
+            pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
+                            if obj1['video_id'] == obj2['video_id']]
 
     n_pairs = len(pred_obj_pairs)
 
