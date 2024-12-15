@@ -3905,6 +3905,7 @@ def main():
         p.start()
         p.join()
         if p.exception:
+
             break
 
         if p.is_alive():
