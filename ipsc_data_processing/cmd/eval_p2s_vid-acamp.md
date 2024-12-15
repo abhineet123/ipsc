@@ -119,7 +119,7 @@ python3 eval_det.py cfg=p2s:vid,acamp:20k6_5_video_inv:vnms-1:nms-1:agn:gt-1:pro
 ## 1k8_vid_entire_seq-aug-cls_eq-fbb       @ mid-->eval_p2s_vid-acamp
 <a id="on_inv_2_per_seq___1k8_vid_entire_seq_aug_cls_eq_fbb_mi_d_"></a>
 ### on-inv-2_per_seq       @ 1k8_vid_entire_seq-aug-cls_eq-fbb/mid-->eval_p2s_vid-acamp
-python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv_2_per_seq:vnms-l4:nms-l4:agn:gt-1:proc-1:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_32-jtr-res_1280-fbb-cls_eq/ckpt-__var__-1k8_vid_entire_seq_inv_2_per_seq-length-2-stride-1/csv-batch_4:_out_-p2s-mid-1k8-len-2-aug-cls_eq-fbb-2_per_seq:excp-0
+python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv_2_per_seq:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_32-jtr-res_1280-fbb-cls_eq/ckpt-__var__-1k8_vid_entire_seq_inv_2_per_seq-length-2-stride-1/csv-batch_4:_out_-p2s-mid-1k8-len-2-aug-cls_eq-fbb-2_per_seq:excp-0
 
 <a id="10k6_vid_entire_seq_aug_fbb___mi_d__1"></a>
 ## 10k6_vid_entire_seq-aug-fbb       @ mid-->eval_p2s_vid-acamp

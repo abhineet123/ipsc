@@ -200,6 +200,7 @@ class Params(paramparse.CFG):
 
         self.monitor_scale = 1.5
         self.dup_nms = 0
+        self.debug = 0
 
         self.vid_stride = []
         self.nms_thresh = [0., ]
@@ -3900,31 +3901,32 @@ def main():
         params_.det_paths = det_paths_
         params_.batch_name = f'ckpt-{match_substr}'
 
-        # sweep(params_)
-
-        p = utils.Process(target=sweep, args=(params_,))
-        p.start()
-        p.join()
-
-        if p.is_alive():
-            p.terminate()
-
-        proc_det_paths.append(det_paths_)
-
-        if p.exception:
-            print(f'\n\nckpt failed to run: {match_substr}\n\n')
-            if params.ignore_exceptions:
-                continue
-            break
+        if params.debug:
+            sweep(params_)
         else:
-            from datetime import datetime
-            time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
-            print(f'finished eval at {time_stamp}')
-            flag_path = utils.linux_path(det_paths_, eval_flag_id)
-            if params.det_root_dir:
-                flag_path = utils.linux_path(params.det_root_dir, flag_path)
-            with open(flag_path, 'w') as f:
-                f.write(time_stamp + '\n')
+            p = utils.Process(target=sweep, args=(params_,))
+            p.start()
+            p.join()
+
+            if p.is_alive():
+                p.terminate()
+
+            proc_det_paths.append(det_paths_)
+
+            if p.exception:
+                print(f'\n\nckpt failed to run: {match_substr}\n\n')
+                if params.ignore_exceptions:
+                    continue
+                break
+            else:
+                from datetime import datetime
+                time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
+                print(f'finished eval at {time_stamp}')
+                flag_path = utils.linux_path(det_paths_, eval_flag_id)
+                if params.det_root_dir:
+                    flag_path = utils.linux_path(params.det_root_dir, flag_path)
+                with open(flag_path, 'w') as f:
+                    f.write(time_stamp + '\n')
 
 
         # if ret_val[0] == 1:
