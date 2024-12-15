@@ -3906,11 +3906,26 @@ def main():
         p.start()
         p.join()
 
-        if not params.ignore_exceptions and p.exception:
-            break
-
         if p.is_alive():
             p.terminate()
+
+        proc_det_paths.append(det_paths_)
+
+        if p.exception:
+            if params.ignore_exceptions:
+                print(f'\n\nckpt failed to run: {match_substr}\n\n')
+                continue
+            break
+        else:
+            from datetime import datetime
+            time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
+            print(f'finished eval at {time_stamp}')
+            flag_path = utils.linux_path(det_paths_, eval_flag_id)
+            if params.det_root_dir:
+                flag_path = utils.linux_path(params.det_root_dir, flag_path)
+            with open(flag_path, 'w') as f:
+                f.write(time_stamp + '\n')
+
 
         # if ret_val[0] == 1:
         #     print(f'incomplete dets in {det_paths_}')
@@ -3921,17 +3936,7 @@ def main():
         # except AssertionError as e:
         #     print(f'evaluation did not succeed on {det_paths_}: {e}')
 
-        proc_det_paths.append(det_paths_)
 
-        from datetime import datetime
-        time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
-
-        print(f'finished eval at {time_stamp}')
-        flag_path = utils.linux_path(det_paths_, eval_flag_id)
-        if params.det_root_dir:
-            flag_path = utils.linux_path(params.det_root_dir, flag_path)
-        with open(flag_path, 'w') as f:
-            f.write(time_stamp + '\n')
 
 
 if __name__ == '__main__':
