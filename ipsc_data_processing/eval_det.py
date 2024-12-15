@@ -192,6 +192,7 @@ class Params(paramparse.CFG):
 
         self.fps_to_gt = 0
 
+        self.ignore_exceptions = 1
         self.ignore_inference_flag = 0
         self.ignore_eval_flag = 0
 
@@ -3904,8 +3905,8 @@ def main():
         p = utils.Process(target=sweep, args=(params_,))
         p.start()
         p.join()
-        if p.exception:
 
+        if not params.ignore_exceptions and p.exception:
             break
 
         if p.is_alive():
