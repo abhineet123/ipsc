@@ -3918,15 +3918,16 @@ def main():
                 if params.ignore_exceptions:
                     continue
                 break
-            else:
-                from datetime import datetime
-                time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
-                print(f'finished eval at {time_stamp}')
-                flag_path = utils.linux_path(det_paths_, eval_flag_id)
-                if params.det_root_dir:
-                    flag_path = utils.linux_path(params.det_root_dir, flag_path)
-                with open(flag_path, 'w') as f:
-                    f.write(time_stamp + '\n')
+                
+        proc_det_paths.append(det_paths_)
+        from datetime import datetime
+        time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
+        print(f'finished eval at {time_stamp}')
+        flag_path = utils.linux_path(det_paths_, eval_flag_id)
+        if params.det_root_dir:
+            flag_path = utils.linux_path(params.det_root_dir, flag_path)
+        with open(flag_path, 'w') as f:
+            f.write(time_stamp + '\n')
 
 
         # if ret_val[0] == 1:

@@ -1411,17 +1411,28 @@ def compute_binary_cls_metrics(
     assert n_classes == 2, "n_classes must be 2 for binary_cls_metrics"
     assert len(class_names) == 2, "n_classes must be 2 for binary_cls_metrics"
     assert len(labels) == n_val, "n_val mismatch"
-    assert n_val > 0, "no labels found"
+
+    # assert n_val > 0, "no labels found"
 
     n_conf_thresholds = len(thresholds)
-
-    conf_to_acc = np.zeros((n_conf_thresholds, 4), dtype=np.float32)
     class_tp = np.zeros((n_conf_thresholds, 2), dtype=np.float32)
     class_fp = np.zeros((n_conf_thresholds, 2), dtype=np.float32)
 
-    labels = labels.reshape((n_val, 1))
-
+    conf_to_acc = np.zeros((n_conf_thresholds, 4), dtype=np.float32)
     conf_to_acc[:, 0] = thresholds.squeeze()
+
+    fp_tp = np.zeros((n_conf_thresholds, 3), dtype=np.float32)
+    fp_tp[:, 0] = thresholds.squeeze()
+
+    n_fp_thresholds = len(fp_thresholds) + 1
+    roc_aucs = np.zeros((n_fp_thresholds, 2), dtype=np.float32)
+    roc_aucs[:, 0] = list(fp_thresholds) + [1, ]
+
+    if n_val == 0:
+        return class_tp, class_fp, conf_to_acc, roc_aucs, fp_tp
+
+
+    labels = labels.reshape((n_val, 1))
 
     thresh_iter = thresholds
     if show_pbar:
@@ -1644,8 +1655,8 @@ def binary_cls_metrics(
     n_dets_1 = stats_1['n_dets']
     n_dets = n_dets_0 + n_dets_1
 
-    if n_dets == 0:
-        return
+    # if n_dets == 0:
+    #     return
 
     """extract stats"""
     if True:
