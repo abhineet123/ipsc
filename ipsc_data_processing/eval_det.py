@@ -3746,11 +3746,14 @@ def sweep(params: Params):
     for i, sweep_param in enumerate(params_.sweep_params):
         param_val = getattr(params_, sweep_param)
 
-        sweep_mode[sweep_param] = len(param_val) > 1
+        is_sweep =  len(param_val) > 1
+
+        sweep_mode[sweep_param] =is_sweep
 
         sweep_vals.append(param_val)
 
-        print('testing over {} {}: {}'.format(len(param_val), sweep_param, param_val))
+        if is_sweep:
+            print('testing over {} {}: {}'.format(len(param_val), sweep_param, param_val))
 
     import itertools
 
@@ -3901,6 +3904,9 @@ def main():
         p = multiprocessing.Process(target=sweep, args=(params_,))
         p.start()
         p.join()
+        if p.exception:
+            break
+
         if p.is_alive():
             p.terminate()
 
