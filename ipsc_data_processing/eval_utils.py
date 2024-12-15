@@ -185,6 +185,7 @@ bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
 
 import traceback
 
+
 class Process(multiprocessing.Process):
     def __init__(self, *args, **kwargs):
         multiprocessing.Process.__init__(self, *args, **kwargs)
@@ -206,8 +207,10 @@ class Process(multiprocessing.Process):
             self._exception = self._pconn.recv()
         return self._exception
 
+
 def list_to_str(k):
     return '\n'.join(k)
+
 
 def zip_dirs(agn_root_dirs, del_src=1):
     if len(agn_root_dirs) > 1:
@@ -1225,6 +1228,7 @@ def print_with_time(*argv):
 def to_str(iter_, sep='\n'):
     return sep.join(iter_)
 
+
 def num_to_words(num):
     if num >= 1e12:
         num_tril = num / 1e12
@@ -1294,7 +1298,6 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
 
 
 def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
-
     pred_obj_pairs = list(itertools.combinations(objs, 2))
 
     # objs_to_delete = []
@@ -1305,7 +1308,7 @@ def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
 
     if vid_nms_thresh > 0:
         vid_pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
-                        if obj1['video_id'] != obj2['video_id']]
+                              if obj1['video_id'] != obj2['video_id']]
         n_vid_pairs = len(vid_pred_obj_pairs)
 
         n_match = find_matching_obj_pairs(
@@ -1316,7 +1319,7 @@ def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
         n_del += n_match
         if not dup:
             pred_obj_pairs = [(obj1, obj2) for obj1, obj2 in pred_obj_pairs
-                            if obj1['video_id'] == obj2['video_id']]
+                              if obj1['video_id'] == obj2['video_id']]
 
     n_pairs = len(pred_obj_pairs)
 
@@ -1330,9 +1333,11 @@ def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
 
     return n_del, n_pairs, n_vid_pairs
 
+
 def print_(*args, **kwargs):
     sys.stdout.write(*args, **kwargs)
     sys.stdout.write('\n')
+
 
 def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
@@ -1381,7 +1386,6 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=T
     return seq_paths, seq_to_samples
 
 
-
 def add_suffix(src_path, suffix, dst_ext='', sep='_'):
     # abs_src_path = os.path.abspath(src_path)
     src_dir = os.path.dirname(src_path)
@@ -1407,7 +1411,6 @@ def compute_binary_cls_metrics(
     assert n_classes == 2, "n_classes must be 2 for binary_cls_metrics"
     assert len(class_names) == 2, "n_classes must be 2 for binary_cls_metrics"
     assert len(labels) == n_val, "n_val mismatch"
-
     assert n_val > 0, "no labels found"
 
     n_conf_thresholds = len(thresholds)
@@ -1476,8 +1479,6 @@ def compute_binary_cls_metrics(
 
     y_score = probs[:, 0].reshape((n_val,))
     y_true = (1 - labels).reshape((n_val,))
-
-
 
     fpr, tpr, thresholds = roc_curve(y_true, y_score)
 
@@ -1636,6 +1637,16 @@ def binary_cls_metrics(
 ):
     assert len(gt_classes) == 2, "Number of classes must be 2"
 
+    stats_0 = class_stats[0]
+    stats_1 = class_stats[1]
+
+    n_dets_0 = stats_0['n_dets']
+    n_dets_1 = stats_1['n_dets']
+    n_dets = n_dets_0 + n_dets_1
+
+    if n_dets == 0:
+        return
+
     """extract stats"""
     if True:
         csv_columns_max_tp = ['FP_threshold', 'TP']
@@ -1648,9 +1659,6 @@ def binary_cls_metrics(
 
         os.makedirs(max_tp_out_root_dir, exist_ok=True)
         os.makedirs(roc_auc_out_root_dir, exist_ok=True)
-
-        stats_0 = class_stats[0]
-        stats_1 = class_stats[1]
 
         tp_0 = stats_0['tp_class']
         tp_1 = stats_1['tp_class']
@@ -1933,12 +1941,9 @@ def binary_cls_metrics(
         class 1 relative TP rate = (class 1 objs correctly classified as class 1) / (total class 1 objs)
         """
 
-        """don't even rememver what crap this is"""
+        """don't even remember what crap this is"""
         # n_dets_0 = stats_0['tp_sum'] + stats_1['fp_cls_sum']
         # n_dets_1 = stats_1['tp_sum'] + stats_0['fp_cls_sum']
-
-        n_dets_0 = stats_0['n_dets']
-        n_dets_1 = stats_1['n_dets']
 
         # total_class_dets[:, 0] = tp_sum_thresh_all[:, 0] + fp_cls_sum_thresh_all[:, 1]
         # total_class_dets[:, 1] = tp_sum_thresh_all[:, 1] + fp_cls_sum_thresh_all[:, 0]

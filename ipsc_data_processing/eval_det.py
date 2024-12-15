@@ -2796,17 +2796,17 @@ def evaluate(
 
         if n_classes == 2:
             utils.binary_cls_metrics(
-                class_stats,
-                tp_sum_thresh_all,
-                fp_sum_thresh_all,
-                fp_cls_sum_thresh_all,
-                score_thresholds,
-                gt_classes,
-                out_root_dir,
-                misc_out_root_dir,
-                eval_result_dict,
-                verbose=params.verbose,
-            )
+                    class_stats,
+                    tp_sum_thresh_all,
+                    fp_sum_thresh_all,
+                    fp_cls_sum_thresh_all,
+                    score_thresholds,
+                    gt_classes,
+                    out_root_dir,
+                    misc_out_root_dir,
+                    eval_result_dict,
+                    verbose=params.verbose,
+                )
 
         if save_sim_dets:
             return None
