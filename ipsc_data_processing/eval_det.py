@@ -3901,7 +3901,7 @@ def main():
 
         # sweep(params_)
 
-        p = multiprocessing.Process(target=sweep, args=(params_,))
+        p = utils.Process(target=sweep, args=(params_,))
         p.start()
         p.join()
         if p.exception:
