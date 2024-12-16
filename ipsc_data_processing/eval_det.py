@@ -201,6 +201,7 @@ class Params(paramparse.CFG):
         self.monitor_scale = 1.5
         self.dup_nms = 0
         self.debug = 0
+        self.ckpt_iter = ''
 
         self.vid_stride = []
         self.nms_thresh = [0., ]
@@ -885,7 +886,6 @@ def evaluate(
                                 )
                             bbox_dict["mask"] = mask_rle
 
-
                         seq_det_bboxes_list.append(bbox_dict)
                         seq_det_file_to_bboxes[det_filename].append(bbox_dict)
 
@@ -945,7 +945,7 @@ def evaluate(
                 # n_total_bbox_ids = len(seq_det_bboxes_list)
                 # print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
 
-                seq_det_bboxes_list = [k for k in seq_det_bboxes_list if k['to_delete']]
+                seq_det_bboxes_list = [k for k in seq_det_bboxes_list if not k['to_delete']]
 
                 if n_det_paths == 1:
                     out_csv_rows = []
@@ -2796,17 +2796,17 @@ def evaluate(
 
         if n_classes == 2:
             utils.binary_cls_metrics(
-                    class_stats,
-                    tp_sum_thresh_all,
-                    fp_sum_thresh_all,
-                    fp_cls_sum_thresh_all,
-                    score_thresholds,
-                    gt_classes,
-                    out_root_dir,
-                    misc_out_root_dir,
-                    eval_result_dict,
-                    verbose=params.verbose,
-                )
+                class_stats,
+                tp_sum_thresh_all,
+                fp_sum_thresh_all,
+                fp_cls_sum_thresh_all,
+                score_thresholds,
+                gt_classes,
+                out_root_dir,
+                misc_out_root_dir,
+                eval_result_dict,
+                verbose=params.verbose,
+            )
 
         if save_sim_dets:
             return None
@@ -3748,9 +3748,9 @@ def sweep(params: Params):
     for i, sweep_param in enumerate(params_.sweep_params):
         param_val = getattr(params_, sweep_param)
 
-        is_sweep =  len(param_val) > 1
+        is_sweep = len(param_val) > 1
 
-        sweep_mode[sweep_param] =is_sweep
+        sweep_mode[sweep_param] = is_sweep
 
         sweep_vals.append(param_val)
 
@@ -3826,18 +3826,20 @@ def main():
 
     wc = '__var__'
 
-    if wc not in params.det_paths:
-        sweep(params)
-        return
-
     if params.verbose != 2:
         params.verbose = 0
         params.show_pbar = 0
 
+    det_paths = params.det_paths
+
+    if wc not in det_paths:
+        sweep(params)
+        return
+
     params.n_threads = 1
     params.n_proc = 1
 
-    det_paths = params.det_paths
+
     wc_start_idx = det_paths.find(wc)
     wc_end_idx = wc_start_idx + len(wc)
     pre_wc = det_paths[:wc_start_idx]
@@ -3847,12 +3849,18 @@ def main():
     if params.det_root_dir:
         det_paths = os.path.join(params.det_root_dir, det_paths)
 
-    det_paths_parent = det_paths
-    while wc in det_paths_parent:
-        det_paths_parent = os.path.dirname(det_paths_parent)
-    assert os.path.isdir(det_paths_parent), f"non-existent det_paths_parent: {det_paths_parent}"
+    det_paths_no_wc = det_paths
+    """find the nearest ancestor path without wild card"""
+    while wc in det_paths_no_wc:
+        det_paths_no_wc = os.path.dirname(det_paths_no_wc)
+    assert os.path.isdir(det_paths_no_wc), f"non-existent det_paths_no_wc: {det_paths_no_wc}"
 
-    det_paths = det_paths.replace(wc, '*')
+    if params.ckpt_iter:
+        det_paths = det_paths.replace(wc, params.ckpt_iter)
+        multi_ckpt_mode = False
+    else:
+        det_paths = det_paths.replace(wc, '*')
+        multi_ckpt_mode = True
 
     proc_det_paths = []
     out_zip_paths = None
@@ -3879,25 +3887,25 @@ def main():
             new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
 
         new_det_paths = [k for k in new_matching_paths if k not in proc_det_paths]
-        new_det_paths.sort(reverse=True, key=lambda x:int(x.replace(rep1, '').replace(rep2, '')))
+        new_det_paths.sort(reverse=True, key=lambda x: int(x.replace(rep1, '').replace(rep2, '')))
 
         if not new_det_paths:
             # print('no new_det_paths found')
             # print(f'all_matching_paths:\n{utils.list_to_str(all_matching_paths)}\n')
             # print(f'new_matching_paths:\n{utils.list_to_str(new_matching_paths)}\n')
 
+            if not multi_ckpt_mode:
+                raise AssertionError(f'invalid det_paths: {det_paths} for ckpt_iter: {params.ckpt_iter}')
+
             if not utils.sleep_with_pbar(params.sleep):
                 break
             continue
 
         det_paths_ = new_det_paths.pop()
-
-        match_substr = det_paths_.replace(rep1, '').replace(rep2, '')
-
         params_ = copy.deepcopy(params)
 
+        match_substr = det_paths_.replace(rep1, '').replace(rep2, '')
         print(f'evaluating {det_paths_}')
-
         params_.det_paths = det_paths_
         params_.batch_name = f'ckpt-{match_substr}'
 
@@ -3918,7 +3926,7 @@ def main():
                 if params.ignore_exceptions:
                     continue
                 break
-                
+
         proc_det_paths.append(det_paths_)
         from datetime import datetime
         time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
@@ -3929,17 +3937,8 @@ def main():
         with open(flag_path, 'w') as f:
             f.write(time_stamp + '\n')
 
-
-        # if ret_val[0] == 1:
-        #     print(f'incomplete dets in {det_paths_}')
-        #     if len(new_det_paths) == 0:
-        #         if not utils.sleep_with_pbar(params.sleep):
-        #             break
-        #         continue
-        # except AssertionError as e:
-        #     print(f'evaluation did not succeed on {det_paths_}: {e}')
-
-
+        if not multi_ckpt_mode:
+            break
 
 
 if __name__ == '__main__':

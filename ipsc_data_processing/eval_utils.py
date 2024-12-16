@@ -1263,7 +1263,7 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
         # local_id1, bbox1, mask1, score1, label1, vid_id1, global_id1 = obj1
         # local_id2, bbox2, mask2, score2, label2, vid_id2, global_id2 = obj2
 
-        assert obj1['local_id'] != obj2['local_id'], "invalid object pair with identical IDs"
+        assert obj1['local_id'] != obj2['local_id'], "invalid obj pair with identical local IDs"
 
         if obj1['to_delete'] or obj2['to_delete']:
             continue

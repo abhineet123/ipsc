@@ -607,9 +607,11 @@ python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_
 ## len-6-aug-fbb       @ mid-54_126-->eval_p2s_vid-ipsc
 <a id="on_0_15___len_6_aug_fbb_mid_54_126_"></a>
 ### on-0_15       @ len-6-aug-fbb/mid-54_126-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-6-aug-fbb
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms:nms:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-6-aug-fbb
+`57156`
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-0:nms-20:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-6-aug-fbb-rerun:_iter_-57156:dbg-0
 `strd-6`
-python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:strd-6:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-6-aug-fbb-strd-6
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:strd-6:vnms-0:nms-20:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-6-aug-fbb-strd-6
 
 <a id="len_8_aug_fbb___mid_54_126_"></a>
 ## len-8-aug-fbb       @ mid-54_126-->eval_p2s_vid-ipsc
