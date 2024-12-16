@@ -3879,7 +3879,7 @@ def main():
         if not params.ignore_inference_flag:
             new_matching_paths = [_path for _path in new_matching_paths
                                   if os.path.isfile(utils.linux_path(_path, '__inference'))]
-        if not params.ignore_eval_flag:
+        if multi_ckpt_mode and not params.ignore_eval_flag:
             new_matching_paths = [_path for _path in new_matching_paths
                                   if not os.path.isfile(utils.linux_path(_path, eval_flag_id))]
 
