@@ -690,6 +690,9 @@ def evaluate(
             if params.nms_thresh > 0:
                 print_(f'performing NMS with threshold {params.nms_thresh:.2f}')
 
+            if params.vid_nms_thresh > 0:
+                print_(f'performing video NMS with threshold {params.vid_nms_thresh:.2f}')
+
             det_paths = all_seq_det_paths[seq_idx]
 
             if isinstance(det_paths, str):
