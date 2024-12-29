@@ -868,26 +868,28 @@ def get_xml_files(
 
 def get_iou_stats(ious, bins=100):
     stats = dict(
-    mean = np.mean(ious),
-    median = np.median(ious),
-    min = np.amin(ious),
-    max = np.amax(ious),
+        mean=np.mean(ious),
+        median=np.median(ious),
+        min=np.amin(ious),
+        max=np.amax(ious),
     )
     hist, bin_edges = np.histogram(ious, bins=100, range=(0, 1))
     bin_edges = bin_edges[:-1]
     stats.update({
-        f'hist-{bin_edge:.2f}':hist_val for bin_edge, hist_val in zip(bin_edges, hist, strict=True)
+        f'hist-{bin_edge:.2f}': hist_val for bin_edge, hist_val in zip(bin_edges, hist, strict=True)
     })
 
     return stats
 
-def get_n_objs_stats(seq_info, n_tokens_per_obj):
+
+def get_n_objs_stats(seq_info: dict, params: Params):
     n_objs_list = np.asarray(seq_info['n_objs'])
 
     n_seq_frames = len(n_objs_list)
     assert n_seq_frames >= 1, "n_objs_list must have non-zero length"
     n_frames = seq_info['length']
-    assert n_seq_frames == n_frames, "n_seq_frames mismatch"
+    if params.stride == 1 and params.frame_gap == 1:
+        assert n_seq_frames == n_frames, "n_seq_frames mismatch"
 
     seq_info['mean'] = np.mean(n_objs_list)
     seq_info['median'] = np.median(n_objs_list)
@@ -1236,7 +1238,7 @@ def run(params: Params):
 
         for seq_name, seq_info in seq_name_to_info.items():
             n_objs_list_all += seq_info['n_objs']
-            get_n_objs_stats(seq_info, n_tokens_per_obj)
+            get_n_objs_stats(seq_info, params)
 
         seq_info_all = dict(
             name='__all__',
@@ -1247,7 +1249,7 @@ def run(params: Params):
             n_objs=n_objs_list_all,
         )
 
-        get_n_objs_stats(seq_info_all, n_tokens_per_obj)
+        get_n_objs_stats(seq_info_all, params)
         seq_name_to_info['__all__'] = seq_info_all
 
         seq_name_to_info_df = pd.DataFrame.from_dict(seq_name_to_info, orient='index')

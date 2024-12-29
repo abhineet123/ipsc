@@ -140,7 +140,9 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms:vnms:show-0:proc
 <a id="on_49_85___detrac_0_48_len_8_fbb_mi_d_"></a>
 ### on-49_85       @ detrac-0_48-len-8-fbb/mid-->eval_p2s_vid-isl
 `strd-8`
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms-1:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_24-fbb/ckpt-__var__-detrac-length-8-stride-8-non_empty-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-len-8-49_85-strd-8-fbb
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms-l4:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_24-fbb/ckpt-__var__-detrac-length-8-stride-8-non_empty-seq-49_85/csv-batch_3:_out_-p2s-detrac-0_48-len-8-49_85-strd-8-fbb
+`strd-1`
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_24-fbb/ckpt-__var__-detrac-length-8-stride-1-non_empty-seq-49_85/csv-batch_3:_out_-p2s-detrac-0_48-len-8-49_85-strd-1-fbb
 
 <a id="detrac_0_48_len_16_seq3k___mi_d_"></a>
 ## detrac-0_48-len-16-seq3k       @ mid-->eval_p2s_vid-isl
@@ -152,6 +154,9 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms-1:vnms:show-0:pr
 <a id="on_49_85_strd_1___detrac_0_48_len_16_seq3k_mid_"></a>
 ### on-49_85-strd-1       @ detrac-0_48-len-16-seq3k/mid-->eval_p2s_vid-isl
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms-1:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_6-seq3k-exp/ckpt-__var__-detrac-length-16-stride-1-non_empty-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-strd-1-seq3k:vbs
+`285870`
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_6-seq3k-exp/ckpt-__var__-detrac-length-16-stride-1-non_empty-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-strd-1-seq3k:vbs:_ckpt_-285870
+
 
 <a id="detrac_0_48_len_32_fbb_seq5k___mi_d_"></a>
 ## detrac-0_48-len-32-fbb-seq5k       @ mid-->eval_p2s_vid-isl

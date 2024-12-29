@@ -667,7 +667,7 @@ def resize_ar_video(src_vid, **kwargs):
 
 
 def resize_ar(src_img, width=0, height=0, return_factors=False,
-              placement_type=0, only_border=0, only_shrink=0, strict=False):
+              placement_type=1, only_border=0, only_shrink=0, strict=False, white_bkg=0):
     src_height, src_width = src_img.shape[:2]
     src_aspect_ratio = float(src_width) / float(src_height)
 
@@ -744,7 +744,12 @@ def resize_ar(src_img, width=0, height=0, return_factors=False,
                 raise AssertionError('Invalid placement_type: {}'.format(placement_type))
             start_row = 0
 
-    dst_img = np.zeros((dst_height, dst_width, n_channels), dtype=src_img.dtype)
+    if white_bkg:
+        dst_img = np.full((dst_height, dst_width, n_channels),
+                          255 if src_img.dtype == np.uint8 else 1.0,
+                          dtype=src_img.dtype)
+    else:
+        dst_img = np.zeros((dst_height, dst_width, n_channels), dtype=src_img.dtype)
     dst_img = dst_img.squeeze()
 
     dst_img[start_row:start_row + src_height, start_col:start_col + src_width, ...] = src_img
@@ -3416,7 +3421,6 @@ def draw_box(frame, box, _id=None, color='black', thickness=2,
              is_dotted=0, transparency=0., xywh=True, norm=False):
     """
     :type frame: np.ndarray
-    :type box: np.ndarray
     :type _id: int | str | None
     :param color: indexes into col_bgr
     :type color: str
@@ -3425,9 +3429,15 @@ def draw_box(frame, box, _id=None, color='black', thickness=2,
     :type transparency: float
     :rtype: None
     """
+    if not isinstance(box, np.ndarray):
+        box = np.asarray(box)
+
     if np.any(np.isnan(box)):
         print('invalid location provided: {}'.format(box))
         return
+
+    if isinstance(color, str):
+        color = col_bgr[color]
 
     if isinstance(box, np.ndarray):
         box = list(box.squeeze())
@@ -3455,9 +3465,9 @@ def draw_box(frame, box, _id=None, color='black', thickness=2,
         _frame = frame
 
     if is_dotted:
-        draw_dotted_rect(_frame, pt1, pt2, col_bgr[color], thickness=thickness)
+        draw_dotted_rect(_frame, pt1, pt2, color, thickness=thickness)
     else:
-        cv2.rectangle(_frame, pt1, pt2, col_bgr[color], thickness=thickness)
+        cv2.rectangle(_frame, pt1, pt2, color, thickness=thickness)
 
     if transparency > 0:
         frame[pt1[1]:pt2[1], pt1[0]:pt2[0], ...] = (
@@ -3468,7 +3478,7 @@ def draw_box(frame, box, _id=None, color='black', thickness=2,
     if _id is not None:
         font_line_type = cv2.LINE_AA
         cv2.putText(frame, str(_id), (int(box[0] - 1), int(box[1] - 1)), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5, col_bgr[color], 1, font_line_type)
+                    0.5, color, 1, font_line_type)
 
 
 def draw_boxes(frame, boxes, _id=None, color='black', thickness=2,

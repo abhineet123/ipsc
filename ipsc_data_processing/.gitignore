@@ -8,4 +8,8 @@ __pycache__/
 gitu.sh
 gitu.bat
 
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
 

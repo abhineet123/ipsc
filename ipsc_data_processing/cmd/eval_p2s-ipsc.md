@@ -1,5 +1,10 @@
 <!-- MarkdownTOC -->
 
+- [vit_b-640       @ p2s](#vit_b_640___p2_s_)
+    - [16_53-aug-fbb       @ vit_b-640](#16_53_aug_fbb___vit_b_64_0_)
+        - [on-0_15       @ 16_53-aug-fbb/vit_b-640](#on_0_15___16_53_aug_fbb_vit_b_64_0_)
+    - [54_126-aug-fbb       @ vit_b-640](#54_126_aug_fbb___vit_b_64_0_)
+        - [on-0_15       @ 54_126-aug-fbb/vit_b-640](#on_0_15___54_126_aug_fbb_vit_b_640_)
 - [resnet-640       @ p2s](#resnet_640___p2_s_)
     - [16_53-buggy       @ resnet-640](#16_53_buggy___resnet_640_)
         - [batch_48       @ 16_53-buggy/resnet-640](#batch_48___16_53_buggy_resnet_640_)
@@ -44,6 +49,21 @@
     - [g2_0_1       @ resnet-c4-1333](#g2_0_1___resnet_c4_1333_)
 
 <!-- /MarkdownTOC -->
+<a id="vit_b_640___p2_s_"></a>
+# vit_b-640       @ p2s-->eval_det_p2s
+<a id="16_53_aug_fbb___vit_b_64_0_"></a>
+## 16_53-aug-fbb       @ vit_b-640-->eval_p2s-ipsc
+<a id="on_0_15___16_53_aug_fbb_vit_b_64_0_"></a>
+### on-0_15       @ 16_53-aug-fbb/vit_b-640-->eval_p2s-ipsc
+python eval_det.py cfg=p2s,ipsc:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-vit_b_640_ext_reorg_roi_g2-16_53-batch_4-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15/csv-batch_2:_out_-p2s-ipsc-16_53-aug-fbb-vit_b
+
+<a id="54_126_aug_fbb___vit_b_64_0_"></a>
+## 54_126-aug-fbb       @ vit_b-640-->eval_p2s-ipsc
+<a id="on_0_15___54_126_aug_fbb_vit_b_640_"></a>
+### on-0_15       @ 54_126-aug-fbb/vit_b-640-->eval_p2s-ipsc
+python eval_det.py cfg=p2s,ipsc:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-vit_b_640_ext_reorg_roi_g2-54_126-batch_4-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15/csv-batch_2:_out_-p2s-ipsc-54_126-aug-fbb-vit_b
+
+
 <a id="resnet_640___p2_s_"></a>
 # resnet-640       @ p2s-->eval_det_p2s
 <a id="16_53_buggy___resnet_640_"></a>
