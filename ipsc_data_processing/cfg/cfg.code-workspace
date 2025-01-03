@@ -4,13 +4,16 @@
 			"path": "."
 		},
 		{
-			"path": "C:/UofA/PhD/Code/static_detection/pix2seq/cfg"
-		},
-		{
 			"path": "C:/UofA/PhD/Code/static_detection/pix2seq/configs/j5"
 		},
 		{
 			"path": "E:/Documents/Backup/autohotkey"
+		},
+		{
+			"path": "../../../617/Project/617_proj_code/cfg"
+		},
+		{
+			"path": "D:/UofA/PhD/Code/static_detection/pix2seq/cfg"
 		}
 	],
 	"settings": {}
