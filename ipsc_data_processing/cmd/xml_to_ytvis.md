@@ -67,6 +67,8 @@
             - [len-56       @ strd-same/49_85/detrac](#len_56___strd_same_49_85_detrac_)
             - [len-64       @ strd-same/49_85/detrac](#len_64___strd_same_49_85_detrac_)
 - [ipsc](#ips_c_)
+    - [0_126       @ ipsc](#0_126___ipsc_)
+        - [len-2       @ 0_126/ipsc](#len_2___0_126_ipsc_)
     - [0_1       @ ipsc](#0_1___ipsc_)
     - [0_4       @ ipsc](#0_4___ipsc_)
         - [12094       @ 0_4/ipsc](#12094___0_4_ipsc_)
@@ -343,6 +345,13 @@ python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-64:strd-64:gap-1
 
 <a id="ips_c_"></a>
 # ipsc
+
+<a id="0_126___ipsc_"></a>
+## 0_126       @ ipsc-->xml_to_ytvis
+<a id="len_2___0_126_ipsc_"></a>
+### len-2       @ 0_126/ipsc-->xml_to_ytvis
+python3 xml_to_ytvis.py cfg=ipsc:0_126:len-2:strds:gap-1:mask-0:proc-1 
+
 <a id="0_1___ipsc_"></a>
 ## 0_1       @ ipsc-->xml_to_ytvis
 python3 xml_to_ytvis.py cfg=ipsc:mask-0:frame-0_1:len-2:gap-1:strds
