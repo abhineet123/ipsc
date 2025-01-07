@@ -28,6 +28,7 @@
         - [on-inv-2_per_seq       @ 1k8_vid_entire_seq-aug-cls_eq-fbb/mid](#on_inv_2_per_seq___1k8_vid_entire_seq_aug_cls_eq_fbb_mi_d_)
     - [1k8_vid_entire_seq-aug-cls_eq-fbb-b64       @ mid](#1k8_vid_entire_seq_aug_cls_eq_fbb_b64___mi_d_)
         - [on-inv-2_per_seq       @ 1k8_vid_entire_seq-aug-cls_eq-fbb-b64/mid](#on_inv_2_per_seq___1k8_vid_entire_seq_aug_cls_eq_fbb_b64_mi_d_)
+        - [on-inv       @ 1k8_vid_entire_seq-aug-cls_eq-fbb-b64/mid](#on_inv___1k8_vid_entire_seq_aug_cls_eq_fbb_b64_mi_d_)
     - [10k6_vid_entire_seq-aug-cls_eq-fbb       @ mid](#10k6_vid_entire_seq_aug_cls_eq_fbb___mi_d_)
         - [on-inv-2_per_seq       @ 10k6_vid_entire_seq-aug-cls_eq-fbb/mid](#on_inv_2_per_seq___10k6_vid_entire_seq_aug_cls_eq_fbb_mid_)
     - [10k6_vid_entire_seq-aug-cls_eq-fbb-b64       @ mid](#10k6_vid_entire_seq_aug_cls_eq_fbb_b64___mi_d_)
@@ -131,6 +132,9 @@ python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv_2_per_seq:vnms-1:nm
 <a id="on_inv_2_per_seq___1k8_vid_entire_seq_aug_cls_eq_fbb_b64_mi_d_"></a>
 ### on-inv-2_per_seq       @ 1k8_vid_entire_seq-aug-cls_eq-fbb-b64/mid-->eval_p2s_vid-acamp
 python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv_2_per_seq:vnms-1:nms-1:agn:gt-1:proc-1:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_64-jtr-res_1280-fbb-cls_eq/ckpt-__var__-1k8_vid_entire_seq_inv_2_per_seq-length-2-stride-1/csv-batch_8:_out_-p2s-mid-1k8-len-2-aug-cls_eq-fbb-2_per_seq-b64
+<a id="on_inv___1k8_vid_entire_seq_aug_cls_eq_fbb_b64_mi_d_"></a>
+### on-inv       @ 1k8_vid_entire_seq-aug-cls_eq-fbb-b64/mid-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:1k8_vid_entire_seq_inv:vnms:nms:agn:gt-1:proc-1:show-0:_in_-resnet_640_1k8_vid_entire_seq-length-2-stride-1-batch_64-jtr-res_1280-fbb-cls_eq/ckpt-281976-1k8_vid_entire_seq_inv-length-2-stride-1/csv-batch_32:_out_-p2s-mid-1k8-len-2-aug-cls_eq-fbb-b64:vbs
 
 <a id="10k6_vid_entire_seq_aug_cls_eq_fbb___mi_d_"></a>
 ## 10k6_vid_entire_seq-aug-cls_eq-fbb       @ mid-->eval_p2s_vid-acamp
