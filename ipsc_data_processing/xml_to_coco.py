@@ -38,6 +38,7 @@ class Params(paramparse.CFG):
 
         self.load_samples = []
         self.load_samples_root = ''
+        self.load_samples_suffix = []
 
         self.map_folder = ''
         self.min_val = 0
@@ -45,7 +46,7 @@ class Params(paramparse.CFG):
         self.n_frames = 0
         self.dir_name = 'annotations'
         self.dir_suffix = ''
-        self.output_json = ''
+        self.output_json = []
 
         self.enable_masks = 2
         self.save_masks = 0
@@ -470,6 +471,8 @@ def main():
 
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
+    load_samples_suffix = params.load_samples_suffix
+
     if len(load_samples) == 1:
         if load_samples[0] == 1:
             load_samples = ['seq_to_samples.txt', ]
@@ -498,6 +501,8 @@ def main():
     class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
 
     output_json = params.output_json
+    output_json = '_'.join(output_json)
+
     extract_num_from_imgid = params.extract_num_from_imgid
     no_annotations = params.no_annotations
     write_empty = params.write_empty
@@ -512,7 +517,27 @@ def main():
     if params.dir_suffix:
         xml_dir_name = f'{xml_dir_name}_{params.dir_suffix}'
 
+
     print(f'xml_dir_name: {xml_dir_name}')
+
+    if n_seq > 0:
+        end_id = start_id + n_seq - 1
+
+    seq_suffix = ''
+
+    if start_id > 0 or end_id >= 0 or seq_stride > 1:
+        if end_id < 0:
+            end_id = len(seq_paths) - 1
+
+        seq_suffix = f'{start_id}_{end_id}'
+        if seq_stride > 1:
+            seq_suffix = f'{seq_suffix}_{seq_stride}'
+        output_json = add_suffix(output_json, f'seq-{seq_suffix}', sep='-')
+
+    if load_samples_suffix:
+        load_samples_suffix = '_'.join(load_samples_suffix)
+        load_samples_root = f'{load_samples_root}_{load_samples_suffix}'
+        output_json = add_suffix(output_json, load_samples_suffix, sep='-')
 
     if load_samples:
         seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
@@ -539,18 +564,6 @@ def main():
             seq_paths.sort(key=sortKey)
         else:
             raise IOError('Either seq_paths or root_dir must be provided')
-
-    if n_seq > 0:
-        end_id = start_id + n_seq - 1
-
-    if start_id > 0 or end_id >= 0 or seq_stride > 1:
-        if end_id < 0:
-            end_id = len(seq_paths) - 1
-
-        seq_suffix = f'seq-{start_id}_{end_id}'
-        if seq_stride > 1:
-            seq_suffix = f'{seq_suffix}_{seq_stride}'
-        output_json = add_suffix(output_json, seq_suffix, sep='-')
 
     if end_id < 0:
         end_id = len(seq_paths) - 1

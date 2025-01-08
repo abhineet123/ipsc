@@ -6,6 +6,7 @@
     - [0_48       @ detrac](#0_48___detrac_)
     - [49_68       @ detrac](#49_68___detrac_)
     - [49_85       @ detrac](#49_85___detrac_)
+        - [100_per_seq_random       @ 49_85/detrac](#100_per_seq_random___49_85_detrac_)
 - [ipsc       @ xml_to_coco](#ipsc___xml_to_coc_o_)
     - [all_frames_roi       @ ipsc](#all_frames_roi___ipsc_)
         - [g2_0_37       @ all_frames_roi/ipsc](#g2_0_37___all_frames_roi_ips_c_)
@@ -109,6 +110,9 @@ python xml_to_coco.py cfg=detrac:non_empty:49_68:zip
 <a id="49_85___detrac_"></a>
 ## 49_85       @ detrac-->xml_to_coco
 python xml_to_coco.py cfg=detrac:non_empty:49_85:zip  
+<a id="100_per_seq_random___49_85_detrac_"></a>
+### 100_per_seq_random       @ 49_85/detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:49_85:100_per_seq_random:zip
 
 
 <a id="ipsc___xml_to_coc_o_"></a>
@@ -478,12 +482,20 @@ python xml_to_coco.py cfg=acamp:10k6_vid_entire_seq_inv
 ## 20k6_5_video_inv       @ acamp-->xml_to_coco
 python xml_to_coco.py cfg=acamp:20k6_5_video_inv
 
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 <a id="1k8_vid_entire_seq_inv_2_per_seq___acam_p_"></a>
 ## 1k8_vid_entire_seq_inv_2_per_seq       @ acamp-->xml_to_coco
 python xml_to_coco.py cfg=acamp:1k8_vid_entire_seq_inv_2_per_seq
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 <a id="10k6_vid_entire_seq_inv_2_per_seq___acam_p_"></a>
 ## 10k6_vid_entire_seq_inv_2_per_seq       @ acamp-->xml_to_coco
 python xml_to_coco.py cfg=acamp:10k6_vid_entire_seq_inv_2_per_seq
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 <a id="20k6_5_video_inv_2_per_seq___acam_p_"></a>
 ## 20k6_5_video_inv_2_per_seq       @ acamp-->xml_to_coco
 python xml_to_coco.py cfg=acamp:20k6_5_video_inv_2_per_seq
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+

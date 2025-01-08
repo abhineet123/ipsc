@@ -481,12 +481,18 @@ python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv:proc-0:len-2:strds:gap-1
 <a id="2_per_seq___inv_1k8_vid_entire_seq_acamp_"></a>
 #### 2_per_seq       @ inv/1k8_vid_entire_seq/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv_2_per_seq:proc-0:len-2:strds:gap-1
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 <a id="6_per_seq___inv_1k8_vid_entire_seq_acamp_"></a>
 #### 6_per_seq       @ inv/1k8_vid_entire_seq/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv_6_per_seq:proc-0:len-2:strds:gap-1
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 <a id="12_per_seq___inv_1k8_vid_entire_seq_acamp_"></a>
 #### 12_per_seq       @ inv/1k8_vid_entire_seq/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:1k8_vid_entire_seq_inv_12_per_seq:proc-0:len-2:strds:gap-1
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 
 <a id="10k6_vid_entire_seq___acam_p_"></a>
 ## 10k6_vid_entire_seq       @ acamp-->xml_to_ytvis
@@ -497,9 +503,13 @@ python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv:proc-0:len-2:strds:gap-
 <a id="2_per_seq___inv_10k6_vid_entire_seq_acam_p_"></a>
 #### 2_per_seq       @ inv/10k6_vid_entire_seq/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv_2_per_seq:proc-0:len-2:strds:gap-1
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 <a id="12_per_seq___inv_10k6_vid_entire_seq_acam_p_"></a>
 #### 12_per_seq       @ inv/10k6_vid_entire_seq/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv_12_per_seq:proc-0:len-2:strds:gap-1
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 
 <a id="20k6_5_video___acam_p_"></a>
 ## 20k6_5_video       @ acamp-->xml_to_ytvis
@@ -511,9 +521,13 @@ python xml_to_ytvis.py cfg=acamp:20k6_5_video_inv:proc-0:len-2:strds:gap-1
 <a id="2_per_seq___inv_20k6_5_video_acamp_"></a>
 #### 2_per_seq       @ inv/20k6_5_video/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:20k6_5_video_inv_2_per_seq:proc-0:len-2:strds:gap-1
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 <a id="12_per_seq___inv_20k6_5_video_acamp_"></a>
 #### 12_per_seq       @ inv/20k6_5_video/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:20k6_5_video_inv_12_per_seq:proc-0:len-2:strds:gap-1
+'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
 
 <a id="2_per_seq_dbg_bear___acam_p_"></a>
 ## 2_per_seq_dbg_bear       @ acamp-->xml_to_ytvis
