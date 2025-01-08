@@ -98,7 +98,7 @@ class Params(paramparse.CFG):
 
         self.img_ext = 'jpg'
         self.img_paths = ''
-        self.img_paths_suffix = ''
+        self.img_paths_suffix = []
         self.img_root_dir = ''
         self.all_img_dirs = 1
 
@@ -118,6 +118,7 @@ class Params(paramparse.CFG):
         self.det_pkl_dir = ''
         self.load_gt = 0
         self.gt_pkl = ''
+        self.gt_pkl_suffix = []
         self.load_det = 0
         self.save_det_pkl = 0
         self.det_pkl = ''
@@ -373,8 +374,13 @@ def evaluate(
         det_pkl = utils.linux_path(det_pkl_dir, det_pkl)
 
         gt_pkl = params.gt_pkl
+        gt_pkl_suffix = params.gt_pkl_suffix
         if not gt_pkl:
             gt_pkl = f"{out_root_name}.pkl"
+
+        if gt_pkl_suffix:
+            gt_pkl_suffix = '-'.join(gt_pkl_suffix)
+            gt_pkl = utils.add_suffix(gt_pkl, gt_pkl_suffix, sep='-')
 
         gt_pkl = utils.linux_path(gt_pkl_dir, gt_pkl)
 
@@ -3268,9 +3274,11 @@ def run(params: Params, sweep_mode: dict, *argv):
 
     gt_paths = params.gt_paths
     seq_path_list_file = params.img_paths
+    img_paths_suffix = params.img_paths_suffix
 
-    if params.img_paths_suffix:
-        seq_path_list_file = utils.add_suffix(seq_path_list_file, params.img_paths_suffix)
+    if img_paths_suffix:
+        img_paths_suffix = '-'.join(img_paths_suffix)
+        seq_path_list_file = utils.add_suffix(seq_path_list_file, img_paths_suffix)
 
     _det_path_list_file = params.det_paths
     if det_nms > 0:

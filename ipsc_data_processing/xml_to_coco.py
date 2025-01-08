@@ -523,7 +523,13 @@ def main():
     if n_seq > 0:
         end_id = start_id + n_seq - 1
 
-    seq_suffix = ''
+    if params.seq_paths_suffix:
+        output_json = add_suffix(output_json, params.seq_paths_suffix, sep='-')
+
+    if load_samples_suffix:
+        load_samples_suffix = '_'.join(load_samples_suffix)
+        load_samples_root = f'{load_samples_root}_{load_samples_suffix}'
+        output_json = add_suffix(output_json, load_samples_suffix, sep='-')
 
     if start_id > 0 or end_id >= 0 or seq_stride > 1:
         if end_id < 0:
@@ -534,11 +540,6 @@ def main():
             seq_suffix = f'{seq_suffix}_{seq_stride}'
         output_json = add_suffix(output_json, f'seq-{seq_suffix}', sep='-')
 
-    if load_samples_suffix:
-        load_samples_suffix = '_'.join(load_samples_suffix)
-        load_samples_root = f'{load_samples_root}_{load_samples_suffix}'
-        output_json = add_suffix(output_json, load_samples_suffix, sep='-')
-
     if load_samples:
         seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
     else:
@@ -548,7 +549,6 @@ def main():
             if seq_paths.endswith('.txt'):
                 if params.seq_paths_suffix:
                     seq_paths = add_suffix(seq_paths, params.seq_paths_suffix)
-                    output_json = add_suffix(output_json, params.seq_paths_suffix, sep='-')
 
                 assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
 
