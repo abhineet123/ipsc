@@ -5,6 +5,7 @@
     - [0_9       @ detrac](#0_9___detrac_)
     - [0_48       @ detrac](#0_48___detrac_)
     - [49_68       @ detrac](#49_68___detrac_)
+    - [49_85       @ detrac](#49_85___detrac_)
 - [ipsc       @ xml_to_coco](#ipsc___xml_to_coc_o_)
     - [all_frames_roi       @ ipsc](#all_frames_roi___ipsc_)
         - [g2_0_37       @ all_frames_roi/ipsc](#g2_0_37___all_frames_roi_ips_c_)
@@ -105,6 +106,9 @@ python xml_to_coco.py cfg=detrac:non_empty:0_48:zip
 <a id="49_68___detrac_"></a>
 ## 49_68       @ detrac-->xml_to_coco
 python xml_to_coco.py cfg=detrac:non_empty:49_68:zip  
+<a id="49_85___detrac_"></a>
+## 49_85       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:49_85:zip  
 
 
 <a id="ipsc___xml_to_coc_o_"></a>
