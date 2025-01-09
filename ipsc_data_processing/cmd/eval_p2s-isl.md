@@ -29,5 +29,5 @@ python3 eval_det.py cfg=p2s,detrac:non_empty:49_85:nms:gt-1:proc-1:_in_-resnet_6
 
 <a id="49_85_100_per_seq_random___detrac_0_48_fbb_resnet_640_"></a>
 ### 49_85-100_per_seq_random       @ detrac-0_48-fbb/resnet-640-->eval_p2s-isl
-python3 eval_det.py cfg=p2s,detrac:non_empty:100_per_seq_random:49_85:100_per_seq_random:nms-1:gt-0:proc-1:_in_-resnet_640_detrac-non_empty-seq-0_48-batch_60-fbb/ckpt-__var__-detrac-non_empty-100_per_seq_random-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-49_85-100_per_seq_random-fbb
+python3 eval_det.py cfg=p2s,detrac:non_empty:100_per_seq_random:49_85:100_per_seq_random:nms:gt-0:proc-1:_in_-resnet_640_detrac-non_empty-seq-0_48-batch_60-fbb/ckpt-__var__-detrac-non_empty-100_per_seq_random-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-49_85-100_per_seq_random-fbb:dbg
 

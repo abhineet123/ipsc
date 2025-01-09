@@ -1,7 +1,7 @@
 import operator
 import os
 import sys
-import traceback
+import json
 import logging
 import multiprocessing
 
@@ -1369,8 +1369,8 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=T
         if os.path.isdir(_f):
             _f = linux_path(_f, 'seq_to_samples.txt')
         with open(_f, 'r') as fid:
-            curr_seq_to_samples = ast.literal_eval(fid.read())
-            # curr_seq_to_samples = json.load(fid)
+            # curr_seq_to_samples = ast.literal_eval(fid.read())
+            curr_seq_to_samples = json.load(fid)
         for _seq in curr_seq_to_samples:
             if xml_dir_name is not None:
                 _dir_img_names = [(os.path.dirname(_sample), os.path.splitext(os.path.basename(_sample))[0])
