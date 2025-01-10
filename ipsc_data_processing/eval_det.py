@@ -586,7 +586,7 @@ def evaluate(
             gt_iter = gt_filenames
 
             if show_pbar:
-                gt_iter = tqdm(gt_iter, total=n_gt_filenames, ncols=100)
+                gt_iter = tqdm(gt_iter, total=n_gt_filenames, ncols=100, position=0, leave=True)
             else:
                 print_('reading GT')
 
@@ -715,7 +715,7 @@ def evaluate(
             det_pbar = None
 
             if show_pbar and n_det_paths > 1:
-                det_pbar = det_paths_iter = tqdm(det_paths)
+                det_pbar = det_paths_iter = tqdm(det_paths, position=0, leave=True)
             else:
                 det_paths_iter = det_paths
                 print_('reading dets')
@@ -793,7 +793,7 @@ def evaluate(
                 if not show_pbar or n_det_paths > 1:
                     det_filename_iter = det_filenames
                 else:
-                    det_pbar = det_filename_iter = tqdm(det_filenames)
+                    det_pbar = det_filename_iter = tqdm(det_filenames, position=0, leave=True)
 
                 det_pbar_base_msg = ''
                 if n_seq > 1:
@@ -921,7 +921,7 @@ def evaluate(
                 nms_iter = seq_det_file_to_bboxes.items()
                 nms_pbar = None
                 if show_pbar:
-                    nms_pbar = nms_iter = tqdm(nms_iter)
+                    nms_pbar = nms_iter = tqdm(nms_iter, position=0, leave=True)
                     print_('\nperforming nms')
                 # seq_bbox_ids_to_delete = []
                 total_bboxes = 0
@@ -1078,7 +1078,7 @@ def evaluate(
             det_start_t = time.time()
             det_post_proc_pbar = range(n_seq)
             if show_pbar:
-                det_post_proc_pbar = tqdm(det_post_proc_pbar)
+                det_post_proc_pbar = tqdm(det_post_proc_pbar, position=0, leave=True)
 
             for seq_idx in det_post_proc_pbar:
 
@@ -1378,7 +1378,7 @@ def evaluate(
         cat_to_vis_count = {k: 0 for k in cls_cat_types}
         seq_iter = range(n_seq)
         if show_pbar:
-            seq_iter = tqdm(seq_iter, desc="sequence", ncols=70)
+            seq_iter = tqdm(seq_iter, desc="sequence", ncols=70, position=0, leave=True)
         else:
             print_('computing mAP')
 
@@ -2176,7 +2176,7 @@ def evaluate(
                         fps_to_gt_iter = tqdm(
                             fps_to_gt_iter,
                             desc="fps_to_gt: seq_gt_data_dict",
-                            ncols=100)
+                            ncols=100, position=0, leave=True)
 
                     """GT is class-agnostic so should be added to the CSV only once"""
                     for _gt_file_id, _frame_gt_data in fps_to_gt_iter:
@@ -2280,7 +2280,7 @@ def evaluate(
                 fp_nex_whole_dets_iter = fp_nex_whole_dets
                 if show_pbar:
                     fp_nex_whole_dets_iter = tqdm(
-                        fp_nex_whole_dets_iter, desc="fps_to_gt: fp_nex_whole_dets", ncols=100)
+                        fp_nex_whole_dets_iter, desc="fps_to_gt: fp_nex_whole_dets", ncols=100, position=0, leave=True)
 
                 for _det in fp_nex_whole_dets_iter:
                     _det_xmin, _det_ymin, _det_xmax, _det_ymax = _det["bbox"]
@@ -3791,7 +3791,7 @@ def sweep(params: Params):
         print()
     else:
         out_root_dirs = []
-        for sweep_val_combo in tqdm(sweep_val_combos):
+        for sweep_val_combo in tqdm(sweep_val_combos, position=0, leave=True):
             out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
             out_root_dirs.append(out_root_dir)
 
@@ -3895,7 +3895,7 @@ def main():
                                   if not os.path.isfile(utils.linux_path(_path, eval_flag_id))]
 
         if params.det_root_dir:
-            new_matching_paths = [os.path.relpath(k, params.det_root_dir) for k in new_matching_paths]
+            new_matching_paths = [utils.linux_path(os.path.relpath(k, params.det_root_dir)) for k in new_matching_paths]
 
         new_det_paths = [k for k in new_matching_paths if k not in proc_det_paths]
         new_det_paths.sort(reverse=True, key=lambda x: int(x.replace(rep1, '').replace(rep2, '')))

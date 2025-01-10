@@ -1358,13 +1358,12 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=T
     # if load_samples == '1':
     #     load_samples = 'seq_to_samples.txt'
 
-    if verbose:
-        print('load_samples: {}'.format(pformat(load_paths)))
     if load_path_root:
         load_paths = [linux_path(load_path_root, k) for k in load_paths]
 
     if verbose:
-        print('Loading samples from : {}'.format(load_paths))
+        print(f'\n\nLoading samples from : {load_paths}\n\n')
+
     for _f in load_paths:
         if os.path.isdir(_f):
             _f = linux_path(_f, 'seq_to_samples.txt')
