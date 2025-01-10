@@ -1400,22 +1400,24 @@ def evaluate(
             n_seq_class_dets = len(seq_class_det_data)
             n_class_dets += n_seq_class_dets
 
-            print_(f'n_seq_gts: {n_seq_gts}')
-            print_(f'n_seq_class_gts: {n_seq_class_gts}')
-            print_(f'n_seq_class_dets: {n_seq_class_dets}')
+            # if params.verbose == 2:
+            #     print_(f'n_seq_gts: {n_seq_gts}')
+            #     print_(f'n_seq_class_gts: {n_seq_class_gts}')
+            #     print_(f'n_seq_class_dets: {n_seq_class_dets}')
 
             seq_gt_file_ids = set(seq_gt_data_dict.keys())
-            n_seq_gt_file_ids = len(seq_gt_file_ids)
+            # n_seq_gt_file_ids = len(seq_gt_file_ids)
 
             seq_class_gt_file_ids = set([obj['file_id'] for obj in seq_class_gt_data])
-            n_seq_class_gt_file_ids = len(seq_class_gt_file_ids)
+            # n_seq_class_gt_file_ids = len(seq_class_gt_file_ids)
 
             seq_class_det_file_ids = set([obj['file_id'] for obj in seq_class_det_data])
-            n_seq_det_file_ids = len(seq_class_det_file_ids)
+            # n_seq_det_file_ids = len(seq_class_det_file_ids)
 
-            print_(f'n_seq_gt_file_ids: {n_seq_gt_file_ids}')
-            print_(f'n_seq_class_gt_file_ids: {n_seq_class_gt_file_ids}')
-            print_(f'n_seq_det_file_ids: {n_seq_det_file_ids}')
+            # if params.verbose == 2:
+            #     print_(f'n_seq_gt_file_ids: {n_seq_gt_file_ids}')
+            #     print_(f'n_seq_class_gt_file_ids: {n_seq_class_gt_file_ids}')
+            #     print_(f'n_seq_det_file_ids: {n_seq_det_file_ids}')
 
             """all frames with no det of this class but containing gt of this class"""
             missing_class_det_file_ids = seq_class_gt_file_ids - seq_class_det_file_ids
@@ -1462,8 +1464,9 @@ def evaluate(
             seq_class_det_file_ids_with_dummy = set([obj['file_id'] for obj in seq_class_det_data])
             n_seq_class_det_file_ids_with_dummy = len(seq_class_det_file_ids_with_dummy)
 
-            print_(f'n_seq_gt_file_ids_with_dummy: {n_seq_gt_file_ids_with_dummy}')
-            print_(f'n_seq_class_det_file_ids_with_dummy: {n_seq_class_det_file_ids_with_dummy}')
+            # if params.verbose == 2:
+            #     print_(f'n_seq_gt_file_ids_with_dummy: {n_seq_gt_file_ids_with_dummy}')
+            #     print_(f'n_seq_class_det_file_ids_with_dummy: {n_seq_class_det_file_ids_with_dummy}')
 
             """sort detections by frame"""
             seq_class_det_data.sort(key=lambda x: x['file_id'])
@@ -3304,6 +3307,8 @@ def run(params: Params, sweep_mode: dict, *argv):
         # seq_to_video_ids = list(map(int, stride_to_video_ids[str(vid_stride)].split(',')))
         vid_info = [stride_to_video_ids[str(vid_stride)], stride_to_filenames[str(vid_stride)]]
 
+        # print(f'\nrestricting video ids to:\n{vid_info[0]}\n')
+
     img_root_dir = params.img_root_dir
     gt_root_dir = params.gt_root_dir
 
@@ -3410,7 +3415,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         else:
             raise AssertionError('invalid seq_path_list_file: {}'.format(seq_path_list_file))
 
-    print_(f'seq_path_list:\n{utils.to_str(seq_path_list)}\n')
+    # print_(f'seq_path_list:\n{utils.to_str(seq_path_list)}\n')
 
     if params.gt_csv_suffix:
         params.gt_csv_name = utils.add_suffix(params.gt_csv_name, params.gt_csv_suffix)
@@ -3439,7 +3444,7 @@ def run(params: Params, sweep_mode: dict, *argv):
                         if os.path.isdir(utils.linux_path(gt_paths, name))]
         gt_path_list.sort(key=utils.sortKey)
 
-    print_(f'gt_path_list:\n{utils.to_str(gt_path_list)}\n')
+    # print_(f'gt_path_list:\n{utils.to_str(gt_path_list)}\n')
 
     if not detection_names:
         detection_names = ['detections.csv', ]
@@ -3555,7 +3560,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         else:
             det_path_list = det_path_list[seq_start_id:seq_end_id + 1]
 
-        print_(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
+        # print_(f'det_path_list:\n{utils.to_str(det_path_list)}\n')
 
         # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
 
@@ -3849,7 +3854,6 @@ def main():
 
     params.n_threads = 1
     params.n_proc = 1
-
 
     wc_start_idx = det_paths.find(wc)
     wc_end_idx = wc_start_idx + len(wc)

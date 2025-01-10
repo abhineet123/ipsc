@@ -160,6 +160,8 @@
 <a id="on_0_15___len_2_aug_fbb_static_16_53_"></a>
 ### on-0_15       @ len-2-aug-fbb/static-16_53-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-static-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-static-batch_4:_out_-p2s-static-ipsc-16_53-len-2-aug-fbb
+`vstrd-2`
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-16_53-length-2-stride-1-static-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-static-batch_4:_out_-p2s-static-ipsc-16_53-len-2-aug-fbb-vstrd-2:vstrd-2
 
 <a id="swin_16_5_3_"></a>
 # swin-16_53
