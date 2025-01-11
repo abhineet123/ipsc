@@ -16,7 +16,8 @@ from tqdm import tqdm
 import imagesize
 import paramparse
 
-from eval_utils import col_bgr, sortKey, linux_path, draw_box, annotate, load_samples_from_txt, get_iou
+from eval_utils import (col_bgr, sortKey, linux_path, draw_box,
+                        annotate, load_samples_from_txt, get_iou, add_suffix)
 
 from itertools import groupby
 import pycocotools.mask as mask_util
@@ -42,6 +43,8 @@ class Params(paramparse.CFG):
         self.load_path = ''
         self.load_samples = []
         self.load_samples_root = ''
+        self.load_samples_suffix = []
+
         self.map_folder = ''
         self.min_val = 0
         self.recursive = 0
@@ -920,6 +923,8 @@ def run(params: Params):
 
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
+    load_samples_suffix = params.load_samples_suffix
+
     if len(load_samples) == 1:
         if load_samples[0] == 1:
             load_samples = ['seq_to_samples.txt', ]
@@ -1007,6 +1012,11 @@ def run(params: Params):
     if params.incremental:
         print(f'saving incremental clips')
         description = f'{description}-incremental'
+
+    if load_samples_suffix:
+        load_samples_suffix = '_'.join(load_samples_suffix)
+        load_samples_root = f'{load_samples_root}_{load_samples_suffix}'
+        description = f'{description}-{load_samples_suffix}'
 
     if load_samples:
         seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
