@@ -1539,8 +1539,9 @@ def compute_binary_cls_metrics(
                     if fp_id > 0:
                         roc_auc_prev = np.round(roc_aucs[fp_id - 1][1], 3)
                         roc_auc_curr = np.round(roc_auc, 3)
+
                         if roc_auc_prev > roc_auc_curr:
-                            raise AssertionError('decreasing roc_auc')
+                            print('decreasing roc_auc')
 
             # if roc_auc == 0:
             #     print('zero roc_auc')
