@@ -1013,6 +1013,11 @@ def run(params: Params):
         print(f'saving incremental clips')
         description = f'{description}-incremental'
 
+    if params.seq_paths_suffix:
+        name_, ext_ = os.path.splitext(seq_paths)
+        seq_paths = f'{name_}_{params.seq_paths_suffix}{ext_}'
+        description = f'{description}-{params.seq_paths_suffix}'
+
     if load_samples_suffix:
         load_samples_suffix = '_'.join(load_samples_suffix)
         load_samples_root = f'{load_samples_root}_{load_samples_suffix}'
@@ -1025,11 +1030,6 @@ def run(params: Params):
 
         if seq_paths:
             if seq_paths.endswith('.txt'):
-                if params.seq_paths_suffix:
-                    name_, ext_ = os.path.splitext(seq_paths)
-                    seq_paths = f'{name_}_{params.seq_paths_suffix}{ext_}'
-                    description = f'{description}-{params.seq_paths_suffix}'
-
                 assert os.path.isfile(seq_paths), f"nonexistent seq_paths file: {seq_paths}"
 
                 seq_paths = [x.strip() for x in open(seq_paths).readlines() if x.strip()]
