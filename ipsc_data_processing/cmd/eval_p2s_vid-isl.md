@@ -52,7 +52,7 @@
 <a id="on_49_85_80_per_seq_random_len_8___detrac_0_48_len_8_fbb_static_"></a>
 ### on-49_85-80_per_seq_random_len_8       @ detrac-0_48-len-8-fbb/static-->eval_p2s_vid-isl
 `strd-8`
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-static-batch_12-seq2k-fbb/ckpt-__var__-detrac-length-8-stride-8-non_empty-80_per_seq_random_len_8-seq-49_85/csv-static-batch_8:_out_-p2s-static-detrac-0_48-len-8-80_per_seq_random_len_8-49_85-strd-8-fbb
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:80_per_seq_random_len_8:49_85:gt-1:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-static-batch_12-seq2k-fbb/ckpt-__var__-detrac-length-8-stride-8-non_empty-80_per_seq_random_len_8-seq-49_85/csv-static-batch_8:_out_-p2s-static-detrac-0_48-len-8-80_per_seq_random_len_8-49_85-strd-8-fbb-rerun
 
 <a id="mid_"></a>
 # mid
