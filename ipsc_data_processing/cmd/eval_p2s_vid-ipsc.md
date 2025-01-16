@@ -6,6 +6,8 @@
 - [static-54_126](#static_54_126_)
     - [len-2-aug-fbb       @ static-54_126](#len_2_aug_fbb___static_54_12_6_)
         - [on-0_15       @ len-2-aug-fbb/static-54_126](#on_0_15___len_2_aug_fbb_static_54_12_6_)
+    - [len-6-aug-fbb       @ static-54_126](#len_6_aug_fbb___static_54_12_6_)
+        - [on-0_15       @ len-6-aug-fbb/static-54_126](#on_0_15___len_6_aug_fbb_static_54_12_6_)
 - [swin-16_53](#swin_16_5_3_)
     - [len-2       @ swin-16_53](#len_2___swin_16_53_)
         - [on-train       @ len-2/swin-16_53](#on_train___len_2_swin_16_53_)
@@ -172,6 +174,14 @@ python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms:agn:proc-1:_in_-resnet_6
 ## len-2-aug-fbb       @ static-54_126-->eval_p2s_vid-ipsc
 <a id="on_0_15___len_2_aug_fbb_static_54_12_6_"></a>
 ### on-0_15       @ len-2-aug-fbb/static-54_126-->eval_p2s_vid-ipsc
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms:nms:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-static-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-static-batch_4:_out_-p2s-static-ipsc-54_126-len-2-aug-fbb
+`vstrd-2`
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms:nms:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-static-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-static-batch_4:_out_-p2s-static-ipsc-54_126-len-2-aug-fbb-vstrd-2:vstrd-2
+
+<a id="len_6_aug_fbb___static_54_12_6_"></a>
+## len-6-aug-fbb       @ static-54_126-->eval_p2s_vid-ipsc
+<a id="on_0_15___len_6_aug_fbb_static_54_12_6_"></a>
+### on-0_15       @ len-6-aug-fbb/static-54_126-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms:nms:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-static-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-static-batch_4:_out_-p2s-static-ipsc-54_126-len-6-aug-fbb
 `vstrd-6`
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-6-stride-1-static-batch_32-jtr-res_1280-fbb/ckpt-__var__-ext_reorg_roi_g2-0_15-length-6-stride-1/csv-static-batch_4:_out_-p2s-static-ipsc-54_126-len-6-aug-fbb-vstrd-6:vstrd-6:dbg-0:vbs-0
