@@ -250,6 +250,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     )
 
     xml_data_list = []
+    target_ids = []
 
     for obj_id, obj in enumerate(objs):
 
@@ -269,6 +270,8 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
                 print(f'{xml_path}: ignoring obj with missing or invalid target_id')
                 continue
             raise ValueError(e)
+
+        target_ids.append(target_id)
 
         bbox = obj.find('bndbox')
         # score = float(obj.find('score').text)
@@ -334,8 +337,12 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
         xml_data_list.append(xml_data)
 
+    target_ids=list(set(target_ids))
+
     n_objs = len(xml_data_list)
-    if seq_name not in seq_name_to_info:
+    try:
+        seq_info = seq_name_to_info[seq_name]
+    except KeyError:
         all_xml_files = seq_name_to_xml_paths[seq_name]
         seq_name_to_info[seq_name] = dict(
             name=seq_name,
@@ -343,10 +350,12 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
             width=img_w,
             aspect_ratio=float(img_w) / float(img_h),
             length=len(all_xml_files),
+            target_ids=target_ids,
             n_objs=[n_objs, ],
         )
     else:
-        seq_name_to_info[seq_name]['n_objs'].append(n_objs)
+        seq_info['n_objs'].append(n_objs)
+        seq_info['target_ids'] += target_ids
 
     xml_dict['objs'] = xml_data_list
 
@@ -1248,6 +1257,12 @@ def run(params: Params):
 
         for seq_name, seq_info in seq_name_to_info.items():
             n_objs_list_all += seq_info['n_objs']
+
+            target_ids = seq_info['target_ids']
+            target_ids = list(set(target_ids))
+            n_target_ids = len(target_ids)
+            seq_info['n_target_ids'] = n_target_ids
+            del(seq_info['target_ids'])
             get_n_objs_stats(seq_info, params)
 
         seq_info_all = dict(
