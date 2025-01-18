@@ -1218,8 +1218,8 @@ def run(params: Params):
             continue
 
         all_data_xml_paths = list(set([item for sublist in all_split_files for item in sublist]))
-        seq_name_to_info = {}
-        from collections import defaultdict
+        from collections import defaultdict, OrderedDict
+        seq_name_to_info = OrderedDict()
         quant_bin_to_ious = defaultdict(list)
 
         read_xml_func = functools.partial(
@@ -1280,6 +1280,7 @@ def run(params: Params):
 
         get_n_objs_stats(seq_info_all, params)
         seq_name_to_info['__all__'] = seq_info_all
+        seq_name_to_info.move_to_end('__all__', last=False)
 
         seq_name_to_info_df = pd.DataFrame.from_dict(seq_name_to_info, orient='index')
         seq_name_to_info_dir = os.path.join(db_root_dir, out_dir_name)
