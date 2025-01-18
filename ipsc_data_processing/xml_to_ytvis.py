@@ -903,6 +903,7 @@ def get_n_objs_stats(seq_info: dict, params: Params):
     if params.stride == 1 and params.frame_gap == 1:
         assert n_seq_frames == n_frames, "n_seq_frames mismatch"
 
+    seq_info['n_objects'] = np.sum(n_objs_list)
     seq_info['mean'] = np.mean(n_objs_list)
     seq_info['median'] = np.median(n_objs_list)
     seq_info['min'] = np.amin(n_objs_list)
