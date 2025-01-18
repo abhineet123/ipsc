@@ -1255,12 +1255,15 @@ def run(params: Params):
         n_objs_list_all = []
         n_tokens_per_obj = 4 * params.length + 1
 
+        n_target_ids_all = 0
+
         for seq_name, seq_info in seq_name_to_info.items():
             n_objs_list_all += seq_info['n_objs']
 
             target_ids = seq_info['target_ids']
             target_ids = list(set(target_ids))
             n_target_ids = len(target_ids)
+            n_target_ids_all += n_target_ids
             seq_info['n_target_ids'] = n_target_ids
             del(seq_info['target_ids'])
             get_n_objs_stats(seq_info, params)
@@ -1272,6 +1275,7 @@ def run(params: Params):
             aspect_ratio=0,
             length=len(n_objs_list_all),
             n_objs=n_objs_list_all,
+            n_target_ids=n_target_ids_all,
         )
 
         get_n_objs_stats(seq_info_all, params)
