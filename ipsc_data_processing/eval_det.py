@@ -204,6 +204,7 @@ class Params(paramparse.CFG):
         self.debug = 0
         self.ckpt_iter = ''
 
+        self.seq_wise = 0
         self.vid_stride = []
         self.nms_thresh = [0., ]
         self.vid_nms_thresh = [0., ]
@@ -3752,6 +3753,9 @@ def run(params: Params, sweep_mode: dict, *argv):
 
 def sweep(params: Params):
     params_ = copy.deepcopy(params)
+    if params_.seq_wise:
+        params_.sweep_params.append('seq')
+
     if params_.vid_stride:
         params_.sweep_params.append('vid_stride')
 
