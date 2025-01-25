@@ -3296,10 +3296,10 @@ def run(params: Params, sweep_mode: dict, *argv):
         assert params.vid_det, "vid_stride filtering can only be performed with vid_det data"
 
         _det_path_list_parent = os.path.dirname(_det_path_list_file)
-        vid_info_path = utils.linux_path(_det_path_list_parent, f"vid_info.json.gz")
+        _det_path_list_gparent = os.path.dirname(_det_path_list_parent)
+        vid_info_path = utils.linux_path(_det_path_list_gparent, f"vid_info.json.gz")
         if not os.path.isfile(vid_info_path):
-            _det_path_list_gparent = os.path.dirname(_det_path_list_parent)
-            vid_info_path = utils.linux_path(_det_path_list_gparent, f"vid_info.json.gz")
+            vid_info_path = utils.linux_path(_det_path_list_parent, f"vid_info.json.gz")
             assert os.path.isfile(vid_info_path), f"nonexistent vid_info_path: {vid_info_path}"
 
         print_(f'loading vid_info from {vid_info_path}')
