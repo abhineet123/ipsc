@@ -304,6 +304,9 @@ def clamp(_vals, min_val, max_val):
 def drawBox(image, xmin, ymin, xmax, ymax, box_color=(0, 255, 0), label=None, font_size=0.3, mask=None, thickness=2):
     image_float = image.astype(np.float32)
 
+    if isinstance(box_color, str):
+        box_color = col_bgr[box_color]
+
     if mask is not None:
         mask_pts = np.asarray(mask).reshape((-1, 1, 2)).astype(np.int32)
         cv2.drawContours(image_float, mask_pts, -1, box_color, thickness=thickness, lineType=cv2.LINE_AA)
@@ -1438,7 +1441,6 @@ def compute_binary_cls_metrics(
     if n_val == 0:
         return class_tp, class_fp, conf_to_acc, roc_aucs, fp_tp
 
-
     labels = labels.reshape((n_val, 1))
 
     thresh_iter = thresholds
@@ -2410,6 +2412,68 @@ def get_mask_iou(mask_det, mask_gt, bb_det, bb_gt):
     mask_iou = n_mask_inter / n_mask_union
 
     return mask_iou
+
+
+def compute_overlaps_multi(iou, ioa_1, ioa_2, objects_1, objects_2, xywh=False):
+    """
+
+    compute overlap between each pair of objects in two sets of objects
+    can be used for computing overlap between all detections and annotations in a frame
+
+    :type iou: np.ndarray | None
+    :type ioa_1: np.ndarray | None
+    :type ioa_2: np.ndarray | None
+    :type object_1: np.ndarray
+    :type objects_2: np.ndarray
+    :type logger: logging.RootLogger | None
+    :rtype: None
+    """
+    # handle annoying singletons
+    if len(objects_1.shape) == 1:
+        objects_1 = objects_1.reshape((1, 4))
+
+    if len(objects_2.shape) == 1:
+        objects_2 = objects_2.reshape((1, 4))
+
+    n1 = objects_1.shape[0]
+    n2 = objects_2.shape[0]
+
+    ul_1 = objects_1[:, :2]  # n1 x 2
+    ul_1_rep = np.tile(np.reshape(ul_1, (n1, 1, 2)), (1, n2, 1))  # np(n1 x n2 x 2) -> std(n2 x 2 x n1)
+    ul_2 = objects_2[:, :2]  # n2 x 2
+    ul_2_rep = np.tile(np.reshape(ul_2, (1, n2, 2)), (n1, 1, 1))  # np(n1 x n2 x 2) -> std(n2 x 2 x n1)
+
+    if xywh:
+        size_1 = objects_1[:, 2:]  # n1 x 2
+        size_2 = objects_2[:, 2:]  # n2 x 2
+        br_1 = ul_1 + size_1 - 1  # n1 x 2
+        br_2 = ul_2 + size_2 - 1  # n2 x 2
+    else:
+        br_1 = objects_1[:, 2:]  # n1 x 2
+        br_2 = objects_2[:, 2:]  # n2 x 2
+        size_1 = br_1 - ul_1 + 1
+        size_2 = br_2 - ul_2 + 1
+
+    br_1_rep = np.tile(np.reshape(br_1, (n1, 1, 2)), (1, n2, 1))  # np(n1 x n2 x 2) -> std(n2 x 2 x n1)
+    br_2_rep = np.tile(np.reshape(br_2, (1, n2, 2)), (n1, 1, 1))  # np(n1 x n2 x 2) -> std(n2 x 2 x n1)
+
+    size_inter = np.minimum(br_1_rep, br_2_rep) - np.maximum(ul_1_rep, ul_2_rep) + 1  # n2 x 2 x n1
+    size_inter[size_inter < 0] = 0
+    # np(n1 x n2 x 1) -> std(n2 x 1 x n1)
+    area_inter = np.multiply(size_inter[:, :, 0], size_inter[:, :, 1])
+
+    area_1 = np.multiply(size_1[:, 0], size_1[:, 1]).reshape((n1, 1))  # n1 x 1
+    area_1_rep = np.tile(area_1, (1, n2))  # np(n1 x n2 x 1) -> std(n2 x 1 x n1)
+    area_2 = np.multiply(size_2[:, 0], size_2[:, 1]).reshape((n2, 1))  # n2 x 1
+    area_2_rep = np.tile(area_2.transpose(), (n1, 1))  # np(n1 x n2 x 1) -> std(n2 x 1 x n1)
+    area_union = area_1_rep + area_2_rep - area_inter  # n2 x 1 x n1
+
+    if iou is not None:
+        iou[:] = np.divide(area_inter, area_union)  # n1 x n2
+    if ioa_1 is not None:
+        ioa_1[:] = np.divide(area_inter, area_1_rep)  # n1 x n2
+    if ioa_2 is not None:
+        ioa_2[:] = np.divide(area_inter, area_2_rep)  # n1 x n2
 
 
 def get_iou(bb_det, bb_gt, xywh=False):

@@ -16,6 +16,7 @@
     - [mot15       @ mot_csv_to_xml_coco](#mot15___mot_csv_to_xml_coc_o_)
     - [mot17       @ mot_csv_to_xml_coco](#mot17___mot_csv_to_xml_coc_o_)
     - [detrac       @ mot_csv_to_xml_coco](#detrac___mot_csv_to_xml_coc_o_)
+        - [ignored       @ detrac/mot_csv_to_xml_coco](#ignored___detrac_mot_csv_to_xml_coco_)
 - [mot_to_csv](#mot_to_cs_v_)
     - [CTC       @ mot_to_csv](#ctc___mot_to_csv_)
         - [annotations       @ CTC/mot_to_csv](#annotations___ctc_mot_to_csv_)
@@ -31,6 +32,7 @@
         - [sdp       @ mot17_obsolete/mot_to_csv](#sdp___mot17_obsolete_mot_to_cs_v_)
         - [dpm       @ mot17_obsolete/mot_to_csv](#dpm___mot17_obsolete_mot_to_cs_v_)
     - [detrac       @ mot_to_csv](#detrac___mot_to_csv_)
+        - [ignored       @ detrac/mot_to_csv](#ignored___detrac_mot_to_cs_v_)
     - [GRAM       @ mot_to_csv](#gram___mot_to_csv_)
         - [no_idot       @ GRAM/mot_to_csv](#no_idot___gram_mot_to_cs_v_)
     - [IDOT       @ mot_to_csv](#idot___mot_to_csv_)
@@ -114,6 +116,13 @@ python mot_csv_to_xml_coco.py cfg=mot17:zip:mot:vid
 python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot::vid
 
 python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot:start-19:end-19
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot:start-0:end-0
+<a id="ignored___detrac_mot_csv_to_xml_coco_"></a>
+### ignored       @ detrac/mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ignored
+`dbg`
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ignored:start-0:end-0:show
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ignored:start-11:end-50:show
 
 <a id="mot_to_cs_v_"></a>
 # mot_to_csv
@@ -182,6 +191,13 @@ python mot_to_csv.py root_dir=/data/MOT2017_DPM/Images list_file_name=mot17_dpm.
 python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 mode=1 start_id=0 end_id=0 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle.txt sample=0
 
 python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 mode=1 start_id=0 label=vehicle data_type=detections
+
+<a id="ignored___detrac_mot_to_cs_v_"></a>
+### ignored       @ detrac/mot_to_csv-->mot
+python mot_to_csv.py list_file_name=lists/detrac.txt root_dir=/data/DETRAC/Images mode=1 start_id=0 end_id=0 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle_ignored.txt sample=0 allow_ignored=1 show_img=0
+
+python mot_to_csv.py list_file_name=lists/detrac.txt root_dir=/data/DETRAC/Images mode=1 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle_ignored.txt sample=0 allow_ignored=1 show_img=0
+
 
 <a id="gram___mot_to_csv_"></a>
 ## GRAM       @ mot_to_csv-->mot

@@ -94,6 +94,8 @@ class Params:
         self.ext = 'mp4'
         self.file_name = ''
         self.fps = 30
+
+        self.allow_ignored = 0
         self.ignore_invalid = 0
         self.ignore_missing = 0
         self.img_ext = 'jpg'
@@ -125,7 +127,7 @@ class Params:
         self.show_class = 2
         self.show_img = 1
         self.start_id = 0
-        self.end_id = 0
+        self.end_id = -1
         self.stats_only = 0
         self.vis_size = ''
 
@@ -180,6 +182,8 @@ def main():
     class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
     class_names, class_cols = zip(*[k.split('\t') for k in class_info])
     # label2id = {x.strip(): i for (i, x) in enumerate(class_names)}
+    class_to_id = {x: i for (i, x) in enumerate(class_names)}
+    class_to_col = {x: c for (x, c) in zip(class_names, class_cols)}
 
     if list_file_name:
         if not os.path.exists(list_file_name):
@@ -204,6 +208,7 @@ def main():
             raise IOError('Either list file or a single sequence file must be provided')
         seq_paths = [file_name]
     n_seq = len(seq_paths)
+    print('Found {} sequences'.format(n_seq))
 
     if not out_root_dir:
         if out_root_suffix and root_dir:
@@ -211,7 +216,6 @@ def main():
         else:
             out_root_dir = os.path.dirname(seq_paths[0])
 
-    print('Running over {} sequences'.format(n_seq))
     pause_after_frame = 1
     total_n_frames = 0
     total_unique_obj_ids = 0
@@ -219,6 +223,8 @@ def main():
     if end_id < 0:
         end_id = len(seq_paths) - 1
     seq_paths = seq_paths[start_id:end_id + 1]
+    n_seq = len(seq_paths)
+    print('Running over {} sequences'.format(n_seq))
 
     seq_to_n_unique_obj_ids = {}
     for seq_idx, seq_path in enumerate(seq_paths):
@@ -281,7 +287,7 @@ def main():
 
         print(f'Reading {data_type} from {ann_path}')
 
-        ann_lines = open(ann_path).readlines()
+        # ann_lines = open(ann_path).readlines()
 
         if params.sample:
             print(f'sampling 1 in {params.sample} frames')
@@ -297,9 +303,11 @@ def main():
         if is_csv:
             obj_ids, obj_dict = parse_csv(ann_path, sampled_frame_ids, ignore_invalid, percent_scores, clamp_scores)
         else:
-            assert len(class_names) == 1, "multiple class names not supported in MOT mode"
-            obj_ids, obj_dict = parse_mot(ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores,
-                                          clamp_scores)
+            assert len(class_names) == 1 or params.allow_ignored, \
+                "multiple class names not supported in MOT mode unless allow_ignored is on"
+            obj_ids, obj_dict = parse_mot(
+                ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores,
+                clamp_scores, params.allow_ignored)
 
         # print(f'{list(obj_dict.keys())}')
         enable_resize = 0
@@ -357,9 +365,9 @@ def main():
         vid_frame_id = -1
 
         n_empty = 0
+
         pbar = tqdm(sampled_frame_ids)
         for frame_id in pbar:
-
             filename = src_files[frame_id]
 
             if is_vid:
@@ -417,6 +425,9 @@ def main():
                         'confidence': confidence,
                         'target_id': obj_id,
                     }
+
+                    col = class_to_col[label]
+
                     csv_raw.append(raw_data)
 
                     if show_img or not save_raw:
@@ -427,7 +438,7 @@ def main():
                         else:
                             _label = f'{obj_id}'
 
-                        drawBox(image, xmin, ymin, xmax, ymax, label=_label, font_size=0.5)
+                        drawBox(image, xmin, ymin, xmax, ymax, label=_label, font_size=0.5, box_color=col)
             else:
                 n_empty += 1
                 pbar.set_description(f'n_empty: {n_empty}')
@@ -463,7 +474,7 @@ def main():
 
         print('saving csv file to {}'.format(csv_file))
 
-        os.makedirs(os.path.dirname(csv_file), exist_ok=1)
+        os.makedirs(os.path.dirname(csv_file), exist_ok=True)
 
         df = pd.DataFrame(csv_raw)
         df.to_csv(csv_file)
@@ -472,7 +483,10 @@ def main():
         save_path = ''
 
         if show_img:
-            cv2.destroyWindow(seq_name)
+            try:
+                cv2.destroyWindow(seq_name)
+            except cv2.error:
+                pass
         # total_n_frames += out_frame_id
         # print('out_n_frames: ', out_frame_id)
 

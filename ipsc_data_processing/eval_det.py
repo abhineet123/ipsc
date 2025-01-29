@@ -69,6 +69,9 @@ class Params(paramparse.CFG):
     :ivar a: 'no animation is shown.',
     :ivar p: 'no plot is shown.',
     :ivar eval_sim: evaluate already created simulated detections,
+    :ivar filter_ignored: remove GT and det objects with IOA > ignore_ioa_thresh with any of the ignored regions
+    supplied as
+        objects with class name "ignored"; mainly for the DETRAC dataset
     :ivar assoc_method:
             '0: new method with det-to-GT and GT-to-det symmetrical associations;'
             '1: old method with only det-to-GT associations',
@@ -203,6 +206,8 @@ class Params(paramparse.CFG):
         self.dup_nms = 0
         self.debug = 0
         self.ckpt_iter = ''
+        self.filter_ignored = 0
+        self.ignore_ioa_thresh = 0.25
 
         self.seq_wise = 0
         self.vid_stride = []
@@ -395,6 +400,10 @@ def evaluate(
             gt_pkl = utils.add_suffix(gt_pkl, img_suffix)
             det_pkl = utils.add_suffix(det_pkl, img_suffix)
 
+        if params.filter_ignored:
+            gt_pkl = utils.add_suffix(gt_pkl, 'ign', sep='-')
+            det_pkl = utils.add_suffix(det_pkl, 'ign', sep='-')
+
         if params.class_agnostic:
             gt_pkl = utils.add_suffix(gt_pkl, 'agn', sep='-')
             det_pkl = utils.add_suffix(det_pkl, 'agn', sep='-')
@@ -422,11 +431,14 @@ def evaluate(
             gt_loaded = 1
         else:
             gt_data_dict = {}
+            if params.filter_ignored:
+                gt_data_dict['ignored'] = {}
+
             gt_loaded = 0
             print_('Generating GT data')
         if gt_loaded:
             for _seq_path, _seq_gt_data_dict in gt_data_dict.items():
-                if _seq_path == "counter_per_class":
+                if _seq_path in ["counter_per_class",  'ignored']:
                     continue
 
                 for gt_class in gt_classes:
@@ -514,9 +526,13 @@ def evaluate(
             os.path.basename(seq_img_path): seq_img_path for seq_img_path in seq_img_paths
         }
 
+        seq_gt_ignored_dict = None
+
         if gt_loaded:
             gt_img_paths = sorted(list(gt_data_dict[seq_path].keys()))
             gt_filenames = gt_img_paths[:]
+            if params.filter_ignored:
+                seq_gt_ignored_dict = gt_data_dict['ignored'][seq_path]
 
             all_img_paths += gt_img_paths
 
@@ -540,6 +556,7 @@ def evaluate(
             print_(f'\ngt_path: {gt_path:s}')
 
             seq_gt_data_dict = {}
+            seq_gt_ignored_dict = {}
 
             for gt_class in gt_classes:
                 gt_class_data_dict[gt_class][seq_path] = []
@@ -600,8 +617,29 @@ def evaluate(
 
                 row_ids = grouped_gt.groups[gt_filename]
                 img_df = df_gt.loc[row_ids]
-
                 file_path = gt_filename
+
+                if params.filter_ignored:
+                    ignored_df = img_df.loc[img_df['class'] == 'ignored']
+                    real_df = img_df.loc[img_df['class'] != 'ignored']
+
+                    real_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
+                                               float(row['xmax']), float(row['ymax'])]
+                                              for _, row in real_df.iterrows()
+                                              ])
+                    ignored_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
+                                                  float(row['xmax']), float(row['ymax'])]
+                                                 for _, row in ignored_df.iterrows()
+                                                 ])
+
+                    seq_gt_ignored_dict[file_path] = ignored_bboxes
+                    ioa_1 = np.empty((real_df.shape[0], ignored_df.shape[0]))
+                    utils.compute_overlaps_multi(None, ioa_1, None, real_bboxes, ignored_bboxes)
+                    valid_idx = np.flatnonzero(np.apply_along_axis(
+                        lambda x: np.all(np.less_equal(x, params.ignore_ioa_thresh)),
+                        axis=1, arr=ioa_1))
+                    img_df = real_df.iloc[valid_idx]
+
 
                 # seq_gt_data_dict[file_path] = []
                 curr_frame_gt_data = []
@@ -687,6 +725,9 @@ def evaluate(
                     seq_gt_data_dict[file_path] = curr_frame_gt_data
 
             assert valid_gts > 0, "no valid_gts found"
+
+            if params.filter_ignored:
+                gt_data_dict['ignored'][seq_path] = seq_gt_ignored_dict
 
             gt_data_dict[seq_path] = seq_gt_data_dict
 
@@ -811,6 +852,20 @@ def evaluate(
 
                     row_ids = grouped_dets.groups[det_filename]
                     img_df = df_det.loc[row_ids]
+
+                    if params.filter_ignored:
+                        det_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
+                                                   float(row['xmax']), float(row['ymax'])]
+                                                  for _, row in img_df.iterrows()
+                                                  ])
+                        ignored_bboxes = seq_gt_ignored_dict[file_path]
+                        ioa_1 = np.empty((img_df.shape[0], ignored_bboxes.shape[0]))
+                        utils.compute_overlaps_multi(None, ioa_1, None, det_bboxes, ignored_bboxes)
+                        valid_idx = np.flatnonzero(np.apply_along_axis(
+                            lambda x: np.all(np.less_equal(x, params.ignore_ioa_thresh)),
+                            axis=1, arr=ioa_1))
+                        img_df = img_df.iloc[valid_idx]
+
                     for _, row in img_df.iterrows():
 
                         try:
@@ -2622,7 +2677,7 @@ def evaluate(
             all_class_gt = []
             for k in gt_data_dict:
 
-                if k == 'counter_per_class':
+                if k in ["counter_per_class", 'ignored']:
                     continue
 
                 for m in gt_data_dict[k]:

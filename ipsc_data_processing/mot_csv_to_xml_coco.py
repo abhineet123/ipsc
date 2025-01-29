@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import os
 import sys
@@ -31,6 +33,7 @@ class Params(paramparse.CFG):
         self.file_name = ''
         self.vid_ext = ''
 
+        self.allow_ignored = 0
         self.ignore_invalid_class = 0
         self.ignore_invalid = 0
         self.ignore_missing = 0
@@ -97,7 +100,7 @@ class Params(paramparse.CFG):
         self.zip = 1
 
 
-def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, clamp_scores):
+def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, clamp_scores, allow_ignored):
     ann_lines = open(ann_path).readlines()
     ann_data = [[float(x) for x in _line.strip().split(',')] for _line in ann_lines if _line.strip()]
 
@@ -112,13 +115,20 @@ def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, 
 
         # if _datum[7] != 1 or _datum[8] < min_vis:
         #     continue
-        frame_id = int(_datum[0]) - 1
-        if frame_id not in valid_frame_ids:
-            continue
 
+        is_ignored = 0
         obj_id = int(_datum[1])
 
-        obj_ids.append(obj_id)
+        if allow_ignored and (_datum[0] == -1 and _datum[1] == -1):
+            label_ = 'ignored'
+            is_ignored = 1
+            frame_id = -1
+        else:
+            frame_id = int(_datum[0]) - 1
+            label_ = label
+            if frame_id not in valid_frame_ids:
+                continue
+            obj_ids.append(obj_id)
 
         # Bounding box sanity check
         bbox = [float(x) for x in _datum[2:6]]
@@ -153,6 +163,8 @@ def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, 
 
         if 0 <= confidence <= 1:
             pass
+        elif is_ignored:
+            confidence = 1
         else:
             msg = "Invalid confidence: {} in line {} : {}".format(
                 confidence, __id, _datum)
@@ -166,7 +178,7 @@ def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, 
 
         obj_entry = {
             'id': obj_id,
-            'label': label,
+            'label': label_,
             'bbox': bbox,
             'confidence': confidence
         }
@@ -174,6 +186,11 @@ def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, 
             obj_dict[frame_id] = []
         obj_dict[frame_id].append(obj_entry)
 
+    if allow_ignored and -1 in obj_dict:
+        ignored_areas = copy.deepcopy(obj_dict[-1])
+        del obj_dict[-1]
+        for frame_id, obj in obj_dict.items():
+            obj += ignored_areas
     return obj_ids, obj_dict
 
 
@@ -488,7 +505,7 @@ def main():
 
             if params.save_img_seq:
                 print(f'saving image sequence to {img_seq_out_dir}')
-                os.makedirs(img_seq_out_dir, exist_ok=1)
+                os.makedirs(img_seq_out_dir, exist_ok=True)
         else:
             assert os.path.isdir(src_path), f'invalid source path: {src_path}'
             src_files = [f for f in os.listdir(src_path) if
@@ -566,9 +583,11 @@ def main():
             obj_ids, obj_dict = parse_csv(ann_path, sampled_frame_ids,
                                           ignore_invalid, percent_scores, clamp_scores)
         else:
-            assert len(class_names) == 1, "multiple class names not supported in MOT mode"
+            assert len(class_names) == 1 or params.allow_ignored, \
+                "multiple class names not supported in MOT mode unless allow_ignored is on"
             obj_ids, obj_dict = parse_mot(
-                ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores, clamp_scores)
+                ann_path, sampled_frame_ids, class_names[0], ignore_invalid, percent_scores, clamp_scores,
+                params.allow_ignored)
 
         print(f'Done reading {data_type}')
 
@@ -651,7 +670,7 @@ def main():
             print(f'looking for silver standard CTC segmentations in {silver_seg_dir_path}')
 
         xml_zip_file = xml_dir_path = None
-        if save_video!=2 and not json_fname:
+        if save_video != 2 and not json_fname:
             if mode == 0:
                 xml_dir_path = linux_path(save_dir, save_seq_name, out_dir_name)
             else:
@@ -999,8 +1018,8 @@ def main():
                     drawBox(vis_img, xmin, ymin, xmax, ymax, label=_label,
                             font_size=1.0, box_color=obj_col, thickness=6)
 
-                if xml_writer is not None:
-                    xml_writer.save(targetFile=out_xml_path, verbose=False, zip_file=xml_zip_file)
+            if xml_writer is not None:
+                xml_writer.save(targetFile=out_xml_path, verbose=False, zip_file=xml_zip_file)
 
             if save_video or show_img:
                 curr_obj_cols = [rgb_cols[k] for k in curr_obj_ids]
