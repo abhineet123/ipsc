@@ -150,6 +150,7 @@ sudo nvidia-smi -pm 1
 
 <a id="power_limit_"></a>
 # power_limit
+sudo nvidia-smi -i 0 -pl 350
 sudo nvidia-smi -i 0 -pl 300
 sudo nvidia-smi -i 0 -pl 250
 
