@@ -8,6 +8,7 @@
         - [49_85       @ detrac-0_48-fbb/resnet-640](#49_85___detrac_0_48_fbb_resnet_640_)
         - [49_85-100_per_seq_random       @ detrac-0_48-fbb/resnet-640](#49_85_100_per_seq_random___detrac_0_48_fbb_resnet_640_)
         - [49_85       @ detrac-0_48-fbb/resnet-640](#49_85___detrac_0_48_fbb_resnet_640__1)
+            - [ign       @ 49_85/detrac-0_48-fbb/resnet-640](#ign___49_85_detrac_0_48_fbb_resnet_640_)
 
 <!-- /MarkdownTOC -->
 <a id="resnet_640___p2_s_"></a>
@@ -36,4 +37,7 @@ python3 eval_det.py cfg=p2s,detrac:non_empty:100_per_seq_random:49_85:nms:gt-0:p
 <a id="49_85___detrac_0_48_fbb_resnet_640__1"></a>
 ### 49_85       @ detrac-0_48-fbb/resnet-640-->eval_p2s-isl
 python3 eval_det.py cfg=p2s,detrac:non_empty:49_85:nms-1:gt-1:proc-1:_in_-resnet_640_detrac-non_empty-seq-0_48-batch_60-fbb/ckpt-__var__-detrac-non_empty-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-49_85-fbb
+<a id="ign___49_85_detrac_0_48_fbb_resnet_640_"></a>
+#### ign       @ 49_85/detrac-0_48-fbb/resnet-640-->eval_p2s-isl
+python3 eval_det.py cfg=p2s,detrac:non_empty:49_85:nms-1:gt-1:ign:proc-1:_in_-resnet_640_detrac-non_empty-seq-0_48-batch_60-fbb/ckpt-__var__-detrac-non_empty-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-49_85-fbb-ign
 
