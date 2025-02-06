@@ -114,7 +114,6 @@ python xml_to_coco.py cfg=detrac:non_empty:49_85:zip
 ### 100_per_seq_random       @ 49_85/detrac-->xml_to_coco
 python xml_to_coco.py cfg=detrac:non_empty:49_85:100_per_seq_random:zip
 
-
 <a id="ipsc___xml_to_coc_o_"></a>
 # ipsc       @ xml_to_coco-->coco
 <a id="all_frames_roi___ipsc_"></a>
