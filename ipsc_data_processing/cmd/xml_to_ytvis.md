@@ -64,6 +64,7 @@
             - [len-16       @ strd-same/49_85/detrac](#len_16___strd_same_49_85_detrac_)
                 - [256_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac](#256_per_seq_random_len_16___len_16_strd_same_49_85_detra_c_)
             - [len-32       @ strd-same/49_85/detrac](#len_32___strd_same_49_85_detrac_)
+                - [512_per_seq_random_len_32       @ len-32/strd-same/49_85/detrac](#512_per_seq_random_len_32___len_32_strd_same_49_85_detra_c_)
             - [len-40       @ strd-same/49_85/detrac](#len_40___strd_same_49_85_detrac_)
             - [len-48       @ strd-same/49_85/detrac](#len_48___strd_same_49_85_detrac_)
             - [len-56       @ strd-same/49_85/detrac](#len_56___strd_same_49_85_detrac_)
@@ -331,16 +332,24 @@ python xml_to_ytvis.py cfg=detrac:non_empty:80_per_seq_random_len_8:49_85:proc-1
 <a id="len_12___strd_same_49_85_detrac_"></a>
 #### len-12       @ strd-same/49_85/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-12:strd-12:gap-1
+
 <a id="len_16___strd_same_49_85_detrac_"></a>
 #### len-16       @ strd-same/49_85/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-16:strd-16:gap-1
 <a id="256_per_seq_random_len_16___len_16_strd_same_49_85_detra_c_"></a>
 ##### 256_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:256_per_seq_random_len_16:49_85:proc-1:len-16:strd-16:gap-1
+`dbg`
+python xml_to_ytvis.py cfg=detrac:non_empty:256_per_seq_random_len_16:49_50:proc-1:len-16:strd-16:gap-1
 
 <a id="len_32___strd_same_49_85_detrac_"></a>
 #### len-32       @ strd-same/49_85/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-32:strd-32:gap-1
+<a id="512_per_seq_random_len_32___len_32_strd_same_49_85_detra_c_"></a>
+##### 512_per_seq_random_len_32       @ len-32/strd-same/49_85/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:512_per_seq_random_len_32:49_85:proc-1:len-32:strd-32:gap-1
+
+
 <a id="len_40___strd_same_49_85_detrac_"></a>
 #### len-40       @ strd-same/49_85/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-40:strd-40:gap-1

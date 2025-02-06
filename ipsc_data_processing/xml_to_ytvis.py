@@ -1258,7 +1258,7 @@ def run(params: Params):
 
         n_target_ids_all = 0
 
-        for seq_name, seq_info in seq_name_to_info.items():
+        for __id, (seq_name, seq_info) in enumerate(seq_name_to_info.items()):
             n_objs_list_all += seq_info['n_objs']
 
             target_ids = seq_info['target_ids']
