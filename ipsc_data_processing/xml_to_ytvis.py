@@ -628,6 +628,9 @@ def save_annotations_ytvis(
             })
         all_annotations.append(annotations_dict)
 
+    assert all(i < j for i, j in zip(file_ids, file_ids[1:])), \
+        "file_ids should be strictly increasing"
+
     video_dict = {
         "width": vid_w,
         "height": vid_h,
@@ -678,7 +681,9 @@ def get_xml_files(
         if params.shuffle:
             random.shuffle(all_xml_files)
         else:
-            all_xml_files.sort(key=lambda fname: os.path.basename(fname))
+            """seq_to_samples might have overlapping sequences so sorting will mess it up"""
+            if seq_to_samples is None:
+                all_xml_files.sort(key=lambda fname: os.path.basename(fname))
     else:
         assert seq_to_samples is None, "seq_to_samples cannot be provided alongside all_xml_files"
 
