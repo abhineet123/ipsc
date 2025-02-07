@@ -159,9 +159,9 @@
     - [len-2-aug-fbb       @ lfn-54_126](#len_2_aug_fbb___lfn_54_126_)
         - [on-0_15-vstrd-1       @ len-2-aug-fbb/lfn-54_126](#on_0_15_vstrd_1___len_2_aug_fbb_lfn_54_126_)
         - [on-0_15-vstrd-2       @ len-2-aug-fbb/lfn-54_126](#on_0_15_vstrd_2___len_2_aug_fbb_lfn_54_126_)
-    - [len-2-aug-fbb       @ lfn-54_126](#len_2_aug_fbb___lfn_54_126__1)
-        - [on-0_15-vstrd-1       @ len-2-aug-fbb/lfn-54_126](#on_0_15_vstrd_1___len_2_aug_fbb_lfn_54_126__1)
-        - [on-0_15-vstrd-2       @ len-2-aug-fbb/lfn-54_126](#on_0_15_vstrd_2___len_2_aug_fbb_lfn_54_126__1)
+    - [len-2-aug-fbb-cls_eq       @ lfn-54_126](#len_2_aug_fbb_cls_eq___lfn_54_126_)
+        - [on-0_15-vstrd-1       @ len-2-aug-fbb-cls_eq/lfn-54_126](#on_0_15_vstrd_1___len_2_aug_fbb_cls_eq_lfn_54_12_6_)
+        - [on-0_15-vstrd-2       @ len-2-aug-fbb-cls_eq/lfn-54_126](#on_0_15_vstrd_2___len_2_aug_fbb_cls_eq_lfn_54_12_6_)
     - [len-2-aug-fenc       @ lfn-54_126](#len_2_aug_fenc___lfn_54_126_)
         - [on-0_15       @ len-2-aug-fenc/lfn-54_126](#on_0_15___len_2_aug_fenc_lfn_54_12_6_)
     - [len-4-aug-fbb       @ lfn-54_126](#len_4_aug_fbb___lfn_54_126_)
@@ -806,13 +806,13 @@ python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:proc-1:_in_
 ### on-0_15-vstrd-2       @ len-2-aug-fbb/lfn-54_126-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vstrd-2:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_64-lfn-jtr-res_1280-fbb/ckpt-168875-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_4:_out_-p2s-lfn-ipsc-54_126-len-2-vstrd-2-aug-fbb
 
-<a id="len_2_aug_fbb___lfn_54_126__1"></a>
-## len-2-aug-fbb       @ lfn-54_126-->eval_p2s_vid-ipsc
-<a id="on_0_15_vstrd_1___len_2_aug_fbb_lfn_54_126__1"></a>
-### on-0_15-vstrd-1       @ len-2-aug-fbb/lfn-54_126-->eval_p2s_vid-ipsc
+<a id="len_2_aug_fbb_cls_eq___lfn_54_126_"></a>
+## len-2-aug-fbb-cls_eq       @ lfn-54_126-->eval_p2s_vid-ipsc
+<a id="on_0_15_vstrd_1___len_2_aug_fbb_cls_eq_lfn_54_12_6_"></a>
+### on-0_15-vstrd-1       @ len-2-aug-fbb-cls_eq/lfn-54_126-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vnms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_32-lfn-jtr-res_1280-fbb-cls_eq/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-lfn-ipsc-54_126-len-2-aug-fbb-cls_eq
-<a id="on_0_15_vstrd_2___len_2_aug_fbb_lfn_54_126__1"></a>
-### on-0_15-vstrd-2       @ len-2-aug-fbb/lfn-54_126-->eval_p2s_vid-ipsc
+<a id="on_0_15_vstrd_2___len_2_aug_fbb_cls_eq_lfn_54_12_6_"></a>
+### on-0_15-vstrd-2       @ len-2-aug-fbb-cls_eq/lfn-54_126-->eval_p2s_vid-ipsc
 python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:vstrd-2:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-2-stride-1-batch_32-lfn-jtr-res_1280-fbb-cls_eq/ckpt-__var__-ext_reorg_roi_g2-0_15-length-2-stride-1/csv-batch_2:_out_-p2s-lfn-ipsc-54_126-len-2-vstrd-2-aug-fbb-cls_eq
 
 <a id="len_2_aug_fenc___lfn_54_126_"></a>
