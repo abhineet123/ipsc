@@ -144,6 +144,7 @@ class Params(paramparse.CFG):
         self.ignore_invalid_class = 0
         self.enable_mask = 1
 
+        self.seq = -1
         self.start_id = 0
         self.end_id = -1
 
@@ -191,7 +192,7 @@ class Params(paramparse.CFG):
         self.save_file_res = '1920x1080'
         # self.save_file_res = '1600x900'
         # self.save_file_res = '1280x720'
-        self.vid_fmt = 'mp4v,2,mp4'
+        self.vid_fmt = 'mp4v,10,mp4'
         self.check_det = 0
 
         self.fps_to_gt = 0
@@ -370,6 +371,8 @@ def evaluate(
 
         if not det_pkl_dir:
             det_pkl_dir = out_root_dir
+            # if params.seq >= 0:
+            #     det_pkl_dir = os.path.dirname(out_root_dir)
 
         if not gt_pkl_dir:
             gt_pkl_dir = out_root_dir
@@ -438,7 +441,7 @@ def evaluate(
             print_('Generating GT data')
         if gt_loaded:
             for _seq_path, _seq_gt_data_dict in gt_data_dict.items():
-                if _seq_path in ["counter_per_class",  'ignored']:
+                if _seq_path in ["counter_per_class", 'ignored']:
                     continue
 
                 for gt_class in gt_classes:
@@ -500,8 +503,34 @@ def evaluate(
 
         img_path_to_size = {}
 
+    if params.seq >= 0:
+        """restrict processing to a single sequence"""
+        assert params.seq <= len(gt_path_list), f"invalid seq_wise id: {params.seq}"
+        gt_path_list = [gt_path_list[params.seq], ]
+        gt_seq_names = [gt_seq_names[params.seq], ]
+        seq_name_list = [seq_name_list[params.seq], ]
+        seq_paths = [seq_paths[params.seq], ]
+        all_seq_det_paths = [all_seq_det_paths[params.seq], ]
+        n_seq = 1
+        seq_path_ = seq_paths[0]
+
+        # if gt_loaded:
+        #     gt_data_dict_ = {
+        #         seq_path_:  gt_data_dict[seq_path_]
+        #     }
+        #     if 'ignored' in gt_data_dict:
+        #         gt_data_dict_['ignored'] = {
+        #             seq_path_: gt_data_dict['ignored'][seq_path_]
+        #         }
+        #     gt_data_dict = gt_data_dict_
+        #
+        # if det_loaded:
+        #     det_data_dict = {
+        #         seq_name_list[0]: det_data_dict[seq_name_list[0]]
+        #     }
+
     """read gt and det"""
-    for seq_idx, (_gt_path, gt_seq_name) in enumerate(zip(gt_path_list, gt_seq_names)):
+    for seq_idx, (_gt_path, gt_seq_name) in enumerate(zip(gt_path_list, gt_seq_names, strict=True)):
 
         # if gt_loaded and det_loaded:
         #     break
@@ -517,7 +546,7 @@ def evaluate(
         if seq_to_samples is not None:
             seq_img_paths = seq_to_samples[seq_path]
         else:
-            seq_img_gen = [[os.path.join(dirpath, f) for f in filenames if
+            seq_img_gen = [[utils.linux_path(dirpath, f) for f in filenames if
                             os.path.splitext(f.lower())[1][1:] in img_exts]
                            for (dirpath, dirnames, filenames) in os.walk(seq_img_dir, followlinks=True)]
             seq_img_paths = [item for sublist in seq_img_gen for item in sublist]
@@ -639,7 +668,6 @@ def evaluate(
                         lambda x: np.all(np.less_equal(x, params.ignore_ioa_thresh)),
                         axis=1, arr=ioa_1))
                     img_df = real_df.iloc[valid_idx]
-
 
                 # seq_gt_data_dict[file_path] = []
                 curr_frame_gt_data = []
@@ -855,9 +883,9 @@ def evaluate(
 
                     if params.filter_ignored:
                         det_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
-                                                   float(row['xmax']), float(row['ymax'])]
-                                                  for _, row in img_df.iterrows()
-                                                  ])
+                                                  float(row['xmax']), float(row['ymax'])]
+                                                 for _, row in img_df.iterrows()
+                                                 ])
                         ignored_bboxes = seq_gt_ignored_dict[file_path]
                         ioa_1 = np.empty((img_df.shape[0], ignored_bboxes.shape[0]))
                         utils.compute_overlaps_multi(None, ioa_1, None, det_bboxes, ignored_bboxes)
@@ -1050,7 +1078,7 @@ def evaluate(
                         out_det_dir = utils.add_suffix(det_dir, out_suffix)
 
                         os.makedirs(out_det_dir, exist_ok=True)
-                        out_det_path = os.path.join(out_det_dir, det_name)
+                        out_det_path = utils.linux_path(out_det_dir, det_name)
                         csv_columns = [
                             "ImageID", "LabelName",
                             "XMin", "XMax", "YMin", "YMax", "Confidence",
@@ -1420,12 +1448,6 @@ def evaluate(
 
             os.makedirs(vis_root_dir, exist_ok=True)
             print_(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
-
-            vis_out_fnames = {
-                cat: utils.linux_path(vis_root_dir, f'{cat}.{vid_ext}')
-                for cat in cls_cat_types
-            }
-
             video_out_dict = {
                 cat: None for cat in cls_cat_types
             }
@@ -1441,7 +1463,18 @@ def evaluate(
         for seq_idx in seq_iter:
             seq_path = seq_paths[seq_idx]
             seq_name = seq_name_list[seq_idx]
-            seq_root_dir = seq_root_dirs[seq_idx]
+            # seq_root_dir = seq_root_dirs[seq_idx]
+
+            if save_vis:
+                if save_vis:
+                    for cat, video_out in video_out_dict.items():
+                        if video_out is not None:
+                            video_out.release()
+                            video_out_dict[cat] = None
+                vis_out_fnames = {
+                    cat: utils.linux_path(vis_root_dir, cat, f'{seq_name}.{vid_ext}')
+                    for cat in cls_cat_types
+                }
 
             seq_gt_data_dict = gt_data_dict[seq_path]
             """total number of GTs of all classes in this sequence"""
@@ -1721,10 +1754,6 @@ def evaluate(
                             cv2.imshow(win_name, out_img)
                             k = cv2.waitKey(1 - _pause)
                             if k == ord('q') or k == 27:
-                                if save_vis:
-                                    for video_out in video_out_dict.values():
-                                        if video_out is not None:
-                                            video_out.release()
                                 cv2.destroyWindow(win_name)
                                 sys.exit(0)
                             elif k == ord('c'):
@@ -2421,6 +2450,11 @@ def evaluate(
 
                 seq_name_to_csv_rows[seq_name] += det_csv_rows
 
+            if save_vis:
+                for cat, video_out in video_out_dict.items():
+                    if video_out is not None:
+                        video_out.release()
+
             if end_class:
                 break
 
@@ -2675,7 +2709,9 @@ def evaluate(
 
         if gt_check:
             all_class_gt = []
-            for k in gt_data_dict:
+            _iter = tqdm(gt_data_dict) if show_pbar else gt_data_dict
+
+            for k in _iter:
 
                 if k in ["counter_per_class", 'ignored']:
                     continue
@@ -2689,8 +2725,14 @@ def evaluate(
             n_all_class_gt = len(all_class_gt)
 
             if n_all_considered_gt != n_all_class_gt:
-                skipped_gt = [obj for obj in all_class_gt if obj not in all_considered_gt]
+                print(f'{gt_class} :: Mismatch between '
+                      f'n_all_considered_gt: {n_all_considered_gt} '
+                      f'and n_all_class_gt: {n_all_class_gt}, '
+                      )
+                _iter = tqdm(all_class_gt) if show_pbar else all_class_gt
+                skipped_gt = [obj for obj in _iter if obj not in all_considered_gt]
                 n_skipped_gt = len(skipped_gt)
+                print(f'n_skipped_gt: {n_skipped_gt}')
 
                 # annoying_gt = [k for k in absolute_all_gt if k not in all_considered_gt]
                 # n_annoying_gt = len(annoying_gt)
@@ -2704,12 +2746,13 @@ def evaluate(
                 # print('skipped_gt:\n{}'.format(pformat(skipped_gt)))
                 print_('gt_counter_per_class:\n{}'.format(pformat(gt_counter_per_class)))
 
-                raise AssertionError(f'{gt_class} :: Mismatch between '
-                                     f'n_all_considered_gt: {n_all_considered_gt} '
-                                     f'and n_all_class_gt: {n_all_class_gt}, '
-                                     f'n_skipped_gt: {n_skipped_gt} ')
+                raise AssertionError()
 
             if n_total_gt != n_class_gt:
+                print(
+                    f'Mismatch between n_total_gt: {n_total_gt} and '
+                    f'gt_counter_per_class[{gt_class}]: {gt_counter_per_class[gt_class]}'
+                )
                 seq_gt_data_list = []
 
                 for file_id in seq_gt_data_dict.keys():
@@ -2720,14 +2763,16 @@ def evaluate(
                     #     )
 
                 if n_total_gt > n_class_gt:
-                    missing_gt = [k for k in all_gt_list if k not in seq_gt_data_list]
+                    _iter = tqdm(all_gt_list) if show_pbar else all_gt_list
+                    missing_gt = [k for k in _iter if k not in seq_gt_data_list]
                 else:
-                    missing_gt = [k for k in seq_gt_data_list if k not in all_gt_list]
+                    _iter = tqdm(seq_gt_data_list) if show_pbar else seq_gt_data_list
+                    missing_gt = [k for k in _iter if k not in all_gt_list]
 
                 n_missing_gt = len(missing_gt)
-                raise AssertionError(f'Mismatch between n_total_gt: {n_total_gt} and '
-                                     f'gt_counter_per_class[{gt_class}]: {gt_counter_per_class[gt_class]}'
-                                     f'\nn_missing_gt: {n_missing_gt}')
+                print(f'n_missing_gt: {n_missing_gt}')
+
+                raise AssertionError()
 
             assert n_total_gt == tp_sum + fn_sum, \
                 f'{gt_class} :: Mismatch between n_total_gt: {n_total_gt} and tp_sum+fn_sum: {tp_sum + fn_sum}, ' \
@@ -3240,7 +3285,7 @@ def evaluate(
                 if not out_csv_rows:
                     continue
 
-                csv_out_path = os.path.join(out_root_dir, f'{seq_name}_gt_with_fp_nex_whole.csv')
+                csv_out_path = utils.linux_path(out_root_dir, f'{seq_name}_gt_with_fp_nex_whole.csv')
                 print_(f'\nsaving fps_to_gt csv to: {csv_out_path}\n')
 
                 # out_csv_rows.sort(key=lambda x: x['filename'])
@@ -3251,7 +3296,7 @@ def evaluate(
                 df = pd.DataFrame(out_csv_rows, columns=csv_columns)
                 df.to_csv(csv_out_path, index=False)
 
-            json_out_path = os.path.join(out_root_dir, 'gt_with_fp_nex_whole.json')
+            json_out_path = utils.linux_path(out_root_dir, 'gt_with_fp_nex_whole.json')
 
             n_json_imgs = len(json_dict['images'])
             n_json_objs = len(json_dict['annotations'])
@@ -3344,7 +3389,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         _det_path_list_file = f'{_det_path_list_file}_nms_{int(det_nms * 100):02d}'
 
     if params.det_root_dir:
-        _det_path_list_file = os.path.join(params.det_root_dir, _det_path_list_file)
+        _det_path_list_file = utils.linux_path(params.det_root_dir, _det_path_list_file)
 
     if vid_stride > 0:
         assert os.path.isdir(_det_path_list_file), "invalid det_path_list_file for vid_stride filtering"
@@ -3377,6 +3422,9 @@ def run(params: Params, sweep_mode: dict, *argv):
 
     seq_start_id = params.start_id
     seq_end_id = params.end_id
+    # seq = params.seq
+    # if seq >= 0:
+    #     seq_start_id = seq_end_id = seq
 
     eval_sim = params.eval_sim
     detection_names = params.detection_names
@@ -3427,11 +3475,11 @@ def run(params: Params, sweep_mode: dict, *argv):
 
         batch_name = params.batch_name
         if batch_name:
-            out_dir_name = os.path.join(out_dir_name, batch_name)
+            out_dir_name = utils.linux_path(out_dir_name, batch_name)
 
         if sweep_suffix:
             if is_sweep:
-                out_dir_name = os.path.join(out_dir_name, sweep_suffix)
+                out_dir_name = utils.linux_path(out_dir_name, sweep_suffix)
             else:
                 out_dir_name = f'{out_dir_name}-{sweep_suffix}'
     else:
@@ -3543,16 +3591,6 @@ def run(params: Params, sweep_mode: dict, *argv):
         out_root_suffix = '_'.join(params.out_root_suffix)
         out_dir_name = utils.linux_path(out_root_suffix, out_dir_name)
 
-    out_root_dir = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
-
-    # if os.path.exists(out_root_dir):
-    #     utils.print_(f'\n\nskipping existing eval: {out_root_dir}\n\n')
-    #     return out_root_dir
-
-    print_(f'\nrunning eval: {out_root_dir}\n')
-
-    os.makedirs(out_root_dir, exist_ok=True)
-
     gt_path_list = gt_path_list[seq_start_id:seq_end_id + 1]
 
     class_info = open(labels_path, 'r').read().splitlines()
@@ -3566,6 +3604,8 @@ def run(params: Params, sweep_mode: dict, *argv):
         x.strip(): col
         for x, col in zip(gt_classes, gt_class_cols)
     }
+
+    out_root_dir_ = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
 
     for _detection_names in all_detection_names:
 
@@ -3671,6 +3711,18 @@ def run(params: Params, sweep_mode: dict, *argv):
             _seq_path_list = [_seq_path_list[i] for i in img_seq_names_idx]
             gt_path_list = [gt_path_list[i] for i in gt_seq_names_idx]
             det_path_list = [det_path_list[i] for i in det_seq_names_idx]
+
+        out_root_dir = out_root_dir_
+        seq = params.seq
+        if seq >= 0:
+            assert seq < len(_seq_path_list), f"invalid seq: {seq}"
+            img_seq_names = [os.path.basename(k) for k in _seq_path_list]
+            out_root_dir = utils.linux_path(out_root_dir, f'{img_seq_names[seq]}')
+            params.gt_pkl_suffix.append(img_seq_names[seq])
+
+        print_(f'\nrunning eval: {out_root_dir}\n')
+
+        os.makedirs(out_root_dir, exist_ok=True)
 
         if params.iw:
             eval_dicts = {}
@@ -3813,7 +3865,12 @@ def run(params: Params, sweep_mode: dict, *argv):
 def sweep(params: Params):
     params_ = copy.deepcopy(params)
     if params_.seq_wise:
+        assert params.start_id >= 0 and params.end_id >= 0, ("both start_id and end_id must be specified for seq_wise "
+                                                             "mode")
+        assert params.end_id >= params.start_id and params.end_id >= 0, "end_id must be >= start_id"
         params_.sweep_params.append('seq')
+        seq_ids = list(range(params.start_id, params.end_id + 1))
+        params_.seq = list(range(len(seq_ids)))
 
     if params_.vid_stride:
         params_.sweep_params.append('vid_stride')
@@ -3925,7 +3982,7 @@ def main():
     rep1, rep2 = (pre_wc, post_wc) if len(pre_wc) > len(post_wc) else (post_wc, pre_wc)
 
     if params.det_root_dir:
-        det_paths = os.path.join(params.det_root_dir, det_paths)
+        det_paths = utils.linux_path(params.det_root_dir, det_paths)
 
     det_paths_no_wc = det_paths
     """find the nearest ancestor path without wild card"""
