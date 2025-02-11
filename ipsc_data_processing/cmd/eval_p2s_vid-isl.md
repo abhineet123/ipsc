@@ -124,7 +124,7 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:256_per_seq_random_len_16:49_85
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:nms-1:vnms:vstrd-1:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-static-batch_12-seq3k-fbb/ckpt-142948-detrac-length-16-stride-1-non_empty-seq-49_85/csv-static-batch_24:_out_-p2s-static-detrac-0_48-len-16-49_85-fbb-142948
 <a id="on_49_85_vstrd_16___detrac_0_48_len_16_fbb_stati_c_"></a>
 ### on-49_85-vstrd-16       @ detrac-0_48-len-16-fbb/static-->eval_p2s_vid-isl
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:vstrd-16:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-static-batch_12-seq3k-fbb/ckpt-142948-detrac-length-16-stride-1-non_empty-seq-49_85/csv-static-batch_24:_out_-p2s-static-detrac-0_48-len-16-49_85-fbb-142948
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:vstrd-16:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-static-batch_12-seq3k-fbb/ckpt-142948-detrac-length-16-stride-1-non_empty-seq-49_85/csv-static-batch_24:_out_-p2s-static-detrac-0_48-len-16-strd-16-49_85-fbb-142948
 
 <a id="detrac_0_48_len_32_fbb___static_"></a>
 ## detrac-0_48-len-32-fbb       @ static-->eval_p2s_vid-isl
