@@ -144,7 +144,7 @@ class Params(paramparse.CFG):
         self.ignore_invalid_class = 0
         self.enable_mask = 1
 
-        self.seq = -1
+        self.seq = []
         self.start_id = 0
         self.end_id = -1
 
@@ -209,6 +209,9 @@ class Params(paramparse.CFG):
         self.ckpt_iter = ''
         self.filter_ignored = 0
         self.ignore_ioa_thresh = 0.25
+
+        """force sweep mode for the purpose of setting the output directory"""
+        self.sweep = 0
 
         self.seq_wise = 0
         self.vid_stride = []
@@ -1651,11 +1654,14 @@ def evaluate(
 
                                 video_out_dict["all"] = all_video_out
 
+                            if show_vis:
+                                all_out_img_vis = utils.resize_ar_tf_api(all_out_img, 1280, 720)
+                                cv2.imshow('all_out_img', all_out_img_vis)
+
                             if vis_video:
                                 all_out_img = utils.resize_ar_tf_api(all_out_img, video_w, video_h, add_border=2)
 
-                            # cv2.imshow('all_out_img', all_out_img)
-                            # cv2.waitKey(0)
+
 
                             all_video_out.write(all_out_img)
 
@@ -1808,6 +1814,10 @@ def evaluate(
                         src_img = cv2.imread(img_full_path)
                         # src_img = Image.open(img_full_path)
                         # src_h, src_w = src_img.shape[:2]
+
+                        if params.filter_ignored:
+                            ignored_regions = gt_data_dict["ignored"][seq_path][file_id]
+                            utils.draw_boxes(src_img, ignored_regions, color='black', thickness=-1,xywh=False)
 
                         vis_h, vis_w = utils.get_vis_size(src_img, 3, save_w, save_h, bottom_border)
 
@@ -3478,7 +3488,7 @@ def run(params: Params, sweep_mode: dict, *argv):
             out_dir_name = utils.linux_path(out_dir_name, batch_name)
 
         if sweep_suffix:
-            if is_sweep:
+            if params.sweep or is_sweep:
                 out_dir_name = utils.linux_path(out_dir_name, sweep_suffix)
             else:
                 out_dir_name = f'{out_dir_name}-{sweep_suffix}'
@@ -3605,7 +3615,7 @@ def run(params: Params, sweep_mode: dict, *argv):
         for x, col in zip(gt_classes, gt_class_cols)
     }
 
-    out_root_dir_ = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
+    out_root_dir = out_root_dir_ = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
 
     for _detection_names in all_detection_names:
 
@@ -3865,12 +3875,14 @@ def run(params: Params, sweep_mode: dict, *argv):
 def sweep(params: Params):
     params_ = copy.deepcopy(params)
     if params_.seq_wise:
-        assert params.start_id >= 0 and params.end_id >= 0, ("both start_id and end_id must be specified for seq_wise "
-                                                             "mode")
-        assert params.end_id >= params.start_id and params.end_id >= 0, "end_id must be >= start_id"
         params_.sweep_params.append('seq')
-        seq_ids = list(range(params.start_id, params.end_id + 1))
-        params_.seq = list(range(len(seq_ids)))
+        if not params_.seq:
+            assert params.start_id >= 0 and params.end_id >= 0, \
+                "both start_id and end_id must be specified for auto seq_wise mode"
+            assert params.end_id >= params.start_id and params.end_id >= 0, "end_id must be >= start_id"
+
+            seq_ids = list(range(params.start_id, params.end_id + 1))
+            params_.seq = list(range(len(seq_ids)))
 
     if params_.vid_stride:
         params_.sweep_params.append('vid_stride')
@@ -3919,6 +3931,9 @@ def sweep(params: Params):
         for sweep_val_combo in tqdm(sweep_val_combos, position=0, leave=True):
             out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
             out_root_dirs.append(out_root_dir)
+
+    if params.save_vis or params.show_vis:
+        return
 
     out_zip_paths = []
     if params.class_agnostic == 2:

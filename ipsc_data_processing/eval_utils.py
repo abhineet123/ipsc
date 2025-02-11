@@ -3548,13 +3548,11 @@ def draw_box(frame, box, _id=None, color='black', thickness=2,
                     0.5, color, 1, font_line_type)
 
 
-def draw_boxes(frame, boxes, _id=None, color='black', thickness=2,
-               is_dotted=0, transparency=0.):
+def draw_boxes(frame, boxes, **kwargs):
     if len(boxes.shape) == 1:
         boxes = np.expand_dims(boxes, axis=0)
     for box in boxes:
-        draw_box(frame, box, _id, color, thickness,
-                 is_dotted, transparency)
+        draw_box(frame, box, **kwargs)
 
 
 def compute_overlap(iou, ioa_1, ioa_2, object_1, objects_2):
