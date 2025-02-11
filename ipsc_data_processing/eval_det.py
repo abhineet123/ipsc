@@ -3724,7 +3724,7 @@ def run(params: Params, sweep_mode: dict, *argv):
 
         out_root_dir = out_root_dir_
         seq = params.seq
-        if seq >= 0:
+        if isinstance(seq, int) and seq >= 0:
             assert seq < len(_seq_path_list), f"invalid seq: {seq}"
             img_seq_names = [os.path.basename(k) for k in _seq_path_list]
             out_root_dir = utils.linux_path(out_root_dir, f'{img_seq_names[seq]}')
