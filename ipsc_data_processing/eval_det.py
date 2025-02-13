@@ -506,7 +506,7 @@ def evaluate(
 
         img_path_to_size = {}
 
-    if params.seq >= 0:
+    if isinstance(params.seq, int) and params.seq >= 0:
         """restrict processing to a single sequence"""
         assert params.seq <= len(gt_path_list), f"invalid seq_wise id: {params.seq}"
         gt_path_list = [gt_path_list[params.seq], ]
@@ -573,7 +573,6 @@ def evaluate(
 
         """read GT from csv"""
         if not gt_loaded:
-
             gt_path = _gt_path
             if not os.path.isfile(gt_path):
                 # os.system('ls /data/ipsc')
@@ -1661,8 +1660,6 @@ def evaluate(
                             if vis_video:
                                 all_out_img = utils.resize_ar_tf_api(all_out_img, video_w, video_h, add_border=2)
 
-
-
                             all_video_out.write(all_out_img)
 
                             # cat_img_vis_list = utils.resize_ar_tf_api(cat_img_vis_list, save_w, save_h)
@@ -1817,7 +1814,7 @@ def evaluate(
 
                         if params.filter_ignored:
                             ignored_regions = gt_data_dict["ignored"][seq_path][file_id]
-                            utils.draw_boxes(src_img, ignored_regions, color='black', thickness=-1,xywh=False)
+                            utils.draw_boxes(src_img, ignored_regions, color='black', thickness=-1, xywh=False)
 
                         vis_h, vis_w = utils.get_vis_size(src_img, 3, save_w, save_h, bottom_border)
 
