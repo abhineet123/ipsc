@@ -293,7 +293,7 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:nms-1:show-1:sav
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-0:det-0:nms-60:ign:show-0:save-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_24-jtr-res_1280-fbb/ckpt-109960-detrac-length-8-stride-8-non_empty-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-len-8-49_85-strd-8-aug-fbb-ign-109960:vbs:save_det-1:sweep:sw
 <a id="vis_sw_109960___on_49_85_strd_8_detrac_0_48_len_8_aug_fbb_mi_d_"></a>
 #### vis-sw-109960       @ on-49_85-strd-8/detrac-0_48-len-8-aug-fbb/mid-->eval_p2s_vid-isl
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:det-1:nms-60:ign:show-1:save-1:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_24-jtr-res_1280-fbb/ckpt-109960-detrac-length-8-stride-8-non_empty-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-len-8-49_85-strd-8-aug-fbb-ign-109960:vbs:save_det-1:sweep:sw-seq_22
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:det-1:nms-60:ign:show-0:save-1:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_24-jtr-res_1280-fbb/ckpt-109960-detrac-length-8-stride-8-non_empty-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-len-8-49_85-strd-8-aug-fbb-ign-109960:vbs:save_det-1:sweep:sw
 
 
 <a id="on_49_85_strd_1___detrac_0_48_len_8_aug_fbb_mi_d_"></a>
