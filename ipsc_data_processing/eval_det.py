@@ -419,7 +419,7 @@ def evaluate(
         if params.enable_mask:
             gt_pkl = utils.add_suffix(gt_pkl, 'mask', sep='-')
             det_pkl = utils.add_suffix(det_pkl, 'mask', sep='-')
-            
+
         if params.filter_ignored:
             gt_pkl = utils.add_suffix(gt_pkl, 'ign', sep='-')
             det_pkl = utils.add_suffix(det_pkl, 'ign', sep='-')

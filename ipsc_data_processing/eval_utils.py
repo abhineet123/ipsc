@@ -1277,7 +1277,8 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
             continue
 
         if enable_mask:
-            pred_iou = get_mask_iou(obj1['mask'], obj2['mask'], obj1['bbox'], obj2['bbox'])
+            # pred_iou = get_mask_iou(obj1['mask'], obj2['mask'], obj1['bbox'], obj2['bbox'])
+            pred_iou = get_mask_rle_iou(obj1['mask'],  obj2['mask'])
         else:
             pred_iou = get_iou(obj1['bbox'], obj2['bbox'], xywh=False)
 
