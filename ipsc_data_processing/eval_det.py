@@ -96,8 +96,14 @@ class Params(paramparse.CFG):
         self.allow_missing_dets = 0
         self.combine_dets = 0
         self.normalized_dets = 0
+
         """remove patch ID suffix from det filenames"""
         self.patch_dets = 0
+
+        """alternative class names are used in some p2s-seg created csv files
+        e.g. ips instead of ipsc and dif instead of diff
+        """
+        self.labels_remap = 0
 
         self.draw_plot = 0
         self.gt_paths = ''
@@ -822,6 +828,17 @@ def evaluate(
                 if fix_det_cols:
                     df_det = df_det.rename(columns=csv_rename_dict)
 
+                if params.labels_remap:
+                    labels_remap_path = params.labels_remap
+                    if params.labels_root:
+                        labels_remap_path = utils.linux_path(params.labels_root, labels_remap_path)
+                    assert os.path.isfile(labels_remap_path), f"nonexistent labels_remap_path: {labels_remap_path}"
+                    labels_remap_lines = open(labels_remap_path, 'r').read().splitlines()
+                    labels_remap_dict = dict([labels_remap_line.split('\t')
+                                              for labels_remap_line in labels_remap_lines])
+                    df_det["class"] = df_det["class"].apply(lambda x: labels_remap_dict[x])
+
+
                 if vid_info is not None:
                     seq_to_video_ids, seq_to_filenames = vid_info
                     video_ids = seq_to_video_ids[seq_name]
@@ -837,7 +854,6 @@ def evaluate(
                     # df_det.to_csv(vid_filtered_csv, index=False, sep=',')
 
                 # df_det_copy = df_det.copy(deep=True)
-
 
                 if params.patch_dets:
                     """remove patch ID suffix from filenames"""
@@ -1680,7 +1696,7 @@ def evaluate(
                                 cv2.imshow('all_out_img', all_out_img_vis)
 
                             if vis_video:
-                                all_out_img = utils.resize_ar_tf_api(all_out_img, video_w, video_h, add_border=2)
+                                all_out_img = utils.resize_ar_tf_api(all_out_img, video_w, video_h, add_border=1)
 
                             all_video_out.write(all_out_img)
 
@@ -1763,13 +1779,14 @@ def evaluate(
                             n_fp_cls_vis = cat_to_vis_count['fp_cls']
                             n_fp_nex_part_vis = cat_to_vis_count['fp_nex-part']
 
-                            pbar.set_description(f'seq {seq_idx + 1} / {n_seq} '
-                                                 f'fn: cls-{n_fn_cls_vis} '
-                                                 f'det-{n_fn_det_vis} '
-                                                 f'fp: cls-{n_fp_cls_vis} '
-                                                 f'dup-{n_fp_dup_vis} '
-                                                 f'nex-{n_fp_nex_whole_vis},{n_fp_nex_part_vis} '
-                                                 f'')
+                            if show_pbar:
+                                pbar.set_description(f'seq {seq_idx + 1} / {n_seq} '
+                                                     f'fn: cls-{n_fn_cls_vis} '
+                                                     f'det-{n_fn_det_vis} '
+                                                     f'fp: cls-{n_fp_cls_vis} '
+                                                     f'dup-{n_fp_dup_vis} '
+                                                     f'nex-{n_fp_nex_whole_vis},{n_fp_nex_part_vis} '
+                                                     f'')
 
                         if show_vis:
                             # cv2.imshow('cat_img_vis_list', cat_img_vis_list)
