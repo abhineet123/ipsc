@@ -2236,7 +2236,8 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
 
             if (mask_h, mask_w) != (vis_h, vis_w):
                 resize_factor = vis_h / mask_h
-                mask_uint = cv2.resize(mask_orig, (vis_w, vis_h))
+                mask_uint = cv2.resize(mask_orig, (vis_w, vis_h),
+                                       interpolation=cv2.INTER_NEAREST)
             else:
                 mask_uint = mask_orig
 
@@ -2598,6 +2599,24 @@ def mask_rle_to_img(rle):
     mask_img = np.ascontiguousarray(mask_img, dtype=np.uint8)
 
     return mask_img
+
+
+def resize_mask_rle_through_pts(mask_rle, det_img_w, det_img_h):
+    mask_pts, bbox, is_multi = mask_rle_to_pts(mask_rle)
+    mask_h, mask_w = mask_rle["size"]
+    norm_h, norm_w = float(det_img_w) / float(mask_w), float(det_img_h) / float(mask_h)
+    mask_pts = [(pt[0] * norm_w, pt[1] * norm_w) for pt in mask_pts]
+    mask_rle = mask_pts_to_img(mask_pts, det_img_h, det_img_w, to_rle=1)
+    return mask_rle
+
+
+def resize_mask_rle_through_img(rle, dst_w, dst_h):
+    mask_img = mask_rle_to_img(rle)
+    mask_img = mask_img.astype(np.uint8)
+    dst_mask_img = cv2.resize(mask_img, (dst_w, dst_h), interpolation=cv2.INTER_LINEAR)
+    dst_mask_img = dst_mask_img.astype(bool)
+    dst_mask_rle = mask_img_to_rle_coco(dst_mask_img)
+    return dst_mask_rle
 
 
 def mask_rle_to_pts(rle):

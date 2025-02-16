@@ -416,6 +416,10 @@ def evaluate(
             gt_pkl = utils.add_suffix(gt_pkl, img_suffix)
             det_pkl = utils.add_suffix(det_pkl, img_suffix)
 
+        if params.enable_mask:
+            gt_pkl = utils.add_suffix(gt_pkl, 'mask', sep='-')
+            det_pkl = utils.add_suffix(det_pkl, 'mask', sep='-')
+            
         if params.filter_ignored:
             gt_pkl = utils.add_suffix(gt_pkl, 'ign', sep='-')
             det_pkl = utils.add_suffix(det_pkl, 'ign', sep='-')
@@ -423,6 +427,8 @@ def evaluate(
         if params.class_agnostic:
             gt_pkl = utils.add_suffix(gt_pkl, 'agn', sep='-')
             det_pkl = utils.add_suffix(det_pkl, 'agn', sep='-')
+
+
 
         gt_class_data_dict = {
             gt_class: {} for gt_class in gt_classes
@@ -1017,6 +1023,10 @@ def evaluate(
                                     size=(mask_h, mask_w),
                                     counts=mask_counts
                                 )
+
+                            if params.normalized_dets:
+                                mask_rle = utils.resize_mask_rle_through_img(mask_rle, det_img_w, det_img_h)
+
                             bbox_dict["mask"] = mask_rle
 
                         seq_det_bboxes_list.append(bbox_dict)
