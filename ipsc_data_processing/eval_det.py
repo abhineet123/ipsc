@@ -95,6 +95,10 @@ class Params(paramparse.CFG):
 
         self.allow_missing_dets = 0
         self.combine_dets = 0
+        self.normalized_dets = 0
+        """remove patch ID suffix from det filenames"""
+        self.patch_dets = 0
+
         self.draw_plot = 0
         self.gt_paths = ''
         self.gt_root_dir = ''
@@ -834,6 +838,11 @@ def evaluate(
 
                 # df_det_copy = df_det.copy(deep=True)
 
+
+                if params.patch_dets:
+                    """remove patch ID suffix from filenames"""
+                    df_det["filename"] = df_det["filename"].apply(lambda x: x.split('_')[0] + os.path.splitext(x)[1])
+
                 if params.class_agnostic:
                     df_det['class'] = 'agnostic'
 
@@ -880,8 +889,21 @@ def evaluate(
 
                     file_path = det_filename
 
+                    try:
+                        det_img_w, det_img_h = img_path_to_size[file_path]
+                    except KeyError:
+                        det_img_w, det_img_h = imagesize.get(file_path)
+                        img_path_to_size[file_path] = (det_img_w, det_img_h)
+
                     row_ids = grouped_dets.groups[det_filename]
                     img_df = df_det.loc[row_ids]
+
+                    if params.normalized_dets:
+                        img_df['xmin'] = img_df['xmin'] * det_img_w
+                        img_df['xmax'] = img_df['xmax'] * det_img_w
+
+                        img_df['ymin'] = img_df['ymin'] * det_img_h
+                        img_df['ymax'] = img_df['ymax'] * det_img_h
 
                     if params.filter_ignored:
                         det_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
