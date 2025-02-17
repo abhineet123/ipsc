@@ -3522,14 +3522,12 @@ def run(params: Params, sweep_mode: dict, *argv):
     out_dir_name = None
 
     if save_suffix:
-        if params.enable_mask:
-            save_suffix = f'{save_suffix}-mask'
         if params.iw:
             save_suffix = f'{save_suffix}-iw'
         if params.class_agnostic:
             save_suffix = f'{save_suffix}-agn'
 
-        print(f"save_suffix: {save_suffix}")
+        # print(f"save_suffix: {save_suffix}")
 
         out_dir_name = f'{save_suffix}'
 
