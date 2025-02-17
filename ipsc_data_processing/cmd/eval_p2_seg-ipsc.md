@@ -10,6 +10,7 @@
         - [on-g2_0_15-mask       @ p-1024-aug-mc-sub-8-fbb-inst/54_126-r-1024](#on_g2_0_15_mask___p_1024_aug_mc_sub_8_fbb_inst_54_126_r_1024_)
     - [p-1024-aug-mc-2d-sub-2-fbb-inst       @ 54_126-r-1024](#p_1024_aug_mc_2d_sub_2_fbb_inst___54_126_r_102_4_)
         - [on-g2_0_15       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024](#on_g2_0_15___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_)
+        - [on-g2_0_15-mask       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024](#on_g2_0_15_mask___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_)
 
 <!-- /MarkdownTOC -->
 
@@ -42,5 +43,7 @@ python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-0:nms-0:agn:proc-1:_in_-re
 ## p-1024-aug-mc-2d-sub-2-fbb-inst       @ 54_126-r-1024-->eval_p2_seg-ipsc
 <a id="on_g2_0_15___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_"></a>
 ### on-g2_0_15       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024-->eval_p2_seg-ipsc
-python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-1024_1024-rot_15_345_4-flip-inst-sub_2-2d-mc-batch_6-seq3k-fbb/ckpt-__var__-resize_1024-0_15-1024_1024-1024_1024-inst-sub_2-mc/csv-batch_4-voc18:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-mc-2d-sub-2-fbb-inst:show-0:save-0
-
+python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-1024_1024-rot_15_345_4-flip-inst-sub_2-2d-mc-batch_10-seq3k-voc2k-fbb/ckpt-__var__-resize_1024-0_15-1024_1024-1024_1024-inst-sub_2-2d-mc/csv-batch_4-seq3k-voc2k:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-mc-2d-sub-2-fbb-inst:show-0:save-0
+<a id="on_g2_0_15_mask___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_"></a>
+### on-g2_0_15-mask       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024-->eval_p2_seg-ipsc
+python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-1024_1024-rot_15_345_4-flip-inst-sub_2-2d-mc-batch_10-seq3k-voc2k-fbb/ckpt-__var__-resize_1024-0_15-1024_1024-1024_1024-inst-sub_2-2d-mc/csv-batch_4-seq3k-voc2k:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-mc-2d-sub-2-fbb-inst:show-0:save-0:mask
