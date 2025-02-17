@@ -152,7 +152,7 @@ class Params(paramparse.CFG):
 
         self.class_agnostic = 0
         self.ignore_invalid_class = 0
-        self.enable_mask = 1
+        self.enable_mask = 0
 
         self.seq = []
         self.start_id = 0
