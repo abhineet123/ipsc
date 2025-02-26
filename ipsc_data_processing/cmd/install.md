@@ -324,6 +324,7 @@ sudo apt install nvidia-driver-535
 sudo apt install nvidia-driver-545
 sudo apt install nvidia-driver-550
 sudo apt install nvidia-driver-555
+sudo apt install nvidia-driver-560
 ```
 
 4. restart
