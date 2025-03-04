@@ -140,6 +140,7 @@ class Params(paramparse.CFG):
         self.score_thresholds = [0, ]
         self.set_class_iou = [None, ]
         self.show_vis = 0
+        self.show_each = 0
         self.show_gt = 1
         self.show_tp = 0
         self.show_stats = 1
@@ -279,6 +280,7 @@ def evaluate(
         save_classes = params.save_classes
         save_cats = params.save_cats
         show_vis = params.show_vis
+        show_each = params.show_each
         show_text = params.show_text
         show_stats = params.show_stats
         show_gt = params.show_gt
@@ -317,7 +319,7 @@ def evaluate(
         img_exts = ['jpg', 'png', 'bmp']
 
         save_w, save_h = [int(x) for x in save_file_res.split('x')]
-
+        video_h, video_w = save_h, save_w
         codec, fps, vid_ext = vid_fmt.split(',')
         fps = int(fps)
         fourcc = cv2.VideoWriter_fourcc(*codec)
@@ -326,7 +328,8 @@ def evaluate(
         # show_pbar = not show_vis
 
         cls_cat_types = [
-            "all",
+            "raw",
+            "cls",
             "tp",
             "fp_dup",
             "fp_cls",
@@ -335,6 +338,16 @@ def evaluate(
             "fn_det",
             "fn_cls",
         ]
+        cls_cat_to_col = {
+            "tp": "green",
+
+            "fp_nex": "red",
+            "fp_cls": "magenta",
+            "fp_dup": "yellow",
+
+            "fn_det": "red",
+            "fn_cls": "magenta",
+        }
 
         if save_vis:
             if not save_classes:
@@ -427,8 +440,6 @@ def evaluate(
         if params.class_agnostic:
             gt_pkl = utils.add_suffix(gt_pkl, 'agn', sep='-')
             det_pkl = utils.add_suffix(det_pkl, 'agn', sep='-')
-
-
 
         gt_class_data_dict = {
             gt_class: {} for gt_class in gt_classes
@@ -844,7 +855,6 @@ def evaluate(
                                               for labels_remap_line in labels_remap_lines])
                     df_det["class"] = df_det["class"].apply(lambda x: labels_remap_dict[x])
 
-
                 if vid_info is not None:
                     seq_to_video_ids, seq_to_filenames = vid_info
                     video_ids = seq_to_video_ids[seq_name]
@@ -1230,7 +1240,7 @@ def evaluate(
                     det_post_proc_pbar.set_description(f"Post processing sequence {seq_name}")
 
                 curr_class_det_exists = {}
-                curr_class_det_bounding_boxes = []
+                curr_class_det_objs = []
                 for _data in seq_det:
                     det_class = _data['class']
                     file_path = _data['file_path']
@@ -1251,7 +1261,7 @@ def evaluate(
                     if bbox is None or det_class != gt_class or confidence < score_thresh:
                         continue
 
-                    curr_class_det_bounding_boxes.append(
+                    curr_class_det_objs.append(
                         {
                             "class": det_class,
                             "width": width,
@@ -1300,7 +1310,7 @@ def evaluate(
                 #
                 #     for gt_obj in gt_data:
                 #         if gt_obj['class'] == gt_class:
-                #             curr_class_det_bounding_boxes.append(
+                #             curr_class_det_objs.append(
                 #                 {
                 #                     'confidence': None,
                 #                     'file_id': file_path,
@@ -1310,7 +1320,7 @@ def evaluate(
                 #             )
                 #             break
 
-                class_det_data_dict[seq_path] = curr_class_det_bounding_boxes
+                class_det_data_dict[seq_path] = curr_class_det_objs
 
             det_end_t = time.time()
             det_data_dict[gt_class] = class_det_data_dict
@@ -1499,7 +1509,7 @@ def evaluate(
             os.makedirs(vis_root_dir, exist_ok=True)
             print_(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
             video_out_dict = {
-                cat: None for cat in cls_cat_types
+                cat: None for cat in save_cats
             }
 
         cat_to_ids_vis_done = {k: [] for k in cls_cat_types}
@@ -1516,14 +1526,14 @@ def evaluate(
             # seq_root_dir = seq_root_dirs[seq_idx]
 
             if save_vis:
-                if save_vis:
-                    for cat, video_out in video_out_dict.items():
-                        if video_out is not None:
-                            video_out.release()
-                            video_out_dict[cat] = None
+                for cat, video_out in video_out_dict.items():
+                    if video_out is not None:
+                        video_out.release()
+                        video_out_dict[cat] = None
+
                 vis_out_fnames = {
                     cat: utils.linux_path(vis_root_dir, cat, f'{seq_name}.{vid_ext}')
-                    for cat in cls_cat_types
+                    for cat in save_cats
                 }
 
             seq_gt_data_dict = gt_data_dict[seq_path]
@@ -1534,15 +1544,12 @@ def evaluate(
             """total number of GTs of this class in this sequence"""
             n_seq_class_gts = len(seq_class_gt_data)
 
+            """all detections of this class in this sequence"""
             seq_class_det_data = det_data_dict[gt_class][seq_path]
             """total number of detections of this class in this sequence"""
             n_seq_class_dets = len(seq_class_det_data)
-            n_class_dets += n_seq_class_dets
 
-            # if params.verbose == 2:
-            #     print_(f'n_seq_gts: {n_seq_gts}')
-            #     print_(f'n_seq_class_gts: {n_seq_class_gts}')
-            #     print_(f'n_seq_class_dets: {n_seq_class_dets}')
+            n_class_dets += n_seq_class_dets
 
             seq_gt_file_ids = set(seq_gt_data_dict.keys())
             # n_seq_gt_file_ids = len(seq_gt_file_ids)
@@ -1552,11 +1559,6 @@ def evaluate(
 
             seq_class_det_file_ids = set([obj['file_id'] for obj in seq_class_det_data])
             # n_seq_det_file_ids = len(seq_class_det_file_ids)
-
-            # if params.verbose == 2:
-            #     print_(f'n_seq_gt_file_ids: {n_seq_gt_file_ids}')
-            #     print_(f'n_seq_class_gt_file_ids: {n_seq_class_gt_file_ids}')
-            #     print_(f'n_seq_det_file_ids: {n_seq_det_file_ids}')
 
             """all frames with no det of this class but containing gt of this class"""
             missing_class_det_file_ids = seq_class_gt_file_ids - seq_class_det_file_ids
@@ -1658,59 +1660,47 @@ def evaluate(
             """process all the detections in this sequence"""
             while True:
                 """process one detection at a time"""
-                if enable_vis and (img is not None) and (all_class_dets or all_class_gt):
+                has_objs = all_class_dets or all_class_gt
+                is_first_det_in_frame = vis_file_id is None or file_id != vis_file_id
 
-                    """nothing useful to show if neither GTs nr dets of this class exist in this frame"""
-                    if vis_file_id is None or file_id != vis_file_id:
+                if (enable_vis and (img is not None)
+                        and has_objs # nothing useful to show if neither GTs nr dets of this class exist in this frame
+                ):
+                    if is_first_det_in_frame:
+                        """raw vis for previous frame"""
                         vis_file_id = file_id
                         # vis_frames[file_id] = img
-                        img_id = os.path.basename(file_id)
                         cat_img_vis_list = utils.draw_and_concat(
-                            src_img, frame_det_data, frame_gt_data, class_name_to_col, params.vis_alpha, vis_w, vis_h,
+                            src_img, frame_det_data, frame_gt_data, class_name_to_col, params.vis_alpha, vis_w,
+                            vis_h,
                             vert_stack, params.check_det, img_id, mask=enable_mask, return_list=True)
 
-                        cat_img_vis_all = utils.draw_and_concat(
-                            src_img, frame_det_data, frame_gt_data, class_name_to_col, params.vis_alpha, vis_w_all,
-                            vis_h_all, vert_stack, params.check_det, img_id, mask=enable_mask)
+                        if "raw" in save_cats:
+                            cat_img_vis_all = utils.draw_and_concat(
+                                src_img, frame_det_data, frame_gt_data, class_name_to_col, params.vis_alpha,
+                                vis_w_all,
+                                vis_h_all, vert_stack, params.check_det, img_id, mask=enable_mask)
 
-                        cat_img_h, cat_img_w = cat_img_vis_all.shape[:2]
-                        all_text_img = np.zeros((bottom_border, cat_img_w, 3), dtype=np.uint8)
-                        text = f"{seq_idx + 1}/{n_seq} {seq_name}: {ground_truth_img} "
-                        all_text_img, _ = utils.draw_text_in_image(all_text_img, text, (20, 20), 'white', 0)
+                            cat_img_h, cat_img_w = cat_img_vis_all.shape[:2]
+                            all_text_img = np.zeros((bottom_border, cat_img_w, 3), dtype=np.uint8)
+                            text = f"{seq_idx + 1}/{n_seq} {seq_name}: {ground_truth_img} "
+                            all_text_img, _ = utils.draw_text_in_image(all_text_img, text, (20, 20), 'white', 0)
 
-                        all_out_img = np.concatenate((cat_img_vis_all, all_text_img), axis=0)
+                            all_out_img = np.concatenate((cat_img_vis_all, all_text_img), axis=0)
 
-                        if save_vis:
-                            all_video_out = video_out_dict["all"]
-                            if all_video_out is None:
-                                vis_out_fname = vis_out_fnames["all"]
-                                _save_dir = os.path.dirname(vis_out_fname)
-
-                                if _save_dir and not os.path.isdir(_save_dir):
-                                    os.makedirs(_save_dir)
+                            if save_vis:
+                                all_video_out = utils.get_video_out(video_out_dict, vis_out_fnames, "raw",
+                                                                    vis_video,
+                                                                    save_h, save_w, fourcc, fps)
+                                if show_vis:
+                                    all_out_img_vis = utils.resize_ar_tf_api(all_out_img, 1280, 720)
+                                    cv2.imshow('all_out_img', all_out_img_vis)
 
                                 if vis_video:
-                                    video_h, video_w = save_h, save_w
-                                    all_video_out = cv2.VideoWriter(vis_out_fname, fourcc, fps, (video_w, video_h))
-                                else:
-                                    all_video_out = utils.ImageSequenceWriter(vis_out_fname, verbose=0)
+                                    all_out_img = utils.resize_ar_tf_api(all_out_img, video_w, video_h,
+                                                                         add_border=1)
 
-                                if not all_video_out:
-                                    raise AssertionError(
-                                        f'video file: {vis_out_fname} could not be opened for writing')
-
-                                video_out_dict["all"] = all_video_out
-
-                            if show_vis:
-                                all_out_img_vis = utils.resize_ar_tf_api(all_out_img, 1280, 720)
-                                cv2.imshow('all_out_img', all_out_img_vis)
-
-                            if vis_video:
-                                all_out_img = utils.resize_ar_tf_api(all_out_img, video_w, video_h, add_border=1)
-
-                            all_video_out.write(all_out_img)
-
-                            # cat_img_vis_list = utils.resize_ar_tf_api(cat_img_vis_list, save_w, save_h)
+                                all_video_out.write(all_out_img)
 
                     if isinstance(img, list):
                         assert isinstance(cls_cat, list), "cls_cat must be a list"
@@ -1728,7 +1718,6 @@ def evaluate(
                         if _cls_cat in ['fn_det', 'fn_cls']:
                             if vis_file_id in cat_to_ids_vis_done[_cls_cat]:
                                 raise AssertionError(f'{_cls_cat} vis has already been done for {vis_file_id}')
-                                # continue
 
                             cat_to_ids_vis_done[_cls_cat].append(vis_file_id)
 
@@ -1736,18 +1725,11 @@ def evaluate(
                             assert _text_img is None, "_img is None but _text_img isn't"
                             continue
 
-                        # img = utils.resize_ar_tf_api(img, save_w, save_h)
-                        # out_img = np.concatenate((cat_img_vis_list, _img), axis=0 if vert_stack else 1)
                         out_img = utils.annotate(cat_img_vis_list + [_img, ], text=f'{img_id}',
                                                  img_labels=['GT', 'All Detections', 'Current Detection'],
                                                  grid_size=(-1, 1) if vert_stack else (1, -1))
 
-                        # out_img = utils.resize_ar_tf_api(out_img, save_w, save_h)
                         out_img = np.concatenate((out_img, _text_img), axis=0)
-
-                        # cv2.imshow('text_img', text_img)
-                        # cv2.imshow('out_img', out_img)
-                        # cv2.waitKey(1)
 
                         if save_vis and _cls_cat in save_cats and gt_class in save_classes:
 
@@ -1763,7 +1745,6 @@ def evaluate(
 
                                 if vis_video:
                                     # video_h, video_w = out_img.shape[:2]
-                                    video_h, video_w = save_h, save_w
                                     # if show_text:
                                     #     video_h += bottom_border
                                     video_out = cv2.VideoWriter(vis_out_fname, fourcc, fps, (video_w, video_h))
@@ -1799,11 +1780,11 @@ def evaluate(
                                                      f'')
 
                         if show_vis:
-                            # cv2.imshow('cat_img_vis_list', cat_img_vis_list)
-                            if params.monitor_scale != 1.0:
-                                out_img = utils.resize_ar(out_img, width=int(1920 / params.monitor_scale))
+                            if show_each:
+                                if params.monitor_scale != 1.0:
+                                    out_img = utils.resize_ar(out_img, width=int(1920 / params.monitor_scale))
+                                cv2.imshow(win_name, out_img)
 
-                            cv2.imshow(win_name, out_img)
                             k = cv2.waitKey(1 - _pause)
                             if k == ord('q') or k == 27:
                                 cv2.destroyWindow(win_name)
@@ -1819,9 +1800,10 @@ def evaluate(
                 if det_idx >= n_seq_class_dets:
                     break
 
-                """all dets of this class in this frame"""
+                """current detection"""
                 curr_det_data = seq_class_det_data[det_idx]
                 file_id = curr_det_data["file_id"]
+                img_id = os.path.basename(file_id)
 
                 """all dets of all classes in this frame"""
                 try:
@@ -1917,7 +1899,7 @@ def evaluate(
                             else:
                                 fn_img = img_copy.copy()
 
-                                fn_img = utils.draw_objs(fn_img, cat_fn_gts, col='cyan',
+                                fn_img = utils.draw_objs(fn_img, cat_fn_gts, cols='cyan',
                                                          in_place=True, thickness=2, mask=0,
                                                          bb_resize=resize_factor)
                                 fn_text_img = np.zeros((bottom_border, text_img_w, 3), dtype=np.uint8)
@@ -2021,10 +2003,14 @@ def evaluate(
                                 "unused GT object matches with a det of current class"
                             fn_cls_sum += 1
                             fn_cats[gt_obj_id] = 'fn_cls'
+                            gt_obj['cls'] = 'fn_cls'
                         else:
+
                             """missing detection"""
                             fn_det_sum += 1
                             fn_cats[gt_obj_id] = 'fn_det'
+                            gt_obj['cls'] = 'fn_det'
+
 
                     fn_sum += n_fn_gts
                     all_considered_gt += all_class_gt
@@ -2062,6 +2048,7 @@ def evaluate(
 
                     continue
 
+                """bounding boxes and masks of all the detections in this frame"""
                 bb_det = curr_det_data["bbox"]
                 mask_det = curr_det_data["mask"]
 
@@ -2077,7 +2064,8 @@ def evaluate(
                             tp_sum += 1
                             gt_match['used'] = True
                             count_true_positives[gt_class] += 1
-
+                            gt_match['cls'] = "tp"
+                            curr_det_data['cls'] = "tp"
                             cls_cat = "tp"
                         else:
                             """false positive (multiple detection)"""
@@ -2086,10 +2074,10 @@ def evaluate(
                             fp_sum += 1
                             fp_dup_sum += 1
                             cls_cat = "fp_dup"
+                            curr_det_data['cls'] = "fp_dup"
                     else:
                         """false positive"""
                         fp[det_idx] = 1
-
                         ovmax_, gt_match_ = utils.get_max_iou_obj(frame_gt_data, other_classes, bb_det, mask_det,
                                                                   enable_mask)
                         if ovmax_ >= min_overlap:
@@ -2102,16 +2090,19 @@ def evaluate(
                                 fp_dup[det_idx] = 1
                                 fp_dup_sum += 1
                                 cls_cat = "fp_dup"
+                                curr_det_data['cls'] = "fp_dup"
                             else:
                                 """Misclassification of actual object"""
                                 fp_cls[det_idx] = 1
                                 fp_cls_sum += 1
                                 cls_cat = "fp_cls"
                                 gt_match_['used_fp'] = True
+                                curr_det_data['cls'] = "fp_cls"
                         else:
                             """det does not match any GT"""
                             fp_nex[det_idx] = 1
                             fp_nex_sum += 1
+                            curr_det_data['cls'] = "fp_nex"
                             if ovmax > 0:
                                 cls_cat = "fp_nex-part"
                                 fp_nex_part[det_idx] = 1
@@ -2146,14 +2137,14 @@ def evaluate(
                     # cv2.rectangle(img, (int(bb_det[0]), int(bb_det[1])), (int(bb_det[2]), int(bb_det[3])), color, 2)
                     # if there is intersections between the det and GT
                     if show_gt and cls_cat in ("fp_nex-part", "tp"):
-                        img = utils.draw_objs(img, [gt_match, ], col='cyan', in_place=True, mask=0, thickness=2,
+                        img = utils.draw_objs(img, [gt_match, ], cols='cyan', in_place=True, mask=0, thickness=2,
                                               bb_resize=resize_factor)
 
                         # bb_gt = gt_match["bbox"]
                         # bb_gt = [float(x) for x in gt_match["bbox"].split()]
                         # cv2.rectangle(img, (int(bb_gt[0]), int(bb_gt[1])), (int(bb_gt[2]), int(bb_gt[3])),
                         # light_blue, 2)
-                    img = utils.draw_objs(img, [curr_det_data, ], col=color, in_place=True, mask=0, thickness=2,
+                    img = utils.draw_objs(img, [curr_det_data, ], cols=color, in_place=True, mask=0, thickness=2,
                                           bb_resize=resize_factor)
 
                     if not show_text:
@@ -2226,7 +2217,7 @@ def evaluate(
                                                                             line_width)
 
                 if is_last_in_frame:
-                    """last detection in this frame assuming detections are ordered by frame"""
+                    """last detection in this frame assuming that detections are ordered by frame"""
 
                     n_total_gt += len(all_class_gt)
                     # all_gt_list += [
@@ -2255,6 +2246,7 @@ def evaluate(
 
                     """check which of the unused GTs have corresponding detections of other classes"""
                     for gt_obj_id, gt_obj in enumerate(unused_gt):
+
                         ovmax_, det_match_ = utils.get_max_iou_obj(
                             frame_det_data, other_classes,
                             gt_obj["bbox"], gt_obj["mask"], enable_mask)
@@ -2265,10 +2257,13 @@ def evaluate(
                                 "unused GT object matches with a det of current class"
                             fn_cls_sum += 1
                             fn_cats[gt_obj_id] = 'fn_cls'
+                            gt_obj['cls'] = 'fn_cls'
                         else:
                             """missing detection"""
                             fn_det_sum += 1
                             fn_cats[gt_obj_id] = 'fn_det'
+                            gt_obj['cls'] = 'fn_det'
+
 
                     assert n_fn_gts == len(unused_gt), "n_unused_gt / n_fn_gts mismatch"
 
@@ -2290,6 +2285,45 @@ def evaluate(
                         ))
 
                     if enable_vis:
+                        if (
+                                ("cls" in save_cats)
+                                and (gt_class_idx == n_classes - 1)
+                        ):
+                            """all classes have been processed for this frame in this sequence so 
+                            classification summary visualization can be generated
+                            this shows TPs in green and FP / FN in red"""
+
+                            cat_img_vis_cls = utils.draw_and_concat(
+                                src_img,
+                                # all_class_dets, all_class_gt,
+                                frame_det_data, frame_gt_data,
+                                None, params.vis_alpha, vis_w_all,
+                                vis_h_all, vert_stack, params.check_det, img_id,
+                                mask=enable_mask, cls_cat_to_col=cls_cat_to_col)
+
+                            cat_img_h, cat_img_w = cat_img_vis_cls.shape[:2]
+                            cls_text_img = np.zeros((bottom_border, cat_img_w, 3), dtype=np.uint8)
+                            cls_text = ' '.join(f'{cls_cat_}:{col_}' for cls_cat_, col_ in cls_cat_to_col.items())
+                            cls_text_img, _ = utils.draw_text_in_image(cls_text_img, cls_text, (20, 20), 'white', 0)
+                            cls_out_img = np.concatenate((cat_img_vis_cls, cls_text_img), axis=0)
+
+                            # cls_out_img = cat_img_vis_cls
+
+                            if show_vis:
+                                cls_out_img_vis = utils.resize_ar_tf_api(cls_out_img, 1280, 720)
+                                cv2.imshow('cls_out_img_vis', cls_out_img_vis)
+                                # cv2.waitKey(0)
+
+                            if save_vis:
+                                cls_video_out = utils.get_video_out(video_out_dict, vis_out_fnames, "cls",
+                                                                    vis_video,
+                                                                    save_h, save_w, fourcc, fps)
+                                if vis_video:
+                                    cls_out_img = utils.resize_ar_tf_api(
+                                        cls_out_img, video_w, video_h, add_border=1)
+
+                                cls_video_out.write(cls_out_img)
+
                         """need to show these fn_gts in the next iteration of the while loop"""
                         if fn_gts:
                             # img = None

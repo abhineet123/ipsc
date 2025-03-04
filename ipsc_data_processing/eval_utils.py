@@ -520,16 +520,37 @@ def annotate(
 
     return img_stacked
 
+def get_video_out(video_out_dict, vis_out_fnames, vis_type, vis_video, save_h, save_w, fourcc, fps):
+    all_video_out = video_out_dict[vis_type]
+    if all_video_out is None:
+        vis_out_fname = vis_out_fnames[vis_type]
+        _save_dir = os.path.dirname(vis_out_fname)
+
+        if _save_dir and not os.path.isdir(_save_dir):
+            os.makedirs(_save_dir)
+
+        if vis_video:
+            video_h, video_w = save_h, save_w
+            all_video_out = cv2.VideoWriter(vis_out_fname, fourcc, fps, (video_w, video_h))
+        else:
+            all_video_out = ImageSequenceWriter(vis_out_fname, verbose=0)
+
+        if not all_video_out:
+            raise AssertionError(
+                f'video file: {vis_out_fname} could not be opened for writing')
+
+        video_out_dict[vis_type] = all_video_out
+    return all_video_out
 
 def draw_and_concat(src_img, frame_det_data, frame_gt_data, class_name_to_col, vis_alpha, vis_w, vis_h,
-                    vert_stack, check_det, img_id, mask=True, return_list=False):
+                    vert_stack, check_det, img_id, mask=True, return_list=False, cls_cat_to_col=None):
     dets_vis_img, resize_factor, _, _ = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=1)
     gt_vis_img = resize_ar_tf_api(src_img, vis_w, vis_h, crop=1, return_factors=0)
 
     dets_vis_img = draw_objs(dets_vis_img, frame_det_data, vis_alpha, class_name_to_col, check_bb=check_det,
-                             thickness=1, mask=mask, bb_resize=resize_factor)
+                             thickness=1, mask=mask, bb_resize=resize_factor, cls_cat_to_col=cls_cat_to_col)
     gt_vis_img = draw_objs(gt_vis_img, frame_gt_data, vis_alpha, class_name_to_col, thickness=1, mask=mask,
-                           bb_resize=resize_factor)
+                           bb_resize=resize_factor, cls_cat_to_col=cls_cat_to_col)
 
     if return_list:
         return [gt_vis_img, dets_vis_img]
@@ -1278,7 +1299,7 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
 
         if enable_mask:
             # pred_iou = get_mask_iou(obj1['mask'], obj2['mask'], obj1['bbox'], obj2['bbox'])
-            pred_iou = get_mask_rle_iou(obj1['mask'],  obj2['mask'])
+            pred_iou = get_mask_rle_iou(obj1['mask'], obj2['mask'])
         else:
             pred_iou = get_iou(obj1['bbox'], obj2['bbox'], xywh=False)
 
@@ -2207,8 +2228,9 @@ def compute_thresh_rec_prec(thresh_idx, score_thresholds,
     return _rec_th, _prec_th, tp_sum_th, fp_sum_th, fp_cls_sum_th, fp_dup_sum_th, fp_nex_sum_th
 
 
-def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
-              in_place=False, bbox=True, mask=False, thickness=2, check_bb=0, bb_resize=None):
+def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, cols=None,
+              in_place=False, bbox=True, mask=False, thickness=2, check_bb=0,
+              bb_resize=None, cls_cat_to_col=None):
     if in_place:
         vis_img = img
     else:
@@ -2219,14 +2241,26 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
     vis_h, vis_w = vis_img.shape[:2]
 
     resize_factor = 1.0
+    n_objs = len(objs)
 
-    for obj in objs:
-        label = obj['class']
-        if col is None:
-            class_col = class_name_to_col[label]
+    if cols is not None:
+        if not isinstance(cols, (list, tuple)):
+            cols = [cols, ] * n_objs
+    else:
+        if class_name_to_col is not None:
+            cols = [class_name_to_col[obj['class']] for obj in objs]
         else:
-            class_col = col
-        class_col = col_bgr[class_col]
+            assert cls_cat_to_col is not None, "either class_name_to_col or cls_cat_to_col must be provided"
+            """
+            get col based on classification status
+            tp = green for both gt and det
+            fp = red for det, fn=red for gt
+            """
+            cols = [cls_cat_to_col[obj['cls']] for obj in objs]
+
+    for obj, obj_col in zip(objs, cols, strict=True):
+        label = obj['class']
+        obj_col = col_bgr[obj_col]
 
         if mask:
             rle = obj['mask']
@@ -2331,12 +2365,12 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, col=None,
                 ymax *= resize_factor
 
             cv2.rectangle(
-                vis_img, (int(xmin), int(ymin)), (int(xmax), int(ymax)), class_col, thickness)
+                vis_img, (int(xmin), int(ymin)), (int(xmax), int(ymax)), obj_col, thickness)
 
         if mask:
             mask_binary = mask_uint.astype(bool)
 
-            mask_img[mask_binary] = class_col
+            mask_img[mask_binary] = obj_col
             vis_img[mask_binary] = (alpha * vis_img[mask_binary] +
                                     (1 - alpha) * mask_img[mask_binary])
 
