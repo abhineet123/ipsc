@@ -19,6 +19,7 @@
             - [vis       @ on-train/p-1024-aug-strd-mc-sub-4-fbb-inst/54_126-r-1024](#vis___on_train_p_1024_aug_strd_mc_sub_4_fbb_inst_54_126_r_1024_)
         - [on-0_15       @ p-1024-aug-strd-mc-sub-4-fbb-inst/54_126-r-1024](#on_0_15___p_1024_aug_strd_mc_sub_4_fbb_inst_54_126_r_102_4_)
     - [p-1024-aug-mc-2d-sub-2-fbb-inst       @ 54_126-r-1024](#p_1024_aug_mc_2d_sub_2_fbb_inst___54_126_r_102_4_)
+        - [on-train       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024](#on_train___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_)
         - [on-0_15       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024](#on_0_15___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_)
         - [on-0_15-mask       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024](#on_0_15_mask___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_)
     - [p-1024-aug-mc-2d-sub-2-fbb-inst-b20       @ 54_126-r-1024](#p_1024_aug_mc_2d_sub_2_fbb_inst_b20___54_126_r_102_4_)
@@ -86,6 +87,10 @@ python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-re
 
 <a id="p_1024_aug_mc_2d_sub_2_fbb_inst___54_126_r_102_4_"></a>
 ## p-1024-aug-mc-2d-sub-2-fbb-inst       @ 54_126-r-1024-->eval_p2_seg-ipsc
+<a id="on_train___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_"></a>
+### on-train       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024-->eval_p2_seg-ipsc
+python eval_det.py cfg=p2s:seg,ipsc:seg:54_126:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-1024_1024-rot_15_345_4-flip-inst-sub_2-2d-mc-batch_20-seq3k-voc2k-fbb-xe/ckpt-__var__-resize_1024-54_126-1024_1024-1024_1024-inst-sub_2-2d-mc/csv-batch_8-seq3k-voc2k:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-mc-2d-sub-2-fbb-inst-train:show-0:save-0
+
 <a id="on_0_15___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_"></a>
 ### on-0_15       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024-->eval_p2_seg-ipsc
 python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-1024_1024-rot_15_345_4-flip-inst-sub_2-2d-mc-batch_10-seq3k-voc2k-fbb/ckpt-__var__-resize_1024-0_15-1024_1024-1024_1024-inst-sub_2-2d-mc/csv-batch_4-seq3k-voc2k:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-mc-2d-sub-2-fbb-inst:show-0:save-0
