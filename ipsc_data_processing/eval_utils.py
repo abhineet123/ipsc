@@ -2459,9 +2459,8 @@ def compute_overlaps_multi(iou, ioa_1, ioa_2, objects_1, objects_2, xywh=False):
     :type iou: np.ndarray | None
     :type ioa_1: np.ndarray | None
     :type ioa_2: np.ndarray | None
-    :type object_1: np.ndarray
+    :type objects_1: np.ndarray
     :type objects_2: np.ndarray
-    :type logger: logging.RootLogger | None
     :rtype: None
     """
     # handle annoying singletons

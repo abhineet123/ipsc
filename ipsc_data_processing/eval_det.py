@@ -676,9 +676,9 @@ def evaluate(
                 row_ids = grouped_gt.groups[gt_filename]
                 img_df = df_gt.loc[row_ids]
                 file_path = gt_filename
+                ignored_df = img_df.loc[img_df['class'] == 'ignored']
 
-                if params.filter_ignored:
-                    ignored_df = img_df.loc[img_df['class'] == 'ignored']
+                if params.filter_ignored and ignored_df.size > 0:
                     real_df = img_df.loc[img_df['class'] != 'ignored']
 
                     real_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
@@ -937,7 +937,7 @@ def evaluate(
                         img_df['ymin'] = img_df['ymin'] * det_img_h
                         img_df['ymax'] = img_df['ymax'] * det_img_h
 
-                    if params.filter_ignored:
+                    if params.filter_ignored and file_path in seq_gt_ignored_dict:
                         det_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
                                                   float(row['xmax']), float(row['ymax'])]
                                                  for _, row in img_df.iterrows()
