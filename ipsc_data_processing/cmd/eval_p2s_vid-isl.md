@@ -383,7 +383,7 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:nms-1:vnms-1:sho
 ## detrac-0_48-len-8-aug-fbb-seq2k       @ mid-->eval_p2s_vid-isl
 <a id="on_train_200_per_seq_random_len_8___detrac_0_48_len_8_aug_fbb_seq2k_mi_d_"></a>
 ### on-train-200_per_seq_random_len_8       @ detrac-0_48-len-8-aug-fbb-seq2k/mid-->eval_p2s_vid-isl
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:200_per_seq_random_len_8:0_48:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_28-jtr-res_1280-fbb-seq2k-xe/ckpt-__var__-detrac-length-8-stride-8-non_empty-200_per_seq_random_len_8-seq-0_48/csv-batch_6:_out_-p2s-detrac-0_48-len-8-train-200_per_seq_random_len_8-aug-fbb-seq2k:dbg:vbs
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:200_per_seq_random_len_8:0_48:gt-1:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_28-jtr-res_1280-fbb-seq2k-xe/ckpt-__var__-detrac-length-8-stride-8-non_empty-200_per_seq_random_len_8-seq-0_48/csv-batch_6:_out_-p2s-detrac-0_48-len-8-train-200_per_seq_random_len_8-aug-fbb-seq2k
 <a id="on_49_85_200_per_seq_random_len_8___detrac_0_48_len_8_aug_fbb_seq2k_mi_d_"></a>
 ### on-49_85-200_per_seq_random_len_8       @ detrac-0_48-len-8-aug-fbb-seq2k/mid-->eval_p2s_vid-isl
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:200_per_seq_random_len_8:49_85:gt-1:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-8-stride-1-non_empty-seq-0_48-batch_28-jtr-res_1280-fbb-seq2k-xe/ckpt-__var__-detrac-length-8-stride-8-non_empty-200_per_seq_random_len_8-seq-49_85/csv-batch_6:_out_-p2s-detrac-0_48-len-8-49_85-200_per_seq_random_len_8-aug-fbb-seq2k
