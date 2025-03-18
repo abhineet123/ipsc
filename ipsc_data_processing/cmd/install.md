@@ -374,7 +374,6 @@ sudo apt-get remove cuda-12-2
 ### all       @ tensorflow/install-->p2s_setup
 download cudnn tar from
 https://developer.nvidia.com/rdp/cudnn-download
-<a id="12_2___all_tensorflow_install_"></a>
 ```
 wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
 ```

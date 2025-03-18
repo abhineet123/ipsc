@@ -14,67 +14,86 @@
     - [0_1       @ idot](#0_1___idot_)
     - [8_8       @ idot](#8_8___idot_)
 - [detrac](#detra_c_)
-    - [0_0       @ detrac](#0_0___detrac_)
-    - [0_1       @ detrac](#0_1___detrac_)
-    - [0_19       @ detrac](#0_19___detrac_)
-        - [strd-2       @ 0_19/detrac](#strd_2___0_19_detra_c_)
-    - [0_9       @ detrac](#0_9___detrac_)
-    - [49_68       @ detrac](#49_68___detrac_)
-        - [len-2       @ 49_68/detrac](#len_2___49_68_detrac_)
-        - [len-6       @ 49_68/detrac](#len_6___49_68_detrac_)
-        - [len-9       @ 49_68/detrac](#len_9___49_68_detrac_)
-        - [len-64       @ 49_68/detrac](#len_64___49_68_detrac_)
-    - [0_48       @ detrac](#0_48___detrac_)
-        - [len-2       @ 0_48/detrac](#len_2___0_48_detra_c_)
-        - [len-4       @ 0_48/detrac](#len_4___0_48_detra_c_)
-        - [len-8       @ 0_48/detrac](#len_8___0_48_detra_c_)
-            - [200_per_seq_random_len_8       @ len-8/0_48/detrac](#200_per_seq_random_len_8___len_8_0_48_detra_c_)
-        - [len-12       @ 0_48/detrac](#len_12___0_48_detra_c_)
-        - [len-16       @ 0_48/detrac](#len_16___0_48_detra_c_)
-        - [len-24       @ 0_48/detrac](#len_24___0_48_detra_c_)
-        - [len-28       @ 0_48/detrac](#len_28___0_48_detra_c_)
-        - [len-32       @ 0_48/detrac](#len_32___0_48_detra_c_)
-        - [len-40       @ 0_48/detrac](#len_40___0_48_detra_c_)
-        - [len-48       @ 0_48/detrac](#len_48___0_48_detra_c_)
-        - [len-56       @ 0_48/detrac](#len_56___0_48_detra_c_)
-        - [len-64       @ 0_48/detrac](#len_64___0_48_detra_c_)
-    - [0_85       @ detrac](#0_85___detrac_)
-        - [len-2       @ 0_85/detrac](#len_2___0_85_detra_c_)
-        - [len-32       @ 0_85/detrac](#len_32___0_85_detra_c_)
-        - [len-40       @ 0_85/detrac](#len_40___0_85_detra_c_)
-        - [len-48       @ 0_85/detrac](#len_48___0_85_detra_c_)
-        - [len-56       @ 0_85/detrac](#len_56___0_85_detra_c_)
-        - [len-64       @ 0_85/detrac](#len_64___0_85_detra_c_)
-    - [49_85       @ detrac](#49_85___detrac_)
-        - [strd-1       @ 49_85/detrac](#strd_1___49_85_detrac_)
-            - [len-2       @ strd-1/49_85/detrac](#len_2___strd_1_49_85_detra_c_)
-            - [len-4       @ strd-1/49_85/detrac](#len_4___strd_1_49_85_detra_c_)
-            - [len-8       @ strd-1/49_85/detrac](#len_8___strd_1_49_85_detra_c_)
-            - [len-16       @ strd-1/49_85/detrac](#len_16___strd_1_49_85_detra_c_)
-                - [strds       @ len-16/strd-1/49_85/detrac](#strds___len_16_strd_1_49_85_detrac_)
-            - [len-32       @ strd-1/49_85/detrac](#len_32___strd_1_49_85_detra_c_)
-                - [strds       @ len-32/strd-1/49_85/detrac](#strds___len_32_strd_1_49_85_detrac_)
-            - [len-40       @ strd-1/49_85/detrac](#len_40___strd_1_49_85_detra_c_)
-            - [len-48       @ strd-1/49_85/detrac](#len_48___strd_1_49_85_detra_c_)
-            - [len-56       @ strd-1/49_85/detrac](#len_56___strd_1_49_85_detra_c_)
-            - [len-64       @ strd-1/49_85/detrac](#len_64___strd_1_49_85_detra_c_)
-        - [strd-same       @ 49_85/detrac](#strd_same___49_85_detrac_)
-            - [len-2       @ strd-same/49_85/detrac](#len_2___strd_same_49_85_detrac_)
-                - [80_per_seq_random_len_2       @ len-2/strd-same/49_85/detrac](#80_per_seq_random_len_2___len_2_strd_same_49_85_detrac_)
-            - [len-4       @ strd-same/49_85/detrac](#len_4___strd_same_49_85_detrac_)
-                - [80_per_seq_random_len_4       @ len-4/strd-same/49_85/detrac](#80_per_seq_random_len_4___len_4_strd_same_49_85_detrac_)
-            - [len-8       @ strd-same/49_85/detrac](#len_8___strd_same_49_85_detrac_)
-                - [80_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac](#80_per_seq_random_len_8___len_8_strd_same_49_85_detrac_)
-                - [200_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac](#200_per_seq_random_len_8___len_8_strd_same_49_85_detrac_)
-            - [len-12       @ strd-same/49_85/detrac](#len_12___strd_same_49_85_detrac_)
-            - [len-16       @ strd-same/49_85/detrac](#len_16___strd_same_49_85_detrac_)
-                - [256_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac](#256_per_seq_random_len_16___len_16_strd_same_49_85_detra_c_)
-            - [len-32       @ strd-same/49_85/detrac](#len_32___strd_same_49_85_detrac_)
-                - [512_per_seq_random_len_32       @ len-32/strd-same/49_85/detrac](#512_per_seq_random_len_32___len_32_strd_same_49_85_detra_c_)
-            - [len-40       @ strd-same/49_85/detrac](#len_40___strd_same_49_85_detrac_)
-            - [len-48       @ strd-same/49_85/detrac](#len_48___strd_same_49_85_detrac_)
-            - [len-56       @ strd-same/49_85/detrac](#len_56___strd_same_49_85_detrac_)
-            - [len-64       @ strd-same/49_85/detrac](#len_64___strd_same_49_85_detrac_)
+    - [0_59       @ detrac](#0_59___detrac_)
+        - [len-2       @ 0_59/detrac](#len_2___0_59_detra_c_)
+        - [len-4       @ 0_59/detrac](#len_4___0_59_detra_c_)
+        - [len-8       @ 0_59/detrac](#len_8___0_59_detra_c_)
+            - [200_per_seq_random_len_8       @ len-8/0_59/detrac](#200_per_seq_random_len_8___len_8_0_59_detra_c_)
+        - [len-12       @ 0_59/detrac](#len_12___0_59_detra_c_)
+        - [len-16       @ 0_59/detrac](#len_16___0_59_detra_c_)
+        - [len-24       @ 0_59/detrac](#len_24___0_59_detra_c_)
+        - [len-28       @ 0_59/detrac](#len_28___0_59_detra_c_)
+        - [len-32       @ 0_59/detrac](#len_32___0_59_detra_c_)
+        - [len-40       @ 0_59/detrac](#len_40___0_59_detra_c_)
+        - [len-48       @ 0_59/detrac](#len_48___0_59_detra_c_)
+        - [len-56       @ 0_59/detrac](#len_56___0_59_detra_c_)
+        - [len-64       @ 0_59/detrac](#len_64___0_59_detra_c_)
+    - [60_99       @ detrac](#60_99___detrac_)
+        - [len-2       @ 60_99/detrac](#len_2___60_99_detrac_)
+        - [len-4       @ 60_99/detrac](#len_4___60_99_detrac_)
+        - [len-8       @ 60_99/detrac](#len_8___60_99_detrac_)
+- [detrac-non_empty](#detrac_non_empt_y_)
+    - [0_0       @ detrac-non_empty](#0_0___detrac_non_empty_)
+    - [0_1       @ detrac-non_empty](#0_1___detrac_non_empty_)
+    - [0_19       @ detrac-non_empty](#0_19___detrac_non_empty_)
+        - [strd-2       @ 0_19/detrac-non_empty](#strd_2___0_19_detrac_non_empt_y_)
+    - [0_9       @ detrac-non_empty](#0_9___detrac_non_empty_)
+    - [49_68       @ detrac-non_empty](#49_68___detrac_non_empty_)
+        - [len-2       @ 49_68/detrac-non_empty](#len_2___49_68_detrac_non_empty_)
+        - [len-6       @ 49_68/detrac-non_empty](#len_6___49_68_detrac_non_empty_)
+        - [len-9       @ 49_68/detrac-non_empty](#len_9___49_68_detrac_non_empty_)
+        - [len-64       @ 49_68/detrac-non_empty](#len_64___49_68_detrac_non_empty_)
+    - [0_48       @ detrac-non_empty](#0_48___detrac_non_empty_)
+        - [len-2       @ 0_48/detrac-non_empty](#len_2___0_48_detrac_non_empt_y_)
+        - [len-4       @ 0_48/detrac-non_empty](#len_4___0_48_detrac_non_empt_y_)
+        - [len-8       @ 0_48/detrac-non_empty](#len_8___0_48_detrac_non_empt_y_)
+            - [200_per_seq_random_len_8       @ len-8/0_48/detrac-non_empty](#200_per_seq_random_len_8___len_8_0_48_detrac_non_empt_y_)
+        - [len-12       @ 0_48/detrac-non_empty](#len_12___0_48_detrac_non_empt_y_)
+        - [len-16       @ 0_48/detrac-non_empty](#len_16___0_48_detrac_non_empt_y_)
+        - [len-24       @ 0_48/detrac-non_empty](#len_24___0_48_detrac_non_empt_y_)
+        - [len-28       @ 0_48/detrac-non_empty](#len_28___0_48_detrac_non_empt_y_)
+        - [len-32       @ 0_48/detrac-non_empty](#len_32___0_48_detrac_non_empt_y_)
+        - [len-40       @ 0_48/detrac-non_empty](#len_40___0_48_detrac_non_empt_y_)
+        - [len-48       @ 0_48/detrac-non_empty](#len_48___0_48_detrac_non_empt_y_)
+        - [len-56       @ 0_48/detrac-non_empty](#len_56___0_48_detrac_non_empt_y_)
+        - [len-64       @ 0_48/detrac-non_empty](#len_64___0_48_detrac_non_empt_y_)
+    - [0_85       @ detrac-non_empty](#0_85___detrac_non_empty_)
+        - [len-2       @ 0_85/detrac-non_empty](#len_2___0_85_detrac_non_empt_y_)
+        - [len-32       @ 0_85/detrac-non_empty](#len_32___0_85_detrac_non_empt_y_)
+        - [len-40       @ 0_85/detrac-non_empty](#len_40___0_85_detrac_non_empt_y_)
+        - [len-48       @ 0_85/detrac-non_empty](#len_48___0_85_detrac_non_empt_y_)
+        - [len-56       @ 0_85/detrac-non_empty](#len_56___0_85_detrac_non_empt_y_)
+        - [len-64       @ 0_85/detrac-non_empty](#len_64___0_85_detrac_non_empt_y_)
+    - [49_85       @ detrac-non_empty](#49_85___detrac_non_empty_)
+        - [strd-1       @ 49_85/detrac-non_empty](#strd_1___49_85_detrac_non_empty_)
+            - [len-2       @ strd-1/49_85/detrac-non_empty](#len_2___strd_1_49_85_detrac_non_empt_y_)
+            - [len-4       @ strd-1/49_85/detrac-non_empty](#len_4___strd_1_49_85_detrac_non_empt_y_)
+            - [len-8       @ strd-1/49_85/detrac-non_empty](#len_8___strd_1_49_85_detrac_non_empt_y_)
+            - [len-16       @ strd-1/49_85/detrac-non_empty](#len_16___strd_1_49_85_detrac_non_empt_y_)
+                - [strds       @ len-16/strd-1/49_85/detrac-non_empty](#strds___len_16_strd_1_49_85_detrac_non_empty_)
+            - [len-32       @ strd-1/49_85/detrac-non_empty](#len_32___strd_1_49_85_detrac_non_empt_y_)
+                - [strds       @ len-32/strd-1/49_85/detrac-non_empty](#strds___len_32_strd_1_49_85_detrac_non_empty_)
+            - [len-40       @ strd-1/49_85/detrac-non_empty](#len_40___strd_1_49_85_detrac_non_empt_y_)
+            - [len-48       @ strd-1/49_85/detrac-non_empty](#len_48___strd_1_49_85_detrac_non_empt_y_)
+            - [len-56       @ strd-1/49_85/detrac-non_empty](#len_56___strd_1_49_85_detrac_non_empt_y_)
+            - [len-64       @ strd-1/49_85/detrac-non_empty](#len_64___strd_1_49_85_detrac_non_empt_y_)
+        - [strd-same       @ 49_85/detrac-non_empty](#strd_same___49_85_detrac_non_empty_)
+            - [len-2       @ strd-same/49_85/detrac-non_empty](#len_2___strd_same_49_85_detrac_non_empty_)
+                - [80_per_seq_random_len_2       @ len-2/strd-same/49_85/detrac-non_empty](#80_per_seq_random_len_2___len_2_strd_same_49_85_detrac_non_empty_)
+            - [len-4       @ strd-same/49_85/detrac-non_empty](#len_4___strd_same_49_85_detrac_non_empty_)
+                - [80_per_seq_random_len_4       @ len-4/strd-same/49_85/detrac-non_empty](#80_per_seq_random_len_4___len_4_strd_same_49_85_detrac_non_empty_)
+            - [len-8       @ strd-same/49_85/detrac-non_empty](#len_8___strd_same_49_85_detrac_non_empty_)
+                - [80_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac-non_empty](#80_per_seq_random_len_8___len_8_strd_same_49_85_detrac_non_empty_)
+                - [200_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac-non_empty](#200_per_seq_random_len_8___len_8_strd_same_49_85_detrac_non_empty_)
+            - [len-12       @ strd-same/49_85/detrac-non_empty](#len_12___strd_same_49_85_detrac_non_empty_)
+            - [len-16       @ strd-same/49_85/detrac-non_empty](#len_16___strd_same_49_85_detrac_non_empty_)
+                - [256_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac-non_empty](#256_per_seq_random_len_16___len_16_strd_same_49_85_detrac_non_empt_y_)
+            - [len-32       @ strd-same/49_85/detrac-non_empty](#len_32___strd_same_49_85_detrac_non_empty_)
+                - [512_per_seq_random_len_32       @ len-32/strd-same/49_85/detrac-non_empty](#512_per_seq_random_len_32___len_32_strd_same_49_85_detrac_non_empt_y_)
+            - [len-40       @ strd-same/49_85/detrac-non_empty](#len_40___strd_same_49_85_detrac_non_empty_)
+            - [len-48       @ strd-same/49_85/detrac-non_empty](#len_48___strd_same_49_85_detrac_non_empty_)
+            - [len-56       @ strd-same/49_85/detrac-non_empty](#len_56___strd_same_49_85_detrac_non_empty_)
+            - [len-64       @ strd-same/49_85/detrac-non_empty](#len_64___strd_same_49_85_detrac_non_empty_)
 - [ipsc](#ips_c_)
     - [0_126       @ ipsc](#0_126___ipsc_)
         - [len-2       @ 0_126/ipsc](#len_2___0_126_ipsc_)
@@ -176,19 +195,78 @@ python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gap-10
 
 <a id="detra_c_"></a>
 # detrac
-<a id="0_0___detrac_"></a>
-## 0_0       @ detrac-->xml_to_ytvis
+<a id="0_59___detrac_"></a>
+## 0_59       @ detrac-->xml_to_ytvis
+<a id="len_2___0_59_detra_c_"></a>
+### len-2       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-2:strd-1:gap-1
+<a id="len_4___0_59_detra_c_"></a>
+### len-4       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-4:strd-1:gap-1
+<a id="len_8___0_59_detra_c_"></a>
+### len-8       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-8:strd-1:gap-1
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-8:strd-8:gap-1
+<a id="200_per_seq_random_len_8___len_8_0_59_detra_c_"></a>
+#### 200_per_seq_random_len_8       @ len-8/0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:200_per_seq_random_len_8:0_48:proc-1:len-8:strd-8:gap-1
+<a id="len_12___0_59_detra_c_"></a>
+### len-12       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-12:strd-1:gap-1
+<a id="len_16___0_59_detra_c_"></a>
+### len-16       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-16:strd-1:gap-1
+<a id="len_24___0_59_detra_c_"></a>
+### len-24       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-24:strd-1:gap-1
+<a id="len_28___0_59_detra_c_"></a>
+### len-28       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-28:strd-1:gap-1
+<a id="len_32___0_59_detra_c_"></a>
+### len-32       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-32:strd-1:gap-1
+<a id="len_40___0_59_detra_c_"></a>
+### len-40       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-40:strd-1:gap-1
+<a id="len_48___0_59_detra_c_"></a>
+### len-48       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-48:strd-1:gap-1
+<a id="len_56___0_59_detra_c_"></a>
+### len-56       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-56:strd-1:gap-1
+<a id="len_64___0_59_detra_c_"></a>
+### len-64       @ 0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-64:strd-1:gap-1
+
+<a id="60_99___detrac_"></a>
+## 60_99       @ detrac-->xml_to_ytvis
+<a id="len_2___60_99_detrac_"></a>
+### len-2       @ 60_99/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-2:strd-1:gap-1
+python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-2:strd-2:gap-1
+<a id="len_4___60_99_detrac_"></a>
+### len-4       @ 60_99/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-4:strd-1:gap-1
+<a id="len_8___60_99_detrac_"></a>
+### len-8       @ 60_99/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-8:strd-1:gap-1
+python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-8:strd-8:gap-1
+
+<a id="detrac_non_empt_y_"></a>
+# detrac-non_empty
+<a id="0_0___detrac_non_empty_"></a>
+## 0_0       @ detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-100:strd-100:gap-1:vis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_0:proc-1:len-2:strd-1:gap-1 
-<a id="0_1___detrac_"></a>
-## 0_1       @ detrac-->xml_to_ytvis
+<a id="0_1___detrac_non_empty_"></a>
+## 0_1       @ detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_1:proc-1:len-2:strd-1:gap-1 
 python xml_to_ytvis.py cfg=detrac:non_empty:0_1:proc-1:len-64:strd-1:gap-1 
 python xml_to_ytvis.py cfg=detrac:non_empty:0_1:proc-1:len-64:strd-64:gap-1 
 
 
-<a id="0_19___detrac_"></a>
-## 0_19       @ detrac-->xml_to_ytvis
+<a id="0_19___detrac_non_empty_"></a>
+## 0_19       @ detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-1:gap-1 
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-3:strd-1:gap-1 
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-4:strd-1:gap-1 
@@ -196,199 +274,199 @@ python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-6:strd-1:gap-1
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-8:strd-1:gap-1 
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-9:strd-1:gap-1 
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-64:strd-1:gap-1 
-<a id="strd_2___0_19_detra_c_"></a>
-### strd-2       @ 0_19/detrac-->xml_to_ytvis
+<a id="strd_2___0_19_detrac_non_empt_y_"></a>
+### strd-2       @ 0_19/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_19:proc-1:len-2:strd-2:gap-1 
 
-<a id="0_9___detrac_"></a>
-## 0_9       @ detrac-->xml_to_ytvis
+<a id="0_9___detrac_non_empty_"></a>
+## 0_9       @ detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-1:gap-1:vis 
 `strd-2`
 python xml_to_ytvis.py cfg=detrac:non_empty:0_9:proc-1:len-2:strd-2:gap-1 
 
-<a id="49_68___detrac_"></a>
-## 49_68       @ detrac-->xml_to_ytvis
-<a id="len_2___49_68_detrac_"></a>
-### len-2       @ 49_68/detrac-->xml_to_ytvis
+<a id="49_68___detrac_non_empty_"></a>
+## 49_68       @ detrac-non_empty-->xml_to_ytvis
+<a id="len_2___49_68_detrac_non_empty_"></a>
+### len-2       @ 49_68/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-2:strds:strd-1:gap-1
 `strd-12 frame-0_360`
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-3:strd-12:gap-1:frame-0_360
 `strd-2`
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-2:strd-2:gap-1
-<a id="len_6___49_68_detrac_"></a>
-### len-6       @ 49_68/detrac-->xml_to_ytvis
+<a id="len_6___49_68_detrac_non_empty_"></a>
+### len-6       @ 49_68/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-6:strds:gap-1
-<a id="len_9___49_68_detrac_"></a>
-### len-9       @ 49_68/detrac-->xml_to_ytvis
+<a id="len_9___49_68_detrac_non_empty_"></a>
+### len-9       @ 49_68/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-12:len-9:strds:gap-1
-<a id="len_64___49_68_detrac_"></a>
-### len-64       @ 49_68/detrac-->xml_to_ytvis
+<a id="len_64___49_68_detrac_non_empty_"></a>
+### len-64       @ 49_68/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-1:len-64:strds:gap-1
 python xml_to_ytvis.py cfg=detrac:non_empty:49_68:proc-1:len-64:strd-64:gap-1
 
-<a id="0_48___detrac_"></a>
-## 0_48       @ detrac-->xml_to_ytvis
-<a id="len_2___0_48_detra_c_"></a>
-### len-2       @ 0_48/detrac-->xml_to_ytvis
+<a id="0_48___detrac_non_empty_"></a>
+## 0_48       @ detrac-non_empty-->xml_to_ytvis
+<a id="len_2___0_48_detrac_non_empt_y_"></a>
+### len-2       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-2:strd-1:gap-1
-<a id="len_4___0_48_detra_c_"></a>
-### len-4       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_4___0_48_detrac_non_empt_y_"></a>
+### len-4       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-4:strd-1:gap-1
-<a id="len_8___0_48_detra_c_"></a>
-### len-8       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_8___0_48_detrac_non_empt_y_"></a>
+### len-8       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-8:strd-1:gap-1
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-8:strd-8:gap-1
-<a id="200_per_seq_random_len_8___len_8_0_48_detra_c_"></a>
-#### 200_per_seq_random_len_8       @ len-8/0_48/detrac-->xml_to_ytvis
+<a id="200_per_seq_random_len_8___len_8_0_48_detrac_non_empt_y_"></a>
+#### 200_per_seq_random_len_8       @ len-8/0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:200_per_seq_random_len_8:0_48:proc-1:len-8:strd-8:gap-1
-<a id="len_12___0_48_detra_c_"></a>
-### len-12       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_12___0_48_detrac_non_empt_y_"></a>
+### len-12       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-12:strd-1:gap-1
-<a id="len_16___0_48_detra_c_"></a>
-### len-16       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_16___0_48_detrac_non_empt_y_"></a>
+### len-16       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-16:strd-1:gap-1
-<a id="len_24___0_48_detra_c_"></a>
-### len-24       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_24___0_48_detrac_non_empt_y_"></a>
+### len-24       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-24:strd-1:gap-1
-<a id="len_28___0_48_detra_c_"></a>
-### len-28       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_28___0_48_detrac_non_empt_y_"></a>
+### len-28       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-28:strd-1:gap-1
-<a id="len_32___0_48_detra_c_"></a>
-### len-32       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_32___0_48_detrac_non_empt_y_"></a>
+### len-32       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-32:strd-1:gap-1
-<a id="len_40___0_48_detra_c_"></a>
-### len-40       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_40___0_48_detrac_non_empt_y_"></a>
+### len-40       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-40:strd-1:gap-1
-<a id="len_48___0_48_detra_c_"></a>
-### len-48       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_48___0_48_detrac_non_empt_y_"></a>
+### len-48       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-48:strd-1:gap-1
-<a id="len_56___0_48_detra_c_"></a>
-### len-56       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_56___0_48_detrac_non_empt_y_"></a>
+### len-56       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-56:strd-1:gap-1
-<a id="len_64___0_48_detra_c_"></a>
-### len-64       @ 0_48/detrac-->xml_to_ytvis
+<a id="len_64___0_48_detrac_non_empt_y_"></a>
+### len-64       @ 0_48/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_48:proc-1:len-64:strd-1:gap-1
 
-<a id="0_85___detrac_"></a>
-## 0_85       @ detrac-->xml_to_ytvis
-<a id="len_2___0_85_detra_c_"></a>
-### len-2       @ 0_85/detrac-->xml_to_ytvis
+<a id="0_85___detrac_non_empty_"></a>
+## 0_85       @ detrac-non_empty-->xml_to_ytvis
+<a id="len_2___0_85_detrac_non_empt_y_"></a>
+### len-2       @ 0_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_85:proc-1:len-2:strd-1:gap-1
 python xml_to_ytvis.py cfg=detrac:non_empty:0_85:proc-1:len-2:strd-2:gap-1
-<a id="len_32___0_85_detra_c_"></a>
-### len-32       @ 0_85/detrac-->xml_to_ytvis
+<a id="len_32___0_85_detrac_non_empt_y_"></a>
+### len-32       @ 0_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_85:proc-1:len-32:strd-1:gap-1
-<a id="len_40___0_85_detra_c_"></a>
-### len-40       @ 0_85/detrac-->xml_to_ytvis
+<a id="len_40___0_85_detrac_non_empt_y_"></a>
+### len-40       @ 0_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_85:proc-1:len-40:strd-1:gap-1
-<a id="len_48___0_85_detra_c_"></a>
-### len-48       @ 0_85/detrac-->xml_to_ytvis
+<a id="len_48___0_85_detrac_non_empt_y_"></a>
+### len-48       @ 0_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_85:proc-1:len-48:strd-1:gap-1
-<a id="len_56___0_85_detra_c_"></a>
-### len-56       @ 0_85/detrac-->xml_to_ytvis
+<a id="len_56___0_85_detrac_non_empt_y_"></a>
+### len-56       @ 0_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_85:proc-1:len-56:strd-1:gap-1
-<a id="len_64___0_85_detra_c_"></a>
-### len-64       @ 0_85/detrac-->xml_to_ytvis
+<a id="len_64___0_85_detrac_non_empt_y_"></a>
+### len-64       @ 0_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:0_85:proc-1:len-64:strd-1:gap-1
 
 
-<a id="49_85___detrac_"></a>
-## 49_85       @ detrac-->xml_to_ytvis
-<a id="strd_1___49_85_detrac_"></a>
-### strd-1       @ 49_85/detrac-->xml_to_ytvis
-<a id="len_2___strd_1_49_85_detra_c_"></a>
-#### len-2       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="49_85___detrac_non_empty_"></a>
+## 49_85       @ detrac-non_empty-->xml_to_ytvis
+<a id="strd_1___49_85_detrac_non_empty_"></a>
+### strd-1       @ 49_85/detrac-non_empty-->xml_to_ytvis
+<a id="len_2___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-2       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-2:strd-1:gap-1
-<a id="len_4___strd_1_49_85_detra_c_"></a>
-#### len-4       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_4___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-4       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-4:strd-1:gap-1
-<a id="len_8___strd_1_49_85_detra_c_"></a>
-#### len-8       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_8___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-8       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-8:strd-1:gap-1
-<a id="len_16___strd_1_49_85_detra_c_"></a>
-#### len-16       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_16___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-16       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-16:strd-1:gap-1
-<a id="strds___len_16_strd_1_49_85_detrac_"></a>
-##### strds       @ len-16/strd-1/49_85/detrac-->xml_to_ytvis
+<a id="strds___len_16_strd_1_49_85_detrac_non_empty_"></a>
+##### strds       @ len-16/strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-16:strds-16:gap-1
-<a id="len_32___strd_1_49_85_detra_c_"></a>
-#### len-32       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_32___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-32       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-32:strd-1:gap-1
-<a id="strds___len_32_strd_1_49_85_detrac_"></a>
-##### strds       @ len-32/strd-1/49_85/detrac-->xml_to_ytvis
+<a id="strds___len_32_strd_1_49_85_detrac_non_empty_"></a>
+##### strds       @ len-32/strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-32:strds-32:gap-1
-<a id="len_40___strd_1_49_85_detra_c_"></a>
-#### len-40       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_40___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-40       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-40:strd-1:gap-1
-<a id="len_48___strd_1_49_85_detra_c_"></a>
-#### len-48       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_48___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-48       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-48:strd-1:gap-1
-<a id="len_56___strd_1_49_85_detra_c_"></a>
-#### len-56       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_56___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-56       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-56:strd-1:gap-1
-<a id="len_64___strd_1_49_85_detra_c_"></a>
-#### len-64       @ strd-1/49_85/detrac-->xml_to_ytvis
+<a id="len_64___strd_1_49_85_detrac_non_empt_y_"></a>
+#### len-64       @ strd-1/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-64:strd-1:gap-1
 
-<a id="strd_same___49_85_detrac_"></a>
-### strd-same       @ 49_85/detrac-->xml_to_ytvis
-<a id="len_2___strd_same_49_85_detrac_"></a>
-#### len-2       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="strd_same___49_85_detrac_non_empty_"></a>
+### strd-same       @ 49_85/detrac-non_empty-->xml_to_ytvis
+<a id="len_2___strd_same_49_85_detrac_non_empty_"></a>
+#### len-2       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-2:strd-2:gap-1
-<a id="80_per_seq_random_len_2___len_2_strd_same_49_85_detrac_"></a>
-##### 80_per_seq_random_len_2       @ len-2/strd-same/49_85/detrac-->xml_to_ytvis
+<a id="80_per_seq_random_len_2___len_2_strd_same_49_85_detrac_non_empty_"></a>
+##### 80_per_seq_random_len_2       @ len-2/strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:80_per_seq_random_len_2:49_85:proc-1:len-2:strd-2:gap-1
 
 
-<a id="len_4___strd_same_49_85_detrac_"></a>
-#### len-4       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_4___strd_same_49_85_detrac_non_empty_"></a>
+#### len-4       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-4:strd-4:gap-1
-<a id="80_per_seq_random_len_4___len_4_strd_same_49_85_detrac_"></a>
-##### 80_per_seq_random_len_4       @ len-4/strd-same/49_85/detrac-->xml_to_ytvis
+<a id="80_per_seq_random_len_4___len_4_strd_same_49_85_detrac_non_empty_"></a>
+##### 80_per_seq_random_len_4       @ len-4/strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:80_per_seq_random_len_4:49_85:proc-1:len-4:strd-4:gap-1
 
-<a id="len_8___strd_same_49_85_detrac_"></a>
-#### len-8       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_8___strd_same_49_85_detrac_non_empty_"></a>
+#### len-8       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-8:strd-8:gap-1
-<a id="80_per_seq_random_len_8___len_8_strd_same_49_85_detrac_"></a>
-##### 80_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac-->xml_to_ytvis
+<a id="80_per_seq_random_len_8___len_8_strd_same_49_85_detrac_non_empty_"></a>
+##### 80_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:80_per_seq_random_len_8:49_85:proc-1:len-8:strd-8:gap-1
-<a id="200_per_seq_random_len_8___len_8_strd_same_49_85_detrac_"></a>
-##### 200_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac-->xml_to_ytvis
+<a id="200_per_seq_random_len_8___len_8_strd_same_49_85_detrac_non_empty_"></a>
+##### 200_per_seq_random_len_8       @ len-8/strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:200_per_seq_random_len_8:49_85:proc-1:len-8:strd-8:gap-1
 
-<a id="len_12___strd_same_49_85_detrac_"></a>
-#### len-12       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_12___strd_same_49_85_detrac_non_empty_"></a>
+#### len-12       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-12:strd-12:gap-1
 
-<a id="len_16___strd_same_49_85_detrac_"></a>
-#### len-16       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_16___strd_same_49_85_detrac_non_empty_"></a>
+#### len-16       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-16:strd-16:gap-1
-<a id="256_per_seq_random_len_16___len_16_strd_same_49_85_detra_c_"></a>
-##### 256_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac-->xml_to_ytvis
+<a id="256_per_seq_random_len_16___len_16_strd_same_49_85_detrac_non_empt_y_"></a>
+##### 256_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:256_per_seq_random_len_16:49_85:proc-1:len-16:strd-16:gap-1
 `dbg`
 python xml_to_ytvis.py cfg=detrac:non_empty:256_per_seq_random_len_16:49_50:proc-1:len-16:strd-16:gap-1
 
-<a id="len_32___strd_same_49_85_detrac_"></a>
-#### len-32       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_32___strd_same_49_85_detrac_non_empty_"></a>
+#### len-32       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-32:strd-32:gap-1
-<a id="512_per_seq_random_len_32___len_32_strd_same_49_85_detra_c_"></a>
-##### 512_per_seq_random_len_32       @ len-32/strd-same/49_85/detrac-->xml_to_ytvis
+<a id="512_per_seq_random_len_32___len_32_strd_same_49_85_detrac_non_empt_y_"></a>
+##### 512_per_seq_random_len_32       @ len-32/strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:512_per_seq_random_len_32:49_85:proc-1:len-32:strd-32:gap-1
 
 
-<a id="len_40___strd_same_49_85_detrac_"></a>
-#### len-40       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_40___strd_same_49_85_detrac_non_empty_"></a>
+#### len-40       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-40:strd-40:gap-1
-<a id="len_48___strd_same_49_85_detrac_"></a>
-#### len-48       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_48___strd_same_49_85_detrac_non_empty_"></a>
+#### len-48       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-48:strd-48:gap-1
-<a id="len_56___strd_same_49_85_detrac_"></a>
-#### len-56       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_56___strd_same_49_85_detrac_non_empty_"></a>
+#### len-56       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-56:strd-56:gap-1
-<a id="len_64___strd_same_49_85_detrac_"></a>
-#### len-64       @ strd-same/49_85/detrac-->xml_to_ytvis
+<a id="len_64___strd_same_49_85_detrac_non_empty_"></a>
+#### len-64       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-64:strd-64:gap-1
 
 
