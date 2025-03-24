@@ -34,7 +34,7 @@
         - [sdp       @ mot17_obsolete/mot_to_csv](#sdp___mot17_obsolete_mot_to_cs_v_)
         - [dpm       @ mot17_obsolete/mot_to_csv](#dpm___mot17_obsolete_mot_to_cs_v_)
     - [detrac       @ mot_to_csv](#detrac___mot_to_csv_)
-        - [ignored       @ detrac/mot_to_csv](#ignored___detrac_mot_to_cs_v_)
+        - [ign       @ detrac/mot_to_csv](#ign___detrac_mot_to_cs_v_)
     - [GRAM       @ mot_to_csv](#gram___mot_to_csv_)
         - [no_idot       @ GRAM/mot_to_csv](#no_idot___gram_mot_to_cs_v_)
     - [IDOT       @ mot_to_csv](#idot___mot_to_csv_)
@@ -216,11 +216,14 @@ python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 mode=1 start_id=0 e
 
 python mot_to_csv.py root_dir=/data/DETRAC/Images show_img=0 mode=1 start_id=0 label=vehicle data_type=detections
 
-<a id="ignored___detrac_mot_to_cs_v_"></a>
-### ignored       @ detrac/mot_to_csv-->csv_mot_xml
-python mot_to_csv.py list_file_name=lists/detrac.txt root_dir=/data/DETRAC/Images mode=1 start_id=0 end_id=0 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle_ignored.txt sample=0 allow_ignored=1 show_img=0
-
+<a id="ign___detrac_mot_to_cs_v_"></a>
+### ign       @ detrac/mot_to_csv-->csv_mot_xml
 python mot_to_csv.py list_file_name=lists/detrac.txt root_dir=/data/DETRAC/Images mode=1 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle_ignored.txt sample=0 allow_ignored=1 show_img=0
+`dbg-0`
+python mot_to_csv.py list_file_name=lists/detrac.txt root_dir=/data/DETRAC/Images mode=1 start_id=0 end_id=0 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle_ignored.txt sample=0 allow_ignored=1 show_img=0
+`dbg-17`
+python mot_to_csv.py list_file_name=lists/detrac.txt root_dir=/data/DETRAC/Images mode=1 start_id=17 end_id=17 data_type=annotations ignore_invalid=1 class_names_path=lists/classes/vehicle_ignored.txt sample=0 allow_ignored=1 show_img=0
+
 
 
 <a id="gram___mot_to_csv_"></a>
