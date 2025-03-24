@@ -88,6 +88,7 @@
             - [len-12       @ strd-same/49_85/detrac-non_empty](#len_12___strd_same_49_85_detrac_non_empty_)
             - [len-16       @ strd-same/49_85/detrac-non_empty](#len_16___strd_same_49_85_detrac_non_empty_)
                 - [256_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac-non_empty](#256_per_seq_random_len_16___len_16_strd_same_49_85_detrac_non_empt_y_)
+                - [320_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac-non_empty](#320_per_seq_random_len_16___len_16_strd_same_49_85_detrac_non_empt_y_)
             - [len-32       @ strd-same/49_85/detrac-non_empty](#len_32___strd_same_49_85_detrac_non_empty_)
                 - [512_per_seq_random_len_32       @ len-32/strd-same/49_85/detrac-non_empty](#512_per_seq_random_len_32___len_32_strd_same_49_85_detrac_non_empt_y_)
             - [len-40       @ strd-same/49_85/detrac-non_empty](#len_40___strd_same_49_85_detrac_non_empty_)
@@ -200,6 +201,8 @@ python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gap-10
 <a id="len_2___0_59_detra_c_"></a>
 ### len-2       @ 0_59/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-2:strd-1:gap-1
+`dbg`
+python xml_to_ytvis.py cfg=detrac:17_17:proc-1:len-2:strd-1:gap-1
 <a id="len_4___0_59_detra_c_"></a>
 ### len-4       @ 0_59/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-4:strd-1:gap-1
@@ -447,6 +450,9 @@ python xml_to_ytvis.py cfg=detrac:non_empty:49_85:proc-1:len-16:strd-16:gap-1
 python xml_to_ytvis.py cfg=detrac:non_empty:256_per_seq_random_len_16:49_85:proc-1:len-16:strd-16:gap-1
 `dbg`
 python xml_to_ytvis.py cfg=detrac:non_empty:256_per_seq_random_len_16:49_50:proc-1:len-16:strd-16:gap-1
+<a id="320_per_seq_random_len_16___len_16_strd_same_49_85_detrac_non_empt_y_"></a>
+##### 320_per_seq_random_len_16       @ len-16/strd-same/49_85/detrac-non_empty-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:non_empty:320_per_seq_random_len_16:49_85:proc-1:len-16:strd-16:gap-1
 
 <a id="len_32___strd_same_49_85_detrac_non_empty_"></a>
 #### len-32       @ strd-same/49_85/detrac-non_empty-->xml_to_ytvis

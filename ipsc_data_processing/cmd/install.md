@@ -164,6 +164,7 @@ sudo nvidia-smi -i 0,1,2 -pl 200
 
 sudo nvidia-smi -i 0,1 -pl 100
 sudo nvidia-smi -i 0,1 -pl 150
+sudo nvidia-smi -i 0,1 -pl 200
 sudo nvidia-smi -i 0,1 -pl 250
 sudo nvidia-smi -i 0,1 -pl 300
 sudo nvidia-smi -i 0,1 -pl 350
@@ -435,6 +436,7 @@ sudo apt-get install gnome-disk-utility
 <a id="tmu_x_"></a>
 # tmux
 sudo apt-get install tmux
+chmod +x ~/.tmux/plugins/tpm/tpm
 
 <a id="git_"></a>
 # git
@@ -594,7 +596,6 @@ python3 -m pip install scikit-learn scikit-image scikit-video pandas matplotlib 
 
 python3 -m pip install pyqt5
 python3 -m pip install -U Pillow
-
 
 ```
 <a id="pycocotools_"></a>
@@ -788,7 +789,9 @@ python36 -m pip install https://download.pytorch.org/whl/cu100/torchvision-0.4.0
 ### 4.5.4.60       @ opencv/setup_python_3-->install
 needed for fiftyone
 ```
-python36 -m pip install opencv-python==4.5.4.60 opencv-contrib-python==4.5.4.60
+python3 -m pip install opencv-python==4.5.4.60 opencv-contrib-python==4.5.4.60
+
+python3 -m pip install opencv-python
 
 ```
 

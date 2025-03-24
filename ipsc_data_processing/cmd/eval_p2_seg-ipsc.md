@@ -18,6 +18,9 @@
         - [on-train       @ p-1024-aug-strd-mc-sub-4-fbb-inst/54_126-r-1024](#on_train___p_1024_aug_strd_mc_sub_4_fbb_inst_54_126_r_102_4_)
             - [vis       @ on-train/p-1024-aug-strd-mc-sub-4-fbb-inst/54_126-r-1024](#vis___on_train_p_1024_aug_strd_mc_sub_4_fbb_inst_54_126_r_1024_)
         - [on-0_15       @ p-1024-aug-strd-mc-sub-4-fbb-inst/54_126-r-1024](#on_0_15___p_1024_aug_strd_mc_sub_4_fbb_inst_54_126_r_102_4_)
+    - [p-1024-aug-strd-mc-sub-4-fbb-inst-b46       @ 54_126-r-1024](#p_1024_aug_strd_mc_sub_4_fbb_inst_b46___54_126_r_102_4_)
+        - [on-train       @ p-1024-aug-strd-mc-sub-4-fbb-inst-b46/54_126-r-1024](#on_train___p_1024_aug_strd_mc_sub_4_fbb_inst_b46_54_126_r_102_4_)
+        - [on-0_15       @ p-1024-aug-strd-mc-sub-4-fbb-inst-b46/54_126-r-1024](#on_0_15___p_1024_aug_strd_mc_sub_4_fbb_inst_b46_54_126_r_102_4_)
     - [p-1024-aug-mc-2d-sub-2-fbb-inst       @ 54_126-r-1024](#p_1024_aug_mc_2d_sub_2_fbb_inst___54_126_r_102_4_)
         - [on-train       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024](#on_train___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_)
         - [on-0_15       @ p-1024-aug-mc-2d-sub-2-fbb-inst/54_126-r-1024](#on_0_15___p_1024_aug_mc_2d_sub_2_fbb_inst_54_126_r_102_4_)
@@ -84,6 +87,15 @@ python eval_det.py cfg=p2s:seg,ipsc:seg:54_126:det-1:gt-1:nms-0:proc-1:_in_-resn
 <a id="on_0_15___p_1024_aug_strd_mc_sub_4_fbb_inst_54_126_r_102_4_"></a>
 ### on-0_15       @ p-1024-aug-strd-mc-sub-4-fbb-inst/54_126-r-1024-->eval_p2_seg-ipsc
 python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-256_512-rot_15_345_1-inst-sub_4-mc-batch_16-seq1k-voc68k-fbb/ckpt-__var__-resize_1024-0_15-1024_1024-1024_1024-inst-sub_4-mc/csv-batch_8-seq1k-voc68k:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-strd-mc-sub-4-fbb-inst:show-0:save-0
+
+<a id="p_1024_aug_strd_mc_sub_4_fbb_inst_b46___54_126_r_102_4_"></a>
+## p-1024-aug-strd-mc-sub-4-fbb-inst-b46       @ 54_126-r-1024-->eval_p2_seg-ipsc
+<a id="on_train___p_1024_aug_strd_mc_sub_4_fbb_inst_b46_54_126_r_102_4_"></a>
+### on-train       @ p-1024-aug-strd-mc-sub-4-fbb-inst-b46/54_126-r-1024-->eval_p2_seg-ipsc
+python eval_det.py cfg=p2s:seg,ipsc:seg:54_126:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-256_512-rot_15_345_1-inst-sub_4-mc-batch_46-seq1k-voc68k-fbb/ckpt-__var__-resize_1024-54_126-1024_1024-1024_1024-inst-sub_4-mc/csv-batch_6-seq1k-voc68k:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-strd-mc-sub-4-fbb-inst-b46-train:show-0:save-0
+<a id="on_0_15___p_1024_aug_strd_mc_sub_4_fbb_inst_b46_54_126_r_102_4_"></a>
+### on-0_15       @ p-1024-aug-strd-mc-sub-4-fbb-inst-b46/54_126-r-1024-->eval_p2_seg-ipsc
+python eval_det.py cfg=p2s:seg,ipsc:seg:0_15:det-0:gt-1:nms-1:agn:proc-1:_in_-resnet_1024_resize_1024-54_126-1024_1024-256_512-rot_15_345_1-inst-sub_4-mc-batch_46-seq1k-voc68k-fbb/ckpt-__var__-resize_1024-0_15-1024_1024-1024_1024-inst-sub_4-mc/csv-batch_6-seq1k-voc68k:_out_-p2s-seg-ipsc-54_126-r-1024-p-1024-aug-strd-mc-sub-4-fbb-inst-b46:show-0:save-0
 
 <a id="p_1024_aug_mc_2d_sub_2_fbb_inst___54_126_r_102_4_"></a>
 ## p-1024-aug-mc-2d-sub-2-fbb-inst       @ 54_126-r-1024-->eval_p2_seg-ipsc
