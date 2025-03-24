@@ -109,7 +109,9 @@ def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, 
     # ann_data = np.asarray(ann_data)
 
     obj_ids = []
-    obj_dict = {}
+    obj_dict = {valid_frame_id: [] for valid_frame_id in valid_frame_ids}
+    if allow_ignored:
+        obj_dict[-1] = []
 
     for __id, _datum in enumerate(ann_data):
 
@@ -182,8 +184,6 @@ def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, 
             'bbox': bbox,
             'confidence': confidence
         }
-        if frame_id not in obj_dict:
-            obj_dict[frame_id] = []
         obj_dict[frame_id].append(obj_entry)
 
     if allow_ignored and -1 in obj_dict:
@@ -191,12 +191,19 @@ def parse_mot(ann_path, valid_frame_ids, label, ignore_invalid, percent_scores, 
         del obj_dict[-1]
         for frame_id, obj in obj_dict.items():
             obj += ignored_areas
+
+    # ann_frame_ids = list(obj_dict.keys())
+    # empty_frame_ids = list(set(valid_frame_ids) - set(ann_frame_ids))
+    # for empty_frame_id in empty_frame_ids:
+    #     obj_dict[empty_frame_id] = []
+
     return obj_ids, obj_dict
 
 
 def parse_csv(ann_path, valid_frame_ids, ignore_invalid, percent_scores, clamp_scores):
     obj_ids = []
-    obj_dict = {}
+
+    obj_dict = {valid_frame_id: [] for valid_frame_id in valid_frame_ids}
 
     import pandas as pd
     df = pd.read_csv(ann_path)

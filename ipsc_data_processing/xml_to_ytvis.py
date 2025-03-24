@@ -39,7 +39,7 @@ class Params(paramparse.CFG):
         self.codec = 'H264'
         self.csv_file_name = ''
         self.fps = 20
-        self.img_ext = 'png'
+        self.img_ext = 'jpg'
         self.load_path = ''
         self.load_samples = []
         self.load_samples_root = ''
@@ -94,6 +94,9 @@ class Params(paramparse.CFG):
 
         self.json_gz = 1
         self.xml_zip = 0
+
+        """in order to not exclude empty images without any xml files"""
+        self.xml_from_img = 1
 
         self.enable_masks = 1
         self.save_masks = 0
@@ -661,22 +664,27 @@ def get_xml_files(
         if seq_to_samples is not None:
             all_xml_files = seq_to_samples[seq_path]
         else:
-            if params.xml_zip:
-                from zipfile import ZipFile
-
-                xml_zip_path = xml_dir_path + ".zip"
-                print(f'loading xml files from  zip file {xml_zip_path}')
-                with ZipFile(xml_zip_path, 'r') as xml_zip_file:
-                    all_xml_files = xml_zip_file.namelist()
-
-                all_xml_files = [linux_path(xml_dir_path, xml_file) for xml_file in all_xml_files]
+            if params.xml_from_img:
+                all_img_files = glob.glob(linux_path(seq_path, f'*.{params.img_ext}'), recursive=False)
+                all_img_names = [os.path.splitext(os.path.basename(img_file))[0] for img_file in all_img_files]
+                all_xml_files = [linux_path(xml_dir_path, f'{img_name}.xml') for img_name in all_img_names]
             else:
-                # xml_file_gen = [[os.path.join(dirpath, f) for f in filenames if
-                #                  os.path.splitext(f.lower())[1] == '.xml']
-                #                 for (dirpath, dirnames, filenames) in os.walk(xml_dir_path, followlinks=True)]
-                # all_xml_files = [item for sublist in xml_file_gen for item in sublist]
+                if params.xml_zip:
+                    from zipfile import ZipFile
 
-                all_xml_files = glob.glob(linux_path(xml_dir_path, '*.xml'), recursive=params.recursive)
+                    xml_zip_path = xml_dir_path + ".zip"
+                    print(f'loading xml files from  zip file {xml_zip_path}')
+                    with ZipFile(xml_zip_path, 'r') as xml_zip_file:
+                        all_xml_files = xml_zip_file.namelist()
+
+                    all_xml_files = [linux_path(xml_dir_path, xml_file) for xml_file in all_xml_files]
+                else:
+                    # xml_file_gen = [[os.path.join(dirpath, f) for f in filenames if
+                    #                  os.path.splitext(f.lower())[1] == '.xml']
+                    #                 for (dirpath, dirnames, filenames) in os.walk(xml_dir_path, followlinks=True)]
+                    # all_xml_files = [item for sublist in xml_file_gen for item in sublist]
+
+                    all_xml_files = glob.glob(linux_path(xml_dir_path, '*.xml'), recursive=params.recursive)
 
         if params.shuffle:
             random.shuffle(all_xml_files)

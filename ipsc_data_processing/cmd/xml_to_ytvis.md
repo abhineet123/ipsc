@@ -16,6 +16,7 @@
 - [detrac](#detra_c_)
     - [0_59       @ detrac](#0_59___detrac_)
         - [len-2       @ 0_59/detrac](#len_2___0_59_detra_c_)
+            - [80_per_seq_random_len_2       @ len-2/0_59/detrac](#80_per_seq_random_len_2___len_2_0_59_detra_c_)
         - [len-4       @ 0_59/detrac](#len_4___0_59_detra_c_)
         - [len-8       @ 0_59/detrac](#len_8___0_59_detra_c_)
             - [200_per_seq_random_len_8       @ len-8/0_59/detrac](#200_per_seq_random_len_8___len_8_0_59_detra_c_)
@@ -203,6 +204,10 @@ python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gap-10
 python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-2:strd-1:gap-1
 `dbg`
 python xml_to_ytvis.py cfg=detrac:17_17:proc-1:len-2:strd-1:gap-1
+<a id="80_per_seq_random_len_2___len_2_0_59_detra_c_"></a>
+#### 80_per_seq_random_len_2       @ len-2/0_59/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:80_per_seq_random_len_2:0_59:proc-1:len-2:strd-2:gap-1
+
 <a id="len_4___0_59_detra_c_"></a>
 ### len-4       @ 0_59/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-4:strd-1:gap-1

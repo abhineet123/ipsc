@@ -16,7 +16,9 @@
     - [mot15       @ mot_csv_to_xml_coco](#mot15___mot_csv_to_xml_coc_o_)
     - [mot17       @ mot_csv_to_xml_coco](#mot17___mot_csv_to_xml_coc_o_)
     - [detrac       @ mot_csv_to_xml_coco](#detrac___mot_csv_to_xml_coc_o_)
-        - [ignored       @ detrac/mot_csv_to_xml_coco](#ignored___detrac_mot_csv_to_xml_coco_)
+        - [ign       @ detrac/mot_csv_to_xml_coco](#ign___detrac_mot_csv_to_xml_coco_)
+    - [detrac-non_empty       @ mot_csv_to_xml_coco](#detrac_non_empty___mot_csv_to_xml_coc_o_)
+        - [ign       @ detrac-non_empty/mot_csv_to_xml_coco](#ign___detrac_non_empty_mot_csv_to_xml_coco_)
 - [mot_to_csv](#mot_to_cs_v_)
     - [CTC       @ mot_to_csv](#ctc___mot_to_csv_)
         - [annotations       @ CTC/mot_to_csv](#annotations___ctc_mot_to_csv_)
@@ -113,16 +115,28 @@ python mot_csv_to_xml_coco.py cfg=mot17:zip:mot:vid
 
 <a id="detrac___mot_csv_to_xml_coc_o_"></a>
 ## detrac       @ mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot::vid
+python mot_csv_to_xml_coco.py cfg=detrac:zip:mot:vid
+
+python mot_csv_to_xml_coco.py cfg=detrac:zip:mot:start-19:end-19
+python mot_csv_to_xml_coco.py cfg=detrac:zip:mot:start-0:end-0
+<a id="ign___detrac_mot_csv_to_xml_coco_"></a>
+### ign       @ detrac/mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=detrac:mot:ign
+`dbg`
+python mot_csv_to_xml_coco.py cfg=detrac:mot:ign:start-17:end-17
+
+<a id="detrac_non_empty___mot_csv_to_xml_coc_o_"></a>
+## detrac-non_empty       @ mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot:vid
 
 python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot:start-19:end-19
 python mot_csv_to_xml_coco.py cfg=detrac:non_empty:zip:mot:start-0:end-0
-<a id="ignored___detrac_mot_csv_to_xml_coco_"></a>
-### ignored       @ detrac/mot_csv_to_xml_coco-->mot
-python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ignored
+<a id="ign___detrac_non_empty_mot_csv_to_xml_coco_"></a>
+### ign       @ detrac-non_empty/mot_csv_to_xml_coco-->mot
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ign
 `dbg`
-python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ignored:start-0:end-0:show
-python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ignored:start-11:end-50:show
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ign:start-0:end-0:show
+python mot_csv_to_xml_coco.py cfg=detrac:non_empty:mot:ign:start-11:end-50:show
 
 <a id="mot_to_cs_v_"></a>
 # mot_to_csv

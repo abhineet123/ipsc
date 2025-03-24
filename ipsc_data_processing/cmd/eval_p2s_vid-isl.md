@@ -94,10 +94,14 @@
         - [on-49_85-strd-1       @ detrac-0_48-len-16-seq3k/mid](#on_49_85_strd_1___detrac_0_48_len_16_seq3k_mid_)
         - [on-49_85-strd-1-285870       @ detrac-0_48-len-16-seq3k/mid](#on_49_85_strd_1_285870___detrac_0_48_len_16_seq3k_mid_)
             - [ign       @ on-49_85-strd-1-285870/detrac-0_48-len-16-seq3k/mid](#ign___on_49_85_strd_1_285870_detrac_0_48_len_16_seq3k_mi_d_)
-    - [detrac-0_48-len-16-seq3k-fbb-b32       @ mid](#detrac_0_48_len_16_seq3k_fbb_b32___mi_d_)
-        - [on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-seq3k-fbb-b32/mid](#on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_seq3k_fbb_b32_mid_)
-    - [detrac-0_48-len-16-seq3k-fbb-b24       @ mid](#detrac_0_48_len_16_seq3k_fbb_b24___mi_d_)
-        - [on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-seq3k-fbb-b24/mid](#on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_seq3k_fbb_b24_mid_)
+    - [detrac-0_48-len-16-fbb-b32       @ mid](#detrac_0_48_len_16_fbb_b32___mi_d_)
+        - [on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-fbb-b32/mid](#on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_fbb_b32_mid_)
+        - [on-49_85-320_per_seq_random_len_16       @ detrac-0_48-len-16-fbb-b32/mid](#on_49_85_320_per_seq_random_len_16___detrac_0_48_len_16_fbb_b32_mid_)
+            - [batch-2       @ on-49_85-320_per_seq_random_len_16/detrac-0_48-len-16-fbb-b32/mid](#batch_2___on_49_85_320_per_seq_random_len_16_detrac_0_48_len_16_fbb_b32_mi_d_)
+    - [detrac-0_48-len-16-bb-b24       @ mid](#detrac_0_48_len_16_bb_b24___mi_d_)
+        - [on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-bb-b24/mid](#on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_bb_b24_mi_d_)
+        - [on-49_85-320_per_seq_random_len_16       @ detrac-0_48-len-16-bb-b24/mid](#on_49_85_320_per_seq_random_len_16___detrac_0_48_len_16_bb_b24_mi_d_)
+            - [batch-2       @ on-49_85-320_per_seq_random_len_16/detrac-0_48-len-16-bb-b24/mid](#batch_2___on_49_85_320_per_seq_random_len_16_detrac_0_48_len_16_bb_b24_mid_)
     - [detrac-0_48-len-32-fbb-seq5k       @ mid](#detrac_0_48_len_32_fbb_seq5k___mi_d_)
         - [on-49_85-strd-32       @ detrac-0_48-len-32-fbb-seq5k/mid](#on_49_85_strd_32___detrac_0_48_len_32_fbb_seq5k_mid_)
             - [ign-186915       @ on-49_85-strd-32/detrac-0_48-len-32-fbb-seq5k/mid](#ign_186915___on_49_85_strd_32_detrac_0_48_len_32_fbb_seq5k_mi_d_)
@@ -426,17 +430,30 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms:vnms:show-0:proc
 #### ign       @ on-49_85-strd-1-285870/detrac-0_48-len-16-seq3k/mid-->eval_p2s_vid-isl
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:nms:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_6-seq3k-exp/ckpt-__var__-detrac-length-16-stride-1-non_empty-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-strd-1-seq3k-ign:vbs:_ckpt_-285870
 
-<a id="detrac_0_48_len_16_seq3k_fbb_b32___mi_d_"></a>
-## detrac-0_48-len-16-seq3k-fbb-b32       @ mid-->eval_p2s_vid-isl
-<a id="on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_seq3k_fbb_b32_mid_"></a>
-### on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-seq3k-fbb-b32/mid-->eval_p2s_vid-isl
+<a id="detrac_0_48_len_16_fbb_b32___mi_d_"></a>
+## detrac-0_48-len-16-fbb-b32       @ mid-->eval_p2s_vid-isl
+<a id="on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_fbb_b32_mid_"></a>
+### on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-fbb-b32/mid-->eval_p2s_vid-isl
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:256_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_32-seq3k-fbb-zexg/ckpt-__var__-detrac-length-16-stride-16-non_empty-256_per_seq_random_len_16-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-strd-16-seq3k-fbb-b32
+<a id="on_49_85_320_per_seq_random_len_16___detrac_0_48_len_16_fbb_b32_mid_"></a>
+### on-49_85-320_per_seq_random_len_16       @ detrac-0_48-len-16-fbb-b32/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:320_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_32-seq3k-fbb-zexg/ckpt-__var__-detrac-length-16-stride-16-non_empty-320_per_seq_random_len_16-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-320_per_seq-strd-16-fbb-b32
+<a id="batch_2___on_49_85_320_per_seq_random_len_16_detrac_0_48_len_16_fbb_b32_mi_d_"></a>
+#### batch-2       @ on-49_85-320_per_seq_random_len_16/detrac-0_48-len-16-fbb-b32/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:320_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_32-seq3k-fbb-zexg/ckpt-__var__-detrac-length-16-stride-16-non_empty-320_per_seq_random_len_16-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-len-16-49_85-320_per_seq-strd-16-fbb-b32
 
-<a id="detrac_0_48_len_16_seq3k_fbb_b24___mi_d_"></a>
-## detrac-0_48-len-16-seq3k-fbb-b24       @ mid-->eval_p2s_vid-isl
-<a id="on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_seq3k_fbb_b24_mid_"></a>
-### on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-seq3k-fbb-b24/mid-->eval_p2s_vid-isl
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:256_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-__var__-detrac-length-16-stride-16-non_empty-256_per_seq_random_len_16-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-strd-16-seq3k-fbb-b24:dbg:vbs
+<a id="detrac_0_48_len_16_bb_b24___mi_d_"></a>
+## detrac-0_48-len-16-bb-b24       @ mid-->eval_p2s_vid-isl
+<a id="on_49_85_256_per_seq_random_len_16___detrac_0_48_len_16_bb_b24_mi_d_"></a>
+### on-49_85-256_per_seq_random_len_16       @ detrac-0_48-len-16-bb-b24/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:256_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-__var__-detrac-length-16-stride-16-non_empty-256_per_seq_random_len_16-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-strd-16-fbb-b24:dbg:vbs
+<a id="on_49_85_320_per_seq_random_len_16___detrac_0_48_len_16_bb_b24_mi_d_"></a>
+### on-49_85-320_per_seq_random_len_16       @ detrac-0_48-len-16-bb-b24/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:320_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-__var__-detrac-length-16-stride-16-non_empty-320_per_seq_random_len_16-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-320_per_seq-strd-16-fbb-b24
+<a id="batch_2___on_49_85_320_per_seq_random_len_16_detrac_0_48_len_16_bb_b24_mid_"></a>
+#### batch-2       @ on-49_85-320_per_seq_random_len_16/detrac-0_48-len-16-bb-b24/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:320_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-__var__-detrac-length-16-stride-16-non_empty-320_per_seq_random_len_16-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-len-16-49_85-320_per_seq-strd-16-fbb-b24
+
 
 
 <a id="detrac_0_48_len_32_fbb_seq5k___mi_d_"></a>
