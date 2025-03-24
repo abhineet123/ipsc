@@ -17,22 +17,9 @@
     - [0_59       @ detrac](#0_59___detrac_)
         - [len-2       @ 0_59/detrac](#len_2___0_59_detra_c_)
             - [80_per_seq_random_len_2       @ len-2/0_59/detrac](#80_per_seq_random_len_2___len_2_0_59_detra_c_)
-        - [len-4       @ 0_59/detrac](#len_4___0_59_detra_c_)
-        - [len-8       @ 0_59/detrac](#len_8___0_59_detra_c_)
-            - [200_per_seq_random_len_8       @ len-8/0_59/detrac](#200_per_seq_random_len_8___len_8_0_59_detra_c_)
-        - [len-12       @ 0_59/detrac](#len_12___0_59_detra_c_)
-        - [len-16       @ 0_59/detrac](#len_16___0_59_detra_c_)
-        - [len-24       @ 0_59/detrac](#len_24___0_59_detra_c_)
-        - [len-28       @ 0_59/detrac](#len_28___0_59_detra_c_)
-        - [len-32       @ 0_59/detrac](#len_32___0_59_detra_c_)
-        - [len-40       @ 0_59/detrac](#len_40___0_59_detra_c_)
-        - [len-48       @ 0_59/detrac](#len_48___0_59_detra_c_)
-        - [len-56       @ 0_59/detrac](#len_56___0_59_detra_c_)
-        - [len-64       @ 0_59/detrac](#len_64___0_59_detra_c_)
     - [60_99       @ detrac](#60_99___detrac_)
         - [len-2       @ 60_99/detrac](#len_2___60_99_detrac_)
-        - [len-4       @ 60_99/detrac](#len_4___60_99_detrac_)
-        - [len-8       @ 60_99/detrac](#len_8___60_99_detrac_)
+            - [80_per_seq_random_len_2       @ len-2/60_99/detrac](#80_per_seq_random_len_2___len_2_60_99_detrac_)
 - [detrac-non_empty](#detrac_non_empt_y_)
     - [0_0       @ detrac-non_empty](#0_0___detrac_non_empty_)
     - [0_1       @ detrac-non_empty](#0_1___detrac_non_empty_)
@@ -206,59 +193,18 @@ python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-2:strd-1:gap-1:ign
 python xml_to_ytvis.py cfg=detrac:17_17:proc-1:len-2:strd-1:gap-1:ign
 <a id="80_per_seq_random_len_2___len_2_0_59_detra_c_"></a>
 #### 80_per_seq_random_len_2       @ len-2/0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:80_per_seq_random_len_2:0_59:proc-1:len-2:strd-2:gap-1
-
-<a id="len_4___0_59_detra_c_"></a>
-### len-4       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-4:strd-1:gap-1
-<a id="len_8___0_59_detra_c_"></a>
-### len-8       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-8:strd-1:gap-1
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-8:strd-8:gap-1
-<a id="200_per_seq_random_len_8___len_8_0_59_detra_c_"></a>
-#### 200_per_seq_random_len_8       @ len-8/0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:non_empty:200_per_seq_random_len_8:0_48:proc-1:len-8:strd-8:gap-1
-<a id="len_12___0_59_detra_c_"></a>
-### len-12       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-12:strd-1:gap-1
-<a id="len_16___0_59_detra_c_"></a>
-### len-16       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-16:strd-1:gap-1
-<a id="len_24___0_59_detra_c_"></a>
-### len-24       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-24:strd-1:gap-1
-<a id="len_28___0_59_detra_c_"></a>
-### len-28       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-28:strd-1:gap-1
-<a id="len_32___0_59_detra_c_"></a>
-### len-32       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-32:strd-1:gap-1
-<a id="len_40___0_59_detra_c_"></a>
-### len-40       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-40:strd-1:gap-1
-<a id="len_48___0_59_detra_c_"></a>
-### len-48       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-48:strd-1:gap-1
-<a id="len_56___0_59_detra_c_"></a>
-### len-56       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-56:strd-1:gap-1
-<a id="len_64___0_59_detra_c_"></a>
-### len-64       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-64:strd-1:gap-1
+python xml_to_ytvis.py cfg=detrac:80_per_seq_random_len_2:0_59:proc-1:len-2:strd-2:gap-1:ign
 
 <a id="60_99___detrac_"></a>
 ## 60_99       @ detrac-->xml_to_ytvis
 <a id="len_2___60_99_detrac_"></a>
 ### len-2       @ 60_99/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-2:strd-1:gap-1
-python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-2:strd-2:gap-1
-<a id="len_4___60_99_detrac_"></a>
-### len-4       @ 60_99/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-4:strd-1:gap-1
-<a id="len_8___60_99_detrac_"></a>
-### len-8       @ 60_99/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-8:strd-1:gap-1
-python xml_to_ytvis.py cfg=detrac:60_99:proc-1:len-8:strd-8:gap-1
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-2:strd-1:gap-1:ign
+<a id="80_per_seq_random_len_2___len_2_60_99_detrac_"></a>
+#### 80_per_seq_random_len_2       @ len-2/60_99/detrac-->xml_to_ytvis
+python xml_to_ytvis.py cfg=detrac:80_per_seq_random_len_2:60_99:proc-1:len-2:strd-2:gap-1:ign
+
+
 
 <a id="detrac_non_empt_y_"></a>
 # detrac-non_empty
