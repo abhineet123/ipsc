@@ -72,6 +72,7 @@ class Params(paramparse.CFG):
         self.infer_target_id = 0
         self.get_img_stats = 1
         self.ignore_invalid_label = 0
+        self.allow_ignored_class = 0
         self.ignore_missing_target = 0
 
         self.start_frame_id = 0
@@ -151,7 +152,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
                   get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip,
                   enable_masks, check_img_size, seq_name_to_xml_paths, seq_name_to_info,
                   quant_bin_to_ious,
-                  class_dict, ignore_invalid_label, ignore_missing_target,
+                  class_dict, ignore_invalid_label, ignore_missing_target, allow_ignored_class,
                   xml_data):
     xml_path, xml_path_id, seq_path, seq_name = xml_data
 
@@ -258,6 +259,11 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     for obj_id, obj in enumerate(objs):
 
         label = obj.findtext('name')
+
+        if allow_ignored_class and label == 'ignored':
+            """special class to mark ignored regions in the image that have not been annotated"""
+            continue
+
         try:
             label_id = class_dict[label]
         except KeyError as e:
@@ -1254,6 +1260,7 @@ def run(params: Params):
             class_dict,
             params.ignore_invalid_label,
             params.ignore_invalid_label,
+            params.allow_ignored_class,
         )
         print(f'reading {len(all_data_xml_paths)} {split_type} xml files')
         if params.n_proc > 1:

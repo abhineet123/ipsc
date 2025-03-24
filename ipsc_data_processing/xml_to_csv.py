@@ -30,6 +30,7 @@ class Params:
         self.save_video = 1
         self.seq_paths = ''
         self.show_img = 0
+        self.allow_ignored = 0
         self.sources_to_include = []
         self.xml_dir = 'annotations'
         self.xml_suffix = ''

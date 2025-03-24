@@ -201,9 +201,9 @@ python xml_to_ytvis.py cfg=idot:8_8:proc-1:len-6:strd-50:gap-10
 ## 0_59       @ detrac-->xml_to_ytvis
 <a id="len_2___0_59_detra_c_"></a>
 ### len-2       @ 0_59/detrac-->xml_to_ytvis
-python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-2:strd-1:gap-1
+python xml_to_ytvis.py cfg=detrac:0_59:proc-1:len-2:strd-1:gap-1:ign
 `dbg`
-python xml_to_ytvis.py cfg=detrac:17_17:proc-1:len-2:strd-1:gap-1
+python xml_to_ytvis.py cfg=detrac:17_17:proc-1:len-2:strd-1:gap-1:ign
 <a id="80_per_seq_random_len_2___len_2_0_59_detra_c_"></a>
 #### 80_per_seq_random_len_2       @ len-2/0_59/detrac-->xml_to_ytvis
 python xml_to_ytvis.py cfg=detrac:80_per_seq_random_len_2:0_59:proc-1:len-2:strd-2:gap-1
