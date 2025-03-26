@@ -4036,8 +4036,9 @@ def sweep(params: Params):
         concat_params.list_from_cb = 0
         concat_params.list_path_id = 0
         concat_params.class_name = ''
-        concat_params.csv_mode = 1
         concat_params.auc_mode = 3
+
+        concat_params.csv_mode = 1
         concat_params.csv_metrics = ['rec_prec', ]
 
         for out_zip_path in out_zip_paths:
@@ -4048,10 +4049,21 @@ def sweep(params: Params):
 
             # time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
             # concat_params.out_name = f'{time_stamp}_{concat_params.out_name}'
-
             concat_params.list_path = out_zip_path
+
+            concat_params.csv_mode = 1
+            concat_params.csv_metrics = ['rec_prec', ]
             concat_metrics.main(concat_params)
 
+            concat_params.csv_mode = 0
+            concat_params.json_metrics = ['AP', ]
+            concat_params.json_metric_names = ['AP', ]
+            concat_metrics.main(concat_params)
+
+            concat_params.csv_mode = 0
+            concat_params.json_metrics = ['R==P', ]
+            concat_params.json_metric_names = ['RP', ]
+            concat_metrics.main(concat_params)
 
 def main():
     params = Params()
