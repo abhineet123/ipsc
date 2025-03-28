@@ -3698,6 +3698,7 @@ def run(params: Params, sweep_mode: dict, *argv):
     }
 
     out_root_dir = out_root_dir_ = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
+    return out_root_dir
 
     for _detection_names in all_detection_names:
 
@@ -4035,11 +4036,7 @@ def sweep(params: Params):
         concat_params.list_ext = ''
         concat_params.list_from_cb = 0
         concat_params.list_path_id = 0
-        concat_params.class_name = ''
         concat_params.auc_mode = 3
-
-        concat_params.csv_mode = 1
-        concat_params.csv_metrics = ['rec_prec', ]
 
         for out_zip_path in out_zip_paths:
             out_zip_dir = os.path.dirname(out_zip_path)
@@ -4051,18 +4048,26 @@ def sweep(params: Params):
             # concat_params.out_name = f'{time_stamp}_{concat_params.out_name}'
             concat_params.list_path = out_zip_path
 
+            """CSV metrics"""
+            concat_params.class_name = ''
             concat_params.csv_mode = 1
             concat_params.csv_metrics = ['rec_prec', ]
+            concat_params.cfg='rec_prec'
             concat_metrics.main(concat_params)
 
+            """JSON metrics"""
+            concat_params.class_name = 'overall'
             concat_params.csv_mode = 0
+            concat_params.to_clipboard = 0
+
             concat_params.json_metrics = ['AP', ]
-            concat_params.json_metric_names = ['AP', ]
+            concat_params.json_metric_names = ['ap', ]
+            concat_params.cfg='ap'
             concat_metrics.main(concat_params)
 
-            concat_params.csv_mode = 0
-            concat_params.json_metrics = ['R==P', ]
-            concat_params.json_metric_names = ['RP', ]
+            concat_params.json_metrics = ['R=P', ]
+            concat_params.json_metric_names = ['mrp', ]
+            concat_params.cfg='mrp'
             concat_metrics.main(concat_params)
 
 def main():

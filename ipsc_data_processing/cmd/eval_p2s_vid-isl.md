@@ -271,14 +271,14 @@ python3 eval_det.py cfg=p2s:vid,detrac:60_99:gt-0:ign:nms-1:vnms:show-0:proc-1:_
 <a id="on_train_80_per_seq_random_len_2___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_"></a>
 <a id="on_train_80_per_seq_random_len_4___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_"></a>
 #### on-train-80_per_seq_random_len_4       @ len-4-aug-fbb-seq1k/detrac-0_59/mid-->eval_p2s_vid-isl
-python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:0_59:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-0_59/csv-batch_4:_out_-p2s-detrac-0_59-len-4-train-80_per_seq_random_len_4-aug-fbb-seq1k
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:0_59:gt-1:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-0_59/csv-batch_4:_out_-p2s-detrac-0_59-len-4-train-80_per_seq_random_len_4-aug-fbb-seq1k
 `batch_8`
-python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:0_59:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-0_59/csv-batch_8:_out_-p2s-detrac-0_59-len-4-train-80_per_seq_random_len_4-aug-fbb-seq1k
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:0_59:gt-1:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-0_59/csv-batch_8:_out_-p2s-detrac-0_59-len-4-train-80_per_seq_random_len_4-aug-fbb-seq1k
 <a id="on_60_99_80_per_seq_random_len_4___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_"></a>
 #### on-60_99-80_per_seq_random_len_4       @ len-4-aug-fbb-seq1k/detrac-0_59/mid-->eval_p2s_vid-isl
-python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:60_99:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-60_99/csv-batch_4:_out_-p2s-detrac-0_59-len-4-60_99-80_per_seq_random_len_4-aug-fbb-seq1k
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:60_99:gt-1:ign:nms-l1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-60_99/csv-batch_4:_out_-p2s-detrac-0_59-len-4-60_99-80_per_seq_random_len_4-aug-fbb-seq1k-rerun:dbg:ief
 `batch_8`
-python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:60_99:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-60_99/csv-batch_8:_out_-p2s-detrac-0_59-len-4-60_99-80_per_seq_random_len_4-aug-fbb-seq1k
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:60_99:gt-1:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-60_99/csv-batch_8:_out_-p2s-detrac-0_59-len-4-60_99-80_per_seq_random_len_4-aug-fbb-seq1k-rerun
 
 <a id="detrac_non_empty_0_9___mi_d_"></a>
 ## detrac-non_empty-0_9       @ mid-->eval_p2s_vid-isl
