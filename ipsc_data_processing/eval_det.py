@@ -3698,7 +3698,7 @@ def run(params: Params, sweep_mode: dict, *argv):
     }
 
     out_root_dir = out_root_dir_ = utils.linux_path(params.out_root_dir, f'{out_dir_name}')
-    return out_root_dir
+    # return out_root_dir
 
     for _detection_names in all_detection_names:
 
