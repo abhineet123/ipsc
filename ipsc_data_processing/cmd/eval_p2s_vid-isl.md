@@ -36,6 +36,11 @@
             - [on-49_85-512_per_seq_random_len_32       @ len-32-fbb/detrac-non_empty-0_48/static](#on_49_85_512_per_seq_random_len_32___len_32_fbb_detrac_non_empty_0_48_stati_c_)
             - [on-49_85-strd-1       @ len-32-fbb/detrac-non_empty-0_48/static](#on_49_85_strd_1___len_32_fbb_detrac_non_empty_0_48_stati_c_)
             - [on-49_85-strd-32       @ len-32-fbb/detrac-non_empty-0_48/static](#on_49_85_strd_32___len_32_fbb_detrac_non_empty_0_48_stati_c_)
+- [swin](#swi_n_)
+    - [detrac-0_59       @ swin](#detrac_0_59___swin_)
+        - [len-2-aug-fbb       @ detrac-0_59/swin](#len_2_aug_fbb___detrac_0_59_swin_)
+            - [on-train-80_per_seq_random_len_2       @ len-2-aug-fbb/detrac-0_59/swin](#on_train_80_per_seq_random_len_2___len_2_aug_fbb_detrac_0_59_swin_)
+            - [on-60_99-80_per_seq_random_len_2       @ len-2-aug-fbb/detrac-0_59/swin](#on_60_99_80_per_seq_random_len_2___len_2_aug_fbb_detrac_0_59_swin_)
 - [mid](#mid_)
     - [detrac-0_59       @ mid](#detrac_0_59___mi_d_)
         - [len-2-aug-fbb       @ detrac-0_59/mid](#len_2_aug_fbb___detrac_0_59_mi_d_)
@@ -46,6 +51,8 @@
         - [len-4-aug-fbb-seq1k       @ detrac-0_59/mid](#len_4_aug_fbb_seq1k___detrac_0_59_mi_d_)
             - [on-train-80_per_seq_random_len_4       @ len-4-aug-fbb-seq1k/detrac-0_59/mid](#on_train_80_per_seq_random_len_4___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_)
             - [on-60_99-80_per_seq_random_len_4       @ len-4-aug-fbb-seq1k/detrac-0_59/mid](#on_60_99_80_per_seq_random_len_4___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_)
+            - [on-60_99-strd-1       @ len-4-aug-fbb-seq1k/detrac-0_59/mid](#on_60_99_strd_1___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_)
+            - [on-60_99-strd-4       @ len-4-aug-fbb-seq1k/detrac-0_59/mid](#on_60_99_strd_4___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_)
     - [detrac-non_empty-0_9       @ mid](#detrac_non_empty_0_9___mi_d_)
         - [len-2       @ detrac-non_empty-0_9/mid](#len_2___detrac_non_empty_0_9_mid_)
             - [on-train       @ len-2/detrac-non_empty-0_9/mid](#on_train___len_2_detrac_non_empty_0_9_mid_)
@@ -116,7 +123,8 @@
             - [on-49_85-256_per_seq_random_len_16       @ len-16-fbb-b24/detrac-non_empty-0_48/mid](#on_49_85_256_per_seq_random_len_16___len_16_fbb_b24_detrac_non_empty_0_48_mid_)
             - [on-49_85-320_per_seq_random_len_16       @ len-16-fbb-b24/detrac-non_empty-0_48/mid](#on_49_85_320_per_seq_random_len_16___len_16_fbb_b24_detrac_non_empty_0_48_mid_)
                 - [batch-2       @ on-49_85-320_per_seq_random_len_16/len-16-fbb-b24/detrac-non_empty-0_48/mid](#batch_2___on_49_85_320_per_seq_random_len_16_len_16_fbb_b24_detrac_non_empty_0_48_mi_d_)
-            - [on-49_85-98964       @ len-16-fbb-b24/detrac-non_empty-0_48/mid](#on_49_85_98964___len_16_fbb_b24_detrac_non_empty_0_48_mid_)
+            - [on-49_85-98964-strd-1       @ len-16-fbb-b24/detrac-non_empty-0_48/mid](#on_49_85_98964_strd_1___len_16_fbb_b24_detrac_non_empty_0_48_mid_)
+            - [on-49_85-98964-strd-16       @ len-16-fbb-b24/detrac-non_empty-0_48/mid](#on_49_85_98964_strd_16___len_16_fbb_b24_detrac_non_empty_0_48_mid_)
         - [len-32-fbb-seq5k       @ detrac-non_empty-0_48/mid](#len_32_fbb_seq5k___detrac_non_empty_0_48_mi_d_)
             - [on-49_85-strd-32       @ len-32-fbb-seq5k/detrac-non_empty-0_48/mid](#on_49_85_strd_32___len_32_fbb_seq5k_detrac_non_empty_0_48_mid_)
                 - [ign-186915       @ on-49_85-strd-32/len-32-fbb-seq5k/detrac-non_empty-0_48/mid](#ign_186915___on_49_85_strd_32_len_32_fbb_seq5k_detrac_non_empty_0_48_mi_d_)
@@ -129,6 +137,11 @@
         - [len-2-aug-fbb       @ detrac-0_59/lfn](#len_2_aug_fbb___detrac_0_59_lf_n_)
             - [on-train-80_per_seq_random_len_2       @ len-2-aug-fbb/detrac-0_59/lfn](#on_train_80_per_seq_random_len_2___len_2_aug_fbb_detrac_0_59_lf_n_)
             - [on-60_99-80_per_seq_random_len_2       @ len-2-aug-fbb/detrac-0_59/lfn](#on_60_99_80_per_seq_random_len_2___len_2_aug_fbb_detrac_0_59_lf_n_)
+            - [on-60_99-strd-1       @ len-2-aug-fbb/detrac-0_59/lfn](#on_60_99_strd_1___len_2_aug_fbb_detrac_0_59_lf_n_)
+            - [on-60_99-strd-2       @ len-2-aug-fbb/detrac-0_59/lfn](#on_60_99_strd_2___len_2_aug_fbb_detrac_0_59_lf_n_)
+        - [len-4-aug-fbb       @ detrac-0_59/lfn](#len_4_aug_fbb___detrac_0_59_lf_n_)
+            - [on-train-80_per_seq_random_len_4       @ len-4-aug-fbb/detrac-0_59/lfn](#on_train_80_per_seq_random_len_4___len_4_aug_fbb_detrac_0_59_lf_n_)
+            - [on-60_99-80_per_seq_random_len_4       @ len-4-aug-fbb/detrac-0_59/lfn](#on_60_99_80_per_seq_random_len_4___len_4_aug_fbb_detrac_0_59_lf_n_)
     - [detrac-non_empty-49_68       @ lfn](#detrac_non_empty_49_68___lf_n_)
         - [len-6-aug       @ detrac-non_empty-49_68/lfn](#len_6_aug___detrac_non_empty_49_68_lfn_)
             - [on-49_68       @ len-6-aug/detrac-non_empty-49_68/lfn](#on_49_68___len_6_aug_detrac_non_empty_49_68_lfn_)
@@ -251,6 +264,20 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:nms-1:vnms:vstrd
 #### on-49_85-strd-32       @ len-32-fbb/detrac-non_empty-0_48/static-->eval_p2s_vid-isl
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:ign:nms-1:vstrd-32:show-0:proc-1:_in_-resnet_640_detrac-length-32-stride-1-non_empty-seq-0_48-static-batch_8-seq4k-fbb/ckpt-173166-detrac-length-32-stride-1-non_empty-seq-49_85/csv-static-batch_12:_out_-p2s-static-detrac-0_48-len-32-strd-32-49_85-fbb-173166
 
+<a id="swi_n_"></a>
+# swin
+
+<a id="detrac_0_59___swin_"></a>
+## detrac-0_59       @ swin-->eval_p2s_vid-isl
+<a id="len_2_aug_fbb___detrac_0_59_swin_"></a>
+### len-2-aug-fbb       @ detrac-0_59/swin-->eval_p2s_vid-isl
+<a id="on_train_80_per_seq_random_len_2___len_2_aug_fbb_detrac_0_59_swin_"></a>
+#### on-train-80_per_seq_random_len_2       @ len-2-aug-fbb/detrac-0_59/swin-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_2:0_59:gt-1:ign:nms-1:show-0:proc-1:_in_-swin_t_pt_640_detrac-length-2-stride-1-seq-0_59-batch_80-jtr-res_1280-self2-0/ckpt-__var__-detrac-length-2-stride-2-80_per_seq_random_len_2-seq-0_59/csv-batch_32:_out_-p2s-swin-detrac-0_59-len-2-train-80_per_seq-aug
+<a id="on_60_99_80_per_seq_random_len_2___len_2_aug_fbb_detrac_0_59_swin_"></a>
+#### on-60_99-80_per_seq_random_len_2       @ len-2-aug-fbb/detrac-0_59/swin-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_2:60_99:gt-1:ign:nms-1:show-0:proc-1:_in_-swin_t_pt_640_detrac-length-2-stride-1-seq-0_59-batch_80-jtr-res_1280-self2-0/ckpt-__var__-detrac-length-2-stride-2-80_per_seq_random_len_2-seq-60_99/csv-batch_32:_out_-p2s-swin-detrac-0_59-len-2-60_99-80_per_seq-aug
+
 <a id="mid_"></a>
 # mid
 
@@ -285,6 +312,16 @@ python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:0_59:gt-1:ign:nms
 python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:60_99:gt-1:ign:nms-l1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-60_99/csv-batch_4:_out_-p2s-detrac-0_59-len-4-60_99-80_per_seq_random_len_4-aug-fbb-seq1k-rerun:dbg:ief
 `batch_8`
 python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:60_99:gt-1:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-60_99/csv-batch_8:_out_-p2s-detrac-0_59-len-4-60_99-80_per_seq_random_len_4-aug-fbb-seq1k-rerun
+
+<a id="on_60_99_strd_1___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_"></a>
+#### on-60_99-strd-1       @ len-4-aug-fbb-seq1k/detrac-0_59/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:60_99:gt-1:ign:nms-1:vnms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-1-seq-60_99/csv-batch_8:_out_-p2s-detrac-0_59-len-4-60_99-aug-fbb-seq1k-strd-1
+`vnms-25`
+python3 eval_det.py cfg=p2s:vid,detrac:60_99:gt-1:ign:nms-1:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-1-seq-60_99/csv-batch_8:_out_-p2s-detrac-0_59-len-4-60_99-aug-fbb-seq1k-strd-1-vnms-25
+<a id="on_60_99_strd_4___len_4_aug_fbb_seq1k_detrac_0_59_mi_d_"></a>
+#### on-60_99-strd-4       @ len-4-aug-fbb-seq1k/detrac-0_59/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:60_99:gt-1:ign:nms-1:vstrd-4:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_160-fbb-jtr-res_1280-seq1k-zexg/ckpt-__var__-detrac-length-4-stride-1-seq-60_99/csv-batch_8:_out_-p2s-detrac-0_59-len-4-60_99-aug-fbb-seq1k-strd-4
+
 
 <a id="detrac_non_empty_0_9___mi_d_"></a>
 ## detrac-non_empty-0_9       @ mid-->eval_p2s_vid-isl
@@ -516,9 +553,12 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:320_per_seq_random_len_16:49_85
 <a id="batch_2___on_49_85_320_per_seq_random_len_16_len_16_fbb_b24_detrac_non_empty_0_48_mi_d_"></a>
 ##### batch-2       @ on-49_85-320_per_seq_random_len_16/len-16-fbb-b24/detrac-non_empty-0_48/mid-->eval_p2s_vid-isl
 python3 eval_det.py cfg=p2s:vid,detrac:non_empty:320_per_seq_random_len_16:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-__var__-detrac-length-16-stride-16-non_empty-320_per_seq_random_len_16-seq-49_85/csv-batch_2:_out_-p2s-detrac-0_48-len-16-49_85-320_per_seq-strd-16-fbb-b24
-<a id="on_49_85_98964___len_16_fbb_b24_detrac_non_empty_0_48_mid_"></a>
-#### on-49_85-98964       @ len-16-fbb-b24/detrac-non_empty-0_48/mid-->eval_p2s_vid-isl
-python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-1:nms-1:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-98964-detrac-length-16-stride-16-non_empty-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-len-16-49_85-320_per_seq-strd-16-fbb-b24-98964
+<a id="on_49_85_98964_strd_1___len_16_fbb_b24_detrac_non_empty_0_48_mid_"></a>
+#### on-49_85-98964-strd-1       @ len-16-fbb-b24/detrac-non_empty-0_48/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-0:nms-1:vnms:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-98964-detrac-length-16-stride-1-non_empty-seq-49_85/csv-batch_12:_out_-p2s-detrac-0_48-len-16-49_85-strd-1-fbb-b24-98964-strd-1
+<a id="on_49_85_98964_strd_16___len_16_fbb_b24_detrac_non_empty_0_48_mid_"></a>
+#### on-49_85-98964-strd-16       @ len-16-fbb-b24/detrac-non_empty-0_48/mid-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-0:nms-1:vstrd-16:ign:show-0:proc-1:_in_-resnet_640_detrac-length-16-stride-1-non_empty-seq-0_48-batch_24-seq3k-fbb/ckpt-98964-detrac-length-16-stride-1-non_empty-seq-49_85/csv-batch_12:_out_-p2s-detrac-0_48-len-16-49_85-strd-1-fbb-b24-98964-strd-16
 
 <a id="len_32_fbb_seq5k___detrac_non_empty_0_48_mi_d_"></a>
 ### len-32-fbb-seq5k       @ detrac-non_empty-0_48/mid-->eval_p2s_vid-isl
@@ -556,7 +596,23 @@ python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_2:0_59:gt-0:ign:nms
 <a id="on_60_99_80_per_seq_random_len_2___len_2_aug_fbb_detrac_0_59_lf_n_"></a>
 #### on-60_99-80_per_seq_random_len_2       @ len-2-aug-fbb/detrac-0_59/lfn-->eval_p2s_vid-isl
 python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_2:60_99:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-2-stride-1-seq-0_59-batch_256-fbb-jtr-res_1280-lfn-self2-0/ckpt-__var__-detrac-length-2-stride-2-80_per_seq_random_len_2-seq-60_99/csv-batch_4:_out_-p2s-lfn-detrac-0_59-len-2-60_99-80_per_seq_random_len_2-aug-fbb
+<a id="on_60_99_strd_1___len_2_aug_fbb_detrac_0_59_lf_n_"></a>
+#### on-60_99-strd-1       @ len-2-aug-fbb/detrac-0_59/lfn-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:60_99:gt-1:ign:nms-1:vnms-1:show-0:proc-1:_in_-resnet_640_detrac-length-2-stride-1-seq-0_59-batch_256-fbb-jtr-res_1280-lfn-self2-0/ckpt-__var__-detrac-length-2-stride-1-seq-60_99/csv-batch_32:_out_-p2s-lfn-detrac-0_59-len-2-60_99-aug-fbb-strd-1
+`vnms-25`
+python3 eval_det.py cfg=p2s:vid,detrac:60_99:gt-1:ign:nms-1:vnms:show-0:proc-1:_in_-resnet_640_detrac-length-2-stride-1-seq-0_59-batch_256-fbb-jtr-res_1280-lfn-self2-0/ckpt-__var__-detrac-length-2-stride-1-seq-60_99/csv-batch_32:_out_-p2s-lfn-detrac-0_59-len-2-60_99-aug-fbb-strd-1-vnms-25
+<a id="on_60_99_strd_2___len_2_aug_fbb_detrac_0_59_lf_n_"></a>
+#### on-60_99-strd-2       @ len-2-aug-fbb/detrac-0_59/lfn-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:60_99:gt-1:ign:nms-1:vstrd-2:show-0:proc-1:_in_-resnet_640_detrac-length-2-stride-1-seq-0_59-batch_256-fbb-jtr-res_1280-lfn-self2-0/ckpt-__var__-detrac-length-2-stride-1-seq-60_99/csv-batch_32:_out_-p2s-lfn-detrac-0_59-len-2-60_99-aug-fbb-strd-2
 
+<a id="len_4_aug_fbb___detrac_0_59_lf_n_"></a>
+### len-4-aug-fbb       @ detrac-0_59/lfn-->eval_p2s_vid-isl
+<a id="on_train_80_per_seq_random_len_4___len_4_aug_fbb_detrac_0_59_lf_n_"></a>
+#### on-train-80_per_seq_random_len_4       @ len-4-aug-fbb/detrac-0_59/lfn-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:0_59:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_96-fbb-jtr-res_1280-seq1k-lfn-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-0_59/csv-batch_8:_out_-p2s-lfn-detrac-0_59-len-4-train-80_per_seq-aug-fbb
+<a id="on_60_99_80_per_seq_random_len_4___len_4_aug_fbb_detrac_0_59_lf_n_"></a>
+#### on-60_99-80_per_seq_random_len_4       @ len-4-aug-fbb/detrac-0_59/lfn-->eval_p2s_vid-isl
+python3 eval_det.py cfg=p2s:vid,detrac:80_per_seq_random_len_4:60_99:gt-0:ign:nms-1:show-0:proc-1:_in_-resnet_640_detrac-length-4-stride-1-seq-0_59-batch_96-fbb-jtr-res_1280-seq1k-lfn-zexg/ckpt-__var__-detrac-length-4-stride-4-80_per_seq_random_len_4-seq-60_99/csv-batch_8:_out_-p2s-lfn-detrac-0_59-len-4-60_99-80_per_seq-aug-fbb
 
 <a id="detrac_non_empty_49_68___lf_n_"></a>
 ## detrac-non_empty-49_68       @ lfn-->eval_p2s_vid-isl
