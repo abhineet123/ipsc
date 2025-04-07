@@ -65,6 +65,7 @@ class Params(paramparse.CFG):
         self.remove_mj_dir_suffix = 0
         self.get_img_stats = 1
         self.ignore_invalid_label = 0
+        self.allow_ignored_class = 0
         self.skip_invalid = 1
 
         self.start_frame_id = 0
@@ -164,17 +165,8 @@ def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
     return image_info
 
 
-def get_coco_annotation_from_obj(obj, label2id, enable_mask, ignore_invalid_label):
+def get_coco_annotation_from_obj(obj, label2id, enable_mask):
     label = obj.findtext('name')
-
-    if label not in label2id:
-        msg = f"label {label} is not in label2id"
-        if ignore_invalid_label:
-            print(msg)
-            return None
-        else:
-            raise AssertionError(msg)
-
     category_id = label2id[label]
     bndbox = obj.find('bndbox')
     xmin = int(float(bndbox.findtext('xmin'))) - 1
@@ -233,6 +225,7 @@ def save_boxes_coco(
         allow_missing_images,
         skip_invalid,
         ignore_invalid_label,
+        allow_ignored_class,
         remove_mj_dir_suffix,
         get_img_stats,
         save_masks,
@@ -385,8 +378,23 @@ def save_boxes_coco(
 
         # print()
         for obj_id, obj in enumerate(objs):
-            ann = get_coco_annotation_from_obj(obj=obj, label2id=label2id, enable_mask=enable_mask,
-                                               ignore_invalid_label=ignore_invalid_label)
+            label = obj.findtext('name')
+
+            if allow_ignored_class and label == 'ignored':
+                """special class to mark ignored regions in the image that have not been annotated"""
+                continue
+
+            if label not in label2id:
+                msg = f"label {label} is not in label2id"
+                if ignore_invalid_label:
+                    print(msg)
+                    continue
+                else:
+                    raise AssertionError(msg)
+
+            ann = get_coco_annotation_from_obj(
+                obj=obj, label2id=label2id, enable_mask=enable_mask,
+            )
             if ann is None:
                 if skip_invalid:
                     print(f'\nskipping object {obj_id + 1} in {xml_path}')
@@ -482,7 +490,7 @@ def main():
     class_names_path = params.class_names_path
 
     assert class_names_path, "class_names_path must be provided"
-    
+
     class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
     class_names, class_cols = zip(*[k.split('\t') for k in class_info])
 
@@ -516,7 +524,6 @@ def main():
     xml_dir_name = params.dir_name
     if params.dir_suffix:
         xml_dir_name = f'{xml_dir_name}_{params.dir_suffix}'
-
 
     print(f'xml_dir_name: {xml_dir_name}')
 
@@ -591,13 +598,6 @@ def main():
         else:
             output_json_dir = os.path.dirname(seq_paths[0])
 
-    if no_annotations:
-        print('writing json for all images without annotations')
-
-    if write_empty:
-        print('including images without annotations in the json')
-        assert val_ratio == 0, "validation set with empty images is meaningless"
-
     description = output_json_fname_noext
 
     output_json_dict = {
@@ -609,6 +609,13 @@ def main():
     }
 
     if no_annotations or write_empty:
+        if no_annotations:
+            print('writing json for all images without annotations')
+
+        if write_empty:
+            print('including images without annotations in the json')
+            assert val_ratio == 0, "validation set with empty images is meaningless"
+
         from datetime import datetime
         time_stamp = datetime.now().strftime("%y%m%d_%H%M%S_%f")
         info = {
@@ -710,7 +717,6 @@ def main():
             ytvis_json_path = os.path.join(ytvis_json_dir, ytvis_json_name)
             save_ytvis_json(ytvis_json_dict, ytvis_json_path)
             return
-
 
     xml_paths = [linux_path(seq_path, xml_dir_name) for seq_path in seq_paths]
     seq_names = [os.path.basename(seq_path) for seq_path in seq_paths]
@@ -830,6 +836,7 @@ def main():
             excluded_images=all_excluded_images,
             skip_invalid=params.skip_invalid,
             ignore_invalid_label=params.ignore_invalid_label,
+            allow_ignored_class=params.allow_ignored_class,
             allow_missing_images=params.allow_missing_images,
             remove_mj_dir_suffix=params.remove_mj_dir_suffix,
             get_img_stats=params.get_img_stats,

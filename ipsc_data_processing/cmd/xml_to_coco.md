@@ -1,12 +1,15 @@
 <!-- MarkdownTOC -->
 
+- [detrac-non_empty](#detrac_non_empt_y_)
+    - [0_19       @ detrac-non_empty](#0_19___detrac_non_empty_)
+    - [0_9       @ detrac-non_empty](#0_9___detrac_non_empty_)
+    - [0_48       @ detrac-non_empty](#0_48___detrac_non_empty_)
+    - [49_68       @ detrac-non_empty](#49_68___detrac_non_empty_)
+    - [49_85       @ detrac-non_empty](#49_85___detrac_non_empty_)
+        - [100_per_seq_random       @ 49_85/detrac-non_empty](#100_per_seq_random___49_85_detrac_non_empty_)
 - [detrac](#detra_c_)
-    - [0_19       @ detrac](#0_19___detrac_)
-    - [0_9       @ detrac](#0_9___detrac_)
-    - [0_48       @ detrac](#0_48___detrac_)
-    - [49_68       @ detrac](#49_68___detrac_)
-    - [49_85       @ detrac](#49_85___detrac_)
-        - [100_per_seq_random       @ 49_85/detrac](#100_per_seq_random___49_85_detrac_)
+    - [0_59       @ detrac](#0_59___detrac_)
+    - [60_99       @ detrac](#60_99___detrac_)
 - [ipsc       @ xml_to_coco](#ipsc___xml_to_coc_o_)
     - [all_frames_roi       @ ipsc](#all_frames_roi___ipsc_)
         - [g2_0_37       @ all_frames_roi/ipsc](#g2_0_37___all_frames_roi_ips_c_)
@@ -93,26 +96,37 @@
 
 <!-- /MarkdownTOC -->
 
+<a id="detrac_non_empt_y_"></a>
+# detrac-non_empty
+<a id="0_19___detrac_non_empty_"></a>
+## 0_19       @ detrac-non_empty-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:0_19:zip 
+<a id="0_9___detrac_non_empty_"></a>
+## 0_9       @ detrac-non_empty-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:0_9:zip  
+<a id="0_48___detrac_non_empty_"></a>
+## 0_48       @ detrac-non_empty-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:0_48:zip  
+<a id="49_68___detrac_non_empty_"></a>
+## 49_68       @ detrac-non_empty-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:49_68:zip  
+<a id="49_85___detrac_non_empty_"></a>
+
+<a id="49_85___detrac_non_empty_"></a>
+## 49_85       @ detrac-non_empty-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:49_85:zip  
+<a id="100_per_seq_random___49_85_detrac_non_empty_"></a>
+### 100_per_seq_random       @ 49_85/detrac-non_empty-->xml_to_coco
+python xml_to_coco.py cfg=detrac:non_empty:49_85:100_per_seq_random:zip
+
 <a id="detra_c_"></a>
 # detrac
-<a id="0_19___detrac_"></a>
-## 0_19       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:0_19:zip 
-<a id="0_9___detrac_"></a>
-## 0_9       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:0_9:zip  
-<a id="0_48___detrac_"></a>
-## 0_48       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:0_48:zip  
-<a id="49_68___detrac_"></a>
-## 49_68       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:49_68:zip  
-<a id="49_85___detrac_"></a>
-## 49_85       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:49_85:zip  
-<a id="100_per_seq_random___49_85_detrac_"></a>
-### 100_per_seq_random       @ 49_85/detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:non_empty:49_85:100_per_seq_random:zip
+<a id="0_59___detrac_"></a>
+## 0_59       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:0_59:zip 
+<a id="60_99___detrac_"></a>
+## 60_99       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:60_99:zip 
 
 <a id="ipsc___xml_to_coc_o_"></a>
 # ipsc       @ xml_to_coco-->coco
