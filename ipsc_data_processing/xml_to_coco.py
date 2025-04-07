@@ -871,6 +871,7 @@ def main():
             allow_missing_images=params.allow_missing_images,
             skip_invalid=params.skip_invalid,
             ignore_invalid_label=params.ignore_invalid_label,
+            allow_ignored_class=params.allow_ignored_class,
             remove_mj_dir_suffix=params.remove_mj_dir_suffix,
             get_img_stats=params.get_img_stats,
             list_path=train_list_path,

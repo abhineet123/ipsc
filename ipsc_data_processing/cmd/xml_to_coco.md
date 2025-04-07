@@ -123,10 +123,10 @@ python xml_to_coco.py cfg=detrac:non_empty:49_85:100_per_seq_random:zip
 # detrac
 <a id="0_59___detrac_"></a>
 ## 0_59       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:0_59:zip 
+python xml_to_coco.py cfg=detrac:0_59:zip:ign
 <a id="60_99___detrac_"></a>
 ## 60_99       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:60_99:zip 
+python xml_to_coco.py cfg=detrac:60_99:zip:ign
 
 <a id="ipsc___xml_to_coc_o_"></a>
 # ipsc       @ xml_to_coco-->coco
