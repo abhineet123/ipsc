@@ -37,7 +37,6 @@ sys.path.append(utils.linux_path(os.path.expanduser('~'), '617', 'plotting'))
 
 import concat_metrics
 
-
 class Params(paramparse.CFG):
     """
 

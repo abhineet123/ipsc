@@ -788,10 +788,10 @@ python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:nms-1:agn:vstrd-8:proc-1:_in
 ## len-8-aug-fbb-b48       @ mid-54_126-->eval_p2s_vid-ipsc
 <a id="on_0_15_strd_1___len_8_aug_fbb_b48_mid_54_126_"></a>
 ### on-0_15-strd-1       @ len-8-aug-fbb-b48/mid-54_126-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-8-stride-1-batch_48-jtr-res_1280-fbb-seq1k-zexg/ckpt-__var__-ext_reorg_roi_g2-0_15-length-8-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-8-aug-fbb-b48
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vnms-1:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-8-stride-1-batch_48-jtr-res_1280-fbb-seq1k-exg/ckpt-__var__-ext_reorg_roi_g2-0_15-length-8-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-8-aug-fbb-b48
 <a id="on_0_15_strd_8___len_8_aug_fbb_b48_mid_54_126_"></a>
 ### on-0_15-strd-8       @ len-8-aug-fbb-b48/mid-54_126-->eval_p2s_vid-ipsc
-python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vstrd-8:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-8-stride-1-batch_48-jtr-res_1280-fbb-seq1k-zexg/ckpt-__var__-ext_reorg_roi_g2-0_15-length-8-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-8-aug-fbb-b48-strd-8 
+python eval_det.py cfg=p2s:vid,ipsc:0_15:det-0:gt-1:vstrd-8:nms-1:agn:proc-1:_in_-resnet_640_ext_reorg_roi_g2-54_126-length-8-stride-1-batch_48-jtr-res_1280-fbb-seq1k-exg/ckpt-__var__-ext_reorg_roi_g2-0_15-length-8-stride-1/csv-batch_2:_out_-p2s-mid-ipsc-54_126-len-8-aug-fbb-b48-strd-8 
 
 
 <a id="len_8_aug_cls_eq_fbb___mid_54_126_"></a>

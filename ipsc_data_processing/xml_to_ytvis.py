@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import random
 import ast
@@ -16,13 +17,17 @@ from tqdm import tqdm
 import imagesize
 import paramparse
 
-from eval_utils import (col_bgr, sortKey, linux_path, draw_box,
-                        annotate, load_samples_from_txt, get_iou, add_suffix)
-
 from itertools import groupby
 import pycocotools.mask as mask_util
 
 import multiprocessing
+
+from eval_utils import (col_bgr, sortKey, linux_path, draw_box,
+                        annotate, load_samples_from_txt, get_iou, add_suffix)
+
+sys.path.append(linux_path(os.path.expanduser('~'), 'pix2seq'))
+
+from tasks import task_utils
 
 
 # from multiprocessing.pool import ThreadPool
@@ -35,7 +40,11 @@ class Params(paramparse.CFG):
         self.batch_size = 1
         self.description = ''
         self.excluded_images_list = ''
+
         self.class_names_path = ''
+        self.map_classes = 0
+        self.auto_class_cols = 0
+
         self.codec = 'H264'
         self.csv_file_name = ''
         self.fps = 20
@@ -59,6 +68,7 @@ class Params(paramparse.CFG):
 
         self.out_json_name = ''
         self.root_dir = ''
+        self.xml_root_dir = ''
         self.seq_paths = ''
         self.seq_paths_suffix = ''
         self.show_img = 0
@@ -152,7 +162,8 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
                   get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip,
                   enable_masks, check_img_size, seq_name_to_xml_paths, seq_name_to_info,
                   quant_bin_to_ious,
-                  class_dict, ignore_invalid_label, ignore_missing_target, allow_ignored_class,
+                  class_dict, class_map_dict,
+                  ignore_invalid_label, ignore_missing_target, allow_ignored_class,
                   xml_data):
     xml_path, xml_path_id, seq_path, seq_name = xml_data
 
@@ -259,6 +270,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     for obj_id, obj in enumerate(objs):
 
         label = obj.findtext('name')
+        label = class_map_dict[label]
 
         if allow_ignored_class and label == 'ignored':
             """special class to mark ignored regions in the image that have not been annotated"""
@@ -346,7 +358,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
         xml_data_list.append(xml_data)
 
-    target_ids=list(set(target_ids))
+    target_ids = list(set(target_ids))
 
     n_objs = len(xml_data_list)
     try:
@@ -949,6 +961,7 @@ def get_n_objs_stats(seq_info: dict, params: Params):
 def run(params: Params):
     seq_paths = params.seq_paths
     root_dir = params.root_dir
+    xml_root_dir = params.xml_root_dir
 
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
@@ -961,6 +974,8 @@ def run(params: Params):
             load_samples = []
 
     class_names_path = params.class_names_path
+    auto_class_cols = params.auto_class_cols
+    map_classes = params.map_classes
     excluded_images_list = params.excluded_images_list
     description = params.description
     out_dir_name = params.out_dir_name
@@ -975,12 +990,34 @@ def run(params: Params):
         assert params.n_proc <= 1, "visualization is not supported in multiprocessing mode"
 
     class_names = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
-    class_names, class_cols = zip(*[k.split('\t') for k in class_names])
+
+    if map_classes:
+        class_names, mapped_class_names = zip(*[k.split('\t') for k in class_names])
+        class_map_dict = {class_name: mapped_class_name for (class_name, mapped_class_name) in
+                          zip(class_names, mapped_class_names, strict=True)}
+    else:
+        class_map_dict = {class_name: class_name for class_name in class_names}
+
+    n_classes = len(class_names)
+
+    if auto_class_cols:
+        class_cols = []
+        class_cols_rgb = task_utils.get_cols_rgb(n_classes)
+        for class_col_rgb in class_cols_rgb:
+            r, g, b = class_col_rgb
+            col_name = f'{b}_{g}_{r}'
+            col_bgr[col_name] = (b, g, r)
+            class_cols.append(col_name)
+    else:
+        class_names, class_cols = zip(*[k.split('\t') for k in class_names])
 
     """class id 0 is for background"""
     class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
+    if map_classes:
+        """assign same class IDs to the mapped class names as the corresponding original class names"""
+        for (class_name, mapped_class_name) in class_map_dict.items():
+            class_dict[mapped_class_name] = class_dict[class_name]
 
-    n_classes = len(class_cols)
     """background is class 0 with color black"""
     palette = [[0, 0, 0], ]
     for class_id in range(n_classes):
@@ -1098,7 +1135,12 @@ def run(params: Params):
     n_seq = len(seq_paths)
     assert n_seq > 0, "no sequences found"
 
-    xml_dir_paths = [linux_path(seq_path, xml_dir_name) for seq_path in seq_paths]
+    if xml_root_dir:
+        assert root_dir, "root_dir must be provided with xml_root_dir"
+        xml_dir_paths = [seq_path.replace(root_dir, xml_root_dir) for seq_path in seq_paths]
+    else:
+        xml_dir_paths = [linux_path(seq_path, xml_dir_name) for seq_path in seq_paths]
+
     # img_dir_paths = [linux_path(seq_path, params.img_dir_name) for seq_path in seq_paths]
     seq_names = [os.path.basename(seq_path) for seq_path in seq_paths]
 
@@ -1204,7 +1246,7 @@ def run(params: Params):
         category_info = {
             'supercategory': 'object',
             'id': label_id,
-            'name': label
+            'name': class_map_dict[label]
         }
         categories.append(category_info)
 
@@ -1258,6 +1300,7 @@ def run(params: Params):
             seq_name_to_info,
             quant_bin_to_ious,
             class_dict,
+            class_map_dict,
             params.ignore_invalid_label,
             params.ignore_invalid_label,
             params.allow_ignored_class,
@@ -1286,7 +1329,7 @@ def run(params: Params):
             n_target_ids = len(target_ids)
             n_target_ids_all += n_target_ids
             seq_info['n_target_ids'] = n_target_ids
-            del(seq_info['target_ids'])
+            del (seq_info['target_ids'])
             get_n_objs_stats(seq_info, params)
 
         seq_info_all = dict(
