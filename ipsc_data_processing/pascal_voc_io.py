@@ -277,7 +277,11 @@ class PascalVocReader:
         size_iter = xmltree.find('size')
         self.width = int(size_iter.find("width").text)
         self.height = int(size_iter.find("height").text)
-        self.depth = int(size_iter.find("depth").text)
+        try:
+            self.depth = int(size_iter.find("depth").text)
+        except AttributeError:
+            """assume RGB"""
+            self.depth = 3
         try:
             verified = xmltree.attrib['verified']
             if verified == 'yes':

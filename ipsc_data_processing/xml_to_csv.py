@@ -26,6 +26,7 @@ class Params(paramparse.CFG):
         self.n_classes = 4
         self.n_frames = 0
         self.root_dir = ''
+        self.xml_root_dir = ''
         self.save_file_name = ''
         self.save_video = 1
         self.seq_paths = ''
@@ -113,6 +114,8 @@ def save_boxes_csv(seq_path, voc_path, sources_to_include, enable_mask, recursiv
 
     pbar = tqdm(files)
     for file in pbar:
+        file = linux_path(file)
+
         xml_reader = PascalVocReader(file)
 
         filename = os.path.splitext(os.path.basename(file))[0] + '.{}'.format(img_ext)
@@ -186,6 +189,7 @@ def main():
 
     seq_paths = params.seq_paths
     root_dir = params.root_dir
+    xml_root_dir = params.xml_root_dir
     sources_to_include = params.sources_to_include
     enable_mask = params.enable_mask
     load_samples = params.load_samples
@@ -245,11 +249,15 @@ def main():
             samples = seq_to_samples[seq_path]
         else:
             samples = []
-        voc_path = linux_path(seq_path, params.xml_dir)
-        save_boxes_csv(seq_path, voc_path, sources_to_include, enable_mask,
+        if xml_root_dir:
+            assert root_dir, "root_dir must be provided with xml_root_dir"
+            xml_dir_path = seq_path.replace(root_dir, xml_root_dir)
+        else:
+            xml_dir_path = linux_path(seq_path, params.xml_dir)
+
+        save_boxes_csv(seq_path, xml_dir_path, sources_to_include, enable_mask,
                        params.recursive, params.start_id, params.end_id,
-                       params.csv_name,
-                       samples)
+                       params.csv_name, samples)
 
 
 if __name__ == '__main__':

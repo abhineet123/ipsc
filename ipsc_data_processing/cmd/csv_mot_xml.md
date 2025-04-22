@@ -337,7 +337,7 @@ python csv_to_yolov5.py root_dir=/data/ipsc/well3/images class_names_path=lists/
 # imagenet_vid
 <a id="train___imagenet_vid_"></a>
 ## train       @ imagenet_vid-->csv_mot_xml
-python xml_to_csv.py cfg=imagenet_vid:train
+python xml_to_csv.py cfg=imagenet_vid
 <a id="val___imagenet_vid_"></a>
 ## val       @ imagenet_vid-->csv_mot_xml
 python xml_to_csv.py cfg=imagenet_vid:val
