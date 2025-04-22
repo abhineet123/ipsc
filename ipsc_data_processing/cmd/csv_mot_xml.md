@@ -60,8 +60,8 @@
     - [ext_reorg_roi       @ csv_to_yolov5](#ext_reorg_roi___csv_to_yolov_5_)
 - [xml_to_csv](#xml_to_cs_v_)
 - [imagenet_vid](#imagenet_vi_d_)
-    - [0_3861       @ imagenet_vid](#0_3861___imagenet_vid_)
-        - [len-2       @ 0_3861/imagenet_vid](#len_2___0_3861_imagenet_vi_d_)
+    - [train       @ imagenet_vid](#train___imagenet_vid_)
+    - [val       @ imagenet_vid](#val___imagenet_vid_)
     - [ipsc-5_class       @ imagenet_vid](#ipsc_5_class___imagenet_vid_)
     - [ipsc-ext_reorg_roi       @ imagenet_vid](#ipsc_ext_reorg_roi___imagenet_vid_)
         - [16_53       @ ipsc-ext_reorg_roi/imagenet_vid](#16_53___ipsc_ext_reorg_roi_imagenet_vi_d_)
@@ -335,11 +335,12 @@ python csv_to_yolov5.py root_dir=/data/ipsc/well3/images class_names_path=lists/
 # xml_to_csv
 <a id="imagenet_vi_d_"></a>
 # imagenet_vid
-<a id="0_3861___imagenet_vid_"></a>
-## 0_3861       @ imagenet_vid-->csv_mot_xml
-<a id="len_2___0_3861_imagenet_vi_d_"></a>
-### len-2       @ 0_3861/imagenet_vid-->csv_mot_xml
-python xml_to_csv.py cfg=imagenet_vid:start-0:end-3861:proc-1:len-2:strd-1:gap-1:zip-0
+<a id="train___imagenet_vid_"></a>
+## train       @ imagenet_vid-->csv_mot_xml
+python xml_to_csv.py cfg=imagenet_vid:train
+<a id="val___imagenet_vid_"></a>
+## val       @ imagenet_vid-->csv_mot_xml
+python xml_to_csv.py cfg=imagenet_vid:val
 
 
 <a id="ipsc_5_class___imagenet_vid_"></a>
