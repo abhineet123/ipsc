@@ -140,6 +140,7 @@
         - [inv       @ 10k6_vid_entire_seq/acamp](#inv___10k6_vid_entire_seq_acam_p_)
             - [2_per_seq       @ inv/10k6_vid_entire_seq/acamp](#2_per_seq___inv_10k6_vid_entire_seq_acam_p_)
             - [12_per_seq       @ inv/10k6_vid_entire_seq/acamp](#12_per_seq___inv_10k6_vid_entire_seq_acam_p_)
+            - [8_per_seq_random_len_2       @ inv/10k6_vid_entire_seq/acamp](#8_per_seq_random_len_2___inv_10k6_vid_entire_seq_acam_p_)
     - [20k6_5_video       @ acamp](#20k6_5_video___acam_p_)
         - [inv       @ 20k6_5_video/acamp](#inv___20k6_5_video_acamp_)
             - [2_per_seq       @ inv/20k6_5_video/acamp](#2_per_seq___inv_20k6_5_video_acamp_)
@@ -650,7 +651,10 @@ python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv_2_per_seq:proc-0:len-2:
 <a id="12_per_seq___inv_10k6_vid_entire_seq_acam_p_"></a>
 #### 12_per_seq       @ inv/10k6_vid_entire_seq/acamp-->xml_to_ytvis
 python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv_12_per_seq:proc-0:len-2:strds:gap-1
-'Z:\UofA\Acamp\acamp_code\tf_api\cmd\csv_to_record.md'
+
+<a id="8_per_seq_random_len_2___inv_10k6_vid_entire_seq_acam_p_"></a>
+#### 8_per_seq_random_len_2       @ inv/10k6_vid_entire_seq/acamp-->xml_to_ytvis
+python xml_to_ytvis.py cfg=acamp:10k6_vid_entire_seq_inv_8_per_seq_random_len_2:proc-0:len-2:strds:gap-1
 
 
 <a id="20k6_5_video___acam_p_"></a>
