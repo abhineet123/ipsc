@@ -84,6 +84,7 @@ class Params(paramparse.CFG):
         self.ignore_invalid_label = 0
         self.allow_ignored_class = 0
         self.ignore_missing_target = 0
+        self.zero_based_target_ids = 0
 
         self.target_id_field = 'id_number'
         self.add_ext_to_image = 0
@@ -307,6 +308,9 @@ def read_xml_file(params: Params,
                 print(f'{xml_path}: ignoring obj with missing or invalid target_id')
                 continue
             raise ValueError(e)
+
+        if params.zero_based_target_ids:
+            target_id += 1
 
         target_ids.append(target_id)
 
