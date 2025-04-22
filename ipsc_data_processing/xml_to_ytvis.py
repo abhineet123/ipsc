@@ -270,7 +270,14 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     for obj_id, obj in enumerate(objs):
 
         label = obj.findtext('name')
-        label = class_map_dict[label]
+
+        try:
+            label = class_map_dict[label]
+        except KeyError as e:
+            if ignore_invalid_label:
+                print(f'{xml_path}: ignoring obj with invalid label: {label}')
+                continue
+            raise AssertionError(e)
 
         if allow_ignored_class and label == 'ignored':
             """special class to mark ignored regions in the image that have not been annotated"""
@@ -995,8 +1002,6 @@ def run(params: Params):
         class_names, mapped_class_names = zip(*[k.split('\t') for k in class_names])
         class_map_dict = {class_name: mapped_class_name for (class_name, mapped_class_name) in
                           zip(class_names, mapped_class_names, strict=True)}
-    else:
-        class_map_dict = {class_name: class_name for class_name in class_names}
 
     n_classes = len(class_names)
 
@@ -1010,6 +1015,9 @@ def run(params: Params):
             class_cols.append(col_name)
     else:
         class_names, class_cols = zip(*[k.split('\t') for k in class_names])
+
+    if not map_classes:
+        class_map_dict = {class_name: class_name for class_name in class_names}
 
     """class id 0 is for background"""
     class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
