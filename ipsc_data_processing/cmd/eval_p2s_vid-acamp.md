@@ -42,6 +42,10 @@
     - [10k6_vid_entire_seq-aug-cls_eq-fbb-b352       @ mid](#10k6_vid_entire_seq_aug_cls_eq_fbb_b352___mi_d_)
         - [on-train-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b352/mid](#on_train_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b352_mi_d_)
         - [on-inv-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b352/mid](#on_inv_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b352_mi_d_)
+- [lfn](#lfn_)
+    - [10k6_vid_entire_seq-aug-cls_eq-fbb-b256       @ lfn](#10k6_vid_entire_seq_aug_cls_eq_fbb_b256___lf_n_)
+        - [on-train-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b256/lfn](#on_train_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b256_lf_n_)
+        - [on-inv-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b256/lfn](#on_inv_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b256_lf_n_)
 
 <!-- /MarkdownTOC -->
 <a id="mid_"></a>
@@ -182,10 +186,23 @@ python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv_2_per_seq:vnms-1:n
 ## 10k6_vid_entire_seq-aug-cls_eq-fbb-b352       @ mid-->eval_p2s_vid-acamp
 <a id="on_train_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b352_mi_d_"></a>
 ### on-train-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b352/mid-->eval_p2s_vid-acamp
-python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_2_per_seq:nms-1:agn:gt-0:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_352-jtr-res_1280-cls_eq-fbb-zexg/ckpt-__var__-10k6_vid_entire_seq_8_per_seq_random_len_2-length-2-stride-2/csv-batch_3:_out_-p2s-mid-10k6-len-2-aug-cls_eq-fbb-b352-8_per_seq_random_len_2-train
+python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_8_per_seq_random_len_2:nms-1:agn:gt-0:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_352-jtr-res_1280-cls_eq-fbb-zexg/ckpt-__var__-10k6_vid_entire_seq_8_per_seq_random_len_2-length-2-stride-2/csv-batch_3:_out_-p2s-mid-10k6-len-2-aug-cls_eq-fbb-b352-8_per_seq_random_len_2-train
 <a id="on_inv_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b352_mi_d_"></a>
 ### on-inv-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b352/mid-->eval_p2s_vid-acamp
-python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv_2_per_seq:nms-1:agn:gt-0:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_352-jtr-res_1280-cls_eq-fbb-zexg/ckpt-__var__-10k6_vid_entire_seq_inv_8_per_seq_random_len_2-length-2-stride-2/csv-batch_3:_out_-p2s-mid-10k6-len-2-aug-cls_eq-fbb-b352-8_per_seq_random_len_2
+python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv_8_per_seq_random_len_2:nms-1:agn:gt-0:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_352-jtr-res_1280-cls_eq-fbb-zexg/ckpt-__var__-10k6_vid_entire_seq_inv_8_per_seq_random_len_2-length-2-stride-2/csv-batch_3:_out_-p2s-mid-10k6-len-2-aug-cls_eq-fbb-b352-8_per_seq_random_len_2
+
+
+<a id="lfn_"></a>
+# lfn
+<a id="10k6_vid_entire_seq_aug_cls_eq_fbb_b256___lf_n_"></a>
+## 10k6_vid_entire_seq-aug-cls_eq-fbb-b256       @ lfn-->eval_p2s_vid-acamp
+<a id="on_train_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b256_lf_n_"></a>
+### on-train-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b256/lfn-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_8_per_seq_random_len_2:nms-1:agn:gt-0:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_256-jtr-res_1280-cls_eq-fbb-lfn-self2-0/ckpt-__var__-10k6_vid_entire_seq_8_per_seq_random_len_2-length-2-stride-2/csv-batch_3:_out_-p2s-lfn-10k6-len-2-aug-cls_eq-fbb-b256-8_per_seq_random_len_2-train
+<a id="on_inv_8_per_seq_random_len_2___10k6_vid_entire_seq_aug_cls_eq_fbb_b256_lf_n_"></a>
+### on-inv-8_per_seq_random_len_2       @ 10k6_vid_entire_seq-aug-cls_eq-fbb-b256/lfn-->eval_p2s_vid-acamp
+python3 eval_det.py cfg=p2s:vid,acamp:10k6_vid_entire_seq_inv_8_per_seq_random_len_2:nms-1:agn:gt-0:proc-1:show-0:_in_-resnet_640_10k6_vid_entire_seq-length-2-stride-1-batch_256-jtr-res_1280-cls_eq-fbb-lfn-self2-0/ckpt-__var__-10k6_vid_entire_seq_inv_8_per_seq_random_len_2-length-2-stride-2/csv-batch_3:_out_-p2s-lfn-10k6-len-2-aug-cls_eq-fbb-b256-8_per_seq_random_len_2
+
 
 
 

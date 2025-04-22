@@ -9,9 +9,9 @@ from pascal_voc_io import PascalVocReader
 from eval_utils import sortKey, add_suffix, linux_path
 
 
-class Params:
+class Params(paramparse.CFG):
     def __init__(self):
-        self.cfg = ()
+        paramparse.CFG.__init__(self, cfg_prefix='xml_to_csv')
         self.batch_size = 1
         self.codec = 'H264'
         self.csv_file_name = ''

@@ -80,10 +80,13 @@ class Params(paramparse.CFG):
         self.allow_missing_images = 0
         self.remove_mj_dir_suffix = 0
         self.infer_target_id = 0
-        self.get_img_stats = 1
+        self.get_img_stats = 0
         self.ignore_invalid_label = 0
         self.allow_ignored_class = 0
         self.ignore_missing_target = 0
+
+        self.target_id_field = 'id_number'
+        self.add_ext_to_image = 0
 
         self.start_frame_id = 0
         self.end_frame_id = -1
@@ -101,17 +104,18 @@ class Params(paramparse.CFG):
         self.max_length = 0
         self.min_length = 0
         self.coco_rle = 0
-        self.n_proc = 1
+        self.n_proc = 0
 
         self.json_gz = 1
-        self.xml_zip = 0
+        self.xml_zip = 1
 
         """in order to not exclude empty images without any xml files"""
         self.xml_from_img = 1
 
-        self.enable_masks = 1
+        self.enable_masks = 0
         self.save_masks = 0
         self.check_img_size = 0
+        self.quant_bins = [24, 32, 40, 48, 64, 80, 128, 160, 200, 256, 320]
 
         self.vis = 0
 
@@ -158,12 +162,15 @@ def binary_mask_to_rle(binary_mask):
     return rle
 
 
-def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
-                  get_img_stats, img_path_to_stats, remove_mj_dir_suffix, xml_zip,
-                  enable_masks, check_img_size, seq_name_to_xml_paths, seq_name_to_info,
+def read_xml_file(params: Params,
+                  db_root_dir,
+                  excluded_images,
+                  img_path_to_stats,
+                  seq_name_to_xml_paths,
+                  seq_name_to_info,
                   quant_bin_to_ious,
-                  class_dict, class_map_dict,
-                  ignore_invalid_label, ignore_missing_target, allow_ignored_class,
+                  class_dict,
+                  class_map_dict,
                   xml_data):
     xml_path, xml_path_id, seq_path, seq_name = xml_data
 
@@ -172,7 +179,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
     import xml.etree.ElementTree as ET
 
-    if xml_zip:
+    if params.xml_zip:
         xml_name = os.path.basename(xml_path)
         xml_dir_path = os.path.dirname(xml_path)
         xml_zip_path = xml_dir_path + ".zip"
@@ -186,6 +193,11 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     ann_root = ann_tree.getroot()
 
     filename = ann_tree.findtext('filename')
+
+    if params.add_ext_to_image:
+        assert params.img_ext not in filename, f"filename already has img_ext: {filename}"
+        filename = f'{filename}.{params.img_ext}'
+
     """img_path is relative to db_root_dir"""
     # img_rel_path = ann_tree.findtext('path')
     # if img_rel_path is None:
@@ -193,12 +205,11 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     # else:
     #     _filename = os.path.basename(img_rel_path)
     #     assert _filename == filename, f"mismatch between filename: {filename} and path: {img_rel_path}"
-
-    img_rel_path = linux_path(seq_name, filename)
+    img_path = linux_path(seq_path, filename)
     img_name = filename
-    img_path = linux_path(db_root_dir, img_rel_path)
+    img_rel_path = linux_path(os.path.relpath(img_path, db_root_dir))
 
-    if remove_mj_dir_suffix:
+    if params.remove_mj_dir_suffix:
         img_file_rel_path_list = img_rel_path.split('/')
         img_rel_path_ = linux_path(img_file_rel_path_list[0], img_file_rel_path_list[1], img_name)
         img_path_ = linux_path(db_root_dir, img_rel_path_)
@@ -211,15 +222,13 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
     # img_file_path = linux_path(seq_path, img_file_name)
 
-    quant_bins = [24, 32, 40, 48, 64, 80, 128, 160, 200, 256, 320]
-
     if excluded_images is not None and img_name in excluded_images[seq_path]:
         print(f'\n{seq_name} :: skipping excluded image {img_name}')
         return None
 
     if not os.path.exists(img_path):
         msg = f"img_file_path does not exist: {img_path}"
-        if allow_missing_images:
+        if params.allow_missing_images:
             print('\n' + msg + '\n')
             return None
         else:
@@ -229,12 +238,12 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
     img_w = int(size_from_xml.findtext('width'))
     img_h = int(size_from_xml.findtext('height'))
 
-    if check_img_size:
+    if params.check_img_size:
         img_w_, img_h_ = imagesize.get(img_path)
         assert img_h_ == img_h and img_w_ == img_w, (f"mismatch between image dimensions in XML: {(img_h, img_w)} and "
                                                      f"actual: ({img_h_, img_w_})")
 
-    if get_img_stats:
+    if params.get_img_stats:
         try:
             img_stat = img_path_to_stats[img_path]
         except KeyError:
@@ -274,27 +283,27 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         try:
             label = class_map_dict[label]
         except KeyError as e:
-            if ignore_invalid_label:
+            if params.ignore_invalid_label:
                 print(f'{xml_path}: ignoring obj with invalid label: {label}')
                 continue
             raise AssertionError(e)
 
-        if allow_ignored_class and label == 'ignored':
+        if params.allow_ignored_class and label == 'ignored':
             """special class to mark ignored regions in the image that have not been annotated"""
             continue
 
         try:
             label_id = class_dict[label]
         except KeyError as e:
-            if ignore_invalid_label:
+            if params.ignore_invalid_label:
                 print(f'{xml_path}: ignoring obj with invalid label: {label}')
                 continue
             raise AssertionError(e)
 
         try:
-            target_id = int(obj.findtext('id_number'))
+            target_id = int(obj.findtext(params.target_id_field))
         except ValueError as e:
-            if ignore_missing_target:
+            if params.ignore_missing_target:
                 print(f'{xml_path}: ignoring obj with missing or invalid target_id')
                 continue
             raise ValueError(e)
@@ -318,7 +327,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
         xmin_norm, ymin_norm, xmax_norm, ymax_norm = xmin / img_w, ymin / img_h, xmax / img_w, ymax / img_h
         bbox_norm = [xmin_norm, ymin_norm, xmax_norm, ymax_norm]
 
-        for quant_bin in quant_bins:
+        for quant_bin in params.quant_bins:
             bbox_quant = [int(k * quant_bin) for k in bbox_norm]
             xmin_rec, ymin_rec, xmax_rec, ymax_rec = [float(k) / quant_bin for k in bbox_quant]
 
@@ -337,7 +346,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
             bbox=bbox,
         )
 
-        if enable_masks:
+        if params.enable_masks:
             mask_obj = obj.find('mask')
             if mask_obj is None:
                 msg = 'no mask found for object:\n{}'.format(img_name)
@@ -351,7 +360,7 @@ def read_xml_file(db_root_dir, excluded_images, allow_missing_images, coco_rle,
 
             bin_mask = np.zeros(src_shape, dtype=np.uint8)
             bin_mask = cv2.fillPoly(bin_mask, np.array([mask_pts, ], dtype=np.int32), 255)
-            if coco_rle:
+            if params.coco_rle:
                 bin_mask_rle = binary_mask_to_rle_coco(bin_mask)
             else:
                 bin_mask_rle = binary_mask_to_rle(bin_mask)
@@ -691,8 +700,11 @@ def get_xml_files(
         else:
             if params.xml_from_img:
                 all_img_files = glob.glob(linux_path(seq_path, f'*.{params.img_ext}'), recursive=False)
+                assert len(all_img_files) > 0, 'No image files found in {}'.format(seq_path)
+
                 all_img_names = [os.path.splitext(os.path.basename(img_file))[0] for img_file in all_img_files]
                 all_xml_files = [linux_path(xml_dir_path, f'{img_name}.xml') for img_name in all_img_names]
+                # print()
             else:
                 if params.xml_zip:
                     from zipfile import ZipFile
@@ -710,6 +722,7 @@ def get_xml_files(
                     # all_xml_files = [item for sublist in xml_file_gen for item in sublist]
 
                     all_xml_files = glob.glob(linux_path(xml_dir_path, '*.xml'), recursive=params.recursive)
+                    # print()
 
         if params.shuffle:
             random.shuffle(all_xml_files)
@@ -1022,9 +1035,10 @@ def run(params: Params):
     """class id 0 is for background"""
     class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
     if map_classes:
-        """assign same class IDs to the mapped class names as the corresponding original class names"""
+        """assign same class IDs to the mapped class names as the corresponding original class names
+        and remove the original class names"""
         for (class_name, mapped_class_name) in class_map_dict.items():
-            class_dict[mapped_class_name] = class_dict[class_name]
+            class_dict[mapped_class_name] = class_dict.pop(class_name)
 
     """background is class 0 with color black"""
     palette = [[0, 0, 0], ]
@@ -1254,7 +1268,7 @@ def run(params: Params):
         category_info = {
             'supercategory': 'object',
             'id': label_id,
-            'name': class_map_dict[label]
+            'name': label
         }
         categories.append(category_info)
 
@@ -1294,24 +1308,15 @@ def run(params: Params):
 
         read_xml_func = functools.partial(
             read_xml_file,
+            params,
             db_root_dir,
             all_excluded_images,
-            params.allow_missing_images,
-            params.coco_rle,
-            params.get_img_stats,
             img_path_to_stats,
-            params.remove_mj_dir_suffix,
-            params.xml_zip,
-            params.enable_masks,
-            params.check_img_size,
             seq_name_to_xml_paths,
             seq_name_to_info,
             quant_bin_to_ious,
             class_dict,
             class_map_dict,
-            params.ignore_invalid_label,
-            params.ignore_invalid_label,
-            params.allow_ignored_class,
         )
         print(f'reading {len(all_data_xml_paths)} {split_type} xml files')
         if params.n_proc > 1:

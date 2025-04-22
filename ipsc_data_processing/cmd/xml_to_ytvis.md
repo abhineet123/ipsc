@@ -156,7 +156,7 @@
 ## 0_3861       @ imagenet_vid-->xml_to_ytvis
 <a id="len_2___0_3861_imagenet_vi_d_"></a>
 ### len-2       @ 0_3861/imagenet_vid-->xml_to_ytvis
-python xml_to_ytvis.py cfg=imagenet_vid:0_3861:proc-1:len-2:strd-1:gap-1:ign
+python xml_to_ytvis.py cfg=imagenet_vid:start-0:end-3861:proc-1:len-2:strd-1:gap-1:zip-0
 
 <a id="gra_m_"></a>
 # gram
