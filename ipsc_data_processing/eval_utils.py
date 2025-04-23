@@ -178,7 +178,37 @@ col_bgr = {
     'medium_purple': (219, 112, 147),
     'thistle': (216, 191, 216),
     'green': (0, 255, 0),
-    'magenta': (255, 0, 255)
+    'magenta': (255, 0, 255),
+    '133_200_166': (133, 200, 166),
+    '200_100_100': (200, 100, 100),
+    '200_166_100': (200, 166, 100),
+    '166_200_100': (166, 200, 100),
+    '200_200_200': (200, 200, 200),
+    '166_133_133': (166, 133, 133),
+    '133_133_133': (133, 133, 133),
+    '100_100_100': (100, 100, 100),
+    '100_100_133': (100, 100, 133),
+    '166_100_200': (166, 100, 200),
+    '200_166_133': (200, 166, 133),
+    '133_200_133': (133, 200, 133),
+    '166_166_166': (166, 166, 166),
+    '166_133_166': (166, 133, 166),
+    '133_100_100': (133, 100, 100),
+    '100_200_200': (100, 200, 200),
+    '166_200_166': (166, 200, 166),
+    '166_200_133': (166, 200, 133),
+    '100_166_166': (100, 166, 166),
+    '166_133_200': (166, 133, 200),
+    '133_200_100': (133, 200, 100),
+    '133_166_200': (133, 166, 200),
+    '100_200_166': (100, 200, 166),
+    '200_133_200': (200, 133, 200),
+    '133_166_133': (133, 166, 133),
+    '100_100_166': (100, 100, 166),
+    '166_166_100': (166, 166, 100),
+    '166_100_166': (166, 100, 166),
+    '200_166_200': (200, 166, 200),
+    '200_100_133': (200, 100, 133),
 }
 
 bgr_col = {col_num: col_name for col_name, col_num in col_bgr.items()}
@@ -520,6 +550,7 @@ def annotate(
 
     return img_stacked
 
+
 def get_video_out(video_out_dict, vis_out_fnames, vis_type, vis_video, save_h, save_w, fourcc, fps):
     all_video_out = video_out_dict[vis_type]
     if all_video_out is None:
@@ -541,6 +572,7 @@ def get_video_out(video_out_dict, vis_out_fnames, vis_type, vis_video, save_h, s
 
         video_out_dict[vis_type] = all_video_out
     return all_video_out
+
 
 def draw_and_concat(src_img, frame_det_data, frame_gt_data, class_name_to_col, vis_alpha, vis_w, vis_h,
                     vert_stack, check_det, img_id, mask=True, return_list=False, cls_cat_to_col=None):

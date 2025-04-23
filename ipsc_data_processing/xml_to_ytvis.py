@@ -1016,7 +1016,10 @@ def run(params: Params):
     class_names = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
 
     if map_classes:
-        class_names, mapped_class_names = zip(*[k.split('\t') for k in class_names])
+        if auto_class_cols:
+            class_names, mapped_class_names, class_cols = zip(*[k.split('\t') for k in class_names])
+        else:
+            class_names, mapped_class_names = zip(*[k.split('\t') for k in class_names])
         class_map_dict = {class_name: mapped_class_name for (class_name, mapped_class_name) in
                           zip(class_names, mapped_class_names, strict=True)}
 
