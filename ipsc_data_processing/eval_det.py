@@ -170,6 +170,12 @@ class Params(paramparse.CFG):
 
         """allow_missing_gt=2 skips detections for files without GT"""
         self.allow_missing_gt = 1
+        """
+        allow entire sequences without any gt
+        usually happens only when sparsely sampling a sequence with many empty frames, 
+        thereby ending up with all empty frames in the samples
+        """
+        self.allow_empty_gt = 0
 
         self.show_text = 1
         self.gt_csv_name = 'annotations.csv'
@@ -620,6 +626,8 @@ def evaluate(
                 gt_class_data_dict[gt_class][seq_path] = []
 
             df_gt = pd.read_csv(gt_path)
+            
+            assert not df_gt.empty, f"empty gt_path: {gt_path}"
 
             if seq_to_samples is not None:
                 sampled_filenames = [os.path.basename(seq_img_path) for seq_img_path in seq_img_paths]
@@ -781,7 +789,13 @@ def evaluate(
                 if curr_frame_gt_data:
                     seq_gt_data_dict[file_path] = curr_frame_gt_data
 
-            assert valid_gts > 0, "no valid_gts found"
+
+            if not valid_gts:
+                if params.allow_empty_gt:
+                    print(f"no valid_gts found in {seq_name}")
+                else:
+                    raise AssertionError(f"no valid_gts found in {seq_name}")
+
 
             if params.filter_ignored:
                 gt_data_dict['ignored'][seq_path] = seq_gt_ignored_dict

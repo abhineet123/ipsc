@@ -643,7 +643,7 @@ python3 eval_det.py cfg=p2s:vid,detrac:non_empty:49_85:gt-0:nms-1:vnms:agn:show-
 <a id="on_train_4_per_seq_random_len_2___len_2_fbb_imagenet_vid_lfn_"></a>
 #### on-train-4_per_seq_random_len_2       @ len-2-fbb/imagenet_vid/lfn-->eval_p2s_vid-isl
 `batch-64`
-python3 eval_det.py cfg=p2s:vid,imagenet_vid:4_per_seq_random_len_2:gt-0:nms-1:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid-length-2-stride-2-4_per_seq_random_len_2/csv-batch_64:_out_-p2s-lfn-imagenet_vid-len-2-train-4_per_seq_random_len_2-aug-fbb:vbs:dbg
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:4_per_seq_random_len_2:gt-0:nms-1:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid-length-2-stride-2-4_per_seq_random_len_2/csv-batch_64:_out_-p2s-lfn-imagenet_vid-len-2-train-4_per_seq_random_len_2-aug-fbb:vbs:dbg allow_empty_gt=1
 <a id="on_val_8_per_seq_random_len_2___len_2_fbb_imagenet_vid_lfn_"></a>
 #### on-val-8_per_seq_random_len_2       @ len-2-fbb/imagenet_vid/lfn-->eval_p2s_vid-isl
 `batch-64`
