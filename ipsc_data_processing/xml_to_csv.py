@@ -197,7 +197,7 @@ def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_m
     class_to_n_files_path = os.path.join(out_dir, f'class_to_n_files.txt')
     with open(class_to_n_files_path, 'w') as fid:
         for class_ in classes_in_seq:
-            fid.write(f'{class_}\t{class_to_n_files[class_]}')
+            fid.write(f'{class_}\t{class_to_n_files[class_]}\n')
 
     df.to_csv(out_file_path, columns=csv_columns, index=False)
 
