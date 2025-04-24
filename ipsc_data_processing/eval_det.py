@@ -116,6 +116,7 @@ class Params(paramparse.CFG):
 
         self.load_samples = []
         self.load_samples_root = ''
+        self.load_samples_suffix = ''
 
         self.iou_thresh = 0.25
         self.labels_root = 'lists/classes/'
@@ -3451,6 +3452,11 @@ def run(params: Params, sweep_mode: dict, *argv):
 
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
+    load_samples_suffix = params.load_samples_suffix
+
+    if load_samples_suffix:
+        load_samples_root = f'{load_samples_root}_{load_samples_suffix}'
+
     if len(load_samples) == 1:
         if load_samples[0] == 1:
             load_samples = ['seq_to_samples.txt', ]

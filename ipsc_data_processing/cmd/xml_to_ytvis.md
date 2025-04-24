@@ -163,7 +163,7 @@
 python xml_to_ytvis.py cfg=imagenet_vid:proc-1:len-2:strd-1:gap-1:zip-0
 <a id="4_per_seq_random_len_2___len_2_train_imagenet_vid_"></a>
 #### 4_per_seq_random_len_2       @ len-2/train/imagenet_vid-->xml_to_ytvis
-python xml_to_ytvis.py cfg=imagenet_vid:4_per_seq_random_len_2:proc-1:len-2:strd-1:gap-1:zip-0
+python xml_to_ytvis.py cfg=imagenet_vid:4_per_seq_random_len_2:proc-1:len-2:strd-2:gap-1:zip-0
 
 <a id="val___imagenet_vid_"></a>
 ## val       @ imagenet_vid-->xml_to_ytvis
@@ -172,7 +172,7 @@ python xml_to_ytvis.py cfg=imagenet_vid:4_per_seq_random_len_2:proc-1:len-2:strd
 python xml_to_ytvis.py cfg=imagenet_vid:val:proc-1:len-2:strd-1:gap-1:zip-0
 <a id="8_per_seq_random_len_2___len_2_val_imagenet_vid_"></a>
 #### 8_per_seq_random_len_2       @ len-2/val/imagenet_vid-->xml_to_ytvis
-python xml_to_ytvis.py cfg=imagenet_vid:val:8_per_seq_random_len_2:proc-1:len-2:strd-1:gap-1:zip-0
+python xml_to_ytvis.py cfg=imagenet_vid:val:8_per_seq_random_len_2:proc-1:len-2:strd-2:gap-1:zip-0
 
 <a id="gra_m_"></a>
 # gram
