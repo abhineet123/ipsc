@@ -1120,7 +1120,10 @@ def run(params: Params):
         description = f'{description}-{load_samples_suffix}'
 
     if load_samples:
-        seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
+        seq_paths, seq_to_samples = load_samples_from_txt(
+            load_samples, xml_dir_name,  load_samples_root,
+            xml_root_dir=xml_root_dir, root_dir=root_dir,
+        )
     else:
         seq_to_samples = None
 

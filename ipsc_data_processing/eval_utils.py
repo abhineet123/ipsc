@@ -1405,7 +1405,9 @@ def linux_path(*args, **kwargs):
     return os.path.join(*args, **kwargs).replace(os.sep, '/')
 
 
-def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=True):
+def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=True,
+                          xml_root_dir='', root_dir=''
+                          ):
     from pprint import pformat
     from collections import OrderedDict
     import ast
@@ -1434,12 +1436,16 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=T
             if xml_dir_name is not None:
                 _dir_img_names = [(os.path.dirname(_sample), os.path.splitext(os.path.basename(_sample))[0])
                                   for _sample in curr_seq_to_samples[_seq]]
-                curr_seq_to_samples[_seq] = [os.path.join(_dir_name, xml_dir_name, f'{_img_name}.xml')
-                                             for _dir_name, _img_name in _dir_img_names]
-                # curr_seq_to_samples[_seq] = [
-                #     '.xml'.join(_sample.rsplit('.jpg', 1))
-                #     for _sample in  curr_seq_to_samples[_seq]
-                # ]
+                if xml_root_dir:
+                    assert root_dir, "root_dir must be provided with xml_root_dir"
+                    xml_dir_paths = [_dir_name.replace(root_dir, xml_root_dir) for _dir_name, _ in _dir_img_names]
+                else:
+                    xml_dir_paths = [linux_path(_dir_name, xml_dir_name) for _dir_name, _ in _dir_img_names]
+
+                curr_seq_to_samples[_seq] = [linux_path(xml_dir_path, f'{_img_name}.xml')
+                                             for xml_dir_path, (_, _img_name) in zip(
+                        xml_dir_paths, _dir_img_names, strict=True)]
+
             if _seq in seq_to_samples:
                 seq_to_samples[_seq] += curr_seq_to_samples[_seq]
             else:
