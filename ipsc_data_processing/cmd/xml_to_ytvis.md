@@ -158,13 +158,13 @@
 ## train       @ imagenet_vid-->xml_to_ytvis
 <a id="len_2___train_imagenet_vid_"></a>
 ### len-2       @ train/imagenet_vid-->xml_to_ytvis
-python xml_to_ytvis.py cfg=imagenet_vid:start-0:end-3861:proc-1:len-2:strd-1:gap-1:zip-0
+python xml_to_ytvis.py cfg=imagenet_vid:proc-1:len-2:strd-1:gap-1:zip-0
 
 <a id="val___imagenet_vid_"></a>
 ## val       @ imagenet_vid-->xml_to_ytvis
 <a id="len_2___val_imagenet_vid_"></a>
 ### len-2       @ val/imagenet_vid-->xml_to_ytvis
-python xml_to_ytvis.py cfg=imagenet_vid:val:start-0:end-554:proc-1:len-2:strd-1:gap-1:zip-0
+python xml_to_ytvis.py cfg=imagenet_vid:val:proc-1:len-2:strd-1:gap-1:zip-0
 
 <a id="gra_m_"></a>
 # gram
