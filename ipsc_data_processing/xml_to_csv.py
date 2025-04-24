@@ -114,6 +114,9 @@ def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_m
         print('Excluding boxes from following sources: {}'.format(sources_to_exclude))
 
     pbar = tqdm(files)
+    class_to_n_files = {}
+
+
     for file in pbar:
         file = linux_path(file)
 
@@ -136,7 +139,6 @@ def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_m
         for shape in shapes:
             label, points, _, _, difficult, bbox_source, id_number, score, mask_pts, _ = shape
 
-
             if sources_to_include and bbox_source not in sources_to_include:
                 continue
 
@@ -145,6 +147,11 @@ def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_m
 
             if class_map_dict is not None:
                 label = class_map_dict[label]
+
+            if label not in class_to_n_files:
+                class_to_n_files[label] = 0
+
+            class_to_n_files[label] += 1
 
             if id_number is None:
                 id_number = -1
@@ -181,6 +188,16 @@ def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_m
                    'class', 'xmin', 'ymin', 'xmax', 'ymax']
     if enable_mask:
         csv_columns.append('mask')
+
+    classes_in_seq = list(class_to_n_files.keys())
+    classe_frq = list(class_to_n_files.values())
+
+    classes_in_seq.sort(key=lambda x: class_to_n_files[x], reverse=True)
+
+    class_to_n_files_path = os.path.join(out_dir, f'class_to_n_files.txt')
+    with open(class_to_n_files_path, 'w') as fid:
+        for class_ in classes_in_seq:
+            fid.write(f'{class_}\t{class_to_n_files[class_]}')
 
     df.to_csv(out_file_path, columns=csv_columns, index=False)
 
