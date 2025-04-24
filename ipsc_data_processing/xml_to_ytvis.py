@@ -1023,6 +1023,8 @@ def run(params: Params):
 
         class_map_dict = {class_name: mapped_class_name for (class_name, mapped_class_name) in
                           zip(class_names, mapped_class_names, strict=True)}
+    elif not auto_class_cols:
+        class_names, class_cols = zip(*[k.split('\t') for k in class_names])
 
     n_classes = len(class_names)
 
@@ -1034,8 +1036,6 @@ def run(params: Params):
             col_name = f'{b}_{g}_{r}'
             col_bgr[col_name] = (b, g, r)
             class_cols.append(col_name)
-    else:
-        class_names, class_cols = zip(*[k.split('\t') for k in class_names])
 
     if not map_classes:
         class_map_dict = {class_name: class_name for class_name in class_names}
