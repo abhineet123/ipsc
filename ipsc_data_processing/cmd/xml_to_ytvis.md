@@ -3,6 +3,7 @@
 - [imagenet_vid](#imagenet_vi_d_)
     - [train       @ imagenet_vid](#train___imagenet_vid_)
         - [len-2       @ train/imagenet_vid](#len_2___train_imagenet_vid_)
+            - [4_per_seq_random_len_2       @ len-2/train/imagenet_vid](#4_per_seq_random_len_2___len_2_train_imagenet_vid_)
     - [val       @ imagenet_vid](#val___imagenet_vid_)
         - [len-2       @ val/imagenet_vid](#len_2___val_imagenet_vid_)
             - [8_per_seq_random_len_2       @ len-2/val/imagenet_vid](#8_per_seq_random_len_2___len_2_val_imagenet_vid_)
@@ -160,6 +161,9 @@
 <a id="len_2___train_imagenet_vid_"></a>
 ### len-2       @ train/imagenet_vid-->xml_to_ytvis
 python xml_to_ytvis.py cfg=imagenet_vid:proc-1:len-2:strd-1:gap-1:zip-0
+<a id="4_per_seq_random_len_2___len_2_train_imagenet_vid_"></a>
+#### 4_per_seq_random_len_2       @ len-2/train/imagenet_vid-->xml_to_ytvis
+python xml_to_ytvis.py cfg=imagenet_vid:4_per_seq_random_len_2:proc-1:len-2:strd-1:gap-1:zip-0
 
 <a id="val___imagenet_vid_"></a>
 ## val       @ imagenet_vid-->xml_to_ytvis
