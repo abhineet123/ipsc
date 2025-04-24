@@ -632,6 +632,9 @@ def evaluate(
             if seq_to_samples is not None:
                 sampled_filenames = [os.path.basename(seq_img_path) for seq_img_path in seq_img_paths]
                 df_gt = df_gt.loc[df_gt['filename'].isin(sampled_filenames)]
+                if df_gt.empty:
+                    if params.allow_empty_gt:
+                        
 
             if params.class_agnostic:
                 df_gt['class'] = 'agnostic'
