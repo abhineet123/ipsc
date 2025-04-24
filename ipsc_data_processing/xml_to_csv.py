@@ -18,7 +18,7 @@ class Params(paramparse.CFG):
         self.enable_mask = 0
         self.fps = 20
         self.recursive = 0
-        self.img_ext = 'png'
+        self.img_ext = 'jpg'
         self.load_path = ''
         self.load_samples = []
         self.load_samples_root = ''
@@ -43,7 +43,7 @@ class Params(paramparse.CFG):
 
 def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask, recursive,
                    start_id, end_id, csv_name,
-                   samples, class_map_dict, img_ext='jpg'):
+                   samples, class_map_dict, img_ext):
     if not xml_dir_path or not os.path.isdir(xml_dir_path):
         raise IOError(f'Folder containing the xml files does not exist: {xml_dir_path}')
         # return None
@@ -273,7 +273,7 @@ def main():
 
         save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask,
                        params.recursive, params.start_id, params.end_id,
-                       params.csv_name, samples, class_map_dict)
+                       params.csv_name, samples, class_map_dict, params.img_ext)
 
 
 if __name__ == '__main__':
