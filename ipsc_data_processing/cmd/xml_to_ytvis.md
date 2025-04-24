@@ -158,7 +158,7 @@
 ## train       @ imagenet_vid-->xml_to_ytvis
 <a id="len_2___train_imagenet_vid_"></a>
 ### len-2       @ train/imagenet_vid-->xml_to_ytvis
-python xml_to_ytvis.py cfg=imagenet_vid:proc-1:len-2:strd-1:gap-1:zip-0
+python xml_to_ytvis.py cfg=imagenet_vid:train:proc-1:len-2:strd-1:gap-1:zip-0
 
 <a id="val___imagenet_vid_"></a>
 ## val       @ imagenet_vid-->xml_to_ytvis

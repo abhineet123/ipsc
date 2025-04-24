@@ -40,11 +40,11 @@ class Params(paramparse.CFG):
         self.end_id = -1
 
 
-def save_boxes_csv(seq_path, voc_path, sources_to_include, enable_mask, recursive,
+def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask, recursive,
                    start_id, end_id, csv_name,
                    samples, img_ext='jpg'):
-    if not voc_path or not os.path.isdir(voc_path):
-        raise IOError(f'Folder containing the xml files does not exist: {voc_path}')
+    if not xml_dir_path or not os.path.isdir(xml_dir_path):
+        raise IOError(f'Folder containing the xml files does not exist: {xml_dir_path}')
         # return None
 
     # src_files = [os.path.join(seq_path, k) for k in os.listdir(seq_path) if
@@ -52,12 +52,12 @@ def save_boxes_csv(seq_path, voc_path, sources_to_include, enable_mask, recursiv
     # src_files.sort(key=sortKey)
 
     # seq_name = os.path.basename(img_path)
-    print(f'looking for xml files in {voc_path}')
+    print(f'looking for xml files in {xml_dir_path}')
     if recursive:
         print(f'searching recursively')
-        files = glob.glob(os.path.join(voc_path, '**/*.xml'), recursive=True)
+        files = glob.glob(os.path.join(xml_dir_path, '**/*.xml'), recursive=True)
     else:
-        files = glob.glob(os.path.join(voc_path, '*.xml'))
+        files = glob.glob(os.path.join(xml_dir_path, '*.xml'))
     n_files = len(files)
     if n_files == 0:
         raise AssertionError('No xml files found')
@@ -99,7 +99,7 @@ def save_boxes_csv(seq_path, voc_path, sources_to_include, enable_mask, recursiv
     files = files[start_id:end_id + 1]
     n_files = len(files)
 
-    print(f'Loading annotations from {n_files:d} files at {voc_path:s}...')
+    print(f'Loading annotations from {n_files:d} files at {xml_dir_path:s}...')
 
     n_boxes = 0
     csv_raw = []
@@ -170,7 +170,6 @@ def save_boxes_csv(seq_path, voc_path, sources_to_include, enable_mask, recursiv
         pbar.set_description(f'n_boxes: {n_boxes:d}')
 
     df = pd.DataFrame(csv_raw)
-    out_dir = os.path.dirname(voc_path)
     out_file_path = os.path.join(out_dir, csv_name)
 
     csv_columns = ['target_id', 'filename', 'width', 'height',
@@ -255,7 +254,9 @@ def main():
         else:
             xml_dir_path = linux_path(seq_path, params.xml_dir)
 
-        save_boxes_csv(seq_path, xml_dir_path, sources_to_include, enable_mask,
+        out_dir = seq_path
+
+        save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask,
                        params.recursive, params.start_id, params.end_id,
                        params.csv_name, samples)
 
