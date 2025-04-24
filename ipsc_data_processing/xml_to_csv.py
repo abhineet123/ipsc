@@ -38,11 +38,12 @@ class Params(paramparse.CFG):
         self.csv_name = 'annotations.csv'
         self.start_id = -1
         self.end_id = -1
+        self.class_names_path = ''
 
 
 def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask, recursive,
                    start_id, end_id, csv_name,
-                   samples, img_ext='jpg'):
+                   samples, class_map_dict, img_ext='jpg'):
     if not xml_dir_path or not os.path.isdir(xml_dir_path):
         raise IOError(f'Folder containing the xml files does not exist: {xml_dir_path}')
         # return None
@@ -135,11 +136,15 @@ def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_m
         for shape in shapes:
             label, points, _, _, difficult, bbox_source, id_number, score, mask_pts, _ = shape
 
+
             if sources_to_include and bbox_source not in sources_to_include:
                 continue
 
             if sources_to_exclude and bbox_source in sources_to_exclude:
                 continue
+
+            if class_map_dict is not None:
+                label = class_map_dict[label]
 
             if id_number is None:
                 id_number = -1
@@ -193,6 +198,16 @@ def main():
     enable_mask = params.enable_mask
     load_samples = params.load_samples
     load_samples_root = params.load_samples_root
+    class_names_path = params.class_names_path
+
+    class_map_dict = None
+    
+    if class_names_path:
+        class_names = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
+        class_names, mapped_class_names, class_cols = zip(*[k.split('\t') for k in class_names])
+        class_map_dict = {class_name: mapped_class_name for (class_name, mapped_class_name) in
+                          zip(class_names, mapped_class_names, strict=True)}
+
 
     if seq_paths:
         if os.path.isfile(seq_paths):
@@ -258,7 +273,7 @@ def main():
 
         save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask,
                        params.recursive, params.start_id, params.end_id,
-                       params.csv_name, samples)
+                       params.csv_name, samples, class_map_dict)
 
 
 if __name__ == '__main__':
