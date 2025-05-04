@@ -322,7 +322,7 @@ def evaluate(
 
         score_thresholds = np.asarray(score_thresholds).squeeze()
 
-        img_exts = ['jpg', 'png', 'bmp']
+        img_exts = ['jpg', 'png', 'bmp', 'jpeg']
 
         save_w, save_h = [int(x) for x in save_file_res.split('x')]
         video_h, video_w = save_h, save_w
@@ -582,10 +582,12 @@ def evaluate(
         if seq_to_samples is not None:
             seq_img_paths = seq_to_samples[seq_path]
         else:
-            seq_img_gen = [[utils.linux_path(dirpath, f) for f in filenames if
-                            os.path.splitext(f.lower())[1][1:] in img_exts]
+            seq_img_gen = [[utils.linux_path(dirpath, f) for f in filenames
+                            if os.path.splitext(f.lower())[1][1:] in img_exts
+                            ]
                            for (dirpath, dirnames, filenames) in os.walk(seq_img_dir, followlinks=True)]
             seq_img_paths = [item for sublist in seq_img_gen for item in sublist]
+            assert seq_img_paths, "empty seq_img_paths"
 
         seq_img_name_to_path = {
             os.path.basename(seq_img_path): seq_img_path for seq_img_path in seq_img_paths
