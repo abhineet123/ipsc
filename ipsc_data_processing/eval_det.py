@@ -37,6 +37,7 @@ sys.path.append(utils.linux_path(os.path.expanduser('~'), '617', 'plotting'))
 
 import concat_metrics
 
+
 class Params(paramparse.CFG):
     """
 
@@ -85,6 +86,9 @@ class Params(paramparse.CFG):
         self.verbose = 1
         self.save_dets = 0
 
+        self.save_as_imagenet_vid = 0
+        self.imagenet_vid_map_path = ''
+
         self.concat = 1
         self.sleep = 30
 
@@ -108,7 +112,7 @@ class Params(paramparse.CFG):
         self.gt_paths = ''
         self.gt_root_dir = ''
 
-        self.img_ext = 'jpg'
+        self.img_ext = ''
         self.img_paths = ''
         self.img_paths_suffix = []
         self.img_root_dir = ''
@@ -565,6 +569,7 @@ def evaluate(
         #         seq_name_list[0]: det_data_dict[seq_name_list[0]]
         #     }
 
+    imagenet_vid_rows = []
     """read gt and det"""
     for seq_idx, (_gt_path, gt_seq_name) in enumerate(zip(gt_path_list, gt_seq_names, strict=True)):
 
@@ -582,9 +587,10 @@ def evaluate(
         if seq_to_samples is not None:
             seq_img_paths = seq_to_samples[seq_path]
         else:
-            seq_img_gen = [[utils.linux_path(dirpath, f) for f in filenames
-                            if os.path.splitext(f.lower())[1][1:] in img_exts
-                            ]
+            is_valid_img = lambda x: os.path.splitext(x.lower())[1][1:] in img_exts if not params.img_ext else \
+            os.path.splitext(x)[1][1:] == params.img_ext
+
+            seq_img_gen = [[utils.linux_path(dirpath, f) for f in filenames if is_valid_img(f)]
                            for (dirpath, dirnames, filenames) in os.walk(seq_img_dir, followlinks=True)]
             seq_img_paths = [item for sublist in seq_img_gen for item in sublist]
             assert seq_img_paths, "empty seq_img_paths"
@@ -628,7 +634,7 @@ def evaluate(
                 gt_class_data_dict[gt_class][seq_path] = []
 
             df_gt = pd.read_csv(gt_path)
-            
+
             assert not df_gt.empty, f"empty gt_path: {gt_path}"
 
             if seq_to_samples is not None:
@@ -690,7 +696,6 @@ def evaluate(
                 real_df = img_df.loc[img_df['class'] != 'ignored']
 
                 if params.filter_ignored and ignored_df.size > 0 and real_df.size > 0:
-
                     real_bboxes = np.asarray([[float(row['xmin']), float(row['ymin']),
                                                float(row['xmax']), float(row['ymax'])]
                                               for _, row in real_df.iterrows()
@@ -791,13 +796,11 @@ def evaluate(
                 if curr_frame_gt_data:
                     seq_gt_data_dict[file_path] = curr_frame_gt_data
 
-
             if not valid_gts:
                 if params.allow_empty_gt:
                     print(f"no valid_gts found in {seq_name}")
                 else:
                     raise AssertionError(f"no valid_gts found in {seq_name}")
-
 
             if params.filter_ignored:
                 gt_data_dict['ignored'][seq_path] = seq_gt_ignored_dict
@@ -834,6 +837,20 @@ def evaluate(
             else:
                 det_paths_iter = det_paths
                 print_('reading dets')
+
+            if params.save_as_imagenet_vid:
+                assert params.imagenet_vid_map_path, "imagenet_vid_map_path must be provided"
+                class_name_map_file = utils.linux_path(params.imagenet_vid_map_path, "map_vid.txt")
+                filename_to_frame_map_file = utils.linux_path(params.imagenet_vid_map_path, "val.txt")
+
+                class_name_map = open(class_name_map_file, "r").readlines()
+                filename_to_frame_map = open(filename_to_frame_map_file, "r").readlines()
+
+                class_name_map = [k.split(' ') for k in class_name_map]
+                class_name_to_id = {k[2]: k[1] for k in class_name_map}
+
+                filename_to_frame_map = [k.split(' ') for k in filename_to_frame_map]
+                filename_to_frame_index = {k[0]: k[1] for k in filename_to_frame_map}
 
             n_invalid_dets = 0
             n_total_dets = 0
@@ -1150,8 +1167,11 @@ def evaluate(
                         out_suffix.append(f'nms_{int(params.nms_thresh * 100):02d}')
 
                     if out_suffix and params.save_dets:
-                        out_suffix = '_'.join(out_suffix)
-                        out_det_dir = utils.add_suffix(det_dir, out_suffix)
+                        out_suffix_str = '_'.join(out_suffix)
+                        out_det_dir = utils.add_suffix(det_dir, out_suffix_str)
+
+                        if params.save_as_imagenet_vid:
+                            imagenet_vid_out_path = out_det_dir + '.txt'
 
                         os.makedirs(out_det_dir, exist_ok=True)
                         out_det_path = utils.linux_path(out_det_dir, det_name)
@@ -1168,8 +1188,26 @@ def evaluate(
                 else:
                     print_(f'n_det_paths: {n_det_paths}')
 
+            if params.save_as_imagenet_vid:
+                for det_bbox in seq_det_bboxes_list:
+                    xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
+                    filename_ = seq_name + '/' +  os.path.basename(det_bbox['filename'])
+                    class_name = det_bbox['class']
+                    confidence_ = det_bbox['confidence']
+
+                    frame_index = filename_to_frame_index[filename_]
+                    class_index = class_name_to_id[class_name]
+
+                    imagenet_vid_rows.append((frame_index, class_index, confidence_, xmin_, ymin_, xmax_, ymax_))
+
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
+
+    if params.save_as_imagenet_vid:
+        imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
+        print(f'\nimagenet_vid_out_path: {imagenet_vid_out_path}\n')
+        with open(imagenet_vid_out_path, "w") as fid:
+            fid.write('\n'.join(imagenet_vid_rows))
 
     """save pkl and detection post-proc"""
     if True:
@@ -1680,7 +1718,7 @@ def evaluate(
                 is_first_det_in_frame = vis_file_id is None or file_id != vis_file_id
 
                 if (enable_vis and (img is not None)
-                        and has_objs # nothing useful to show if neither GTs nr dets of this class exist in this frame
+                        and has_objs  # nothing useful to show if neither GTs nr dets of this class exist in this frame
                 ):
                     if is_first_det_in_frame:
                         """raw vis for previous frame"""
@@ -2027,7 +2065,6 @@ def evaluate(
                             fn_cats[gt_obj_id] = 'fn_det'
                             gt_obj['cls'] = 'fn_det'
 
-
                     fn_sum += n_fn_gts
                     all_considered_gt += all_class_gt
 
@@ -2279,7 +2316,6 @@ def evaluate(
                             fn_det_sum += 1
                             fn_cats[gt_obj_id] = 'fn_det'
                             gt_obj['cls'] = 'fn_det'
-
 
                     assert n_fn_gts == len(unused_gt), "n_unused_gt / n_fn_gts mismatch"
 
@@ -4073,7 +4109,7 @@ def sweep(params: Params):
             concat_params.class_name = ''
             concat_params.csv_mode = 1
             concat_params.csv_metrics = ['rec_prec', ]
-            concat_params.cfg='rec_prec'
+            concat_params.cfg = 'rec_prec'
             concat_metrics.main(concat_params)
 
             """JSON metrics"""
@@ -4083,13 +4119,14 @@ def sweep(params: Params):
 
             concat_params.json_metrics = ['AP', ]
             concat_params.json_metric_names = ['ap', ]
-            concat_params.cfg='ap'
+            concat_params.cfg = 'ap'
             concat_metrics.main(concat_params)
 
             concat_params.json_metrics = ['R=P', ]
             concat_params.json_metric_names = ['mrp', ]
-            concat_params.cfg='mrp'
+            concat_params.cfg = 'mrp'
             concat_metrics.main(concat_params)
+
 
 def main():
     params = Params()
