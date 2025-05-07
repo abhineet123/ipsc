@@ -569,7 +569,24 @@ def evaluate(
         #         seq_name_list[0]: det_data_dict[seq_name_list[0]]
         #     }
 
-    imagenet_vid_rows = []
+    if params.save_as_imagenet_vid:
+        imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
+        print(f'\nimagenet_vid_out_path: {imagenet_vid_out_path}\n')
+        open(imagenet_vid_out_path, "r").close()
+
+        assert params.imagenet_vid_map_path, "imagenet_vid_map_path must be provided"
+        class_name_map_file = utils.linux_path(params.imagenet_vid_map_path, "map_vid.txt")
+        filename_to_frame_map_file = utils.linux_path(params.imagenet_vid_map_path, "val.txt")
+
+        class_name_map = open(class_name_map_file, "r").readlines()
+        filename_to_frame_map = open(filename_to_frame_map_file, "r").readlines()
+
+        class_name_map = [k.strip().split(' ') for k in class_name_map]
+        class_name_to_id = {k[2]: k[1] for k in class_name_map}
+
+        filename_to_frame_map = [k.strip().split(' ') for k in filename_to_frame_map]
+        filename_to_frame_index = {k[0]: k[1] for k in filename_to_frame_map}
+
     """read gt and det"""
     for seq_idx, (_gt_path, gt_seq_name) in enumerate(zip(gt_path_list, gt_seq_names, strict=True)):
 
@@ -837,20 +854,6 @@ def evaluate(
             else:
                 det_paths_iter = det_paths
                 print_('reading dets')
-
-            if params.save_as_imagenet_vid:
-                assert params.imagenet_vid_map_path, "imagenet_vid_map_path must be provided"
-                class_name_map_file = utils.linux_path(params.imagenet_vid_map_path, "map_vid.txt")
-                filename_to_frame_map_file = utils.linux_path(params.imagenet_vid_map_path, "val.txt")
-
-                class_name_map = open(class_name_map_file, "r").readlines()
-                filename_to_frame_map = open(filename_to_frame_map_file, "r").readlines()
-
-                class_name_map = [k.split(' ') for k in class_name_map]
-                class_name_to_id = {k[2]: k[1] for k in class_name_map}
-
-                filename_to_frame_map = [k.split(' ') for k in filename_to_frame_map]
-                filename_to_frame_index = {k[0]: k[1] for k in filename_to_frame_map}
 
             n_invalid_dets = 0
             n_total_dets = 0
@@ -1169,10 +1172,6 @@ def evaluate(
                     if out_suffix and params.save_dets:
                         out_suffix_str = '_'.join(out_suffix)
                         out_det_dir = utils.add_suffix(det_dir, out_suffix_str)
-
-                        if params.save_as_imagenet_vid:
-                            imagenet_vid_out_path = out_det_dir + '.txt'
-
                         os.makedirs(out_det_dir, exist_ok=True)
                         out_det_path = utils.linux_path(out_det_dir, det_name)
                         csv_columns = [
@@ -1189,9 +1188,10 @@ def evaluate(
                     print_(f'n_det_paths: {n_det_paths}')
 
             if params.save_as_imagenet_vid:
+                imagenet_vid_rows = []
                 for det_bbox in seq_det_bboxes_list:
                     xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
-                    filename_ = seq_name + '/' +  os.path.basename(det_bbox['filename'])
+                    filename_ = seq_name + '/' +  os.path.splitext(os.path.basename(det_bbox['filename']))[0]
                     class_name = det_bbox['class']
                     confidence_ = det_bbox['confidence']
 
@@ -1199,15 +1199,12 @@ def evaluate(
                     class_index = class_name_to_id[class_name]
 
                     imagenet_vid_rows.append((frame_index, class_index, confidence_, xmin_, ymin_, xmax_, ymax_))
+                    
+                with open(imagenet_vid_out_path, "a") as fid:
+                    fid.write('\n'.join(imagenet_vid_rows))
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
-
-    if params.save_as_imagenet_vid:
-        imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
-        print(f'\nimagenet_vid_out_path: {imagenet_vid_out_path}\n')
-        with open(imagenet_vid_out_path, "w") as fid:
-            fid.write('\n'.join(imagenet_vid_rows))
 
     """save pkl and detection post-proc"""
     if True:
