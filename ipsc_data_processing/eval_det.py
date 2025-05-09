@@ -1813,7 +1813,9 @@ def evaluate(
                                 video_out_dict[_cls_cat] = video_out
 
                             if vis_video:
-                                out_img = utils.resize_ar_tf_api(out_img, video_w, video_h, add_border=2)
+                                out_img = utils.resize_ar_tf_api(out_img, video_w, video_h,
+                                                                 # add_border=2
+                                                                 )
 
                             video_out.write(out_img)
                             cat_to_vis_count[_cls_cat] += 1

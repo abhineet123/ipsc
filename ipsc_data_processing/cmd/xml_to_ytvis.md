@@ -170,6 +170,7 @@ python xml_to_ytvis.py cfg=imagenet_vid:4_per_seq_random_len_2:proc-1:len-2:strd
 <a id="len_2___val_imagenet_vid_"></a>
 ### len-2       @ val/imagenet_vid-->xml_to_ytvis
 python xml_to_ytvis.py cfg=imagenet_vid:val:proc-1:len-2:strd-1:gap-1:zip-0
+python xml_to_ytvis.py cfg=imagenet_vid:val:proc-1:len-2:strd-2:gap-1:zip-0
 <a id="8_per_seq_random_len_2___len_2_val_imagenet_vid_"></a>
 #### 8_per_seq_random_len_2       @ len-2/val/imagenet_vid-->xml_to_ytvis
 python xml_to_ytvis.py cfg=imagenet_vid:val:8_per_seq_random_len_2:proc-1:len-2:strd-2:gap-1:zip-0
