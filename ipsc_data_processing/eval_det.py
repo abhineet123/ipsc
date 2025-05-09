@@ -572,7 +572,8 @@ def evaluate(
     if params.save_as_imagenet_vid:
         imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
         print(f'\nimagenet_vid_out_path: {imagenet_vid_out_path}\n')
-        open(imagenet_vid_out_path, "r").close()
+        """overwrite existing file if it exists with an empty file"""
+        open(imagenet_vid_out_path, "w").close()
 
         assert params.imagenet_vid_map_path, "imagenet_vid_map_path must be provided"
         class_name_map_file = utils.linux_path(params.imagenet_vid_map_path, "map_vid.txt")
@@ -1198,7 +1199,10 @@ def evaluate(
                     frame_index = filename_to_frame_index[filename_]
                     class_index = class_name_to_id[class_name]
 
-                    imagenet_vid_rows.append((frame_index, class_index, confidence_, xmin_, ymin_, xmax_, ymax_))
+                    obj_str = (f'{frame_index:d} {class_index:d} {confidence_:.4f} '
+                               f'{xmin_:.2f} {ymin_:.2f} {xmax_:.2f} {ymax_:.2f}')
+
+                    imagenet_vid_rows.append(obj_str)
                     
                 with open(imagenet_vid_out_path, "a") as fid:
                     fid.write('\n'.join(imagenet_vid_rows))
