@@ -894,7 +894,18 @@ def evaluate(
 
                 if vid_info is not None:
                     seq_to_video_ids, seq_to_filenames = vid_info
-                    video_ids = seq_to_video_ids[seq_name]
+
+                    try:
+                        video_ids = seq_to_video_ids[seq_name]
+                    except KeyError:
+                        """possibly annoying imagenet-vid like dataset with multi-part sequence names"""
+                        seq_to_video_ids.update({
+                            os.path.basename(k__): v__ for k__,v__ in seq_to_video_ids.items()
+                        })
+                        seq_to_filenames.update({
+                            os.path.basename(k__): v__ for k__,v__ in seq_to_filenames.items()
+                        })
+                        video_ids = seq_to_video_ids[seq_name]
 
                     video_ids = list(map(int, video_ids.split(',')))
                     df_det = df_det.loc[df_det['video_id'].isin(video_ids)]
