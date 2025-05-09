@@ -583,10 +583,10 @@ def evaluate(
         filename_to_frame_map = open(filename_to_frame_map_file, "r").readlines()
 
         class_name_map = [k.strip().split(' ') for k in class_name_map]
-        class_name_to_id = {k[2]: k[1] for k in class_name_map}
+        class_name_to_id = {k[2]: int(k[1]) for k in class_name_map}
 
         filename_to_frame_map = [k.strip().split(' ') for k in filename_to_frame_map]
-        filename_to_frame_index = {k[0]: k[1] for k in filename_to_frame_map}
+        filename_to_frame_index = {k[0]: int(k[1]) for k in filename_to_frame_map}
 
     """read gt and det"""
     for seq_idx, (_gt_path, gt_seq_name) in enumerate(zip(gt_path_list, gt_seq_names, strict=True)):
@@ -1194,10 +1194,10 @@ def evaluate(
                     xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
                     filename_ = seq_name + '/' +  os.path.splitext(os.path.basename(det_bbox['filename']))[0]
                     class_name = det_bbox['class']
-                    confidence_ = det_bbox['confidence']
+                    confidence_ = float(det_bbox['confidence'])
 
-                    frame_index = filename_to_frame_index[filename_]
-                    class_index = class_name_to_id[class_name]
+                    frame_index = int(filename_to_frame_index[filename_])
+                    class_index = int(class_name_to_id[class_name])
 
                     obj_str = (f'{frame_index:d} {class_index:d} {confidence_:.4f} '
                                f'{xmin_:.2f} {ymin_:.2f} {xmax_:.2f} {ymax_:.2f}')
