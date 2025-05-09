@@ -898,7 +898,7 @@ def evaluate(
                     try:
                         video_ids = seq_to_video_ids[seq_name]
                     except KeyError:
-                        """possibly annoying imagenet-vid like dataset with multi-part sequence names"""
+                        """possibly some annoying imagenet-vid like dataset with multi-part sequence names"""
                         seq_to_video_ids.update({
                             os.path.basename(k__): v__ for k__,v__ in seq_to_video_ids.items()
                         })
