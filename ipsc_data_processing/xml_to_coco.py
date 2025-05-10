@@ -201,6 +201,7 @@ def get_coco_annotation_from_obj(obj, label2id, enable_mask):
 
 def save_boxes_coco(
         params: Params,
+        db_root_dir,
         xml_paths,
         output_json_dict,
         class_dict,
@@ -276,7 +277,11 @@ def save_boxes_coco(
             assert params.img_ext not in filename, f"filename already has img_ext: {filename}"
             filename = f'{filename}.{params.img_ext}'
 
-        rel_path = linux_path(seq_name, filename)
+        # img_file_rel_path = linux_path(seq_name, filename)
+
+        img_path = linux_path(seq_path, filename)
+        img_file_rel_path = linux_path(os.path.relpath(img_path, db_root_dir))
+        img_file_name = filename
 
         # rel_path = annotation_root.findtext('path')
         # if rel_path is None:
@@ -295,18 +300,15 @@ def save_boxes_coco(
             img_id = int(re.findall(r'\d+', img_id)[0])
 
         size = ann_root.find('size')
-        width = int(size.findtext('width'))
-        height = int(size.findtext('height'))
+        xml_width = int(size.findtext('width'))
+        xml_height = int(size.findtext('height'))
 
         img_info = {
-            'file_name': rel_path,
-            'height': height,
-            'width': width,
+            'file_name': img_file_rel_path,
+            'height': xml_height,
+            'width': xml_width,
             'id': seq_name + '/' + img_id
         }
-
-        img_file_rel_path = img_info['file_name']
-        img_file_name = os.path.basename(img_file_rel_path)
 
         if params.remove_mj_dir_suffix:
             img_file_rel_path_list = img_file_rel_path.split('/')
@@ -355,7 +357,7 @@ def save_boxes_coco(
                 img = cv2.imread(img_file_path)
                 h, w = img.shape[:2]
 
-                assert img_info['height'] == h and img_info['width'] == w, "incorrect image dimensions in XML"
+                assert xml_height == h and xml_width == w, "incorrect image dimensions in XML"
 
                 img_reshaped = np.reshape(img, (h * w, 3))
 
@@ -384,6 +386,10 @@ def save_boxes_coco(
         for obj_id, obj in enumerate(objs):
             label = obj.findtext('name')
 
+            if params.allow_ignored_class and label == 'ignored':
+                """special class to mark ignored regions in the image that have not been annotated"""
+                continue
+
             try:
                 label = class_map_dict[label]
             except KeyError as e:
@@ -391,10 +397,6 @@ def save_boxes_coco(
                     print(f'{xml_path}: ignoring obj with invalid label: {label}')
                     continue
                 raise AssertionError(e)
-
-            if params.allow_ignored_class and label == 'ignored':
-                """special class to mark ignored regions in the image that have not been annotated"""
-                continue
 
             if label not in class_dict:
                 msg = f"label {label} is not in label2id"
@@ -647,6 +649,12 @@ def main():
         else:
             output_json_dir = os.path.dirname(seq_paths[0])
 
+    """folder containing all sequence folders"""
+    if root_dir:
+        db_root_dir = root_dir
+    else:
+        db_root_dir = os.path.dirname(seq_paths[0])
+
     description = output_json_fname_noext
 
     output_json_dict = {
@@ -882,6 +890,7 @@ def main():
 
         save_boxes_coco(
             params=params,
+            db_root_dir=db_root_dir,
             xml_paths=val_xml,
             output_json_dict=output_json_dict,
             class_dict=class_dict,
@@ -907,6 +916,7 @@ def main():
 
         save_boxes_coco(
             params=params,
+            db_root_dir=db_root_dir,
             xml_paths=train_xml,
             output_json_dict=output_json_dict,
             class_dict=class_dict,

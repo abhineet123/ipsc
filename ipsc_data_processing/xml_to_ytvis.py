@@ -281,6 +281,10 @@ def read_xml_file(params: Params,
 
         label = obj.findtext('name')
 
+        if params.allow_ignored_class and label == 'ignored':
+            """special class to mark ignored regions in the image that have not been annotated"""
+            continue
+
         try:
             label = class_map_dict[label]
         except KeyError as e:
@@ -288,10 +292,6 @@ def read_xml_file(params: Params,
                 print(f'{xml_path}: ignoring obj with invalid label: {label}')
                 continue
             raise AssertionError(e)
-
-        if params.allow_ignored_class and label == 'ignored':
-            """special class to mark ignored regions in the image that have not been annotated"""
-            continue
 
         try:
             label_id = class_dict[label]
