@@ -64,6 +64,8 @@ class Params(paramparse.CFG):
         self.mask_dir_name = 'masks'
 
         self.root_dir = ''
+        self.xml_root_dir = ''
+
         self.seq_paths = ''
         self.seq_paths_suffix = ''
         self.show_img = 0
@@ -144,7 +146,6 @@ def save_ytvis_json(json_dict, json_path, json_gz=True):
 
 
 def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
-
     return image_info
 
 
@@ -483,6 +484,8 @@ def main():
 
     seq_paths = params.seq_paths
     root_dir = params.root_dir
+    xml_root_dir = params.xml_root_dir
+
     enable_mask = params.enable_masks
     val_ratio = params.val_ratio
     min_val = params.min_val
@@ -583,7 +586,9 @@ def main():
         output_json = add_suffix(output_json, load_samples_suffix, sep='-')
 
     if load_samples:
-        seq_paths, seq_to_samples = load_samples_from_txt(load_samples, xml_dir_name, load_samples_root)
+        seq_paths, seq_to_samples = load_samples_from_txt(
+            load_samples, xml_dir_name, load_samples_root,
+            xml_root_dir=xml_root_dir, root_dir=root_dir)
     else:
         seq_to_samples = None
 
@@ -762,7 +767,12 @@ def main():
             save_ytvis_json(ytvis_json_dict, ytvis_json_path)
             return
 
-    xml_paths = [linux_path(seq_path, xml_dir_name) for seq_path in seq_paths]
+    if xml_root_dir:
+        assert root_dir, "root_dir must be provided with xml_root_dir"
+        xml_paths = [seq_path.replace(root_dir, xml_root_dir) for seq_path in seq_paths]
+    else:
+        xml_paths = [linux_path(seq_path, xml_dir_name) for seq_path in seq_paths]
+
     seq_names = [os.path.basename(seq_path) for seq_path in seq_paths]
     # samples = [seq_to_samples[seq_path] for seq_path in seq_paths]
 
@@ -775,8 +785,7 @@ def main():
         inv_val = 1
         val_ratio = - val_ratio
 
-    for xml_path, seq_name in zip(xml_paths, seq_names):
-        seq_path = os.path.dirname(xml_path)
+    for xml_path, seq_path, seq_name in zip(xml_paths, seq_paths, seq_names, strict=True):
 
         if seq_to_samples is not None:
             xml_files = seq_to_samples[seq_path]
