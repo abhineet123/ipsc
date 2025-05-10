@@ -1,7 +1,7 @@
 import os
 import glob
 import random
-import ast
+import sys
 import re
 
 import numpy as np
@@ -19,6 +19,10 @@ import paramparse
 
 from eval_utils import sortKey, col_bgr, linux_path, add_suffix, load_samples_from_txt
 
+sys.path.append(linux_path(os.path.expanduser('~'), 'pix2seq'))
+
+from tasks import task_utils
+
 
 class Params(paramparse.CFG):
     def __init__(self):
@@ -26,12 +30,19 @@ class Params(paramparse.CFG):
 
         self.batch_size = 1
         self.excluded_images_list = ''
+
         self.class_names_path = ''
+        self.map_classes = 0
+        self.auto_class_cols = 0
+
         self.codec = 'H264'
         self.csv_file_name = ''
         self.extract_num_from_imgid = 0
         self.fps = 20
+
         self.img_ext = 'png'
+        self.add_ext_to_image = 'png'
+
         self.load_path = ''
 
         self.samples_per_seq = 0.0
@@ -63,10 +74,10 @@ class Params(paramparse.CFG):
         self.write_empty = 0
         self.allow_missing_images = 0
         self.remove_mj_dir_suffix = 0
-        self.get_img_stats = 1
+        self.get_img_stats = 0
         self.ignore_invalid_label = 0
         self.allow_ignored_class = 0
-        self.skip_invalid = 1
+        self.skip_invalid = 0
 
         self.start_frame_id = 0
         self.end_frame_id = -1
@@ -133,35 +144,7 @@ def save_ytvis_json(json_dict, json_path, json_gz=True):
 
 
 def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
-    filename = annotation_root.findtext('filename')
-    rel_path = linux_path(seq_name, filename)
 
-    # rel_path = annotation_root.findtext('path')
-    # if rel_path is None:
-    #     filename = annotation_root.findtext('filename')
-    #     rel_path = linux_path(seq_name, filename)
-    # else:
-    #     filename = os.path.basename(rel_path)
-
-    # folder = annotation_root.findtext('folder')
-    # path = linux_path(folder, rel_path)
-
-    img_name = os.path.basename(filename)
-
-    img_id = os.path.splitext(img_name)[0]
-    if extract_num_from_imgid and isinstance(img_id, str):
-        img_id = int(re.findall(r'\d+', img_id)[0])
-
-    size = annotation_root.find('size')
-    width = int(size.findtext('width'))
-    height = int(size.findtext('height'))
-
-    image_info = {
-        'file_name': rel_path,
-        'height': height,
-        'width': width,
-        'id': seq_name + '/' + img_id
-    }
     return image_info
 
 
@@ -216,26 +199,17 @@ def get_coco_annotation_from_obj(obj, label2id, enable_mask):
 
 
 def save_boxes_coco(
-        annotation_paths,
+        params: Params,
+        xml_paths,
         output_json_dict,
-        label2id,
+        class_dict,
         output_json,
         extract_num_from_imgid,
         enable_mask,
-        allow_missing_images,
-        skip_invalid,
-        ignore_invalid_label,
-        allow_ignored_class,
-        remove_mj_dir_suffix,
-        get_img_stats,
-        save_masks,
         list_path,
-        mask_dir_name,
         palette_flat,
-        only_list,
         excluded_images,
-        xml_zip,
-        json_gz,
+        class_map_dict,
 ):
     bnd_id = 1  # START_BOUNDING_BOX_ID, TODO input as args ?
 
@@ -244,7 +218,7 @@ def save_boxes_coco(
     img_id_to_info = {img_info['id']: img_info for img_info in output_json_dict['images']}
 
     img_path_to_stats = {}
-    if get_img_stats:
+    if params.get_img_stats:
         stats_file_path = linux_path(out_root_dir, 'img_stats.txt')
         if os.path.exists(stats_file_path):
             print(f'reading img_stats from {stats_file_path}')
@@ -268,12 +242,12 @@ def save_boxes_coco(
     n_objs = 0
 
     label_to_n_objs = {
-        label: 0 for label in label2id
+        label: 0 for label in class_dict
     }
 
     img_paths = []
 
-    pbar = tqdm(annotation_paths)
+    pbar = tqdm(xml_paths)
 
     for seq_id, (xml_path, seq_path) in enumerate(pbar):
         seq_name = os.path.basename(seq_path)
@@ -282,7 +256,7 @@ def save_boxes_coco(
 
         # Read annotation xml
         import xml.etree.ElementTree as ET
-        if xml_zip:
+        if params.xml_zip:
             xml_name = os.path.basename(xml_path)
             xml_dir_path = os.path.dirname(xml_path)
             xml_zip_path = xml_dir_path + ".zip"
@@ -296,15 +270,44 @@ def save_boxes_coco(
 
         ann_root = ann_tree.getroot()
 
-        img_info = get_image_info(
-            seq_name=seq_name,
-            annotation_root=ann_root,
-            extract_num_from_imgid=extract_num_from_imgid)
+        filename = ann_root.findtext('filename')
+        if params.add_ext_to_image:
+            assert params.img_ext not in filename, f"filename already has img_ext: {filename}"
+            filename = f'{filename}.{params.img_ext}'
+
+        rel_path = linux_path(seq_name, filename)
+
+        # rel_path = annotation_root.findtext('path')
+        # if rel_path is None:
+        #     filename = annotation_root.findtext('filename')
+        #     rel_path = linux_path(seq_name, filename)
+        # else:
+        #     filename = os.path.basename(rel_path)
+
+        # folder = annotation_root.findtext('folder')
+        # path = linux_path(folder, rel_path)
+
+        img_name = os.path.basename(filename)
+
+        img_id = os.path.splitext(img_name)[0]
+        if extract_num_from_imgid and isinstance(img_id, str):
+            img_id = int(re.findall(r'\d+', img_id)[0])
+
+        size = ann_root.find('size')
+        width = int(size.findtext('width'))
+        height = int(size.findtext('height'))
+
+        img_info = {
+            'file_name': rel_path,
+            'height': height,
+            'width': width,
+            'id': seq_name + '/' + img_id
+        }
 
         img_file_rel_path = img_info['file_name']
         img_file_name = os.path.basename(img_file_rel_path)
 
-        if remove_mj_dir_suffix:
+        if params.remove_mj_dir_suffix:
             img_file_rel_path_list = img_file_rel_path.split('/')
             img_file_rel_path = linux_path(img_file_rel_path_list[0], img_file_rel_path_list[1], img_file_name)
 
@@ -321,7 +324,7 @@ def save_boxes_coco(
             print(f'out_root_dir: {out_root_dir}')
 
             msg = f"img_file_path does not exist: {img_file_path}"
-            if allow_missing_images:
+            if params.allow_missing_images:
                 print('\n' + msg + '\n')
                 continue
             else:
@@ -329,14 +332,14 @@ def save_boxes_coco(
 
         img_paths.append(img_file_path)
 
-        if only_list:
+        if params.only_list:
             continue
 
         img_fname_noext = os.path.splitext(img_file_name)[0]
         img_dir_path = os.path.dirname(img_file_path)
 
-        if save_masks:
-            mask_dir_path = linux_path(img_dir_path, mask_dir_name)
+        if params.save_masks:
+            mask_dir_path = linux_path(img_dir_path, params.mask_dir_name)
             os.makedirs(mask_dir_path, exist_ok=True)
 
             # print(f'{seq_name}: mask_dir_path: {mask_dir_path}')
@@ -344,7 +347,7 @@ def save_boxes_coco(
             width, height = imagesize.get(str(img_file_path))
             mask_img = np.zeros((height, width), dtype=np.uint8)
 
-        if get_img_stats:
+        if params.get_img_stats:
             try:
                 img_stat = img_path_to_stats[img_file_path]
             except KeyError:
@@ -380,23 +383,31 @@ def save_boxes_coco(
         for obj_id, obj in enumerate(objs):
             label = obj.findtext('name')
 
-            if allow_ignored_class and label == 'ignored':
+            try:
+                label = class_map_dict[label]
+            except KeyError as e:
+                if params.ignore_invalid_label:
+                    print(f'{xml_path}: ignoring obj with invalid label: {label}')
+                    continue
+                raise AssertionError(e)
+
+            if params.allow_ignored_class and label == 'ignored':
                 """special class to mark ignored regions in the image that have not been annotated"""
                 continue
 
-            if label not in label2id:
+            if label not in class_dict:
                 msg = f"label {label} is not in label2id"
-                if ignore_invalid_label:
+                if params.ignore_invalid_label:
                     print(msg)
                     continue
                 else:
                     raise AssertionError(msg)
 
             ann = get_coco_annotation_from_obj(
-                obj=obj, label2id=label2id, enable_mask=enable_mask,
+                obj=obj, label2id=class_dict, enable_mask=enable_mask,
             )
             if ann is None:
-                if skip_invalid:
+                if params.skip_invalid:
                     print(f'\nskipping object {obj_id + 1} in {xml_path}')
                     continue
                 raise AssertionError(f'\ninvalid object {obj_id + 1} in {xml_path}')
@@ -414,11 +425,11 @@ def save_boxes_coco(
 
             bnd_id += 1
 
-            if save_masks:
+            if params.save_masks:
                 # category_id = ann['category_id']
                 # class_id = category_id + 1
                 category_name = ann['label']
-                class_id = label2id[category_name]
+                class_id = class_dict[category_name]
                 mask_pts = ann['mask_pts']
                 mask_pts_arr = np.array([mask_pts, ], dtype=np.int32)
                 mask_img = cv2.fillPoly(mask_img, mask_pts_arr, class_id)
@@ -428,10 +439,10 @@ def save_boxes_coco(
 
         n_valid_images += 1
         desc = f'{seq_name} {n_valid_images} / {n_images} valid images :: {n_objs} objects '
-        for label in label2id:
+        for label in class_dict:
             desc += f' {label}: {label_to_n_objs[label]}'
 
-        if save_masks:
+        if params.save_masks:
             mask_img_pil = Image.fromarray(mask_img)
             mask_img_pil = mask_img_pil.convert('P')
             mask_img_pil.putpalette(palette_flat)
@@ -448,20 +459,20 @@ def save_boxes_coco(
     with open(list_path, 'w') as fid:
         fid.write('\n'.join(img_paths))
 
-    if only_list:
+    if params.only_list:
         return
 
-    for label, label_id in label2id.items():
+    for label, label_id in class_dict.items():
         category_info = {'supercategory': 'none', 'id': label_id, 'name': label}
         output_json_dict['categories'].append(category_info)
 
-    if get_img_stats:
+    if params.get_img_stats:
         pix_vals_mean = list(np.mean(all_pix_vals_mean, axis=0))
         pix_vals_std = list(np.mean(all_pix_vals_std, axis=0))  #
         print(f'pix_vals_mean: {pix_vals_mean}')
         print(f'pix_vals_std: {pix_vals_std}')
 
-    save_json(output_json_dict, output_json, json_gz)
+    save_json(output_json_dict, output_json, params.json_gz)
 
 
 def main():
@@ -488,13 +499,46 @@ def main():
             load_samples = []
 
     class_names_path = params.class_names_path
+    map_classes = params.map_classes
+    auto_class_cols = params.auto_class_cols
 
     assert class_names_path, "class_names_path must be provided"
 
-    class_info = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
-    class_names, class_cols = zip(*[k.split('\t') for k in class_info])
+    class_names = [k.strip() for k in open(class_names_path, 'r').readlines() if k.strip()]
 
-    n_classes = len(class_cols)
+    if map_classes:
+        if auto_class_cols:
+            class_names, mapped_class_names = zip(*[k.split('\t') for k in class_names])
+        else:
+            class_names, mapped_class_names, class_cols = zip(*[k.split('\t') for k in class_names])
+
+        class_map_dict = {class_name: mapped_class_name for (class_name, mapped_class_name) in
+                          zip(class_names, mapped_class_names, strict=True)}
+    elif not auto_class_cols:
+        class_names, class_cols = zip(*[k.split('\t') for k in class_names])
+
+    n_classes = len(class_names)
+
+    if auto_class_cols:
+        class_cols = []
+        class_cols_rgb = task_utils.get_cols_rgb(n_classes)
+        for class_col_rgb in class_cols_rgb:
+            r, g, b = class_col_rgb
+            col_name = f'{b}_{g}_{r}'
+            col_bgr[col_name] = (b, g, r)
+            class_cols.append(col_name)
+
+    if not map_classes:
+        class_map_dict = {class_name: class_name for class_name in class_names}
+
+    """class id 0 is for background"""
+    class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
+    if map_classes:
+        """assign same class IDs to the mapped class names as the corresponding original class names
+        and remove the original class names"""
+        for (class_name, mapped_class_name) in class_map_dict.items():
+            class_dict[mapped_class_name] = class_dict.pop(class_name)
+
     """background is class ID 0 with color black"""
     palette = [[0, 0, 0], ]
     for class_id in range(n_classes):
@@ -828,25 +872,17 @@ def main():
             print(f'\nsaving JSON annotations for {n_val_xml} validation files to: {val_json_path}\n')
 
         save_boxes_coco(
-            val_xml,
-            output_json_dict,
-            class_dict,
-            val_json_path,
-            extract_num_from_imgid, enable_mask,
+            params=params,
+            xml_paths=val_xml,
+            output_json_dict=output_json_dict,
+            class_dict=class_dict,
+            output_json=val_json_path,
+            extract_num_from_imgid=extract_num_from_imgid,
+            enable_mask=enable_mask,
             excluded_images=all_excluded_images,
-            skip_invalid=params.skip_invalid,
-            ignore_invalid_label=params.ignore_invalid_label,
-            allow_ignored_class=params.allow_ignored_class,
-            allow_missing_images=params.allow_missing_images,
-            remove_mj_dir_suffix=params.remove_mj_dir_suffix,
-            get_img_stats=params.get_img_stats,
-            save_masks=params.save_masks,
             list_path=val_list_path,
-            mask_dir_name=params.mask_dir_name,
-            only_list=params.only_list,
             palette_flat=palette_flat,
-            xml_zip=params.xml_zip,
-            json_gz=params.json_gz,
+            class_map_dict=class_map_dict,
         )
 
     n_train_xml = len(train_xml)
@@ -861,26 +897,17 @@ def main():
             print(f'\nsaving JSON annotations for {n_train_xml} train files to: {train_json_path}\n')
 
         save_boxes_coco(
-            train_xml,
-            output_json_dict,
-            class_dict,
-            train_json_path,
-            extract_num_from_imgid,
-            enable_mask,
+            params=params,
+            xml_paths=train_xml,
+            output_json_dict=output_json_dict,
+            class_dict=class_dict,
+            output_json=train_json_path,
+            extract_num_from_imgid=extract_num_from_imgid,
+            enable_mask=enable_mask,
             excluded_images=all_excluded_images,
-            allow_missing_images=params.allow_missing_images,
-            skip_invalid=params.skip_invalid,
-            ignore_invalid_label=params.ignore_invalid_label,
-            allow_ignored_class=params.allow_ignored_class,
-            remove_mj_dir_suffix=params.remove_mj_dir_suffix,
-            get_img_stats=params.get_img_stats,
             list_path=train_list_path,
-            save_masks=params.save_masks,
-            mask_dir_name=params.mask_dir_name,
-            only_list=params.only_list,
             palette_flat=palette_flat,
-            xml_zip=params.xml_zip,
-            json_gz=params.json_gz,
+            class_map_dict=class_map_dict,
         )
 
 

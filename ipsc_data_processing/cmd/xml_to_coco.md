@@ -1,12 +1,12 @@
 <!-- MarkdownTOC -->
 
-- [detrac-non_empty](#detrac_non_empt_y_)
-    - [0_19       @ detrac-non_empty](#0_19___detrac_non_empty_)
-    - [0_9       @ detrac-non_empty](#0_9___detrac_non_empty_)
-    - [0_48       @ detrac-non_empty](#0_48___detrac_non_empty_)
-    - [49_68       @ detrac-non_empty](#49_68___detrac_non_empty_)
-    - [49_85       @ detrac-non_empty](#49_85___detrac_non_empty_)
-        - [100_per_seq_random       @ 49_85/detrac-non_empty](#100_per_seq_random___49_85_detrac_non_empty_)
+- [imagenet_vid](#imagenet_vi_d_)
+    - [train       @ imagenet_vid](#train___imagenet_vid_)
+        - [len-2       @ train/imagenet_vid](#len_2___train_imagenet_vid_)
+            - [4_per_seq_random_len_2       @ len-2/train/imagenet_vid](#4_per_seq_random_len_2___len_2_train_imagenet_vid_)
+    - [val       @ imagenet_vid](#val___imagenet_vid_)
+        - [len-2       @ val/imagenet_vid](#len_2___val_imagenet_vid_)
+            - [8_per_seq_random_len_2       @ len-2/val/imagenet_vid](#8_per_seq_random_len_2___len_2_val_imagenet_vid_)
 - [detrac](#detra_c_)
     - [0_59       @ detrac](#0_59___detrac_)
         - [100_per_seq_random       @ 0_59/detrac](#100_per_seq_random___0_59_detra_c_)
@@ -14,6 +14,13 @@
     - [60_99       @ detrac](#60_99___detrac_)
         - [100_per_seq_random       @ 60_99/detrac](#100_per_seq_random___60_99_detrac_)
         - [40_per_seq_random       @ 60_99/detrac](#40_per_seq_random___60_99_detrac_)
+- [detrac-non_empty](#detrac_non_empt_y_)
+    - [0_19       @ detrac-non_empty](#0_19___detrac_non_empty_)
+    - [0_9       @ detrac-non_empty](#0_9___detrac_non_empty_)
+    - [0_48       @ detrac-non_empty](#0_48___detrac_non_empty_)
+    - [49_68       @ detrac-non_empty](#49_68___detrac_non_empty_)
+    - [49_85       @ detrac-non_empty](#49_85___detrac_non_empty_)
+        - [100_per_seq_random       @ 49_85/detrac-non_empty](#100_per_seq_random___49_85_detrac_non_empty_)
 - [ipsc       @ xml_to_coco](#ipsc___xml_to_coc_o_)
     - [all_frames_roi       @ ipsc](#all_frames_roi___ipsc_)
         - [g2_0_37       @ all_frames_roi/ipsc](#g2_0_37___all_frames_roi_ips_c_)
@@ -100,6 +107,50 @@
 
 <!-- /MarkdownTOC -->
 
+<a id="imagenet_vi_d_"></a>
+# imagenet_vid
+<a id="train___imagenet_vid_"></a>
+## train       @ imagenet_vid-->xml_to_coco
+<a id="len_2___train_imagenet_vid_"></a>
+### len-2       @ train/imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:zip-0
+<a id="4_per_seq_random_len_2___len_2_train_imagenet_vid_"></a>
+#### 4_per_seq_random_len_2       @ len-2/train/imagenet_vid-->xml_to_coco
+python xml_to_ytvis.py cfg=imagenet_vid:4_per_seq_random_len_2:proc-1:len-2:strd-2:gap-1:zip-0
+
+<a id="val___imagenet_vid_"></a>
+## val       @ imagenet_vid-->xml_to_coco
+<a id="len_2___val_imagenet_vid_"></a>
+### len-2       @ val/imagenet_vid-->xml_to_coco
+python xml_to_ytvis.py cfg=imagenet_vid:val:proc-1:len-2:strd-1:gap-1:zip-0
+python xml_to_ytvis.py cfg=imagenet_vid:val:proc-1:len-2:strd-2:gap-1:zip-0
+<a id="8_per_seq_random_len_2___len_2_val_imagenet_vid_"></a>
+#### 8_per_seq_random_len_2       @ len-2/val/imagenet_vid-->xml_to_coco
+python xml_to_ytvis.py cfg=imagenet_vid:val:8_per_seq_random_len_2:proc-1:len-2:strd-2:gap-1:zip-0
+
+<a id="detra_c_"></a>
+# detrac
+<a id="0_59___detrac_"></a>
+## 0_59       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:0_59:zip:ign
+<a id="100_per_seq_random___0_59_detra_c_"></a>
+### 100_per_seq_random       @ 0_59/detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:0_59:100_per_seq_random:zip:ign
+<a id="40_per_seq_random___0_59_detra_c_"></a>
+### 40_per_seq_random       @ 0_59/detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:0_59:40_per_seq_random:zip:ign
+
+<a id="60_99___detrac_"></a>
+## 60_99       @ detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:60_99:zip:ign
+<a id="100_per_seq_random___60_99_detrac_"></a>
+### 100_per_seq_random       @ 60_99/detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:60_99:100_per_seq_random:zip:ign
+<a id="40_per_seq_random___60_99_detrac_"></a>
+### 40_per_seq_random       @ 60_99/detrac-->xml_to_coco
+python xml_to_coco.py cfg=detrac:60_99:40_per_seq_random:zip:ign
+
+
 <a id="detrac_non_empt_y_"></a>
 # detrac-non_empty
 <a id="0_19___detrac_non_empty_"></a>
@@ -123,27 +174,6 @@ python xml_to_coco.py cfg=detrac:non_empty:49_85:zip
 ### 100_per_seq_random       @ 49_85/detrac-non_empty-->xml_to_coco
 python xml_to_coco.py cfg=detrac:non_empty:49_85:100_per_seq_random:zip
 
-<a id="detra_c_"></a>
-# detrac
-<a id="0_59___detrac_"></a>
-## 0_59       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:0_59:zip:ign
-<a id="100_per_seq_random___0_59_detra_c_"></a>
-### 100_per_seq_random       @ 0_59/detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:0_59:100_per_seq_random:zip:ign
-<a id="40_per_seq_random___0_59_detra_c_"></a>
-### 40_per_seq_random       @ 0_59/detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:0_59:40_per_seq_random:zip:ign
-
-<a id="60_99___detrac_"></a>
-## 60_99       @ detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:60_99:zip:ign
-<a id="100_per_seq_random___60_99_detrac_"></a>
-### 100_per_seq_random       @ 60_99/detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:60_99:100_per_seq_random:zip:ign
-<a id="40_per_seq_random___60_99_detrac_"></a>
-### 40_per_seq_random       @ 60_99/detrac-->xml_to_coco
-python xml_to_coco.py cfg=detrac:60_99:40_per_seq_random:zip:ign
 
 <a id="ipsc___xml_to_coc_o_"></a>
 # ipsc       @ xml_to_coco-->coco

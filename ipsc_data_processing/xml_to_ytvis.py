@@ -1057,7 +1057,7 @@ def run(params: Params):
 
         palette.append(col_rgb)
 
-    palette_flat = [value for color in palette for value in color]
+    # palette_flat = [value for color in palette for value in color]
 
     xml_dir_name = params.xml_dir_name
     if params.dir_suffix:
