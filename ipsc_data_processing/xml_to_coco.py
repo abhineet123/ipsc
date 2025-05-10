@@ -59,7 +59,7 @@ class Params(paramparse.CFG):
         self.dir_suffix = ''
         self.output_json = []
 
-        self.enable_masks = 2
+        self.enable_masks = 0
         self.save_masks = 0
         self.mask_dir_name = 'masks'
 
@@ -145,60 +145,6 @@ def save_ytvis_json(json_dict, json_path, json_gz=True):
             f.write(output_json_data)
 
 
-def get_image_info(seq_name, annotation_root, extract_num_from_imgid=0):
-    return image_info
-
-
-def get_coco_annotation_from_obj(obj, label2id, enable_mask):
-    label = obj.findtext('name')
-    category_id = label2id[label]
-    bndbox = obj.find('bndbox')
-    xmin = int(float(bndbox.findtext('xmin'))) - 1
-    ymin = int(float(bndbox.findtext('ymin'))) - 1
-    xmax = int(float(bndbox.findtext('xmax')))
-    ymax = int(float(bndbox.findtext('ymax')))
-    assert xmax > xmin and ymax > ymin, f"Box size error !: (xmin, ymin, xmax, ymax): {xmin, ymin, xmax, ymax}"
-    o_width = xmax - xmin
-    o_height = ymax - ymin
-    ann = {
-        'area': o_width * o_height,
-        'iscrowd': 0,
-        'bbox': [xmin, ymin, o_width, o_height],
-        'label': label,
-        'category_id': category_id,
-        'ignore': 0,
-    }
-    if enable_mask:
-        mask_obj = obj.find('mask')
-        if mask_obj is None:
-            msg = 'no mask found for object:\n{}'.format(ann)
-            if enable_mask == 2:
-                # print(msg)
-                """ignore mask-less objects"""
-                return None
-            else:
-                raise AssertionError(msg)
-        mask = mask_obj.text
-
-        mask = [k.strip().split(',') for k in mask.strip().split(';') if k]
-        # pprint(mask)
-        mask_pts = []
-        mask_pts_flat = []
-        for _pt in mask:
-            _pt_float = [float(_pt[0]), float(_pt[1])]
-            mask_pts_flat.append(_pt_float[0])
-            mask_pts_flat.append(_pt_float[1])
-
-            mask_pts.append(_pt_float)
-
-        ann.update({
-            'segmentation': [mask_pts_flat, ],
-            'mask_pts': mask_pts
-        }
-        )
-    return ann
-
-
 def save_boxes_coco(
         params: Params,
         db_root_dir,
@@ -249,7 +195,7 @@ def save_boxes_coco(
 
     img_paths = []
 
-    pbar = tqdm(xml_paths)
+    pbar = tqdm(xml_paths, position=0, leave=True)
 
     for seq_id, (xml_path, seq_path) in enumerate(pbar):
         seq_name = os.path.basename(seq_path)
@@ -399,21 +345,65 @@ def save_boxes_coco(
                 raise AssertionError(e)
 
             if label not in class_dict:
-                msg = f"label {label} is not in label2id"
+                msg = f"label {label} is not in class_dict"
                 if params.ignore_invalid_label:
                     print(msg)
                     continue
                 else:
                     raise AssertionError(msg)
 
-            ann = get_coco_annotation_from_obj(
-                obj=obj, label2id=class_dict, enable_mask=enable_mask,
-            )
-            if ann is None:
-                if params.skip_invalid:
-                    print(f'\nskipping object {obj_id + 1} in {xml_path}')
-                    continue
-                raise AssertionError(f'\ninvalid object {obj_id + 1} in {xml_path}')
+            category_id = class_dict[label]
+            bndbox = obj.find('bndbox')
+            xmin = int(float(bndbox.findtext('xmin'))) - 1
+            ymin = int(float(bndbox.findtext('ymin'))) - 1
+            xmax = int(float(bndbox.findtext('xmax')))
+            ymax = int(float(bndbox.findtext('ymax')))
+
+            assert xmax > xmin and ymax > ymin, f"Box size error: ({xmin, ymin, xmax, ymax})"
+
+            o_width = xmax - xmin
+            o_height = ymax - ymin
+            ann = {
+                'area': o_width * o_height,
+                'iscrowd': 0,
+                'bbox': [xmin, ymin, o_width, o_height],
+                'label': label,
+                'category_id': category_id,
+                'ignore': 0,
+            }
+            if enable_mask:
+                mask_obj = obj.find('mask')
+                if mask_obj is None:
+                    msg = 'no mask found for object:\n{}'.format(ann)
+                    if enable_mask == 2 and params.skip_invalid:
+                        # print(msg)
+                        """ignore mask-less objects"""
+                        continue
+                    else:
+                        raise AssertionError(msg)
+                mask = mask_obj.text
+
+                mask = [k.strip().split(',') for k in mask.strip().split(';') if k]
+                # pprint(mask)
+                mask_pts = []
+                mask_pts_flat = []
+                for _pt in mask:
+                    _pt_float = [float(_pt[0]), float(_pt[1])]
+                    mask_pts_flat.append(_pt_float[0])
+                    mask_pts_flat.append(_pt_float[1])
+
+                    mask_pts.append(_pt_float)
+
+                ann.update({
+                    'segmentation': [mask_pts_flat, ],
+                    'mask_pts': mask_pts
+                })
+
+            # if ann is None:
+            #     if params.skip_invalid:
+            #         print(f'\nskipping object {obj_id + 1} in {xml_path}')
+            #         continue
+            #     raise AssertionError(f'\ninvalid object {obj_id + 1} in {xml_path}')
 
             ann.update(
                 {
@@ -442,8 +432,10 @@ def save_boxes_coco(
 
         n_valid_images += 1
         desc = f'{seq_name} {n_valid_images} / {n_images} valid images :: {n_objs} objects '
-        for label in class_dict:
-            desc += f' {label}: {label_to_n_objs[label]}'
+
+        if len(class_dict) <= 2:
+            for label in class_dict:
+                desc += f' {label}: {label_to_n_objs[label]}'
 
         if params.save_masks:
             mask_img_pil = Image.fromarray(mask_img)
@@ -554,8 +546,6 @@ def main():
         palette.append(col_rgb)
 
     palette_flat = [value for color in palette for value in color]
-
-    class_dict = {x.strip(): i + 1 for (i, x) in enumerate(class_names)}
 
     output_json = params.output_json
     output_json = '_'.join(output_json)
@@ -729,7 +719,7 @@ def main():
 
             print(f'\n sequence {seq_id + 1} / {n_seq}: {seq_name}\n')
 
-            for img_file_id, img_file in enumerate(tqdm(img_files)):
+            for img_file_id, img_file in enumerate(tqdm(img_files, position=0, leave=True)):
                 # img = cv2.imread(img_file)
                 width, height = imagesize.get(img_file)
                 filename = os.path.basename(img_file)
@@ -793,7 +783,8 @@ def main():
         inv_val = 1
         val_ratio = - val_ratio
 
-    for xml_path, seq_path, seq_name in zip(xml_paths, seq_paths, seq_names, strict=True):
+    pbar = tqdm(zip(xml_paths, seq_paths, seq_names, strict=True), position=0, leave=True, total=len(xml_paths))
+    for xml_path, seq_path, seq_name in pbar:
 
         if seq_to_samples is not None:
             xml_files = seq_to_samples[seq_path]
@@ -861,7 +852,7 @@ def main():
 
         n_train_files = n_files - n_val_files
 
-        print(f'{seq_name} :: n_train, n_val: {[n_train_files, n_val_files]} ')
+        pbar.set_description(f'{seq_name} :: n_train, n_val: {[n_train_files, n_val_files]}')
 
         if inv_val:
             val_files = tuple(zip(xml_files[:n_val_files], [seq_path, ] * n_val_files))

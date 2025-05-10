@@ -132,7 +132,7 @@ def offset_target_ids(vid_to_target_ids, annotations, set_type):
         target_id_offsets[vid_id] = curr_offset
         curr_offset += len(vid_to_target_ids[vid_id])
 
-    for annotation in tqdm(annotations):
+    for annotation in tqdm(annotations, position=0, leave=True):
         vid_id = annotation['video_id']
         annotation['id'] += target_id_offsets[vid_id]
 
@@ -440,7 +440,7 @@ def save_annotations_ytvis(
     target_ids = []
     pause = 1
 
-    pbar = tqdm(xml_files, ncols=100) if use_tqdm else xml_files
+    pbar = tqdm(xml_files, ncols=100, position=0, leave=True) if use_tqdm else xml_files
     for frame_id, (xml_path, xml_id, seq_path, seq_name) in enumerate(pbar):
 
         xml_data = xml_data_dict[xml_path]
@@ -786,7 +786,7 @@ def get_xml_files(
         else:
             subseq_start_end_ids = [(row["start_id"], row["end_id"]) for _, row in subseq_info.iterrows()]
 
-        pbar = tqdm(subseq_start_end_ids)
+        pbar = tqdm(subseq_start_end_ids, position=0, leave=True)
 
         global_subseq_id = 0
 
@@ -1121,7 +1121,7 @@ def run(params: Params):
 
     if load_samples:
         seq_paths, seq_to_samples = load_samples_from_txt(
-            load_samples, xml_dir_name,  load_samples_root,
+            load_samples, xml_dir_name, load_samples_root,
             xml_root_dir=xml_root_dir, root_dir=root_dir,
         )
     else:
@@ -1234,7 +1234,7 @@ def run(params: Params):
 
     import functools
     print(f'generating video clips from {n_vids} source videos...')
-    for xml_data in tqdm(xml_data_list):
+    for xml_data in tqdm(xml_data_list, position=0, leave=True):
         get_xml_files(
             params,
             excluded_images_list, all_excluded_images,
@@ -1333,10 +1333,11 @@ def run(params: Params):
         if params.n_proc > 1:
             print('running in parallel over {} processes'.format(params.n_proc))
             with multiprocessing.Pool(params.n_proc) as p:
-                xml_out_data = list(tqdm(p.imap(read_xml_func, all_data_xml_paths), total=n_split_vids, ncols=100))
+                xml_out_data = list(tqdm(p.imap(read_xml_func, all_data_xml_paths),
+                                         total=n_split_vids, ncols=100, position=0, leave=True))
         else:
             xml_out_data = []
-            for xml_info in tqdm(all_data_xml_paths, ncols=100):
+            for xml_info in tqdm(all_data_xml_paths, ncols=100, position=0, leave=True):
                 xml_out_data.append(read_xml_func(xml_info))
                 # xml_out_data.append(None)
 
@@ -1418,10 +1419,11 @@ def run(params: Params):
         if params.n_proc > 1:
             print('running in parallel over {} processes'.format(params.n_proc))
             with multiprocessing.Pool(params.n_proc) as p:
-                json_out_data = list(tqdm(p.imap(json_func, vid_info_list), total=n_split_vids, ncols=100))
+                json_out_data = list(tqdm(p.imap(json_func, vid_info_list),
+                                          total=n_split_vids, ncols=100, position=0, leave=True))
         else:
             json_out_data = []
-            for vid_info in tqdm(vid_info_list, ncols=100):
+            for vid_info in tqdm(vid_info_list, ncols=100, position=0, leave=True):
                 json_out_data.append(json_func(vid_info))
 
         videos = []
@@ -1487,7 +1489,7 @@ def run(params: Params):
             if not os.path.exists(stats_file_path) and img_path_to_stats:
                 print(f'writing stats for {len(img_path_to_stats)} images to {stats_file_path}')
                 with open(stats_file_path, 'w') as fid:
-                    for img_path, img_stat in tqdm(img_path_to_stats.items()):
+                    for img_path, img_stat in tqdm(img_path_to_stats.items(), position=0, leave=True):
                         pix_vals_mean, pix_vals_std = img_stat
                         fid.write(f'{img_path}\t{pix_vals_mean}\t{pix_vals_std}\n')
 
