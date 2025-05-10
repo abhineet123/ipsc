@@ -2,11 +2,9 @@
 
 - [imagenet_vid](#imagenet_vi_d_)
     - [train       @ imagenet_vid](#train___imagenet_vid_)
-        - [len-2       @ train/imagenet_vid](#len_2___train_imagenet_vid_)
-            - [4_per_seq_random       @ len-2/train/imagenet_vid](#4_per_seq_random___len_2_train_imagenet_vid_)
-    - [val       @ imagenet_vid](#val___imagenet_vid_)
-        - [len-2       @ val/imagenet_vid](#len_2___val_imagenet_vid_)
-            - [8_per_seq_random       @ len-2/val/imagenet_vid](#8_per_seq_random___len_2_val_imagenet_vid_)
+        - [4_per_seq_random       @ train/imagenet_vid](#4_per_seq_random___train_imagenet_vid_)
+    - [val_       @ imagenet_vid](#val___imagenet_vid_)
+        - [8_per_seq_random       @ val_/imagenet_vid](#8_per_seq_random___val__imagenet_vi_d_)
 - [detrac](#detra_c_)
     - [0_59       @ detrac](#0_59___detrac_)
         - [100_per_seq_random       @ 0_59/detrac](#100_per_seq_random___0_59_detra_c_)
@@ -111,21 +109,17 @@
 # imagenet_vid
 <a id="train___imagenet_vid_"></a>
 ## train       @ imagenet_vid-->xml_to_coco
-<a id="len_2___train_imagenet_vid_"></a>
-### len-2       @ train/imagenet_vid-->xml_to_coco
 python xml_to_coco.py cfg=imagenet_vid
-<a id="4_per_seq_random___len_2_train_imagenet_vid_"></a>
-#### 4_per_seq_random       @ len-2/train/imagenet_vid-->xml_to_coco
+<a id="4_per_seq_random___train_imagenet_vid_"></a>
+### 4_per_seq_random       @ train/imagenet_vid-->xml_to_coco
 python xml_to_coco.py cfg=imagenet_vid:4_per_seq_random
 
 <a id="val___imagenet_vid_"></a>
-## val       @ imagenet_vid-->xml_to_coco
-<a id="len_2___val_imagenet_vid_"></a>
-### len-2       @ val/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:val
-<a id="8_per_seq_random___len_2_val_imagenet_vid_"></a>
-#### 8_per_seq_random       @ len-2/val/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:val:8_per_seq_random
+## val_       @ imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:val_
+<a id="8_per_seq_random___val__imagenet_vi_d_"></a>
+### 8_per_seq_random       @ val_/imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:val_:8_per_seq_random
 
 <a id="detra_c_"></a>
 # detrac
