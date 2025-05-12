@@ -9,12 +9,12 @@
         - [49_85       @ detrac-non_empty-0_48-fbb/resnet-640](#49_85___detrac_non_empty_0_48_fbb_resnet_640_)
             - [ign       @ 49_85/detrac-non_empty-0_48-fbb/resnet-640](#ign___49_85_detrac_non_empty_0_48_fbb_resnet_640_)
         - [49_85       @ detrac-non_empty-0_48-fbb/resnet-640](#49_85___detrac_non_empty_0_48_fbb_resnet_640__1)
-    - [detrac-0_59-fbb       @ resnet-640](#detrac_0_59_fbb___resnet_640_)
-        - [0_59-40_per_seq_random       @ detrac-0_59-fbb/resnet-640](#0_59_40_per_seq_random___detrac_0_59_fbb_resnet_640_)
-        - [60_99-40_per_seq_random       @ detrac-0_59-fbb/resnet-640](#60_99_40_per_seq_random___detrac_0_59_fbb_resnet_640_)
-        - [60_99       @ detrac-0_59-fbb/resnet-640](#60_99___detrac_0_59_fbb_resnet_640_)
-            - [43068       @ 60_99/detrac-0_59-fbb/resnet-640](#43068___60_99_detrac_0_59_fbb_resnet_640_)
-            - [46560       @ 60_99/detrac-0_59-fbb/resnet-640](#46560___60_99_detrac_0_59_fbb_resnet_640_)
+    - [detrac-0_59-aug-fbb       @ resnet-640](#detrac_0_59_aug_fbb___resnet_640_)
+        - [0_59-40_per_seq_random       @ detrac-0_59-aug-fbb/resnet-640](#0_59_40_per_seq_random___detrac_0_59_aug_fbb_resnet_640_)
+        - [60_99-40_per_seq_random       @ detrac-0_59-aug-fbb/resnet-640](#60_99_40_per_seq_random___detrac_0_59_aug_fbb_resnet_640_)
+        - [60_99       @ detrac-0_59-aug-fbb/resnet-640](#60_99___detrac_0_59_aug_fbb_resnet_640_)
+            - [43068       @ 60_99/detrac-0_59-aug-fbb/resnet-640](#43068___60_99_detrac_0_59_aug_fbb_resnet_640_)
+            - [46560       @ 60_99/detrac-0_59-aug-fbb/resnet-640](#46560___60_99_detrac_0_59_aug_fbb_resnet_640_)
 
 <!-- /MarkdownTOC -->
 <a id="resnet_640___p2_s_"></a>
@@ -45,22 +45,21 @@ python3 eval_det.py cfg=p2s,detrac:non_empty:49_85:nms-1:gt-1:ign:proc-1:_in_-re
 ### 49_85       @ detrac-non_empty-0_48-fbb/resnet-640-->eval_p2s-isl
 python3 eval_det.py cfg=p2s,detrac:non_empty:49_85:nms:gt-1:proc-1:_in_-resnet_640_detrac-non_empty-seq-0_48-batch_60-fbb/ckpt-__var__-detrac-non_empty-seq-49_85/csv-batch_8:_out_-p2s-detrac-0_48-49_85-fbb
 
-
-<a id="detrac_0_59_fbb___resnet_640_"></a>
-## detrac-0_59-fbb       @ resnet-640-->eval_p2s-isl
-<a id="0_59_40_per_seq_random___detrac_0_59_fbb_resnet_640_"></a>
-### 0_59-40_per_seq_random       @ detrac-0_59-fbb/resnet-640-->eval_p2s-isl
+<a id="detrac_0_59_aug_fbb___resnet_640_"></a>
+## detrac-0_59-aug-fbb       @ resnet-640-->eval_p2s-isl
+<a id="0_59_40_per_seq_random___detrac_0_59_aug_fbb_resnet_640_"></a>
+### 0_59-40_per_seq_random       @ detrac-0_59-aug-fbb/resnet-640-->eval_p2s-isl
 python3 eval_det.py cfg=p2s,detrac:0_59:40_per_seq_random:nms-1:gt-0:ign:proc-1:_in_-resnet_640_detrac-seq-0_59-batch_288-jtr-res_1280-fbb-exg/ckpt-__var__-detrac-40_per_seq_random-seq-0_59/csv-batch_4:_out_-p2s-detrac-0_59-40_per_seq_random-0_59-aug-fbb
-<a id="60_99_40_per_seq_random___detrac_0_59_fbb_resnet_640_"></a>
-### 60_99-40_per_seq_random       @ detrac-0_59-fbb/resnet-640-->eval_p2s-isl
+<a id="60_99_40_per_seq_random___detrac_0_59_aug_fbb_resnet_640_"></a>
+### 60_99-40_per_seq_random       @ detrac-0_59-aug-fbb/resnet-640-->eval_p2s-isl
 python3 eval_det.py cfg=p2s,detrac:60_99:40_per_seq_random:nms-1:gt-0:ign:proc-1:_in_-resnet_640_detrac-seq-0_59-batch_288-jtr-res_1280-fbb-exg/ckpt-__var__-detrac-40_per_seq_random-seq-60_99/csv-batch_4:_out_-p2s-detrac-0_59-40_per_seq_random-60_99-aug-fbb
-<a id="60_99___detrac_0_59_fbb_resnet_640_"></a>
-### 60_99       @ detrac-0_59-fbb/resnet-640-->eval_p2s-isl
+<a id="60_99___detrac_0_59_aug_fbb_resnet_640_"></a>
+### 60_99       @ detrac-0_59-aug-fbb/resnet-640-->eval_p2s-isl
 python3 eval_det.py cfg=p2s,detrac:60_99:nms-1:gt-0:ign:proc-1:_in_-resnet_640_detrac-seq-0_59-batch_288-jtr-res_1280-fbb-exg/ckpt-__var__-detrac-seq-60_99/csv-batch_64:_out_-p2s-detrac-0_59-60_99-aug-fbb
-<a id="43068___60_99_detrac_0_59_fbb_resnet_640_"></a>
-#### 43068       @ 60_99/detrac-0_59-fbb/resnet-640-->eval_p2s-isl
+<a id="43068___60_99_detrac_0_59_aug_fbb_resnet_640_"></a>
+#### 43068       @ 60_99/detrac-0_59-aug-fbb/resnet-640-->eval_p2s-isl
 python3 eval_det.py cfg=p2s,detrac:60_99:nms-1:gt-0:ign:proc-1:_in_-resnet_640_detrac-seq-0_59-batch_288-jtr-res_1280-fbb-exg/ckpt-__var__-detrac-seq-60_99/csv-batch_32:_out_-p2s-detrac-0_59-60_99-aug-fbb
-<a id="46560___60_99_detrac_0_59_fbb_resnet_640_"></a>
-#### 46560       @ 60_99/detrac-0_59-fbb/resnet-640-->eval_p2s-isl
+<a id="46560___60_99_detrac_0_59_aug_fbb_resnet_640_"></a>
+#### 46560       @ 60_99/detrac-0_59-aug-fbb/resnet-640-->eval_p2s-isl
 python3 eval_det.py cfg=p2s,detrac:60_99:nms-1:gt-0:ign:proc-1:_in_-resnet_640_detrac-seq-0_59-batch_288-jtr-res_1280-fbb-exg/ckpt-__var__-detrac-seq-60_99/csv-batch_32:_out_-p2s-detrac-0_59-60_99-aug-fbb
 

@@ -606,7 +606,7 @@ def evaluate(
             seq_img_paths = seq_to_samples[seq_path]
         else:
             is_valid_img = lambda x: os.path.splitext(x.lower())[1][1:] in img_exts if not params.img_ext else \
-            os.path.splitext(x)[1][1:] == params.img_ext
+                os.path.splitext(x)[1][1:] == params.img_ext
 
             seq_img_gen = [[utils.linux_path(dirpath, f) for f in filenames if is_valid_img(f)]
                            for (dirpath, dirnames, filenames) in os.walk(seq_img_dir, followlinks=True)]
@@ -900,10 +900,10 @@ def evaluate(
                     except KeyError:
                         """possibly some annoying imagenet-vid like dataset with multi-part sequence names"""
                         seq_to_video_ids.update({
-                            os.path.basename(k__): v__ for k__,v__ in seq_to_video_ids.items()
+                            os.path.basename(k__): v__ for k__, v__ in seq_to_video_ids.items()
                         })
                         seq_to_filenames.update({
-                            os.path.basename(k__): v__ for k__,v__ in seq_to_filenames.items()
+                            os.path.basename(k__): v__ for k__, v__ in seq_to_filenames.items()
                         })
                         video_ids = seq_to_video_ids[seq_name]
 
@@ -925,6 +925,10 @@ def evaluate(
 
                 if params.class_agnostic:
                     df_det['class'] = 'agnostic'
+
+                if params.img_ext:
+                    df_det["filename"] = df_det["filename"].apply(
+                        lambda x: os.path.splitext(os.path.basename(x))[0] + '.' + params.img_ext)
 
                 df_det["filename"] = df_det["filename"].apply(lambda x: seq_img_name_to_path[os.path.basename(x)])
 
@@ -1203,7 +1207,7 @@ def evaluate(
                 imagenet_vid_rows = []
                 for det_bbox in seq_det_bboxes_list:
                     xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
-                    filename_ = seq_name + '/' +  os.path.splitext(os.path.basename(det_bbox['filename']))[0]
+                    filename_ = seq_name + '/' + os.path.splitext(os.path.basename(det_bbox['filename']))[0]
                     class_name = det_bbox['class']
                     confidence_ = float(det_bbox['confidence'])
 
@@ -1214,7 +1218,7 @@ def evaluate(
                                f'{xmin_:.2f} {ymin_:.2f} {xmax_:.2f} {ymax_:.2f}')
 
                     imagenet_vid_rows.append(obj_str)
-                    
+
                 with open(imagenet_vid_out_path, "a") as fid:
                     fid.write('\n'.join(imagenet_vid_rows))
 
