@@ -429,8 +429,11 @@ def save_boxes_coco(
             if enable_mask:
                 del ann['mask_pts']
 
-        if n_valid_objs == 0 and not params.ignore_empty_images:
-            raise AssertionError(f"empty image found with no valid objects: {img_file_path}")
+        if n_valid_objs == 0:
+            if params.ignore_empty_images:
+                raise AssertionError(f"ignoring empty image with no valid objects: {img_file_path}")
+            else:
+                raise AssertionError(f"empty image found with no valid objects: {img_file_path}")
 
         if n_valid_objs > 0 or params.add_empty_images:
             try:
