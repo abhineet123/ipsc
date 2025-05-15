@@ -83,6 +83,8 @@ class Params(paramparse.CFG):
 
         self.add_empty_images = 0
         self.ignore_empty_images = 0
+        self.delete_empty_images = 0
+        self.delete_empty_xml = 0
 
         self.start_frame_id = 0
         self.end_frame_id = -1
@@ -430,7 +432,15 @@ def save_boxes_coco(
                 del ann['mask_pts']
 
         if n_valid_objs == 0:
-            if params.ignore_empty_images:
+            if params.delete_empty_images:
+                assert not params.add_empty_images, "empty images can either be added or deleted"
+
+                print(f"deleting empty image with no valid objects: {img_file_path}")
+                os.remove(img_file_path)
+                if params.delete_empty_xml:
+                    print(f"also deleting corresponding xml: {xml_path}")
+                    os.remove(xml_path)
+            elif params.ignore_empty_images:
                 print(f"ignoring empty image with no valid objects: {img_file_path}")
             else:
                 raise AssertionError(f"empty image found with no valid objects: {img_file_path}")
