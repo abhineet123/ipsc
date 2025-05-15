@@ -81,6 +81,9 @@ class Params(paramparse.CFG):
         self.allow_ignored_class = 0
         self.skip_invalid = 0
 
+        self.add_empty_images = 0
+        self.ignore_empty_images = 0
+
         self.start_frame_id = 0
         self.end_frame_id = -1
         self.frame_stride = 1
@@ -319,16 +322,10 @@ def save_boxes_coco(
             all_pix_vals_mean.append(pix_vals_mean)
             all_pix_vals_std.append(pix_vals_std)
 
-        try:
-            img_info_existing = img_id_to_info[img_info['id']]
-        except KeyError:
-            output_json_dict['images'].append(img_info)
-        else:
-            assert img_info_existing == img_info, "img_info mismatch"
-
         objs = ann_root.findall('object')
 
         # print()
+        n_valid_objs = 0
         for obj_id, obj in enumerate(objs):
             label = obj.findtext('name')
 
@@ -412,7 +409,9 @@ def save_boxes_coco(
                 }
             )
             output_json_dict['annotations'].append(ann)
+
             n_objs += 1
+            n_valid_objs += 1
 
             label_to_n_objs[ann['label']] += 1
 
@@ -430,7 +429,18 @@ def save_boxes_coco(
             if enable_mask:
                 del ann['mask_pts']
 
-        n_valid_images += 1
+        if n_valid_objs == 0 and not params.ignore_empty_images:
+            raise AssertionError(f"empty image found with no valid objects: {img_file_path}")
+
+        if n_valid_objs > 0 or params.add_empty_images:
+            try:
+                img_info_existing = img_id_to_info[img_info['id']]
+            except KeyError:
+                output_json_dict['images'].append(img_info)
+                n_valid_images += 1
+            else:
+                assert img_info_existing == img_info, "img_info mismatch"
+
         desc = f'{seq_name} {n_valid_images} / {n_images} valid images :: {n_objs} objects '
 
         if len(class_dict) <= 2:
