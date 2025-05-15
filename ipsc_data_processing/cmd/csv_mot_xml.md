@@ -62,6 +62,7 @@
 - [imagenet_vid](#imagenet_vi_d_)
     - [train       @ imagenet_vid](#train___imagenet_vid_)
     - [val       @ imagenet_vid](#val___imagenet_vid_)
+    - [det_only       @ imagenet_vid](#det_only___imagenet_vid_)
     - [ipsc-5_class       @ imagenet_vid](#ipsc_5_class___imagenet_vid_)
     - [ipsc-ext_reorg_roi       @ imagenet_vid](#ipsc_ext_reorg_roi___imagenet_vid_)
         - [16_53       @ ipsc-ext_reorg_roi/imagenet_vid](#16_53___ipsc_ext_reorg_roi_imagenet_vi_d_)
@@ -341,6 +342,9 @@ python xml_to_csv.py cfg=imagenet_vid
 <a id="val___imagenet_vid_"></a>
 ## val       @ imagenet_vid-->csv_mot_xml
 python xml_to_csv.py cfg=imagenet_vid:val
+<a id="det_only___imagenet_vid_"></a>
+## det_only       @ imagenet_vid-->csv_mot_xml
+python xml_to_csv.py cfg=imagenet_vid:det_only
 
 
 <a id="ipsc_5_class___imagenet_vid_"></a>
