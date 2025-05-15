@@ -337,7 +337,7 @@ def save_boxes_coco(
                 label = class_map_dict[label]
             except KeyError as e:
                 if params.ignore_invalid_label:
-                    print(f'{xml_path}: ignoring obj with invalid label: {label}')
+                    # print(f'{xml_path}: ignoring obj with invalid label: {label}')
                     continue
                 raise AssertionError(e)
 
