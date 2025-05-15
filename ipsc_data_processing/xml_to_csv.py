@@ -39,11 +39,12 @@ class Params(paramparse.CFG):
         self.start_id = -1
         self.end_id = -1
         self.class_names_path = ''
+        self.ignore_invalid_class = 0
 
 
 def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask, recursive,
                    start_id, end_id, csv_name,
-                   samples, class_map_dict, img_ext):
+                   samples, class_map_dict, img_ext, ignore_invalid_class):
     if not xml_dir_path or not os.path.isdir(xml_dir_path):
         raise IOError(f'Folder containing the xml files does not exist: {xml_dir_path}')
         # return None
@@ -146,7 +147,14 @@ def save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_m
                 continue
 
             if class_map_dict is not None:
-                label = class_map_dict[label]
+                try:
+                    label = class_map_dict[label]
+                except KeyError:
+                    if ignore_invalid_class:
+                        print(f'{file}: ignoring invalid class: {label}')
+                        continue
+                    else:
+                        raise AssertionError(f'{file}: invalid class: {label}')
 
             if label not in class_to_n_files:
                 class_to_n_files[label] = 0
@@ -290,7 +298,7 @@ def main():
 
         save_boxes_csv(seq_path, xml_dir_path, out_dir, sources_to_include, enable_mask,
                        params.recursive, params.start_id, params.end_id,
-                       params.csv_name, samples, class_map_dict, params.img_ext)
+                       params.csv_name, samples, class_map_dict, params.img_ext, params.ignore_invalid_class)
 
 
 if __name__ == '__main__':
