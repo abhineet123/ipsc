@@ -3,12 +3,14 @@
 - [imagenet_vid](#imagenet_vi_d_)
     - [train       @ imagenet_vid](#train___imagenet_vid_)
         - [8_per_seq_random       @ train/imagenet_vid](#8_per_seq_random___train_imagenet_vid_)
-    - [det       @ imagenet_vid](#det___imagenet_vid_)
-        - [sampled_eq       @ det/imagenet_vid](#sampled_eq___det_imagenet_vid_)
-    - [det_val       @ imagenet_vid](#det_val___imagenet_vid_)
-    - [det_only       @ imagenet_vid](#det_only___imagenet_vid_)
     - [validation       @ imagenet_vid](#validation___imagenet_vid_)
         - [16_per_seq_random       @ validation/imagenet_vid](#16_per_seq_random___validation_imagenet_vi_d_)
+    - [det       @ imagenet_vid](#det___imagenet_vid_)
+        - [sampled_eq       @ det/imagenet_vid](#sampled_eq___det_imagenet_vid_)
+    - [det_only       @ imagenet_vid](#det_only___imagenet_vid_)
+        - [del       @ det_only/imagenet_vid](#del___det_only_imagenet_vi_d_)
+    - [det_val       @ imagenet_vid](#det_val___imagenet_vid_)
+        - [del       @ det_val/imagenet_vid](#del___det_val_imagenet_vid_)
 - [detrac](#detra_c_)
     - [0_59       @ detrac](#0_59___detrac_)
         - [100_per_seq_random       @ 0_59/detrac](#100_per_seq_random___0_59_detra_c_)
@@ -118,28 +120,33 @@ python xml_to_coco.py cfg=imagenet_vid
 ### 8_per_seq_random       @ train/imagenet_vid-->xml_to_coco
 python xml_to_coco.py cfg=imagenet_vid:8_per_seq_random
 
-
-<a id="det___imagenet_vid_"></a>
-## det       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det
-<a id="sampled_eq___det_imagenet_vid_"></a>
-### sampled_eq       @ det/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det:sampled_eq
-
-<a id="det_val___imagenet_vid_"></a>
-## det_val       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det_val
-
-<a id="det_only___imagenet_vid_"></a>
-## det_only       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det_only
-
 <a id="validation___imagenet_vid_"></a>
 ## validation       @ imagenet_vid-->xml_to_coco
 python xml_to_coco.py cfg=imagenet_vid:validation
 <a id="16_per_seq_random___validation_imagenet_vi_d_"></a>
 ### 16_per_seq_random       @ validation/imagenet_vid-->xml_to_coco
 python xml_to_coco.py cfg=imagenet_vid:validation:16_per_seq_random
+
+<a id="det___imagenet_vid_"></a>
+## det       @ imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det
+<a id="sampled_eq___det_imagenet_vid_"></a>
+### sampled_eq       @ det/imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det:sampled_eq:add
+
+<a id="det_only___imagenet_vid_"></a>
+## det_only       @ imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det_only
+<a id="del___det_only_imagenet_vi_d_"></a>
+### del       @ det_only/imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det_only:del-xml
+
+<a id="det_val___imagenet_vid_"></a>
+## det_val       @ imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det_val
+<a id="del___det_val_imagenet_vid_"></a>
+### del       @ det_val/imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det_val:del-xml
 
 <a id="detra_c_"></a>
 # detrac
