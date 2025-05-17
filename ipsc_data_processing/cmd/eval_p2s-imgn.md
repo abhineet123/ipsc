@@ -24,7 +24,7 @@ python3 eval_det.py cfg=p2s,imagenet_vid:val:16_per_seq_random:nms-1:gt-0:agn:pr
 ## imagenet_vid_det-aug-fbb       @ resnet-640-->eval_p2s-imgn
 <a id="train_8_per_seq_random___imagenet_vid_det_aug_fbb_resnet_64_0_"></a>
 ### train-8_per_seq_random       @ imagenet_vid_det-aug-fbb/resnet-640-->eval_p2s-imgn
-python3 eval_det.py cfg=p2s,imagenet_vid:8_per_seq_random:nms-1:gt-0:agn:proc-1:_in_-resnet_640_imagenet_vid_det-sampled_eq-batch_448-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_det-8_per_seq_random/csv-batch_16:_out_-p2s-imagenet_vid_det-train-8_per_seq_random-aug-fbb allow_empty_gt=1
+python3 eval_det.py cfg=p2s,imagenet_vid:det:8_per_seq_random:nms-1:gt-0:agn:proc-1:_in_-resnet_640_imagenet_vid_det-sampled_eq-batch_448-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_det-8_per_seq_random/csv-batch_16:_out_-p2s-imagenet_vid_det-train-8_per_seq_random-aug-fbb allow_empty_gt=1
 
 <a id="val_16_per_seq_random___imagenet_vid_det_aug_fbb_resnet_64_0_"></a>
 ### val-16_per_seq_random       @ imagenet_vid_det-aug-fbb/resnet-640-->eval_p2s-imgn
