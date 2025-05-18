@@ -8,6 +8,7 @@
     - [det       @ imagenet_vid](#det___imagenet_vid_)
         - [sampled_eq       @ det/imagenet_vid](#sampled_eq___det_imagenet_vid_)
         - [8_per_seq_random       @ det/imagenet_vid](#8_per_seq_random___det_imagenet_vid_)
+        - [ratio_1_10_random       @ det/imagenet_vid](#ratio_1_10_random___det_imagenet_vid_)
     - [det_only       @ imagenet_vid](#det_only___imagenet_vid_)
         - [del       @ det_only/imagenet_vid](#del___det_only_imagenet_vi_d_)
     - [det_val       @ imagenet_vid](#det_val___imagenet_vid_)
@@ -137,6 +138,9 @@ python xml_to_coco.py cfg=imagenet_vid:det:sampled_eq:add
 <a id="8_per_seq_random___det_imagenet_vid_"></a>
 ### 8_per_seq_random       @ det/imagenet_vid-->xml_to_coco
 python xml_to_coco.py cfg=imagenet_vid:det:8_per_seq_random:add
+<a id="ratio_1_10_random___det_imagenet_vid_"></a>
+### ratio_1_10_random       @ det/imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det:ratio_1_10_random:add
 
 <a id="det_only___imagenet_vid_"></a>
 ## det_only       @ imagenet_vid-->xml_to_coco
