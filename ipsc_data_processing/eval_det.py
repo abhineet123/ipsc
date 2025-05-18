@@ -816,7 +816,8 @@ def evaluate(
 
             if not valid_gts:
                 if params.allow_empty_gt:
-                    print(f"no valid_gts found in {seq_name}")
+                    pass
+                    # print(f"no valid_gts found in {seq_name}")
                 else:
                     raise AssertionError(f"no valid_gts found in {seq_name}")
 
