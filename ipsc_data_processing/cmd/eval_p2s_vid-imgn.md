@@ -4,6 +4,9 @@
     - [len-2-fbb-aug-cls_eq       @ mid](#len_2_fbb_aug_cls_eq___mi_d_)
         - [on-train-4_per_seq_random_len_2       @ len-2-fbb-aug-cls_eq/mid](#on_train_4_per_seq_random_len_2___len_2_fbb_aug_cls_eq_mid_)
         - [on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-cls_eq/mid](#on_val_8_per_seq_random_len_2___len_2_fbb_aug_cls_eq_mid_)
+    - [len-2-fbb-aug-cls_eq-zeg       @ mid](#len_2_fbb_aug_cls_eq_zeg___mi_d_)
+        - [on-train-4_per_seq_random_len_2       @ len-2-fbb-aug-cls_eq-zeg/mid](#on_train_4_per_seq_random_len_2___len_2_fbb_aug_cls_eq_zeg_mid_)
+        - [on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-cls_eq-zeg/mid](#on_val_8_per_seq_random_len_2___len_2_fbb_aug_cls_eq_zeg_mid_)
 - [lfn       @ lfn](#lfn___lf_n_)
     - [len-2-fbb       @ lfn](#len_2_fbb___lf_n_)
         - [on-train-4_per_seq_random_len_2       @ len-2-fbb/lfn](#on_train_4_per_seq_random_len_2___len_2_fbb_lf_n_)
@@ -34,6 +37,9 @@
     - [len-2-fbb-aug-isc       @ lfn](#len_2_fbb_aug_isc___lf_n_)
         - [on-train-4_per_seq_random_len_2       @ len-2-fbb-aug-isc/lfn](#on_train_4_per_seq_random_len_2___len_2_fbb_aug_isc_lf_n_)
         - [on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-isc/lfn](#on_val_8_per_seq_random_len_2___len_2_fbb_aug_isc_lf_n_)
+    - [len-2-fbb-aug-zeg       @ lfn](#len_2_fbb_aug_zeg___lf_n_)
+        - [on-train-4_per_seq_random_len_2       @ len-2-fbb-aug-zeg/lfn](#on_train_4_per_seq_random_len_2___len_2_fbb_aug_zeg_lf_n_)
+        - [on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-zeg/lfn](#on_val_8_per_seq_random_len_2___len_2_fbb_aug_zeg_lf_n_)
 
 <!-- /MarkdownTOC -->
 
@@ -47,6 +53,16 @@ python3 eval_det.py cfg=p2s:vid,imagenet_vid:4_per_seq_random_len_2:gt-0:nms-1:a
 <a id="on_val_8_per_seq_random_len_2___len_2_fbb_aug_cls_eq_mid_"></a>
 ### on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-cls_eq/mid-->eval_p2s_vid-imgn
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:8_per_seq_random_len_2:gt-0:nms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_288-fbb-cls_eq-jtr-res_1440-zexg/ckpt-__var__-imagenet_vid_val-length-2-stride-2-8_per_seq_random_len_2/csv-batch_8:_out_-p2s-imagenet_vid-len-2-val-8_per_seq-fbb-aug-cls_eq allow_empty_gt=0
+
+<a id="len_2_fbb_aug_cls_eq_zeg___mi_d_"></a>
+## len-2-fbb-aug-cls_eq-zeg       @ mid-->eval_p2s_vid-imgn
+<a id="on_train_4_per_seq_random_len_2___len_2_fbb_aug_cls_eq_zeg_mid_"></a>
+### on-train-4_per_seq_random_len_2       @ len-2-fbb-aug-cls_eq-zeg/mid-->eval_p2s_vid-imgn
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:4_per_seq_random_len_2:gt-0:nms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_216-fbb-cls_eq-jtr-res_1440-zeg/ckpt-__var__-imagenet_vid-length-2-stride-2-4_per_seq_random_len_2/csv-batch_16:_out_-p2s-imagenet_vid-len-2-train-4_per_seq-fbb-aug-cls_eq-zeg allow_empty_gt=1
+<a id="on_val_8_per_seq_random_len_2___len_2_fbb_aug_cls_eq_zeg_mid_"></a>
+### on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-cls_eq-zeg/mid-->eval_p2s_vid-imgn
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:8_per_seq_random_len_2:gt-0:nms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_216-fbb-cls_eq-jtr-res_1440-zeg/ckpt-__var__-imagenet_vid_val-length-2-stride-2-8_per_seq_random_len_2/csv-batch_16:_out_-p2s-imagenet_vid-len-2-val-8_per_seq-fbb-aug-cls_eq-zeg allow_empty_gt=0
+
 
 
 <a id="lfn___lf_n_"></a>
@@ -152,4 +168,13 @@ python3 eval_det.py cfg=p2s:vid,imagenet_vid:4_per_seq_random_len_2:gt-0:nms-1:a
 <a id="on_val_8_per_seq_random_len_2___len_2_fbb_aug_isc_lf_n_"></a>
 ### on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-isc/lfn-->eval_p2s_vid-imgn
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:8_per_seq_random_len_2:gt-0:nms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-jtr-res_1440-lfn/ckpt-__var__-imagenet_vid_val-length-2-stride-2-8_per_seq_random_len_2/csv-batch_8:_out_-p2s-lfn-imagenet_vid-len-2-val-8_per_seq_random_len_2-fbb-aug allow_empty_gt=0
+
+<a id="len_2_fbb_aug_zeg___lf_n_"></a>
+## len-2-fbb-aug-zeg       @ lfn-->eval_p2s_vid-imgn
+<a id="on_train_4_per_seq_random_len_2___len_2_fbb_aug_zeg_lf_n_"></a>
+### on-train-4_per_seq_random_len_2       @ len-2-fbb-aug-zeg/lfn-->eval_p2s_vid-imgn
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:4_per_seq_random_len_2:gt-0:nms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_216-fbb-jtr-res_1440-lfn-zeg/ckpt-__var__-imagenet_vid-length-2-stride-2-4_per_seq_random_len_2/csv-batch_8:_out_-p2s-lfn-imagenet_vid-len-2-train-4_per_seq-fbb-aug-cls_eq-zeg allow_empty_gt=1
+<a id="on_val_8_per_seq_random_len_2___len_2_fbb_aug_zeg_lf_n_"></a>
+### on-val-8_per_seq_random_len_2       @ len-2-fbb-aug-zeg/lfn-->eval_p2s_vid-imgn
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:8_per_seq_random_len_2:gt-0:nms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_216-fbb-jtr-res_1440-lfn-zeg/ckpt-__var__-imagenet_vid_val-length-2-stride-2-8_per_seq_random_len_2/csv-batch_8:_out_-p2s-lfn-imagenet_vid-len-2-val-8_per_seq-fbb-aug-cls_eq-zeg allow_empty_gt=0
 
