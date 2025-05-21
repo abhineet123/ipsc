@@ -1359,6 +1359,62 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
     return n_del
 
 
+def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup):
+    n_objs = len(objs)
+    obj_bboxes = np.asarray([obj['bbox'] for obj in objs])
+
+    pred_obj_pairs = list(itertools.combinations(objs, 2))
+
+    assert nms_thresh_all or vid_nms_thresh_all, "either vid_nms_thresh_all or nms_thresh_all must be provided"
+
+    vid_pred_obj_pair_ids = None
+
+    pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs]
+
+    if vid_nms_thresh_all:
+        vid_pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs
+                                 if obj1['video_id'] != obj2['video_id']]
+        if not dup:
+            pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs
+                                 if obj1['video_id'] == obj2['video_id']]
+    else:
+        vid_nms_thresh_all = [-1, ]
+
+    if not nms_thresh_all:
+        nms_thresh_all = [-1, ]
+
+    n_vid_nms_thresh = len(vid_nms_thresh_all)
+    n_nms_thresh = len(nms_thresh_all)
+
+    nms_thresh_combinations = list(itertools.product(nms_thresh_all, vid_nms_thresh_all))
+
+    iou_arr = np.empty((n_objs, n_objs))
+    compute_overlaps_multi(iou_arr, None, None, obj_bboxes, obj_bboxes)
+
+    for nms_thresh, vid_nms_thresh in nms_thresh_combinations:
+        are_overlapping = np.zeros_like(iou_arr, dtype=bool)
+        if vid_nms_thresh >= 0:
+            vid_del_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
+                           for id1, id2 in vid_pred_obj_pair_ids if iou_arr[id1, id2] >= vid_nms_thresh]
+        if nms_thresh >= 0:
+            static_del_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
+                              for id1, id2 in pred_obj_pair_ids if iou_arr[id1, id2] >= nms_thresh]
+        
+
+
+    n_pairs = len(pred_obj_pairs)
+
+    if nms_thresh > 0:
+        n_match = find_matching_obj_pairs(
+            pred_obj_pairs, enable_mask, nms_thresh,
+            # objs_to_delete=objs_to_delete,
+            # global_objs_to_delete=global_objs_to_delete,
+        )
+        n_del += n_match
+
+    return n_del, n_pairs, n_vid_pairs
+
+
 def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
     pred_obj_pairs = list(itertools.combinations(objs, 2))
 

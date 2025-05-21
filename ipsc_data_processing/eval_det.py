@@ -236,8 +236,14 @@ class Params(paramparse.CFG):
 
         self.seq_wise = 0
         self.vid_stride = []
-        self.nms_thresh = [0., ]
-        self.vid_nms_thresh = [0., ]
+
+
+        self.nms_thresh_all = [0., ]
+        self.vid_nms_thresh_all = [0., ]
+
+        self.batch_nms_ = 0
+        self.nms_thresh_ = 0
+        self.vid_nms_thresh_ = 0
 
         self._sweep_params = [
             'det_nms',
@@ -568,6 +574,18 @@ def evaluate(
         #     det_data_dict = {
         #         seq_name_list[0]: det_data_dict[seq_name_list[0]]
         #     }
+    enable_nms = False
+    if params.batch_nms_:
+        enable_nms = True
+        print_(f'performing batch NMS with thresholds {params.nms_thresh_all}')
+    elif params.nms_thresh_ > 0 or params.vid_nms_thresh_ > 0:
+        enable_nms = True
+        if params.nms_thresh_ > 0:
+            print_(f'performing NMS with threshold {params.nms_thresh_:.2f}')
+
+        if params.vid_nms_thresh_ > 0:
+            print_(f'performing video NMS with threshold {params.vid_nms_thresh_:.2f}')
+
 
     if params.save_as_imagenet_vid:
         imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
@@ -830,12 +848,6 @@ def evaluate(
             all_img_paths += gt_img_paths
         """read det from csv"""
         if not det_loaded:
-            if params.nms_thresh > 0:
-                print_(f'performing NMS with threshold {params.nms_thresh:.2f}')
-
-            if params.vid_nms_thresh > 0:
-                print_(f'performing video NMS with threshold {params.vid_nms_thresh:.2f}')
-
             det_paths = all_seq_det_paths[seq_idx]
 
             if isinstance(det_paths, str):
@@ -1114,7 +1126,7 @@ def evaluate(
 
                 # assert valid_dets > 0, "no valid_dets found"
 
-            if params.nms_thresh > 0 or params.vid_nms_thresh > 0:
+            if enable_nms:
                 nms_iter = seq_det_file_to_bboxes.items()
                 nms_pbar = None
                 if show_pbar:
@@ -1124,17 +1136,26 @@ def evaluate(
                 total_bboxes = 0
                 del_bboxes = 0
                 for _det_filename, _bbox_info in nms_iter:
-                    n_del, n_pairs, n_vid_pairs = utils.perform_nms(
-                        _bbox_info,
-                        enable_mask=params.enable_mask,
-                        nms_thresh=params.nms_thresh,
-                        vid_nms_thresh=params.vid_nms_thresh,
-                        dup=params.dup_nms,
-                    )
-                    # seq_bbox_ids_to_delete += img_bbox_ids_to_delete
-                    del_bboxes += n_del
-                    n_bboxes = len(_bbox_info)
-                    total_bboxes += n_bboxes
+                    if params.batch_nms_:
+                        utils.perform_batch_nms(
+                            _bbox_info,
+                            enable_mask=params.enable_mask,
+                            nms_thresh=params.nms_thresh_,
+                            vid_nms_thresh=params.vid_nms_thresh_,
+                            dup=params.dup_nms,
+                        )
+                    else:
+                        n_del, n_pairs, n_vid_pairs = utils.perform_nms(
+                            _bbox_info,
+                            enable_mask=params.enable_mask,
+                            nms_thresh=params.nms_thresh_,
+                            vid_nms_thresh=params.vid_nms_thresh_,
+                            dup=params.dup_nms,
+                        )
+                        # seq_bbox_ids_to_delete += img_bbox_ids_to_delete
+                        del_bboxes += n_del
+                        n_bboxes = len(_bbox_info)
+                        total_bboxes += n_bboxes
 
                     if nms_pbar is not None:
                         time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
