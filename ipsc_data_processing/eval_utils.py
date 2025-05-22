@@ -1307,6 +1307,79 @@ def num_to_words(num):
         words = f'{num}'
     return words
 
+def dets_to_imagenet_vid(seq_det_bboxes_list, imagenet_vid_out_path, seq_name,
+                         filename_to_frame_index, class_name_to_id):
+    imagenet_vid_rows = []
+    for det_bbox in seq_det_bboxes_list:
+        xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
+        filename_ = seq_name + '/' + os.path.splitext(os.path.basename(det_bbox['filename']))[0]
+        class_name = det_bbox['class']
+        confidence_ = float(det_bbox['confidence'])
+
+        frame_index = int(filename_to_frame_index[filename_])
+        class_index = int(class_name_to_id[class_name])
+
+        obj_str = (f'{frame_index:d} {class_index:d} {confidence_:.4f} '
+                   f'{xmin_:.2f} {ymin_:.2f} {xmax_:.2f} {ymax_:.2f}')
+
+        imagenet_vid_rows.append(obj_str)
+
+    with open(imagenet_vid_out_path, "a") as fid:
+        fid.write('\n'.join(imagenet_vid_rows))
+
+def dets_to_csv(seq_det_bboxes_list, det_path, enable_mask,
+                vid_nms_thresh, nms_thresh, class_agnostic):
+    out_csv_rows = []
+    for det_bbox in seq_det_bboxes_list:
+        xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
+        csv_row = {
+            "ImageID": det_bbox['filename'],
+            "LabelName": det_bbox['class'],
+            "XMin": xmin_,
+            "XMax": xmax_,
+            "YMin": ymin_,
+            "YMax": ymax_,
+            "Confidence": det_bbox['confidence'],
+        }
+        if enable_mask:
+            mask_rle = det_bbox['mask']
+            mask_h_, mask_w_ = mask_rle['size']
+            csv_row.update(
+                {
+                    "mask_w": mask_w_,
+                    "mask_h": mask_h_,
+                    "mask_counts": mask_rle['counts'],
+                }
+            )
+        out_csv_rows.append(csv_row)
+    det_dir, det_name = os.path.dirname(det_path), os.path.basename(det_path)
+
+    out_suffix = []
+    if vid_nms_thresh > 0:
+        out_suffix.append(f'vnms_{vid_nms_thresh:02d}')
+
+    if nms_thresh > 0:
+        out_suffix.append(f'nms_{nms_thresh:02d}')
+
+    if class_agnostic > 0:
+        out_suffix.append(f'agn')
+
+    if out_suffix:
+        out_suffix_str = '_'.join(out_suffix)
+        out_det_dir = add_suffix(det_dir, out_suffix_str)
+
+    os.makedirs(out_det_dir, exist_ok=True)
+    out_det_path = linux_path(out_det_dir, det_name)
+    csv_columns = [
+        "ImageID", "LabelName",
+        "XMin", "XMax", "YMin", "YMax", "Confidence",
+        'VideoID'
+    ]
+    if enable_mask:
+        csv_columns += ['mask_w', 'mask_h', 'mask_counts']
+    df = pd.DataFrame(out_csv_rows, columns=csv_columns)
+    print_(f'writing postproc results to {out_det_path}')
+    df.to_csv(out_det_path, index=False)
 
 def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
                             # objs_to_delete=None, global_objs_to_delete=None
@@ -1331,9 +1404,9 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
 
         if enable_mask:
             # pred_iou = get_mask_iou(obj1['mask'], obj2['mask'], obj1['bbox'], obj2['bbox'])
-            pred_iou = get_mask_rle_iou(obj1['mask'], obj2['mask'])
+            pred_iou = get_mask_rle_iou(obj1['mask'], obj2['mask']) * 100
         else:
-            pred_iou = get_iou(obj1['bbox'], obj2['bbox'], xywh=False)
+            pred_iou = get_iou(obj1['bbox'], obj2['bbox'], xywh=False) * 100
 
             # mask_iou2 = get_mask_iou(mask1, mask2, bbox1, bbox2, giou=False)
             # assert pred_iou == mask_iou2, "mask_iou2 mismatch found"
@@ -1360,16 +1433,17 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
 
 
 def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup):
-    n_objs = len(objs)
-    obj_bboxes = np.asarray([obj['bbox'] for obj in objs])
-
-    pred_obj_pairs = list(itertools.combinations(objs, 2))
-
+    assert not enable_mask, "mask IOU is currently not supported in batch_nms"
     assert nms_thresh_all or vid_nms_thresh_all, "either vid_nms_thresh_all or nms_thresh_all must be provided"
 
-    vid_pred_obj_pair_ids = None
+    n_objs = len(objs)
+    obj_bboxes = np.asarray([obj['bbox'] for obj in objs])
+    all_obj_ids = [obj['local_id'] for obj in objs]
 
-    pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs]
+    pred_obj_pairs = list(itertools.combinations(objs, 2))
+    pred_obj_pair_ids = list(itertools.combinations(all_obj_ids, 2))
+
+    vid_pred_obj_pair_ids = None
 
     if vid_nms_thresh_all:
         vid_pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs
@@ -1377,42 +1451,39 @@ def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup
         if not dup:
             pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs
                                  if obj1['video_id'] == obj2['video_id']]
-    else:
-        vid_nms_thresh_all = [-1, ]
-
-    if not nms_thresh_all:
-        nms_thresh_all = [-1, ]
-
-    n_vid_nms_thresh = len(vid_nms_thresh_all)
-    n_nms_thresh = len(nms_thresh_all)
-
-    nms_thresh_combinations = list(itertools.product(nms_thresh_all, vid_nms_thresh_all))
 
     iou_arr = np.empty((n_objs, n_objs))
     compute_overlaps_multi(iou_arr, None, None, obj_bboxes, obj_bboxes)
+    iou_arr *= 100
 
-    for nms_thresh, vid_nms_thresh in nms_thresh_combinations:
-        are_overlapping = np.zeros_like(iou_arr, dtype=bool)
-        if vid_nms_thresh >= 0:
-            vid_del_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
-                           for id1, id2 in vid_pred_obj_pair_ids if iou_arr[id1, id2] >= vid_nms_thresh]
-        if nms_thresh >= 0:
-            static_del_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
-                              for id1, id2 in pred_obj_pair_ids if iou_arr[id1, id2] >= nms_thresh]
-        
+    all_nms_thresh = list(set(vid_nms_thresh_all + nms_thresh_all))
+    is_overlapping = {}
+    for nms_thresh in all_nms_thresh:
+        is_overlapping[nms_thresh] = iou_arr >= nms_thresh
 
+    vid_del_obj_ids_dict = {}
+    for vid_nms_thresh in vid_nms_thresh_all:
+        vid_del_obj_ids = []
+        if vid_nms_thresh > 0:
+            vid_del_obj_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
+                               for id1, id2 in vid_pred_obj_pair_ids if is_overlapping[vid_nms_thresh][id1, id2]]
+        vid_del_obj_ids_dict[vid_nms_thresh] = vid_del_obj_ids
 
-    n_pairs = len(pred_obj_pairs)
+    del_obj_ids_dict = {}
+    for nms_thresh in nms_thresh_all:
+        del_obj_ids = []
+        if nms_thresh > 0:
+            del_obj_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
+                           for id1, id2 in pred_obj_pair_ids if is_overlapping[nms_thresh][id1, id2]]
+        del_obj_ids_dict[nms_thresh] = del_obj_ids
 
-    if nms_thresh > 0:
-        n_match = find_matching_obj_pairs(
-            pred_obj_pairs, enable_mask, nms_thresh,
-            # objs_to_delete=objs_to_delete,
-            # global_objs_to_delete=global_objs_to_delete,
-        )
-        n_del += n_match
+    keep_obj_ids_dict = {}
+    for vid_nms_thresh, nms_thresh in itertools.product(vid_nms_thresh_all, nms_thresh_all):
+        del_obj_ids = list(set(vid_del_obj_ids_dict[vid_nms_thresh] + del_obj_ids_dict[nms_thresh]))
+        keep_obj_ids = list(set(del_obj_ids) - set(all_obj_ids))
+        keep_obj_ids_dict[(vid_nms_thresh, nms_thresh)] = keep_obj_ids
 
-    return n_del, n_pairs, n_vid_pairs
+    return keep_obj_ids_dict
 
 
 def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):

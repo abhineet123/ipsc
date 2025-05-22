@@ -237,9 +237,8 @@ class Params(paramparse.CFG):
         self.seq_wise = 0
         self.vid_stride = []
 
-
-        self.nms_thresh_all = [0., ]
-        self.vid_nms_thresh_all = [0., ]
+        self.nms_thresh_all = [0, ]
+        self.vid_nms_thresh_all = [0, ]
 
         self.batch_nms_ = 0
         self.nms_thresh_ = 0
@@ -445,17 +444,23 @@ def evaluate(
             gt_pkl = utils.add_suffix(gt_pkl, img_suffix)
             det_pkl = utils.add_suffix(det_pkl, img_suffix)
 
+        pkl_suffixes = []
         if params.enable_mask:
-            gt_pkl = utils.add_suffix(gt_pkl, 'mask', sep='-')
-            det_pkl = utils.add_suffix(det_pkl, 'mask', sep='-')
-
+            pkl_suffixes.append('mask')
         if params.filter_ignored:
-            gt_pkl = utils.add_suffix(gt_pkl, 'ign', sep='-')
-            det_pkl = utils.add_suffix(det_pkl, 'ign', sep='-')
-
+            pkl_suffixes.append('ign')
         if params.class_agnostic:
-            gt_pkl = utils.add_suffix(gt_pkl, 'agn', sep='-')
-            det_pkl = utils.add_suffix(det_pkl, 'agn', sep='-')
+            pkl_suffixes.append('agn')
+        if params.vid_nms_thresh_ > 0:
+            pkl_suffixes.append(f'vnms_{params.vid_nms_thresh_:02d}')
+        if params.nms_thresh_ > 0:
+            pkl_suffixes.append(f'nms_{params.nms_thresh_:02d}')
+
+        if pkl_suffixes:
+            pkl_out_suffix = '-'.join(pkl_suffixes)
+
+            gt_pkl = utils.add_suffix(gt_pkl, pkl_out_suffix, sep='-')
+            det_pkl = utils.add_suffix(det_pkl, pkl_out_suffix, sep='-')
 
         gt_class_data_dict = {
             gt_class: {} for gt_class in gt_classes
@@ -576,16 +581,22 @@ def evaluate(
         #     }
     enable_nms = False
     if params.batch_nms_:
+        assert params.vid_nms_thresh_ == 0 and params.nms_thresh_ == 0, \
+            "vid_nms_thresh and nms_thresh must be 0 in batch_nms mode"
+
         enable_nms = True
-        print_(f'performing batch NMS with thresholds {params.nms_thresh_all}')
+        if params.nms_thresh_all:
+            print_(f'performing batch NMS with thresholds {params.nms_thresh_all}')
+        if params.vid_nms_thresh_all:
+            print_(f'performing batch video NMS with thresholds {params.vid_nms_thresh_all}')
+
     elif params.nms_thresh_ > 0 or params.vid_nms_thresh_ > 0:
         enable_nms = True
         if params.nms_thresh_ > 0:
-            print_(f'performing NMS with threshold {params.nms_thresh_:.2f}')
+            print_(f'performing NMS with threshold {params.nms_thresh_:d}%')
 
         if params.vid_nms_thresh_ > 0:
-            print_(f'performing video NMS with threshold {params.vid_nms_thresh_:.2f}')
-
+            print_(f'performing video NMS with threshold {params.vid_nms_thresh_:d}%')
 
     if params.save_as_imagenet_vid:
         imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
@@ -848,6 +859,7 @@ def evaluate(
             all_img_paths += gt_img_paths
         """read det from csv"""
         if not det_loaded:
+            keep_obj_ids_dict = {}
             det_paths = all_seq_det_paths[seq_idx]
 
             if isinstance(det_paths, str):
@@ -858,6 +870,9 @@ def evaluate(
             #     print(f'\ndet_paths: {det_paths}')
 
             seq_det_bboxes_list = []
+            seq_det_bboxes_dict = {}
+            seq_keep_obj_ids_dict = {}
+
             from collections import defaultdict
             seq_det_file_to_bboxes = defaultdict(list)
 
@@ -1114,6 +1129,8 @@ def evaluate(
                         bbox_dict['global_id'] = global_id
                         bbox_dict['to_delete'] = 0
 
+                        seq_det_bboxes_dict[local_id] = bbox_dict
+
                         if det_pbar is not None:
                             time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
                             invalid_pc = (n_invalid_dets / n_total_dets) * 100
@@ -1137,11 +1154,11 @@ def evaluate(
                 del_bboxes = 0
                 for _det_filename, _bbox_info in nms_iter:
                     if params.batch_nms_:
-                        utils.perform_batch_nms(
+                        seq_keep_obj_ids_dict = utils.perform_batch_nms(
                             _bbox_info,
                             enable_mask=params.enable_mask,
-                            nms_thresh=params.nms_thresh_,
-                            vid_nms_thresh=params.vid_nms_thresh_,
+                            nms_thresh_all=params.nms_thresh_all,
+                            vid_nms_thresh_all=params.vid_nms_thresh_all,
                             dup=params.dup_nms,
                         )
                     else:
@@ -1157,103 +1174,60 @@ def evaluate(
                         n_bboxes = len(_bbox_info)
                         total_bboxes += n_bboxes
 
-                    if nms_pbar is not None:
-                        time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
-                        del_pc = (del_bboxes / total_bboxes) * 100 if total_bboxes > 0 else 0
-                        nms_pbar_msg = (f"{time_stamp} nms "
-                                        f"del: {utils.num_to_words(del_bboxes)} / "
-                                        f"{utils.num_to_words(total_bboxes)} "
-                                        f"({del_pc:.2f}%) "
-                                        f"boxes: {utils.num_to_words(n_bboxes)},{utils.num_to_words(n_pairs)},"
-                                        f"{utils.num_to_words(n_vid_pairs)}")
-                        nms_pbar.set_description(nms_pbar_msg)
+                        if nms_pbar is not None:
+                            time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
+                            del_pc = (del_bboxes / total_bboxes) * 100 if total_bboxes > 0 else 0
+                            nms_pbar_msg = (f"{time_stamp} nms "
+                                            f"del: {utils.num_to_words(del_bboxes)} / "
+                                            f"{utils.num_to_words(total_bboxes)} "
+                                            f"({del_pc:.2f}%) "
+                                            f"boxes: {utils.num_to_words(n_bboxes)},{utils.num_to_words(n_pairs)},"
+                                            f"{utils.num_to_words(n_vid_pairs)}")
+                            nms_pbar.set_description(nms_pbar_msg)
 
                 # n_bbox_ids_to_delete = len(bbox_ids_to_delete)
                 # n_total_bbox_ids = len(seq_det_bboxes_list)
                 # print(f'deleting {n_bbox_ids_to_delete} / {n_total_bbox_ids} bboxes')
 
-                seq_det_bboxes_list = [k for k in seq_det_bboxes_list if not k['to_delete']]
+                if not params.batch_nms_:
+                    seq_det_bboxes_list = [k for k in seq_det_bboxes_list if not k['to_delete']]
+                    if params.save_as_imagenet_vid:
+                        utils.dets_to_imagenet_vid(seq_det_bboxes_list, imagenet_vid_out_path, seq_name,
+                                                   filename_to_frame_index, class_name_to_id)
 
-                if n_det_paths == 1:
-                    out_csv_rows = []
-                    for det_bbox in seq_det_bboxes_list:
-                        xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
-                        csv_row = {
-                            "ImageID": det_bbox['filename'],
-                            "LabelName": det_bbox['class'],
-                            "XMin": xmin_,
-                            "XMax": xmax_,
-                            "YMin": ymin_,
-                            "YMax": ymax_,
-                            "Confidence": det_bbox['confidence'],
-                        }
-                        if params.enable_mask:
-                            mask_rle = det_bbox['mask']
-                            mask_h_, mask_w_ = mask_rle['size']
-                            csv_row.update(
-                                {
-                                    "mask_w": mask_w_,
-                                    "mask_h": mask_h_,
-                                    "mask_counts": mask_rle['counts'],
-                                }
-                            )
-                        out_csv_rows.append(csv_row)
-                    det_dir, det_name = os.path.dirname(det_paths[0]), os.path.basename(det_paths[0])
-
-                    out_suffix = []
-                    if params.vid_nms_thresh > 0:
-                        out_suffix.append(f'vnms_{int(params.vid_nms_thresh * 100):02d}')
-
-                    if params.nms_thresh > 0:
-                        out_suffix.append(f'nms_{int(params.nms_thresh * 100):02d}')
-
-                    if out_suffix and params.save_dets:
-                        out_suffix_str = '_'.join(out_suffix)
-                        out_det_dir = utils.add_suffix(det_dir, out_suffix_str)
-                        os.makedirs(out_det_dir, exist_ok=True)
-                        out_det_path = utils.linux_path(out_det_dir, det_name)
-                        csv_columns = [
-                            "ImageID", "LabelName",
-                            "XMin", "XMax", "YMin", "YMax", "Confidence",
-                            'VideoID'
-                        ]
-                        if params.enable_mask:
-                            csv_columns += ['mask_w', 'mask_h', 'mask_counts']
-                        df = pd.DataFrame(out_csv_rows, columns=csv_columns)
-                        print_(f'writing postproc results to {out_det_path}')
-                        df.to_csv(out_det_path, index=False)
-                else:
+                if n_det_paths > 1:
                     print_(f'n_det_paths: {n_det_paths}')
+                elif params.save_dets:
+                    if params.batch_nms_:
+                        for (vid_nms_thresh_, nms_thresh_), keep_obj_ids in seq_keep_obj_ids_dict.items():
+                            seq_det_bboxes_list_ = [seq_det_bboxes_dict[i] for i in keep_obj_ids]
+                            utils.dets_to_csv(seq_det_bboxes_list_, det_paths[0], enable_mask,
+                                              vid_nms_thresh_, nms_thresh_, params.class_agnostic)
 
-            if params.save_as_imagenet_vid:
-                imagenet_vid_rows = []
-                for det_bbox in seq_det_bboxes_list:
-                    xmin_, ymin_, xmax_, ymax_ = det_bbox['bbox']
-                    filename_ = seq_name + '/' + os.path.splitext(os.path.basename(det_bbox['filename']))[0]
-                    class_name = det_bbox['class']
-                    confidence_ = float(det_bbox['confidence'])
-
-                    frame_index = int(filename_to_frame_index[filename_])
-                    class_index = int(class_name_to_id[class_name])
-
-                    obj_str = (f'{frame_index:d} {class_index:d} {confidence_:.4f} '
-                               f'{xmin_:.2f} {ymin_:.2f} {xmax_:.2f} {ymax_:.2f}')
-
-                    imagenet_vid_rows.append(obj_str)
-
-                with open(imagenet_vid_out_path, "a") as fid:
-                    fid.write('\n'.join(imagenet_vid_rows))
+                    else:
+                        utils.dets_to_csv(seq_det_bboxes_list, det_paths[0], enable_mask,
+                                          params.vid_nms_thresh_, params.nms_thresh_, params.class_agnostic)
 
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
+            if params.batch_nms_:
+                keep_obj_ids_dict[seq_path] = seq_keep_obj_ids_dict
 
     """save pkl and detection post-proc"""
     if True:
         if not det_loaded and params.save_det_pkl:
-            print_(f'\nSaving detection data to {det_pkl}')
-            os.makedirs(det_pkl_dir, exist_ok=True)
-            with open(det_pkl, 'wb') as f:
-                pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
+            if not params.batch_nms_:
+                raw_det_data_dict_ = {}
+                # for seq_path_, seq_det_bboxes_list_ in raw_det_data_dict.items():
+                #     seq_det_bboxes_list_ = [seq_det_bboxes_dict[i] for i in keep_obj_ids]
+                #     utils.dets_to_csv(seq_det_bboxes_list_, det_paths[0], enable_mask,
+                #                       vid_nms_thresh_, nms_thresh_, params.class_agnostic)
+
+            else:
+                print_(f'\nSaving detection data to {det_pkl}')
+                os.makedirs(det_pkl_dir, exist_ok=True)
+                with open(det_pkl, 'wb') as f:
+                    pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
 
         if not gt_loaded:
             gt_data_dict['counter_per_class'] = gt_counter_per_class
