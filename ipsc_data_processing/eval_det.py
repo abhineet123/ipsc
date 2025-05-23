@@ -3637,10 +3637,10 @@ def run(params: Params, sweep_mode: dict, *argv):
     if params.det_nms > 0 or sweep_mode['det_nms']:
         sweep_suffixes.append(f'nms_{params.det_nms:02d}')
 
-    if params.nms_thresh_ > 0 or sweep_mode['nms_thresh_']:
+    if sweep_mode['nms_thresh_']:
         sweep_suffixes.append(f'nms_{params.nms_thresh_:02d}')
 
-    if params.vid_nms_thresh_ > 0 or sweep_mode['vid_nms_thresh_']:
+    if sweep_mode['vid_nms_thresh_']:
         sweep_suffixes.append(f'vnms_{params.vid_nms_thresh_:02d}')
 
     sweep_suffix = '-'.join(sweep_suffixes)
