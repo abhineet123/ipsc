@@ -246,8 +246,8 @@ class Params(paramparse.CFG):
 
         self._sweep_params = [
             'det_nms',
-            'nms_thresh',
-            'vid_nms_thresh',
+            'nms_thresh_',
+            'vid_nms_thresh_',
         ]
 
     @property
@@ -451,15 +451,17 @@ def evaluate(
             pkl_suffixes.append('ign')
         if params.class_agnostic:
             pkl_suffixes.append('agn')
+        if pkl_suffixes:
+            pkl_out_suffix = '-'.join(pkl_suffixes)
+            gt_pkl = utils.add_suffix(gt_pkl, pkl_out_suffix, sep='-')
+
+        """detection specific pkl_suffixes"""
         if params.vid_nms_thresh_ > 0:
             pkl_suffixes.append(f'vnms_{params.vid_nms_thresh_:02d}')
         if params.nms_thresh_ > 0:
             pkl_suffixes.append(f'nms_{params.nms_thresh_:02d}')
-
         if pkl_suffixes:
             pkl_out_suffix = '-'.join(pkl_suffixes)
-
-            gt_pkl = utils.add_suffix(gt_pkl, pkl_out_suffix, sep='-')
             det_pkl = utils.add_suffix(det_pkl, pkl_out_suffix, sep='-')
 
         gt_class_data_dict = {
@@ -521,12 +523,15 @@ def evaluate(
                 det_loaded = 1
             else:
                 raw_det_data_dict = {}
+                nms_thresh_to_raw_det_data_dict = {}
                 det_loaded = 0
 
         det_data_dict = {}
 
         if not det_loaded:
             print_('Generating detection data')
+            if params.save_det_pkl:
+                os.makedirs(det_pkl_dir, exist_ok=True)
 
         _pause = 1
         gt_counter_per_class = {}
@@ -870,8 +875,8 @@ def evaluate(
             #     print(f'\ndet_paths: {det_paths}')
 
             seq_det_bboxes_list = []
-            seq_det_bboxes_dict = {}
-            seq_keep_obj_ids_dict = {}
+            # seq_det_bboxes_dict = {}
+            nms_thresh_to_filtered_objs = {}
 
             from collections import defaultdict
             seq_det_file_to_bboxes = defaultdict(list)
@@ -882,7 +887,7 @@ def evaluate(
                 det_pbar = det_paths_iter = tqdm(det_paths, position=0, leave=True)
             else:
                 det_paths_iter = det_paths
-                print_('reading dets')
+                print_(f'reading dets: {det_paths}')
 
             n_invalid_dets = 0
             n_total_dets = 0
@@ -1129,7 +1134,7 @@ def evaluate(
                         bbox_dict['global_id'] = global_id
                         bbox_dict['to_delete'] = 0
 
-                        seq_det_bboxes_dict[local_id] = bbox_dict
+                        # seq_det_bboxes_dict[local_id] = bbox_dict
 
                         if det_pbar is not None:
                             time_stamp = datetime.now().strftime("%y%m%d %H%M%S")
@@ -1154,7 +1159,7 @@ def evaluate(
                 del_bboxes = 0
                 for _det_filename, _bbox_info in nms_iter:
                     if params.batch_nms_:
-                        seq_keep_obj_ids_dict = utils.perform_batch_nms(
+                        nms_thresh_to_filtered_objs = utils.perform_batch_nms(
                             _bbox_info,
                             enable_mask=params.enable_mask,
                             nms_thresh_all=params.nms_thresh_all,
@@ -1199,9 +1204,8 @@ def evaluate(
                     print_(f'n_det_paths: {n_det_paths}')
                 elif params.save_dets:
                     if params.batch_nms_:
-                        for (vid_nms_thresh_, nms_thresh_), keep_obj_ids in seq_keep_obj_ids_dict.items():
-                            seq_det_bboxes_list_ = [seq_det_bboxes_dict[i] for i in keep_obj_ids]
-                            utils.dets_to_csv(seq_det_bboxes_list_, det_paths[0], enable_mask,
+                        for (vid_nms_thresh_, nms_thresh_), filtered_objs in nms_thresh_to_filtered_objs.items():
+                            utils.dets_to_csv(filtered_objs, det_paths[0], enable_mask,
                                               vid_nms_thresh_, nms_thresh_, params.class_agnostic)
 
                     else:
@@ -1211,21 +1215,34 @@ def evaluate(
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
             if params.batch_nms_:
-                keep_obj_ids_dict[seq_path] = seq_keep_obj_ids_dict
+                for (vid_nms_thresh_, nms_thresh_), filtered_objs in nms_thresh_to_filtered_objs.items():
+                    try:
+                        raw_det_data_dict_ = nms_thresh_to_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)]
+                    except KeyError:
+                        raw_det_data_dict_ = nms_thresh_to_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)] = {}
+                    raw_det_data_dict_[seq_path] = filtered_objs
 
     """save pkl and detection post-proc"""
     if True:
         if not det_loaded and params.save_det_pkl:
             if not params.batch_nms_:
-                raw_det_data_dict_ = {}
-                # for seq_path_, seq_det_bboxes_list_ in raw_det_data_dict.items():
-                #     seq_det_bboxes_list_ = [seq_det_bboxes_dict[i] for i in keep_obj_ids]
-                #     utils.dets_to_csv(seq_det_bboxes_list_, det_paths[0], enable_mask,
-                #                       vid_nms_thresh_, nms_thresh_, params.class_agnostic)
+                for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_thresh_to_raw_det_data_dict.items():
+                    det_pkl_ = det_pkl
 
+                    det_pkl_suffixes = []
+                    if vid_nms_thresh_ > 0:
+                        det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
+                    if nms_thresh_ > 0:
+                        det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
+                    if det_pkl_suffixes:
+                        det_pkl_out_suffix = '-'.join(det_pkl_suffixes)
+                        det_pkl_ = utils.add_suffix(det_pkl_, det_pkl_out_suffix, sep='-')
+
+                    print_(f'\nSaving detection data to {det_pkl_}')
+                    with open(det_pkl_, 'wb') as f:
+                        pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
             else:
                 print_(f'\nSaving detection data to {det_pkl}')
-                os.makedirs(det_pkl_dir, exist_ok=True)
                 with open(det_pkl, 'wb') as f:
                     pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
 
@@ -3508,12 +3525,9 @@ def run(params: Params, sweep_mode: dict, *argv):
     if not isinstance(vid_stride, int):
         vid_stride = 0
 
-    det_nms = params.det_nms  # type: float
-    nms_thresh = params.nms_thresh  # type: float
-    vid_nms_thresh = params.vid_nms_thresh  # type: float
     labels_path = params.labels_path
 
-    if vid_nms_thresh > 0:
+    if params.vid_nms_thresh_ > 0:
         assert params.vid_det, "vid_nms can only be performed with vid_det data"
 
     load_samples = params.load_samples
@@ -3546,8 +3560,8 @@ def run(params: Params, sweep_mode: dict, *argv):
         seq_path_list_file = utils.add_suffix(seq_path_list_file, img_paths_suffix)
 
     _det_path_list_file = params.det_paths
-    if det_nms > 0:
-        _det_path_list_file = f'{_det_path_list_file}_nms_{int(det_nms * 100):02d}'
+    if params.det_nms > 0:
+        _det_path_list_file = f'{_det_path_list_file}_nms_{params.det_nms:02d}'
 
     if params.det_root_dir:
         _det_path_list_file = utils.linux_path(params.det_root_dir, _det_path_list_file)
@@ -3604,21 +3618,21 @@ def run(params: Params, sweep_mode: dict, *argv):
     save_suffix = params.save_suffix
     save_suffix = save_suffix.replace(':', '-')
 
-    assert det_nms == 0 or nms_thresh == 0, "both nms_thresh and det_nms cannot be nonzero"
+    assert params.det_nms == 0 or params.nms_thresh_ == 0, "both nms_thresh and det_nms cannot be nonzero"
 
     sweep_suffixes = []
 
     if vid_stride > 0:
         sweep_suffixes.append(f'strd_{vid_stride:02d}')
 
-    if det_nms > 0 or sweep_mode['det_nms']:
-        sweep_suffixes.append(f'nms_{int(det_nms * 100):02d}')
+    if params.det_nms > 0 or sweep_mode['det_nms']:
+        sweep_suffixes.append(f'nms_{params.det_nms:02d}')
 
-    if nms_thresh > 0 or sweep_mode['nms_thresh']:
-        sweep_suffixes.append(f'nms_{int(nms_thresh * 100):02d}')
+    if params.nms_thresh_ > 0 or sweep_mode['nms_thresh_']:
+        sweep_suffixes.append(f'nms_{params.nms_thresh_:02d}')
 
-    if vid_nms_thresh > 0 or sweep_mode['vid_nms_thresh']:
-        sweep_suffixes.append(f'vnms_{int(vid_nms_thresh * 100):02d}')
+    if params.vid_nms_thresh_ > 0 or sweep_mode['vid_nms_thresh_']:
+        sweep_suffixes.append(f'vnms_{params.vid_nms_thresh_:02d}')
 
     sweep_suffix = '-'.join(sweep_suffixes)
 
@@ -4027,7 +4041,41 @@ def run(params: Params, sweep_mode: dict, *argv):
 
 
 def sweep(params: Params):
+    params.nms_thresh_all = [int(k) for k in  params.nms_thresh_all]
+    params.vid_nms_thresh_all = [int(k) for k in  params.vid_nms_thresh_all]
+
     params_ = copy.deepcopy(params)
+
+    if params_.nms_thresh_all or params_.vid_nms_thresh_all:
+        """batch nms"""
+        params_.batch_nms_ = True
+        params_.nms_thresh_ = 0
+        params_.vid_nms_thresh_ = 0
+        params_.load_det = False
+        params_.load_gt = False
+        params_.save_det_pkl = True
+        params_.save_gt_pkl = True
+        sweep_mode = {sweep_param: False for sweep_param in params_.sweep_params}
+        params_._sweep_params = []
+        params_.det_nms = 0
+
+        if params_.class_agnostic != 1:
+            params_.class_agnostic = 0
+            run(params_, sweep_mode)
+
+        if params_.class_agnostic:
+            params_.class_agnostic = 1
+            run(params_, sweep_mode)
+
+        params_ = copy.deepcopy(params)
+        params_.batch_nms_ = False
+        params_.load_det = True
+        params_.load_gt = True
+        params_.nms_thresh_ = params_.nms_thresh_all
+        params_.vid_nms_thresh_ = params_.vid_nms_thresh_all
+        params_.nms_thresh_all = []
+        params_.vid_nms_thresh_all = []
+
     if params_.seq_wise:
         params_.sweep_params.append('seq')
         if not params_.seq:

@@ -1307,6 +1307,7 @@ def num_to_words(num):
         words = f'{num}'
     return words
 
+
 def dets_to_imagenet_vid(seq_det_bboxes_list, imagenet_vid_out_path, seq_name,
                          filename_to_frame_index, class_name_to_id):
     imagenet_vid_rows = []
@@ -1326,6 +1327,7 @@ def dets_to_imagenet_vid(seq_det_bboxes_list, imagenet_vid_out_path, seq_name,
 
     with open(imagenet_vid_out_path, "a") as fid:
         fid.write('\n'.join(imagenet_vid_rows))
+
 
 def dets_to_csv(seq_det_bboxes_list, det_path, enable_mask,
                 vid_nms_thresh, nms_thresh, class_agnostic):
@@ -1380,6 +1382,7 @@ def dets_to_csv(seq_det_bboxes_list, det_path, enable_mask,
     df = pd.DataFrame(out_csv_rows, columns=csv_columns)
     print_(f'writing postproc results to {out_det_path}')
     df.to_csv(out_det_path, index=False)
+
 
 def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
                             # objs_to_delete=None, global_objs_to_delete=None
@@ -1437,24 +1440,29 @@ def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup
     assert nms_thresh_all or vid_nms_thresh_all, "either vid_nms_thresh_all or nms_thresh_all must be provided"
 
     n_objs = len(objs)
-    obj_bboxes = np.asarray([obj['bbox'] for obj in objs])
+    obj_bboxes_arr = np.asarray([obj['bbox'] for obj in objs])
+    iou_arr = np.empty((n_objs, n_objs))
+    compute_overlaps_multi(iou_arr, None, None, obj_bboxes_arr, obj_bboxes_arr)
+    iou_arr *= 100
+
     all_obj_ids = [obj['local_id'] for obj in objs]
+    obj_id_to_bbox = {obj['local_id']: obj for obj in objs}
 
     pred_obj_pairs = list(itertools.combinations(objs, 2))
-    pred_obj_pair_ids = list(itertools.combinations(all_obj_ids, 2))
+    pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs]
 
     vid_pred_obj_pair_ids = None
-
     if vid_nms_thresh_all:
         vid_pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs
                                  if obj1['video_id'] != obj2['video_id']]
         if not dup:
             pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs
                                  if obj1['video_id'] == obj2['video_id']]
+    else:
+        vid_nms_thresh_all = [0, ]
 
-    iou_arr = np.empty((n_objs, n_objs))
-    compute_overlaps_multi(iou_arr, None, None, obj_bboxes, obj_bboxes)
-    iou_arr *= 100
+    if not nms_thresh_all:
+        nms_thresh_all = [0, ]
 
     all_nms_thresh = list(set(vid_nms_thresh_all + nms_thresh_all))
     is_overlapping = {}
@@ -1477,13 +1485,13 @@ def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup
                            for id1, id2 in pred_obj_pair_ids if is_overlapping[nms_thresh][id1, id2]]
         del_obj_ids_dict[nms_thresh] = del_obj_ids
 
-    keep_obj_ids_dict = {}
+    filtered_objs = {}
     for vid_nms_thresh, nms_thresh in itertools.product(vid_nms_thresh_all, nms_thresh_all):
         del_obj_ids = list(set(vid_del_obj_ids_dict[vid_nms_thresh] + del_obj_ids_dict[nms_thresh]))
         keep_obj_ids = list(set(del_obj_ids) - set(all_obj_ids))
-        keep_obj_ids_dict[(vid_nms_thresh, nms_thresh)] = keep_obj_ids
+        filtered_objs[(vid_nms_thresh, nms_thresh)] = [obj_id_to_bbox[i] for i in keep_obj_ids]
 
-    return keep_obj_ids_dict
+    return filtered_objs
 
 
 def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
