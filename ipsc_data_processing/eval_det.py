@@ -4027,6 +4027,9 @@ def run(params: Params, sweep_mode: dict, *argv):
                 show_pbar=params.show_pbar,
                 vid_info=vid_info,
             )
+            if eval_dict is None:
+                return out_root_dir
+
             for gt_class in gt_classes:
                 eval_ = eval_dict[gt_class]
                 for metric in max_tp_metrics:
