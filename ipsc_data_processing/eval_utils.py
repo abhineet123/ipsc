@@ -1492,8 +1492,8 @@ def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup
     thresh_to_filtered_objs = {}
     nms_thresh_pairs = itertools.product(vid_nms_thresh_all, nms_thresh_all)
     for vid_nms_thresh, nms_thresh in nms_thresh_pairs:
-        if vid_nms_thresh == 0 and nms_thresh == 0:
-            continue
+        # if vid_nms_thresh == 0 and nms_thresh == 0:
+        #     continue
         del_obj_ids = list(set(vid_del_obj_ids_dict[vid_nms_thresh] + del_obj_ids_dict[nms_thresh]))
         keep_obj_ids = list(set(all_obj_ids) - set(del_obj_ids))
         thresh_to_filtered_objs[(vid_nms_thresh, nms_thresh)] = [id_to_bbox[i] for i in keep_obj_ids]

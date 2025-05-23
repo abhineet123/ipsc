@@ -4059,25 +4059,28 @@ def sweep(params: Params):
     params_ = copy.deepcopy(params)
 
     if params_.nms_thresh_all or params_.vid_nms_thresh_all:
-        """batch nms"""
-        params_.batch_nms_ = True
-        params_.nms_thresh_ = 0
-        params_.vid_nms_thresh_ = 0
-        params_.load_det = False
-        params_.load_gt = False
-        params_.save_det_pkl = True
-        params_.save_gt_pkl = True
-        sweep_mode = {sweep_param: False for sweep_param in params_.sweep_params}
-        params_._sweep_params = []
-        params_.det_nms = 0
 
-        if params_.class_agnostic != 1:
-            params_.class_agnostic = 0
-            run(params_, sweep_mode)
 
-        if params_.class_agnostic:
-            params_.class_agnostic = 1
-            run(params_, sweep_mode)
+        if not params.load_det:
+            """batch nms"""
+            params_.batch_nms_ = True
+            params_.nms_thresh_ = 0
+            params_.vid_nms_thresh_ = 0
+            params_.load_det = False
+            params_.load_gt = False
+            params_.save_det_pkl = True
+            params_.save_gt_pkl = True
+            sweep_mode = {sweep_param: False for sweep_param in params_.sweep_params}
+            params_._sweep_params = []
+            params_.det_nms = 0
+
+            if params_.class_agnostic != 1:
+                params_.class_agnostic = 0
+                run(params_, sweep_mode)
+
+            if params_.class_agnostic:
+                params_.class_agnostic = 1
+                run(params_, sweep_mode)
 
         params_ = copy.deepcopy(params)
         params_.batch_nms_ = False
