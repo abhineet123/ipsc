@@ -524,7 +524,7 @@ def evaluate(
                 det_loaded = 1
             else:
                 raw_det_data_dict = {}
-                nms_thresh_to_raw_det_data_dict = {}
+                nms_raw_det_data_dict = {}
                 det_loaded = 0
 
         det_data_dict = {}
@@ -1223,16 +1223,16 @@ def evaluate(
             if params.batch_nms_:
                 for (vid_nms_thresh_, nms_thresh_), filtered_objs in nms_thresh_to_filtered_objs.items():
                     try:
-                        raw_det_data_dict_ = nms_thresh_to_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)]
+                        raw_det_data_dict_ = nms_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)]
                     except KeyError:
-                        raw_det_data_dict_ = nms_thresh_to_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)] = {}
+                        raw_det_data_dict_ = nms_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)] = {}
                     raw_det_data_dict_[seq_path] = filtered_objs
 
     """save pkl and detection post-proc"""
     if True:
         if not det_loaded and params.save_det_pkl:
-            if not params.batch_nms_:
-                for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_thresh_to_raw_det_data_dict.items():
+            if params.batch_nms_:
+                for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_raw_det_data_dict.items():
                     det_pkl_ = det_pkl
 
                     det_pkl_suffixes = []
@@ -1263,6 +1263,9 @@ def evaluate(
         gt_end_t = time.time()
         if not (gt_loaded and det_loaded):
             print_('Time taken: {} sec'.format(gt_end_t - gt_start_t))
+
+        if params.batch_nms_:
+            return None
 
         gt_counter_per_class = gt_data_dict['counter_per_class']
 
