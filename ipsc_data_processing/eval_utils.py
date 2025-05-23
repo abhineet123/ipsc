@@ -296,12 +296,12 @@ def print_stats(stats, name='', fmt='.3f'):
     print(tabulate(stats, headers='keys', tablefmt="orgtbl", floatfmt=fmt))
 
 
-def put_text_with_background(img, text, loc, col, bgr_col, **kwargs):
+def put_text_with_background(img, text, loc, col, bkg_col, **kwargs):
     text_offset_x, text_offset_y = loc
 
     (text_width, text_height) = cv2.getTextSize(text, **kwargs)[0]
     box_coords = ((text_offset_x, text_offset_y + 5), (text_offset_x + text_width, text_offset_y - text_height))
-    cv2.rectangle(img, box_coords[0], box_coords[1], bgr_col, cv2.FILLED)
+    cv2.rectangle(img, box_coords[0], box_coords[1], bkg_col, cv2.FILLED)
 
     cv2.putText(img, text, org=loc, color=col, **kwargs)
 
@@ -1435,7 +1435,7 @@ def find_matching_obj_pairs(pred_obj_pairs, enable_mask, nms_thresh,
     return n_del
 
 
-def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup):
+def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup, vis, **kwargs):
     assert not enable_mask, "mask IOU is currently not supported in batch_nms"
     assert nms_thresh_all or vid_nms_thresh_all, "either vid_nms_thresh_all or nms_thresh_all must be provided"
 
@@ -1446,7 +1446,8 @@ def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup
     iou_arr *= 100
 
     all_obj_ids = [obj['local_id'] for obj in objs]
-    obj_id_to_bbox = {obj['local_id']: obj for obj in objs}
+    id_to_bbox = {obj['local_id']: obj for obj in objs}
+    id_to_conf = {obj['local_id']: obj['confidence'] for obj in objs}
 
     pred_obj_pairs = list(itertools.combinations(objs, 2))
     pred_obj_pair_ids = [(obj1['local_id'], obj2['local_id']) for obj1, obj2 in pred_obj_pairs]
@@ -1464,34 +1465,69 @@ def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup
     if not nms_thresh_all:
         nms_thresh_all = [0, ]
 
-    all_nms_thresh = list(set(vid_nms_thresh_all + nms_thresh_all))
+    cmb_nms_thresh = list(set(vid_nms_thresh_all + nms_thresh_all))
     is_overlapping = {}
-    for nms_thresh in all_nms_thresh:
-        is_overlapping[nms_thresh] = iou_arr >= nms_thresh
+    for nms_thresh in cmb_nms_thresh:
+        if nms_thresh > 0:
+            is_overlapping[nms_thresh] = iou_arr >= nms_thresh
 
     vid_del_obj_ids_dict = {}
     for vid_nms_thresh in vid_nms_thresh_all:
         vid_del_obj_ids = []
         if vid_nms_thresh > 0:
-            vid_del_obj_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
-                               for id1, id2 in vid_pred_obj_pair_ids if is_overlapping[vid_nms_thresh][id1, id2]]
+            is_overlapping_ = is_overlapping[vid_nms_thresh]
+            vid_del_obj_ids = [id2 if id_to_conf[id1] > id_to_conf[id2] else id1
+                               for id1, id2 in vid_pred_obj_pair_ids if is_overlapping_[id1, id2]]
         vid_del_obj_ids_dict[vid_nms_thresh] = vid_del_obj_ids
 
     del_obj_ids_dict = {}
     for nms_thresh in nms_thresh_all:
         del_obj_ids = []
         if nms_thresh > 0:
-            del_obj_ids = [id2 if objs[id1]['confidence'] > objs[id2]['confidence'] else id1
-                           for id1, id2 in pred_obj_pair_ids if is_overlapping[nms_thresh][id1, id2]]
+            is_overlapping_ = is_overlapping[nms_thresh]
+            del_obj_ids = [id2 if id_to_conf[id1] > id_to_conf[id2] else id1
+                           for id1, id2 in pred_obj_pair_ids if is_overlapping_[id1, id2]]
         del_obj_ids_dict[nms_thresh] = del_obj_ids
 
-    filtered_objs = {}
-    for vid_nms_thresh, nms_thresh in itertools.product(vid_nms_thresh_all, nms_thresh_all):
+    thresh_to_filtered_objs = {}
+    nms_thresh_pairs = itertools.product(vid_nms_thresh_all, nms_thresh_all)
+    for vid_nms_thresh, nms_thresh in nms_thresh_pairs:
+        if vid_nms_thresh == 0 and nms_thresh == 0:
+            continue
         del_obj_ids = list(set(vid_del_obj_ids_dict[vid_nms_thresh] + del_obj_ids_dict[nms_thresh]))
-        keep_obj_ids = list(set(del_obj_ids) - set(all_obj_ids))
-        filtered_objs[(vid_nms_thresh, nms_thresh)] = [obj_id_to_bbox[i] for i in keep_obj_ids]
+        keep_obj_ids = list(set(all_obj_ids) - set(del_obj_ids))
+        thresh_to_filtered_objs[(vid_nms_thresh, nms_thresh)] = [id_to_bbox[i] for i in keep_obj_ids]
 
-    return filtered_objs
+    if vis:
+        img_paths = [obj['file_path'] for obj in objs]
+        img_path = list(set(img_paths))
+        assert len(img_path) == 1, "multiple  img_paths"
+        img_path = img_path[0]
+        img = cv2.imread(img_path)
+
+        seq_name = os.path.basename(os.path.dirname(img_path))
+        img_name = os.path.basename(img_path)
+
+        img_vis_all = draw_objs(
+            img, objs,
+            title=f'{seq_name}-{img_name}-{len(objs)}',
+            show_class=True, **kwargs)
+        img_vis_all = resize_ar(img_vis_all, width=1800, height=1000)
+        cv2.imshow('img_vis_all', img_vis_all)
+
+        for (vid_nms_thresh, nms_thresh), filtered_objs in thresh_to_filtered_objs.items():
+            if vid_nms_thresh == 0 and nms_thresh == 0:
+                continue
+            img_vis_filtered = draw_objs(
+                img, filtered_objs,
+                title=f'{seq_name}-{img_name}-{vid_nms_thresh:02d}-{nms_thresh:02d}-{len(filtered_objs)}/{len(objs)}',
+                show_class=True,
+                **kwargs)
+            img_vis_filtered = resize_ar(img_vis_filtered, width=1800, height=1000)
+            cv2.imshow('img_vis_filtered', img_vis_filtered)
+            cv2.waitKey(0)
+
+    return thresh_to_filtered_objs
 
 
 def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
@@ -2403,13 +2439,20 @@ def compute_thresh_rec_prec(thresh_idx, score_thresholds,
 
 def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, cols=None,
               in_place=False, bbox=True, mask=False, thickness=2, check_bb=0,
-              bb_resize=None, cls_cat_to_col=None):
+              bb_resize=None, cls_cat_to_col=None, title=None, show_class=False):
     if in_place:
         vis_img = img
     else:
         vis_img = np.copy(img).astype(np.float32)
 
     mask_img = np.zeros_like(vis_img)
+
+    text_args = dict(
+        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        fontScale=0.8,
+        thickness=2,
+        # lineType=cv2.LINE_AA,
+    )
 
     vis_h, vis_w = vis_img.shape[:2]
 
@@ -2432,7 +2475,6 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, cols=None,
             cols = [cls_cat_to_col[obj['cls']] for obj in objs]
 
     for obj, obj_col in zip(objs, cols, strict=True):
-        label = obj['class']
         obj_col = col_bgr[obj_col]
 
         if mask:
@@ -2540,6 +2582,14 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, cols=None,
             cv2.rectangle(
                 vis_img, (int(xmin), int(ymin)), (int(xmax), int(ymax)), obj_col, thickness)
 
+            if show_class:
+                label = obj['class']
+                conf = int(obj['confidence'] * 100)
+
+                pt = (int(xmin), int(ymin)) if xmin > 15 and ymin > 15 else (int(xmax), int(ymax))
+                # cv2.putText(vis_img, f'{label} {conf:d}', pt, cv2.FONT_HERSHEY_SIMPLEX, 0.8, obj_col, 2, cv2.LINE_AA)
+                put_text_with_background(vis_img, f'{label} {conf:d}', pt, obj_col, [0, 0, 0], **text_args)
+
         if mask:
             mask_binary = mask_uint.astype(bool)
 
@@ -2548,6 +2598,11 @@ def draw_objs(img, objs, alpha=0.5, class_name_to_col=None, cols=None,
                                     (1 - alpha) * mask_img[mask_binary])
 
     vis_img = vis_img.astype(np.uint8)
+
+    if title is not None:
+        # cv2.putText(vis_img, title, (15, 25), cv2.FONT_HERSHEY_SIMPLEX,
+        #             0.8, [255, 255, 255], 2, cv2.LINE_AA)
+        put_text_with_background(vis_img, title, (15, 25), [255, 255, 255], [0, 0, 0], **text_args)
 
     # cv2.imshow('vis_img', vis_img)
     # cv2.waitKey(0)

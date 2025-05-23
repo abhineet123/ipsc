@@ -230,6 +230,7 @@ class Params(paramparse.CFG):
         self.ckpt_iter = ''
         self.filter_ignored = 0
         self.ignore_ioa_thresh = 0.25
+        self.conf_thresh = 0
 
         """force sweep mode for the purpose of setting the output directory"""
         self.sweep = 0
@@ -1065,6 +1066,9 @@ def evaluate(
                         except KeyError:
                             confidence = 1.0
 
+                        if params.conf_thresh > 0 and confidence < params.conf_thresh:
+                            continue
+
                         if det_class not in gt_classes:
                             msg = f'{det_seq_name}: {det_filename} :: invalid det_class: {det_class}'
                             if ignore_invalid_class:
@@ -1165,6 +1169,8 @@ def evaluate(
                             nms_thresh_all=params.nms_thresh_all,
                             vid_nms_thresh_all=params.vid_nms_thresh_all,
                             dup=params.dup_nms,
+                            vis=0,
+                            class_name_to_col=class_name_to_col,
                         )
                     else:
                         n_del, n_pairs, n_vid_pairs = utils.perform_nms(
