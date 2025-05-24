@@ -1253,7 +1253,7 @@ def evaluate(
                         det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
                     if det_pkl_suffixes:
                         det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
-                        det_pkl_ = utils.add_suffix_to_dir(det_pkl_, det_pkl_dir_suffix, sep='-')
+                        det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
 
                     det_pkl_dir = os.path.dirname(det_pkl_)
                     os.makedirs(det_pkl_dir, exist_ok=True)
