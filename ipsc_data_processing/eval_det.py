@@ -259,10 +259,9 @@ class Params(paramparse.CFG):
 
     class Sweep:
         def __init__(self):
-            self.nms_thresh = []
-            self.vid_nms_thresh = []
-            self.det_nms = []
-            self.vid_stride = []
+            self.nms_thresh = [0,]
+            self.vid_nms_thresh = [0,]
+            self.det_nms = [0,]
 
 
 def evaluate(
@@ -1247,10 +1246,8 @@ def evaluate(
                     det_pkl_ = det_pkl
 
                     det_pkl_suffixes = []
-                    if vid_nms_thresh_ > 0:
-                        det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
-                    if nms_thresh_ > 0:
-                        det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
+                    det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
+                    det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
                     if det_pkl_suffixes:
                         det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
                         det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
@@ -4089,13 +4086,15 @@ def sweep(params: Params):
             params_.force_sweep = 0
             params_.det_nms = 0
 
-            if params_.class_agnostic != 1:
+            class_agnostic = params.class_agnostic
+
+            if class_agnostic != 1:
                 params_.class_agnostic = 0
                 run(params_, sweep_mode)
 
-            if params_.class_agnostic:
-                params_.class_agnostic = 1
-                run(params_, sweep_mode)
+            # if class_agnostic:
+            #     params_.class_agnostic = 1
+            #     run(params_, sweep_mode)
 
         params_ = copy.deepcopy(params)
         params_.batch_nms = False
@@ -4114,7 +4113,7 @@ def sweep(params: Params):
             assert params.end_id >= params.start_id and params.end_id >= 0, "end_id must be >= start_id"
 
             seq_ids = list(range(params.start_id, params.end_id + 1))
-            params_.seq = list(range(len(seq_ids)))
+            params_.sweep.seq = list(range(len(seq_ids)))
 
     if params_.vid_stride:
         sweep_params.append('vid_stride')
