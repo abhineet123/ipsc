@@ -637,7 +637,7 @@ def evaluate(
     read_iter = enumerate(zip(gt_path_list, gt_seq_names, strict=True))
     if params.batch_nms and not params.verbose:
         read_iter = tqdm(read_iter, total=len(gt_path_list))
-        
+
     for seq_idx, (_gt_path, gt_seq_name) in read_iter:
 
         # if gt_loaded and det_loaded:
