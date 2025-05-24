@@ -1253,9 +1253,10 @@ def evaluate(
                         det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
                     if det_pkl_suffixes:
                         det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
-                        os.makedirs(det_pkl_dir_suffix, exist_ok=True)
                         det_pkl_ = utils.add_suffix_to_dir(det_pkl_, det_pkl_dir_suffix, sep='-')
 
+                    det_pkl_dir = os.path.dirname(det_pkl_)
+                    os.makedirs(det_pkl_dir, exist_ok=True)
                     print_(f'\nSaving detection data to {det_pkl_}')
                     with open(det_pkl_, 'wb') as f:
                         pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
