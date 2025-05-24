@@ -98,7 +98,7 @@ python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-s5:vnms-s5:conf-50:agn
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-1:nms-1:vnms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1:dbg:vbs:conf-50:ief
 <a id="025___on_val_strd_1_len_2_fbb_lf_n_"></a>
 ##### 025       @ on-val-strd-1/len-2-fbb/lfn-->eval_p2s_vid-imgn
-python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-1:nms-025:vnms-025:agn-0:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1-025:dets-1:vis:dbg:vbs
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-1:nms-025:vnms-025:agn-0:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1-025:dets-0:vis:dbg:vbs
 <a id="s5___on_val_strd_1_len_2_fbb_lf_n_"></a>
 ##### s5       @ on-val-strd-1/len-2-fbb/lfn-->eval_p2s_vid-imgn
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-1:nms-s5:vnms-s5:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1-s5
