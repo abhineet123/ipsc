@@ -94,7 +94,6 @@ class Params(paramparse.CFG):
 
         self.det_root_dir = ''
         self.det_paths = ''
-        self.det_nms = [0, ]
 
         self.allow_missing_dets = 0
         self.combine_dets = 0
@@ -232,28 +231,40 @@ class Params(paramparse.CFG):
         self.ignore_ioa_thresh = 0.25
         self.conf_thresh = 0
 
-        """force sweep mode for the purpose of setting the output directory"""
-        self.sweep = 0
+
 
         self.seq_wise = 0
         self.vid_stride = []
 
-        self.nms_thresh_all = [0, ]
-        self.vid_nms_thresh_all = [0, ]
-
         self.batch_nms_ = 0
         self.nms_thresh_ = 0
         self.vid_nms_thresh_ = 0
+        self.det_nms = 0
 
-        self._sweep_params = [
-            'det_nms',
-            'nms_thresh_',
-            'vid_nms_thresh_',
-        ]
+        self.sweep = Params.Sweep()
 
-    @property
-    def sweep_params(self):
-        return self._sweep_params
+        # self.sweep.nms_thresh = [0, ]
+        # self.sweep.vid_nms_thresh = [0, ]
+        # self.det_nms_all = [0, ]
+
+        # self._sweep_params = [
+        #     'det_nms',
+        #     'nms_thresh_',
+        #     'vid_nms_thresh_',
+        # ]
+
+    # @property
+    # def sweep_params(self):
+    #     return self._sweep_params
+
+    class Sweep:
+        def __init__(self):
+            """force sweep mode for the purpose of setting the output directory"""
+            self.enable = 0
+
+            self.nms_thresh = []
+            self.vid_nms_thresh = []
+            self.det_nms = []
 
 
 def evaluate(
@@ -457,13 +468,15 @@ def evaluate(
             gt_pkl = utils.add_suffix(gt_pkl, pkl_out_suffix, sep='-')
 
         """detection specific pkl_suffixes"""
-        if params.vid_nms_thresh_ > 0:
-            pkl_suffixes.append(f'vnms_{params.vid_nms_thresh_:02d}')
-        if params.nms_thresh_ > 0:
-            pkl_suffixes.append(f'nms_{params.nms_thresh_:02d}')
-        if pkl_suffixes:
-            pkl_out_suffix = '-'.join(pkl_suffixes)
-            det_pkl = utils.add_suffix(det_pkl, pkl_out_suffix, sep='-')
+        """added in out_root_dir instead"""
+        
+        # if params.vid_nms_thresh_ > 0:
+        #     pkl_suffixes.append(f'vnms_{params.vid_nms_thresh_:02d}')
+        # if params.nms_thresh_ > 0:
+        #     pkl_suffixes.append(f'nms_{params.nms_thresh_:02d}')
+        # if pkl_suffixes:
+        #     pkl_out_suffix = '-'.join(pkl_suffixes)
+        #     det_pkl = utils.add_suffix(det_pkl, pkl_out_suffix, sep='-')
 
         gt_class_data_dict = {
             gt_class: {} for gt_class in gt_classes
@@ -591,10 +604,10 @@ def evaluate(
             "vid_nms_thresh and nms_thresh must be 0 in batch_nms mode"
 
         enable_nms = True
-        if params.nms_thresh_all:
-            print_(f'performing batch NMS with thresholds {params.nms_thresh_all}')
-        if params.vid_nms_thresh_all:
-            print_(f'performing batch video NMS with thresholds {params.vid_nms_thresh_all}')
+        if params.sweep.nms_thresh:
+            print_(f'performing batch NMS with thresholds {params.sweep.nms_thresh}')
+        if params.sweep.vid_nms_thresh:
+            print_(f'performing batch video NMS with thresholds {params.sweep.vid_nms_thresh}')
 
     elif params.nms_thresh_ > 0 or params.vid_nms_thresh_ > 0:
         enable_nms = True
@@ -1166,8 +1179,8 @@ def evaluate(
                         nms_thresh_to_filtered_objs = utils.perform_batch_nms(
                             _bbox_info,
                             enable_mask=params.enable_mask,
-                            nms_thresh_all=params.nms_thresh_all,
-                            vid_nms_thresh_all=params.vid_nms_thresh_all,
+                            nms_thresh_all=params.sweep.nms_thresh,
+                            vid_nms_thresh_all=params.sweep.vid_nms_thresh,
                             dup=params.dup_nms,
                             vis=0,
                             class_name_to_col=class_name_to_col,
@@ -1241,8 +1254,9 @@ def evaluate(
                     if nms_thresh_ > 0:
                         det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
                     if det_pkl_suffixes:
-                        det_pkl_out_suffix = '-'.join(det_pkl_suffixes)
-                        det_pkl_ = utils.add_suffix(det_pkl_, det_pkl_out_suffix, sep='-')
+                        det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
+                        os.makedirs(det_pkl_dir_suffix, exist_ok=True)
+                        det_pkl_ = utils.add_suffix_to_dir(det_pkl_, det_pkl_dir_suffix, sep='-')
 
                     print_(f'\nSaving detection data to {det_pkl_}')
                     with open(det_pkl_, 'wb') as f:
@@ -3515,15 +3529,15 @@ def run(params: Params, sweep_mode: dict, *argv):
     else:
         print_ = print
 
-    for i, sweep_param in enumerate(params.sweep_params):
-
+    sweep_params = vars(params.sweep)
+    for i, sweep_param in enumerate(sweep_params):
         if argv[i] is not None:
             setattr(params, sweep_param, argv[i])
 
         param_val = getattr(params, sweep_param)
 
-        if isinstance(param_val, (list, tuple)):
-            setattr(params, sweep_param, param_val[0])
+        # if isinstance(param_val, (list, tuple)):
+        #     setattr(params, sweep_param, param_val[0])
 
     # print('gt_paths', params.gt_paths)
     print_('det_paths', params.det_paths)
@@ -3637,10 +3651,10 @@ def run(params: Params, sweep_mode: dict, *argv):
     if params.det_nms > 0 or sweep_mode['det_nms']:
         sweep_suffixes.append(f'nms_{params.det_nms:02d}')
 
-    if sweep_mode['nms_thresh_']:
+    if params.nms_thresh_ > 0 or sweep_mode['nms_thresh_']:
         sweep_suffixes.append(f'nms_{params.nms_thresh_:02d}')
 
-    if sweep_mode['vid_nms_thresh_']:
+    if params.vid_nms_thresh_ > 0 or sweep_mode['vid_nms_thresh_']:
         sweep_suffixes.append(f'vnms_{params.vid_nms_thresh_:02d}')
 
     sweep_suffix = '-'.join(sweep_suffixes)
@@ -3664,7 +3678,7 @@ def run(params: Params, sweep_mode: dict, *argv):
             out_dir_name = utils.linux_path(out_dir_name, batch_name)
 
         if sweep_suffix:
-            if params.sweep or is_sweep:
+            if params.sweep.enable or is_sweep:
                 out_dir_name = utils.linux_path(out_dir_name, sweep_suffix)
             else:
                 out_dir_name = f'{out_dir_name}-{sweep_suffix}'
@@ -4053,14 +4067,15 @@ def run(params: Params, sweep_mode: dict, *argv):
 
 
 def sweep(params: Params):
-    params.nms_thresh_all = [int(k) for k in  params.nms_thresh_all]
-    params.vid_nms_thresh_all = [int(k) for k in  params.vid_nms_thresh_all]
+
+    sweep_params = list(vars(params.sweep).keys())
+
+    params.sweep.nms_thresh = [int(k) for k in params.sweep.nms_thresh]
+    params.sweep.vid_nms_thresh = [int(k) for k in params.sweep.vid_nms_thresh]
 
     params_ = copy.deepcopy(params)
 
-    if params_.nms_thresh_all or params_.vid_nms_thresh_all:
-
-
+    if params_.sweep.nms_thresh or params_.sweep.vid_nms_thresh:
         if not params.load_det:
             """batch nms"""
             params_.batch_nms_ = True
@@ -4070,8 +4085,8 @@ def sweep(params: Params):
             params_.load_gt = False
             params_.save_det_pkl = True
             params_.save_gt_pkl = True
-            sweep_mode = {sweep_param: False for sweep_param in params_.sweep_params}
-            params_._sweep_params = []
+            sweep_mode = {sweep_param: False for sweep_param in sweep_params}
+            params_.sweep.enable = 0
             params_.det_nms = 0
 
             if params_.class_agnostic != 1:
@@ -4086,13 +4101,13 @@ def sweep(params: Params):
         params_.batch_nms_ = False
         params_.load_det = True
         params_.load_gt = True
-        params_.nms_thresh_ = params_.nms_thresh_all
-        params_.vid_nms_thresh_ = params_.vid_nms_thresh_all
-        params_.nms_thresh_all = []
-        params_.vid_nms_thresh_all = []
+        # params_.nms_thresh_ = params_.sweep.nms_thresh
+        # params_.vid_nms_thresh_ = params_.sweep.vid_nms_thresh
+        # params_.sweep.nms_thresh = []
+        # params_.sweep.vid_nms_thresh = []
 
     if params_.seq_wise:
-        params_.sweep_params.append('seq')
+        sweep_params.append('seq')
         if not params_.seq:
             assert params.start_id >= 0 and params.end_id >= 0, \
                 "both start_id and end_id must be specified for auto seq_wise mode"
@@ -4102,16 +4117,18 @@ def sweep(params: Params):
             params_.seq = list(range(len(seq_ids)))
 
     if params_.vid_stride:
-        params_.sweep_params.append('vid_stride')
+        sweep_params.append('vid_stride')
+        setattr(params_.sweep, 'vid_stride',  params_.vid_stride)
 
     if params_.class_agnostic == 2:
-        params_.sweep_params.append('class_agnostic')
-        params_.class_agnostic = [0, 1]
+        sweep_params.append('class_agnostic')
+        setattr(params_.sweep, 'class_agnostic',  [0, 1])
+        # params_.class_agnostic = [0, 1]
 
     sweep_vals = []
     sweep_mode = {}
-    for i, sweep_param in enumerate(params_.sweep_params):
-        param_val = getattr(params_, sweep_param)
+    for i, sweep_param in enumerate(sweep_params):
+        param_val = getattr(params_.sweep, sweep_param)
 
         is_sweep = len(param_val) > 1
 
@@ -4131,7 +4148,6 @@ def sweep(params: Params):
     # n_proc = min(n_proc, n_sweep_val_combos)
     print(f'testing over {n_sweep_val_combos} param combos')
     if n_proc > 1:
-
         import functools
 
         params_.show_pbar = False

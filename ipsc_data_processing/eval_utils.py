@@ -1627,6 +1627,13 @@ def load_samples_from_txt(load_paths, xml_dir_name, load_path_root='', verbose=T
     return seq_paths, seq_to_samples
 
 
+def add_suffix_to_dir(src_path, suffix, dst_ext='', sep='_'):
+    # abs_src_path = os.path.abspath(src_path)
+    src_dir = os.path.dirname(src_path)
+    src_name = os.path.basename(src_path)
+    dst_path = linux_path(src_dir + sep + suffix, src_name)
+    return dst_path
+
 def add_suffix(src_path, suffix, dst_ext='', sep='_'):
     # abs_src_path = os.path.abspath(src_path)
     src_dir = os.path.dirname(src_path)
