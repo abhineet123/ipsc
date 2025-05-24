@@ -537,8 +537,6 @@ def evaluate(
                 nms_raw_det_data_dict = {}
                 det_loaded = 0
 
-        det_data_dict = {}
-
         if not det_loaded:
             print_('Generating detection data')
             if params.save_det_pkl:
@@ -570,73 +568,73 @@ def evaluate(
 
         img_path_to_size = {}
 
-    if isinstance(params.seq, int) and params.seq >= 0:
-        """restrict processing to a single sequence"""
-        assert params.seq <= len(gt_path_list), f"invalid seq_wise id: {params.seq}"
-        gt_path_list = [gt_path_list[params.seq], ]
-        gt_seq_names = [gt_seq_names[params.seq], ]
-        seq_name_list = [seq_name_list[params.seq], ]
-        seq_paths = [seq_paths[params.seq], ]
-        all_seq_det_paths = [all_seq_det_paths[params.seq], ]
-        n_seq = 1
-        seq_path_ = seq_paths[0]
+        if isinstance(params.seq, int) and params.seq >= 0:
+            """restrict processing to a single sequence"""
+            assert params.seq <= len(gt_path_list), f"invalid seq_wise id: {params.seq}"
+            gt_path_list = [gt_path_list[params.seq], ]
+            gt_seq_names = [gt_seq_names[params.seq], ]
+            seq_name_list = [seq_name_list[params.seq], ]
+            seq_paths = [seq_paths[params.seq], ]
+            all_seq_det_paths = [all_seq_det_paths[params.seq], ]
+            n_seq = 1
+            seq_path_ = seq_paths[0]
 
-        # if gt_loaded:
-        #     gt_data_dict_ = {
-        #         seq_path_:  gt_data_dict[seq_path_]
-        #     }
-        #     if 'ignored' in gt_data_dict:
-        #         gt_data_dict_['ignored'] = {
-        #             seq_path_: gt_data_dict['ignored'][seq_path_]
-        #         }
-        #     gt_data_dict = gt_data_dict_
-        #
-        # if det_loaded:
-        #     det_data_dict = {
-        #         seq_name_list[0]: det_data_dict[seq_name_list[0]]
-        #     }
-    enable_nms = False
-    if params.batch_nms:
-        assert params.vid_nms_thresh == 0 and params.nms_thresh == 0, \
-            "vid_nms_thresh and nms_thresh must be 0 in batch_nms mode"
+            # if gt_loaded:
+            #     gt_data_dict_ = {
+            #         seq_path_:  gt_data_dict[seq_path_]
+            #     }
+            #     if 'ignored' in gt_data_dict:
+            #         gt_data_dict_['ignored'] = {
+            #             seq_path_: gt_data_dict['ignored'][seq_path_]
+            #         }
+            #     gt_data_dict = gt_data_dict_
+            #
+            # if det_loaded:
+            #     det_data_dict = {
+            #         seq_name_list[0]: det_data_dict[seq_name_list[0]]
+            #     }
+        enable_nms = False
+        if params.batch_nms:
+            assert params.vid_nms_thresh == 0 and params.nms_thresh == 0, \
+                "vid_nms_thresh and nms_thresh must be 0 in batch_nms mode"
 
-        enable_nms = True
-        if params.sweep.nms_thresh:
-            print_(f'performing batch NMS with thresholds {params.sweep.nms_thresh}')
-        if params.sweep.vid_nms_thresh:
-            print_(f'performing batch video NMS with thresholds {params.sweep.vid_nms_thresh}')
+            enable_nms = True
+            if params.sweep.nms_thresh:
+                print_(f'performing batch NMS with thresholds {params.sweep.nms_thresh}')
+            if params.sweep.vid_nms_thresh:
+                print_(f'performing batch video NMS with thresholds {params.sweep.vid_nms_thresh}')
 
-    elif params.nms_thresh > 0 or params.vid_nms_thresh > 0:
-        enable_nms = True
-        if params.nms_thresh > 0:
-            print_(f'performing NMS with threshold {params.nms_thresh:d}%')
+        elif params.nms_thresh > 0 or params.vid_nms_thresh > 0:
+            enable_nms = True
+            if params.nms_thresh > 0:
+                print_(f'performing NMS with threshold {params.nms_thresh:d}%')
 
-        if params.vid_nms_thresh > 0:
-            print_(f'performing video NMS with threshold {params.vid_nms_thresh:d}%')
+            if params.vid_nms_thresh > 0:
+                print_(f'performing video NMS with threshold {params.vid_nms_thresh:d}%')
 
-    if params.save_as_imagenet_vid:
-        imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
-        print(f'\nimagenet_vid_out_path: {imagenet_vid_out_path}\n')
-        """overwrite existing file if it exists with an empty file"""
-        open(imagenet_vid_out_path, "w").close()
+        if params.save_as_imagenet_vid:
+            imagenet_vid_out_path = utils.linux_path(out_root_dir, 'imagenet_vid.txt')
+            print(f'\nimagenet_vid_out_path: {imagenet_vid_out_path}\n')
+            """overwrite existing file if it exists with an empty file"""
+            open(imagenet_vid_out_path, "w").close()
 
-        assert params.imagenet_vid_map_path, "imagenet_vid_map_path must be provided"
-        class_name_map_file = utils.linux_path(params.imagenet_vid_map_path, "map_vid.txt")
-        filename_to_frame_map_file = utils.linux_path(params.imagenet_vid_map_path, "val.txt")
+            assert params.imagenet_vid_map_path, "imagenet_vid_map_path must be provided"
+            class_name_map_file = utils.linux_path(params.imagenet_vid_map_path, "map_vid.txt")
+            filename_to_frame_map_file = utils.linux_path(params.imagenet_vid_map_path, "val.txt")
 
-        class_name_map = open(class_name_map_file, "r").readlines()
-        filename_to_frame_map = open(filename_to_frame_map_file, "r").readlines()
+            class_name_map = open(class_name_map_file, "r").readlines()
+            filename_to_frame_map = open(filename_to_frame_map_file, "r").readlines()
 
-        class_name_map = [k.strip().split(' ') for k in class_name_map]
-        class_name_to_id = {k[2]: int(k[1]) for k in class_name_map}
+            class_name_map = [k.strip().split(' ') for k in class_name_map]
+            class_name_to_id = {k[2]: int(k[1]) for k in class_name_map}
 
-        filename_to_frame_map = [k.strip().split(' ') for k in filename_to_frame_map]
-        filename_to_frame_index = {k[0]: int(k[1]) for k in filename_to_frame_map}
+            filename_to_frame_map = [k.strip().split(' ') for k in filename_to_frame_map]
+            filename_to_frame_index = {k[0]: int(k[1]) for k in filename_to_frame_map}
 
-    """read gt and det"""
-    read_iter = enumerate(zip(gt_path_list, gt_seq_names, strict=True))
-    if params.batch_nms and not params.verbose:
-        read_iter = tqdm(read_iter, total=len(gt_path_list))
+        """read gt and det including filtering and NMS"""
+        read_iter = enumerate(zip(gt_path_list, gt_seq_names, strict=True))
+        if params.batch_nms and not params.verbose:
+            read_iter = tqdm(read_iter, total=len(gt_path_list))
 
     for seq_idx, (_gt_path, gt_seq_name) in read_iter:
 
@@ -1167,6 +1165,7 @@ def evaluate(
                 # assert valid_dets > 0, "no valid_dets found"
 
             if enable_nms:
+                seq_nms_filtered_bboxes_list = defaultdict(list)
                 nms_iter = seq_det_file_to_bboxes.items()
                 nms_pbar = None
                 if show_pbar:
@@ -1186,6 +1185,8 @@ def evaluate(
                             vis=0,
                             class_name_to_col=class_name_to_col,
                         )
+                        for (vid_nms_thresh_, nms_thresh_), filtered_objs in nms_thresh_to_filtered_objs.items():
+                            seq_nms_filtered_bboxes_list[(vid_nms_thresh_, nms_thresh_)] += filtered_objs
                     else:
                         n_del, n_pairs, n_vid_pairs = utils.perform_nms(
                             _bbox_info,
@@ -1224,7 +1225,7 @@ def evaluate(
                     print_(f'n_det_paths: {n_det_paths}')
                 elif params.save_dets:
                     if params.batch_nms:
-                        for (vid_nms_thresh_, nms_thresh_), filtered_objs in nms_thresh_to_filtered_objs.items():
+                        for (vid_nms_thresh_, nms_thresh_), filtered_objs in seq_nms_filtered_bboxes_list.items():
                             utils.dets_to_csv(filtered_objs, det_paths[0], enable_mask,
                                               vid_nms_thresh_, nms_thresh_, params.class_agnostic)
 
@@ -1235,14 +1236,14 @@ def evaluate(
             """Flat list of all the detections from all detection sets and images in this sequence"""
             raw_det_data_dict[seq_path] = seq_det_bboxes_list
             if params.batch_nms:
-                for (vid_nms_thresh_, nms_thresh_), filtered_objs in nms_thresh_to_filtered_objs.items():
+                for (vid_nms_thresh_, nms_thresh_), filtered_objs in seq_nms_filtered_bboxes_list.items():
                     try:
                         raw_det_data_dict_ = nms_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)]
                     except KeyError:
                         raw_det_data_dict_ = nms_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)] = {}
                     raw_det_data_dict_[seq_path] = filtered_objs
 
-    """save pkl and detection post-proc"""
+    """save pkl"""
     if True:
         if not det_loaded and params.save_det_pkl:
             if params.batch_nms:
@@ -1281,6 +1282,8 @@ def evaluate(
         if params.batch_nms:
             return None
 
+    """detection post-proc - rearrange to have class-wise and sequence-wise lists of objects"""
+    if True:
         gt_counter_per_class = gt_data_dict['counter_per_class']
 
         for _class_name in gt_classes:
@@ -1313,137 +1316,92 @@ def evaluate(
         print_('n_classes: ', n_classes)
         print_('gt_counter_per_class: ', gt_counter_per_class)
 
-        log_dir = 'pprint_log'
-        if not os.path.isdir(log_dir):
-            os.makedirs(log_dir)
+        # log_dir = 'pprint_log'
+        # if not os.path.isdir(log_dir):
+        #     os.makedirs(log_dir)
 
         if score_thresh > 0:
             print_('Discarding detections with score < {}'.format(score_thresh))
 
-        for gt_class_idx, gt_class in enumerate(gt_classes):
+        det_post_proc_pbar = range(n_seq)
+        if show_pbar:
+            det_post_proc_pbar = tqdm(det_post_proc_pbar, position=0, leave=True)
 
-            class_det_data_dict = {}
-            print_(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
+        det_data_dict = {gt_class: {seq_path: [] for seq_path in seq_paths} for gt_class in gt_classes}
+        for seq_idx in det_post_proc_pbar:
+            seq_name = seq_name_list[seq_idx]
+            seq_path = seq_paths[seq_idx]
 
-            det_start_t = time.time()
-            det_post_proc_pbar = range(n_seq)
+            seq_det = raw_det_data_dict[seq_path]
+
             if show_pbar:
-                det_post_proc_pbar = tqdm(det_post_proc_pbar, position=0, leave=True)
+                det_post_proc_pbar.set_description(f"Post processing sequence {seq_name}")
 
-            for seq_idx in det_post_proc_pbar:
+            # curr_class_det_exists = {}
+            # curr_class_det_objs = []
+            for _data in seq_det:
+                det_class = _data['class']
+                file_path = _data['file_path']
+                confidence = _data['confidence']
+                bbox = _data['bbox']
+                det_filename_ = _data['filename']
+                width = _data['width']
+                height = _data['height']
+                target_id = _data['target_id']
+                mask = _data['mask']
 
-                # sys.stdout.write('\rPost processing sequence {:d}/{:d} '.format(
-                #     seq_idx + 1, n_seq))
-                # sys.stdout.flush()
+                norm_bbox = [bbox[0] / float(width), bbox[1] / float(height),
+                             bbox[2] / float(width), bbox[3] / float(height)]
 
-                seq_name = seq_name_list[seq_idx]
-                seq_path = seq_paths[seq_idx]
+                # if file_path not in curr_class_det_exists:
+                #     curr_class_det_exists[file_path] = 0
 
+                if bbox is None or confidence < score_thresh:
+                    continue
+
+                obj_dict = {
+                    "class": det_class,
+                    "width": width,
+                    "height": height,
+                    "target_id": target_id,
+                    "filename": det_filename_,
+                    "file_path": file_path,
+                    "confidence": confidence,
+                    "file_id": file_path,
+                    "bbox": bbox,
+                    "norm_bbox": norm_bbox,
+                    "mask": mask,
+                }
+
+                det_data_dict[det_class][seq_path].append(obj_dict)
+
+                # curr_class_det_exists[file_path] = 1
+
+                # assert os.path.exists(file_path), f"file_path does not exist: {file_path}"
+
+            if params.show_vis:
                 seq_gt = gt_data_dict[seq_path]
-                seq_det = raw_det_data_dict[seq_path]
+                for file_path, gt_objs in seq_gt.items():
+                    seq_name = os.path.basename(os.path.dirname(file_path))
+                    img_name = os.path.basename(file_path)
+                    img = cv2.imread(file_path)
+                    img_gt = utils.draw_objs(img, gt_objs, title=f'{seq_name}-{img_name}-{len(gt_objs)}',
+                                             show_class=True, class_name_to_col=class_name_to_col)
 
-                if show_pbar:
-                    det_post_proc_pbar.set_description(f"Post processing sequence {seq_name}")
+                    det_objs = [obj for obj in seq_det if obj['file_path'] == file_path]
+                    img_det = utils.draw_objs(img, det_objs, title=f'{seq_name}-{img_name}-{len(det_objs)}',
+                                              show_class=True, class_name_to_col=class_name_to_col)
+                    cv2.imshow('img_gt', img_gt)
+                    cv2.imshow('img_det', img_det)
+                    cv2.waitKey(0)
 
-                curr_class_det_exists = {}
-                curr_class_det_objs = []
-                for _data in seq_det:
-                    det_class = _data['class']
-                    file_path = _data['file_path']
-                    confidence = _data['confidence']
-                    bbox = _data['bbox']
-                    det_filename_ = _data['filename']
-                    width = _data['width']
-                    height = _data['height']
-                    target_id = _data['target_id']
-                    mask = _data['mask']
-
-                    norm_bbox = [bbox[0] / float(width), bbox[1] / float(height),
-                                 bbox[2] / float(width), bbox[3] / float(height)]
-
-                    if file_path not in curr_class_det_exists:
-                        curr_class_det_exists[file_path] = 0
-
-                    if bbox is None or det_class != gt_class or confidence < score_thresh:
-                        continue
-
-                    curr_class_det_objs.append(
-                        {
-                            "class": det_class,
-                            "width": width,
-                            "height": height,
-                            "target_id": target_id,
-                            "filename": det_filename_,
-                            "file_path": file_path,
-                            "confidence": confidence,
-                            "file_id": file_path,
-                            "bbox": bbox,
-                            "norm_bbox": norm_bbox,
-                            "mask": mask,
-                        })
-                    curr_class_det_exists[file_path] = 1
-
-                    assert os.path.exists(file_path), f"file_path does not exist: {file_path}"
-
-                """look for false negatives for current class by finding frames with no detections in this class 
-                but with valid GT of this class;
-                only works for frames that have at least one detection of some class
-                """
-                # for file_path in curr_class_det_exists:
-                #     if curr_class_det_exists[file_path]:
-                #         continue
-                #
-                #     try:
-                #         gt_data = seq_gt[file_path]
-                #     except KeyError as e:
-                #         if allow_missing_gt:
-                #             # print('\nNo GT found for {}\n'.format(file_path))
-                #             gt_data = []
-                #         else:
-                #             if not os.path.isdir('map_pprint_log'):
-                #                 os.makedirs('map_pprint_log')
-                #             print('seq_path: {}'.format(seq_path))
-                #             print('file_path: {}'.format(file_path))
-                #
-                #             time_stamp = datetime.now().strftime("%y%m%d_%H%M%S")
-                #             log_path = utils.linux_path('map_pprint_log', 'map_pprint_log_{}.txt'.format(time_stamp))
-                #
-                #             with open(log_path, 'w') as _fid:
-                #                 pprint(('seq_det', seq_det), _fid)
-                #                 pprint(('seq_gt', seq_gt), _fid)
-                #
-                #             raise KeyError(e)
-                #
-                #     for gt_obj in gt_data:
-                #         if gt_obj['class'] == gt_class:
-                #             curr_class_det_objs.append(
-                #                 {
-                #                     'confidence': None,
-                #                     'file_id': file_path,
-                #                     'bbox': None,
-                #                     'mask': None
-                #                 }
-                #             )
-                #             break
-
-                class_det_data_dict[seq_path] = curr_class_det_objs
-
-            det_end_t = time.time()
-            det_data_dict[gt_class] = class_det_data_dict
-
-            print_('Time taken: {} sec'.format(det_end_t - det_start_t))
-
-        """
-         Calculate the AP for each class
-        """
+    """set up for main processing"""
+    if True:
         wmAP = sum_AP = 0.0
         wm_prec = wm_rec = wm_rec_prec = wm_score = 0.0
         sum_prec = sum_rec = sum_rec_prec = sum_score = 0.0
 
         min_overlap = iou_thresh
-
-        # ap_dictionary = {}
-        print_('Calculating the AP for each class')
 
         # colors (OpenCV works with BGR)
         # white = (255, 255, 255)
@@ -1524,246 +1482,250 @@ def evaluate(
         else:
             vis_video = 1
 
+        seq_name_to_csv_rows = {}
+        file_id_to_img_info = {}
+        json_dict = {
+            "images": [],
+            "type": "instances",
+            "annotations": [],
+            "categories": []
+        }
+
+        bnd_id = 1
+        n_all_gt_objs = n_all_fp_nex_whole_dets = 0
+
+        json_category_name_to_id = {}
+        video_out_dict = ground_truth_img = vis_out_fnames = None
+
+        all_class_dets = all_class_gt = None
+        src_img = frame_det_data = frame_gt_data = None
+        vis_w = vis_h = None
+        vert_stack = 0
+        vis_w_all = vis_h_all = None
+        cat_img_vis_list = None
+
     """main processing"""
-    seq_name_to_csv_rows = {}
-    file_id_to_img_info = {}
-    json_dict = {
-        "images": [],
-        "type": "instances",
-        "annotations": [],
-        "categories": []
-    }
-
-    bnd_id = 1
-    n_all_gt_objs = n_all_fp_nex_whole_dets = 0
-
-    json_category_name_to_id = {}
-    video_out_dict = ground_truth_img = vis_out_fnames = None
-
-    all_class_dets = all_class_gt = None
-    src_img = frame_det_data = frame_gt_data = None
-    vis_w = vis_h = None
-    vert_stack = 0
-    vis_w_all = vis_h_all = None
-    cat_img_vis_list = None
-
     for gt_class_idx, gt_class in enumerate(gt_classes):
-        category_info = {'supercategory': 'none', 'id': gt_class_idx, 'name': gt_class}
-        json_dict['categories'].append(category_info)
-        json_category_name_to_id[gt_class] = gt_class_idx
+        """preprocessing for each class"""
+        if True:
+            category_info = {'supercategory': 'none', 'id': gt_class_idx, 'name': gt_class}
+            json_dict['categories'].append(category_info)
+            json_category_name_to_id[gt_class] = gt_class_idx
 
-        category_info = {'supercategory': 'none', 'id': gt_class_idx + n_classes, 'name': f'FP-{gt_class}'}
-        json_dict['categories'].append(category_info)
-        json_category_name_to_id[f'FP-{gt_class}'] = gt_class_idx + n_classes
+            category_info = {'supercategory': 'none', 'id': gt_class_idx + n_classes, 'name': f'FP-{gt_class}'}
+            json_dict['categories'].append(category_info)
+            json_category_name_to_id[f'FP-{gt_class}'] = gt_class_idx + n_classes
 
-        enable_vis = show_vis or (save_vis and gt_class in save_classes)
+            enable_vis = show_vis or (save_vis and gt_class in save_classes)
 
-        n_class_dets = 0
+            n_class_dets = 0
 
-        n_class_gt = gt_counter_per_class[gt_class]
+            n_class_gt = gt_counter_per_class[gt_class]
 
-        other_classes = [k for k in gt_classes if k != gt_class]
+            other_classes = [k for k in gt_classes if k != gt_class]
 
-        print_(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
+            print_(f'\nProcessing class {gt_class_idx + 1:d} / {n_classes:d}: {gt_class:s}')
 
-        count_true_positives[gt_class] = 0
-        end_class = 0
+            count_true_positives[gt_class] = 0
+            end_class = 0
 
-        tp_class = []
+            tp_class = []
 
-        fp_class = []
-        fp_dup_class = []
-        fp_nex_class = []
-        fp_nex_part_class = []
-        fp_nex_whole_class = []
-        fp_cls_class = []
+            fp_class = []
+            fp_dup_class = []
+            fp_nex_class = []
+            fp_nex_part_class = []
+            fp_nex_whole_class = []
+            fp_cls_class = []
 
-        conf_class = []
+            conf_class = []
 
-        tp_sum = 0
+            tp_sum = 0
 
-        fp_sum = 0
-        fp_cls_sum = 0
-        fp_dup_sum = 0
-        fp_nex_sum = 0
-        fp_nex_part_sum = 0
-        fp_nex_whole_sum = 0
+            fp_sum = 0
+            fp_cls_sum = 0
+            fp_dup_sum = 0
+            fp_nex_sum = 0
+            fp_nex_part_sum = 0
+            fp_nex_whole_sum = 0
 
-        fn_sum = 0
-        fn_cls_sum = 0
-        fn_det_sum = 0
+            fn_sum = 0
+            fn_cls_sum = 0
+            fn_det_sum = 0
 
-        n_used_gt = 0
-        n_unused_gt = 0
-        n_total_gt = 0
-        all_gt_list = []
+            n_used_gt = 0
+            n_unused_gt = 0
+            n_total_gt = 0
+            all_gt_list = []
 
-        all_considered_gt = []
-        det_file_ids = []
+            all_considered_gt = []
+            det_file_ids = []
 
-        missing_gt_file_ids_live = []
+            missing_gt_file_ids_live = []
 
-        cum_tp_sum = OrderedDict()
-        cum_fp_sum = OrderedDict()
-
-        if save_vis:
-            if not vis_video or len(save_classes) > 1:
-                vis_root_dir = utils.linux_path(out_root_dir, 'vis', gt_class)
-            else:
-                vis_root_dir = out_root_dir
-
-            os.makedirs(vis_root_dir, exist_ok=True)
-            print_(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
-            video_out_dict = {
-                cat: None for cat in save_cats
-            }
-
-        cat_to_ids_vis_done = {k: [] for k in cls_cat_types}
-        cat_to_vis_count = {k: 0 for k in cls_cat_types}
-        seq_iter = range(n_seq)
-        if show_pbar:
-            seq_iter = tqdm(seq_iter, desc="sequence", ncols=70, position=0, leave=True)
-        else:
-            print_('computing mAP')
-
-        for seq_idx in seq_iter:
-            seq_path = seq_paths[seq_idx]
-            seq_name = seq_name_list[seq_idx]
-            # seq_root_dir = seq_root_dirs[seq_idx]
+            cum_tp_sum = OrderedDict()
+            cum_fp_sum = OrderedDict()
 
             if save_vis:
-                for cat, video_out in video_out_dict.items():
-                    if video_out is not None:
-                        video_out.release()
-                        video_out_dict[cat] = None
+                if not vis_video or len(save_classes) > 1:
+                    vis_root_dir = utils.linux_path(out_root_dir, 'vis', gt_class)
+                else:
+                    vis_root_dir = out_root_dir
 
-                vis_out_fnames = {
-                    cat: utils.linux_path(vis_root_dir, cat, f'{seq_name}.{vid_ext}')
-                    for cat in save_cats
+                os.makedirs(vis_root_dir, exist_ok=True)
+                print_(f'\n\nsaving {save_w} x {save_h} vis videos to {vis_root_dir}\n\n')
+                video_out_dict = {
+                    cat: None for cat in save_cats
                 }
 
-            seq_gt_data_dict = gt_data_dict[seq_path]
-            """total number of GTs of all classes in this sequence"""
-            n_seq_gts = len(seq_gt_data_dict)
+            cat_to_ids_vis_done = {k: [] for k in cls_cat_types}
+            cat_to_vis_count = {k: 0 for k in cls_cat_types}
+            seq_iter = range(n_seq)
+            if show_pbar:
+                seq_iter = tqdm(seq_iter, desc="sequence", ncols=70, position=0, leave=True)
+            else:
+                print_('computing mAP')
 
-            seq_class_gt_data = gt_class_data_dict[gt_class][seq_path]
-            """total number of GTs of this class in this sequence"""
-            n_seq_class_gts = len(seq_class_gt_data)
+        for seq_idx in seq_iter:
+            """preprocessing for each sequence"""
+            if True:
+                seq_path = seq_paths[seq_idx]
+                seq_name = seq_name_list[seq_idx]
+                # seq_root_dir = seq_root_dirs[seq_idx]
 
-            """all detections of this class in this sequence"""
-            seq_class_det_data = det_data_dict[gt_class][seq_path]
-            """total number of detections of this class in this sequence"""
-            n_seq_class_dets = len(seq_class_det_data)
+                if save_vis:
+                    for cat, video_out in video_out_dict.items():
+                        if video_out is not None:
+                            video_out.release()
+                            video_out_dict[cat] = None
 
-            n_class_dets += n_seq_class_dets
+                    vis_out_fnames = {
+                        cat: utils.linux_path(vis_root_dir, cat, f'{seq_name}.{vid_ext}')
+                        for cat in save_cats
+                    }
 
-            seq_gt_file_ids = set(seq_gt_data_dict.keys())
-            # n_seq_gt_file_ids = len(seq_gt_file_ids)
-
-            seq_class_gt_file_ids = set([obj['file_id'] for obj in seq_class_gt_data])
-            # n_seq_class_gt_file_ids = len(seq_class_gt_file_ids)
-
-            seq_class_det_file_ids = set([obj['file_id'] for obj in seq_class_det_data])
-            # n_seq_det_file_ids = len(seq_class_det_file_ids)
-
-            """all frames with no det of this class but containing gt of this class"""
-            missing_class_det_file_ids = seq_class_gt_file_ids - seq_class_det_file_ids
-
-            """all frames with no GT of any class but containing det of this class"""
-            missing_gt_file_ids = seq_class_det_file_ids - seq_gt_file_ids
-
-            if missing_gt_file_ids:
-                """
-                dummy GT is only needed for images that have no GT for any class since all other images are 
-                already present in the dictionary even if they have no GT of this class 
-                so there is no risk of key error when trying to access GT data for those images
-                """
-                msg = f'{seq_name} : no GT found for {len(missing_gt_file_ids)} images ' \
-                      f'with {gt_class} detections'
-                if not allow_missing_gt:
-                    raise AssertionError(msg)
-
-                print_('\n' + msg)
-
-                seq_gt_data_dict.update(
-                    {k: [] for k in missing_gt_file_ids}
-                )
+                seq_gt_data_dict = gt_data_dict[seq_path]
+                """total number of GTs of all classes in this sequence"""
                 n_seq_gts = len(seq_gt_data_dict)
 
-            if missing_class_det_file_ids:
-                """dummy detections should only be added for images that have a GT of this class 
-                to avoid unnecessary processing even though the result would be the same if we were to add 
-                them for all images with any class GT too"""
+                seq_class_gt_data = gt_class_data_dict[gt_class][seq_path]
+                """total number of GTs of this class in this sequence"""
+                n_seq_class_gts = len(seq_class_gt_data)
 
-                n_missing_class_det_file_ids = len(missing_class_det_file_ids)
-                print_(f'\n{seq_name}: no {gt_class} detections found for {n_missing_class_det_file_ids} images'
-                       f' with {gt_class} GT\n')
-
-                """add one dummy detection for each missing image"""
-                seq_class_det_data += [
-                    {'confidence': None, 'file_id': k, 'bbox': None} for k in missing_class_det_file_ids
-                ]
+                """all detections of this class in this sequence"""
+                seq_class_det_data = det_data_dict[gt_class][seq_path]
+                """total number of detections of this class in this sequence"""
                 n_seq_class_dets = len(seq_class_det_data)
 
-            seq_gt_file_ids_with_dummy = set(seq_gt_data_dict.keys())
-            n_seq_gt_file_ids_with_dummy = len(seq_gt_file_ids_with_dummy)
+                n_class_dets += n_seq_class_dets
 
-            seq_class_det_file_ids_with_dummy = set([obj['file_id'] for obj in seq_class_det_data])
-            n_seq_class_det_file_ids_with_dummy = len(seq_class_det_file_ids_with_dummy)
+                seq_gt_file_ids = set(seq_gt_data_dict.keys())
+                # n_seq_gt_file_ids = len(seq_gt_file_ids)
 
-            # if params.verbose == 2:
-            #     print_(f'n_seq_gt_file_ids_with_dummy: {n_seq_gt_file_ids_with_dummy}')
-            #     print_(f'n_seq_class_det_file_ids_with_dummy: {n_seq_class_det_file_ids_with_dummy}')
+                seq_class_gt_file_ids = set([obj['file_id'] for obj in seq_class_gt_data])
+                # n_seq_class_gt_file_ids = len(seq_class_gt_file_ids)
 
-            """sort detections by frame"""
-            seq_class_det_data.sort(key=lambda x: x['file_id'])
-            # seq_class_det_data.sort(key=lambda x: x['confidence'], reverse=True)
+                seq_class_det_file_ids = set([obj['file_id'] for obj in seq_class_det_data])
+                # n_seq_det_file_ids = len(seq_class_det_file_ids)
 
-            """flags to mark the status of each detection"""
-            tp = [0] * n_seq_class_dets
+                """all frames with no det of this class but containing gt of this class"""
+                missing_class_det_file_ids = seq_class_gt_file_ids - seq_class_det_file_ids
 
-            fp = [0] * n_seq_class_dets
-            fp_dup = [0] * n_seq_class_dets
-            fp_nex = [0] * n_seq_class_dets
-            fp_nex_whole = [0] * n_seq_class_dets
-            fp_nex_part = [0] * n_seq_class_dets
-            fp_cls = [0] * n_seq_class_dets
+                """all frames with no GT of any class but containing det of this class"""
+                missing_gt_file_ids = seq_class_det_file_ids - seq_gt_file_ids
 
-            fn_dets = [0] * n_seq_class_dets
+                if missing_gt_file_ids:
+                    """
+                    dummy GT is only needed for images that have no GT for any class since all other images are 
+                    already present in the dictionary even if they have no GT of this class 
+                    so there is no risk of key error when trying to access GT data for those images
+                    """
+                    msg = f'{seq_name} : no GT found for {len(missing_gt_file_ids)} images ' \
+                          f'with {gt_class} detections'
+                    if not allow_missing_gt:
+                        raise AssertionError(msg)
 
-            conf = [0] * n_seq_class_dets
+                    print_('\n' + msg)
 
-            all_gt_match = [None] * n_seq_class_dets
-            all_status = [''] * n_seq_class_dets
-            all_ovmax = [-1] * n_seq_class_dets
+                    seq_gt_data_dict.update(
+                        {k: [] for k in missing_gt_file_ids}
+                    )
+                    n_seq_gts = len(seq_gt_data_dict)
 
-            if assoc_method == 0:
-                cum_tp_sum, cum_fp_sum = utils.perform_global_association(
-                    seq_class_det_data, seq_gt_data_dict, gt_class,
-                    show_sim, tp, fp, all_status, all_ovmax,
-                    iou_thresh, count_true_positives,
-                    all_gt_match,
-                    seq_name, save_sim_dets, sim_recs, sim_precs,
-                    seq_path, cum_tp_sum, cum_fp_sum, enable_mask)
+                if missing_class_det_file_ids:
+                    """dummy detections should only be added for images that have a GT of this class 
+                    to avoid unnecessary processing even though the result would be the same if we were to add 
+                    them for all images with any class GT too"""
 
-                if save_sim_dets:
-                    continue
+                    n_missing_class_det_file_ids = len(missing_class_det_file_ids)
+                    print_(f'\n{seq_name}: no {gt_class} detections found for {n_missing_class_det_file_ids} images'
+                           f' with {gt_class} GT\n')
 
-            fn_gts = []
-            fn_cats = []
+                    """add one dummy detection for each missing image"""
+                    seq_class_det_data += [
+                        {'confidence': None, 'file_id': k, 'bbox': None} for k in missing_class_det_file_ids
+                    ]
+                    n_seq_class_dets = len(seq_class_det_data)
 
-            det_idx = 0
-            img = None
-            prev_det_idx = None
+                seq_gt_file_ids_with_dummy = set(seq_gt_data_dict.keys())
+                # n_seq_gt_file_ids_with_dummy = len(seq_gt_file_ids_with_dummy)
 
-            vis_file_id = file_id = prev_file_id = None
-            text_img = None
+                seq_class_det_file_ids_with_dummy = set([obj['file_id'] for obj in seq_class_det_data])
+                # n_seq_class_det_file_ids_with_dummy = len(seq_class_det_file_ids_with_dummy)
 
-            if show_pbar:
-                pbar = tqdm(total=n_seq_class_dets, ncols=100, position=0, leave=True,
-                            desc=f'seq {seq_idx + 1} / {n_seq}')
+                # if params.verbose == 2:
+                #     print_(f'n_seq_gt_file_ids_with_dummy: {n_seq_gt_file_ids_with_dummy}')
+                #     print_(f'n_seq_class_det_file_ids_with_dummy: {n_seq_class_det_file_ids_with_dummy}')
 
-            """process all the detections in this sequence"""
+                """sort detections by frame"""
+                seq_class_det_data.sort(key=lambda x: x['file_id'])
+                # seq_class_det_data.sort(key=lambda x: x['confidence'], reverse=True)
+
+                """flags to mark the status of each detection"""
+                tp = [0] * n_seq_class_dets
+
+                fp = [0] * n_seq_class_dets
+                fp_dup = [0] * n_seq_class_dets
+                fp_nex = [0] * n_seq_class_dets
+                fp_nex_whole = [0] * n_seq_class_dets
+                fp_nex_part = [0] * n_seq_class_dets
+                fp_cls = [0] * n_seq_class_dets
+
+                fn_dets = [0] * n_seq_class_dets
+
+                conf = [0] * n_seq_class_dets
+
+                all_gt_match = [None] * n_seq_class_dets
+                all_status = [''] * n_seq_class_dets
+                all_ovmax = [-1] * n_seq_class_dets
+
+                if assoc_method == 0:
+                    cum_tp_sum, cum_fp_sum = utils.perform_global_association(
+                        seq_class_det_data, seq_gt_data_dict, gt_class,
+                        show_sim, tp, fp, all_status, all_ovmax,
+                        iou_thresh, count_true_positives,
+                        all_gt_match,
+                        seq_name, save_sim_dets, sim_recs, sim_precs,
+                        seq_path, cum_tp_sum, cum_fp_sum, enable_mask)
+
+                    if save_sim_dets:
+                        continue
+
+                fn_gts = []
+                fn_cats = []
+
+                det_idx = 0
+                img = None
+                prev_det_idx = None
+
+                vis_file_id = file_id = prev_file_id = None
+                text_img = None
+
+                if show_pbar:
+                    pbar = tqdm(total=n_seq_class_dets, ncols=100, position=0, leave=True,
+                                desc=f'seq {seq_idx + 1} / {n_seq}')
+
+            """process all the detections in this sequence frame-by-frame"""
             while True:
                 """process one detection at a time"""
                 has_objs = all_class_dets or all_class_gt
@@ -2448,649 +2410,656 @@ def evaluate(
             # -------------------------------
             """
 
-            if fps_to_gt:
-                if gt_class_idx == 0:
-                    """add GT of all classes at once"""
-                    assert seq_name not in seq_name_to_csv_rows, f"duplicate seq_name found: {seq_name}"
-                    seq_name_to_csv_rows[seq_name] = []
-                    gt_csv_rows = []
+            """postprocessing for each sequence"""
+            if True:
+                if fps_to_gt:
+                    if gt_class_idx == 0:
+                        """add GT of all classes at once"""
+                        assert seq_name not in seq_name_to_csv_rows, f"duplicate seq_name found: {seq_name}"
+                        seq_name_to_csv_rows[seq_name] = []
+                        gt_csv_rows = []
 
-                    fps_to_gt_iter = seq_gt_data_dict.items()
+                        fps_to_gt_iter = seq_gt_data_dict.items()
+                        if show_pbar:
+                            fps_to_gt_iter = tqdm(
+                                fps_to_gt_iter,
+                                desc="fps_to_gt: seq_gt_data_dict",
+                                ncols=100, position=0, leave=True)
+
+                        """GT is class-agnostic so should be added to the CSV only once"""
+                        for _gt_file_id, _frame_gt_data in fps_to_gt_iter:
+
+                            if not _frame_gt_data:
+                                continue
+
+                            _frame_height = _frame_gt_data[0]["height"]
+                            _frame_width = _frame_gt_data[0]["width"]
+                            _frame_area = _frame_height * _frame_width
+
+                            try:
+                                _ = file_id_to_img_info[_gt_file_id]
+                            except KeyError:
+                                rel_path = os.path.relpath(_gt_file_id, json_out_dir).rstrip('.' + os.sep).replace(
+                                    os.sep,
+                                    '/')
+                                img_info = {
+                                    'file_name': rel_path,
+                                    'height': _frame_height,
+                                    'width': _frame_width,
+                                    'id': seq_name + '/' + os.path.basename(_gt_file_id)
+                                }
+                                file_id_to_img_info[_gt_file_id] = img_info
+                                json_dict['images'].append(img_info)
+                            else:
+                                raise AssertionError(f'_file_id: {_gt_file_id} found multiple times in GT')
+
+                            for _frame_gt_datum in _frame_gt_data:
+                                gt_xmin, gt_ymin, gt_xmax, gt_ymax = _frame_gt_datum["bbox"]
+
+                                assert _frame_gt_datum["width"] == _frame_width, "_frame_width mismatch"
+                                assert _frame_gt_datum["height"] == _frame_height, "_frame_height mismatch"
+
+                                _gt_class = _frame_gt_datum["class"]
+                                _gt_target_id = _frame_gt_datum["target_id"]
+                                _gt_csv_row = {
+                                    "filename": _gt_file_id,
+                                    "class": _gt_class,
+                                    "xmin": gt_xmin,
+                                    "xmax": gt_xmax,
+                                    "ymin": gt_ymin,
+                                    "ymax": gt_ymax,
+                                    "target_id": _gt_target_id,
+                                    "width": _frame_width,
+                                    "height": _frame_height,
+                                }
+
+                                gt_o_width = gt_xmax - gt_xmin
+                                gt_o_height = gt_ymax - gt_ymin
+
+                                _gt_class_id = json_category_name_to_id[_gt_class]
+
+                                _gt_json_ann = {
+                                    'image_id': img_info['id'],
+                                    'id': bnd_id,
+                                    'area': gt_o_width * gt_o_height,
+                                    'iscrowd': 0,
+                                    'bbox': [gt_xmin, gt_ymin, gt_o_width, gt_o_height],
+                                    'label': _gt_class,
+                                    'category_id': _gt_class_id,
+                                    'ignore': 0,
+                                }
+                                bnd_id += 1
+
+                                if enable_mask:
+                                    mask_rle = _frame_gt_datum["mask"]
+                                    mask_h, mask_w = mask_rle['size']
+                                    mask_counts = mask_rle['counts']
+                                    _gt_csv_row.update({
+                                        "mask_h": mask_h,
+                                        "mask_w": mask_w,
+                                        "mask_counts": mask_counts,
+                                    })
+                                    mask_pts, bbox, is_multi = utils.mask_rle_to_pts(mask_rle)
+                                    mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
+                                    _gt_json_ann.update({
+                                        'segmentation': [mask_pts_flat, ],
+                                        # 'mask_pts': mask_pts,
+                                    })
+
+                                gt_csv_rows.append(_gt_csv_row)
+                                json_dict['annotations'].append(_gt_json_ann)
+
+                        n_gt_objs = len(gt_csv_rows)
+                        print_(f'\nfps_to_gt::{seq_name} n_gt_objs: {n_gt_objs}')
+
+                        n_all_gt_objs += n_gt_objs
+
+                        gt_csv_rows.sort(key=lambda x: x['filename'])
+
+                        seq_name_to_csv_rows[seq_name] += gt_csv_rows
+
+                    fp_nex_whole_dets = [seq_class_det_data[i] for i in range(n_seq_class_dets) if fp_nex_whole[i]]
+                    n_fp_nex_whole_dets = len(fp_nex_whole_dets)
+                    n_all_fp_nex_whole_dets += n_fp_nex_whole_dets
+
+                    print_(f'\n{gt_class}:{seq_name} :: n_fp_nex_whole_dets : {n_fp_nex_whole_dets}')
+
+                    det_csv_rows = []
+
+                    fp_nex_whole_dets_iter = fp_nex_whole_dets
                     if show_pbar:
-                        fps_to_gt_iter = tqdm(
-                            fps_to_gt_iter,
-                            desc="fps_to_gt: seq_gt_data_dict",
-                            ncols=100, position=0, leave=True)
+                        fp_nex_whole_dets_iter = tqdm(
+                            fp_nex_whole_dets_iter, desc="fps_to_gt: fp_nex_whole_dets", ncols=100, position=0,
+                            leave=True)
 
-                    """GT is class-agnostic so should be added to the CSV only once"""
-                    for _gt_file_id, _frame_gt_data in fps_to_gt_iter:
+                    for _det in fp_nex_whole_dets_iter:
+                        _det_xmin, _det_ymin, _det_xmax, _det_ymax = _det["bbox"]
+                        _det_class = _det["class"]
 
-                        if not _frame_gt_data:
-                            continue
+                        assert _det_class == gt_class, \
+                            f"unexpected det_class {_det_class} while processing detections for {gt_class}"
 
-                        _frame_height = _frame_gt_data[0]["height"]
-                        _frame_width = _frame_gt_data[0]["width"]
-                        _frame_area = _frame_height * _frame_width
-
+                        _det_file_id = _det["file_id"]
+                        _det_frame_height = _det["height"]
+                        _det_frame_width = _det["width"]
+                        _det_target_id = _det["target_id"]
                         try:
-                            _ = file_id_to_img_info[_gt_file_id]
+                            img_info = file_id_to_img_info[_det_file_id]
                         except KeyError:
-                            rel_path = os.path.relpath(_gt_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep,
-                                                                                                               '/')
+                            rel_path = os.path.relpath(_det_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep,
+                                                                                                                '/')
                             img_info = {
                                 'file_name': rel_path,
-                                'height': _frame_height,
-                                'width': _frame_width,
-                                'id': seq_name + '/' + os.path.basename(_gt_file_id)
+                                'height': _det_frame_height,
+                                'width': _det_frame_width,
+                                'id': seq_name + '/' + os.path.basename(_det_file_id)
                             }
-                            file_id_to_img_info[_gt_file_id] = img_info
+                            file_id_to_img_info[_det_file_id] = img_info
                             json_dict['images'].append(img_info)
-                        else:
-                            raise AssertionError(f'_file_id: {_gt_file_id} found multiple times in GT')
 
-                        for _frame_gt_datum in _frame_gt_data:
-                            gt_xmin, gt_ymin, gt_xmax, gt_ymax = _frame_gt_datum["bbox"]
+                        assert _det_frame_height == img_info['height'], "_det_frame_height mismatch"
+                        assert _det_frame_width == img_info['width'], "_det_frame_width mismatch"
 
-                            assert _frame_gt_datum["width"] == _frame_width, "_frame_width mismatch"
-                            assert _frame_gt_datum["height"] == _frame_height, "_frame_height mismatch"
-
-                            _gt_class = _frame_gt_datum["class"]
-                            _gt_target_id = _frame_gt_datum["target_id"]
-                            _gt_csv_row = {
-                                "filename": _gt_file_id,
-                                "class": _gt_class,
-                                "xmin": gt_xmin,
-                                "xmax": gt_xmax,
-                                "ymin": gt_ymin,
-                                "ymax": gt_ymax,
-                                "target_id": _gt_target_id,
-                                "width": _frame_width,
-                                "height": _frame_height,
-                            }
-
-                            gt_o_width = gt_xmax - gt_xmin
-                            gt_o_height = gt_ymax - gt_ymin
-
-                            _gt_class_id = json_category_name_to_id[_gt_class]
-
-                            _gt_json_ann = {
-                                'image_id': img_info['id'],
-                                'id': bnd_id,
-                                'area': gt_o_width * gt_o_height,
-                                'iscrowd': 0,
-                                'bbox': [gt_xmin, gt_ymin, gt_o_width, gt_o_height],
-                                'label': _gt_class,
-                                'category_id': _gt_class_id,
-                                'ignore': 0,
-                            }
-                            bnd_id += 1
-
-                            if enable_mask:
-                                mask_rle = _frame_gt_datum["mask"]
-                                mask_h, mask_w = mask_rle['size']
-                                mask_counts = mask_rle['counts']
-                                _gt_csv_row.update({
-                                    "mask_h": mask_h,
-                                    "mask_w": mask_w,
-                                    "mask_counts": mask_counts,
-                                })
-                                mask_pts, bbox, is_multi = utils.mask_rle_to_pts(mask_rle)
-                                mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
-                                _gt_json_ann.update({
-                                    'segmentation': [mask_pts_flat, ],
-                                    # 'mask_pts': mask_pts,
-                                })
-
-                            gt_csv_rows.append(_gt_csv_row)
-                            json_dict['annotations'].append(_gt_json_ann)
-
-                    n_gt_objs = len(gt_csv_rows)
-                    print_(f'\nfps_to_gt::{seq_name} n_gt_objs: {n_gt_objs}')
-
-                    n_all_gt_objs += n_gt_objs
-
-                    gt_csv_rows.sort(key=lambda x: x['filename'])
-
-                    seq_name_to_csv_rows[seq_name] += gt_csv_rows
-
-                fp_nex_whole_dets = [seq_class_det_data[i] for i in range(n_seq_class_dets) if fp_nex_whole[i]]
-                n_fp_nex_whole_dets = len(fp_nex_whole_dets)
-                n_all_fp_nex_whole_dets += n_fp_nex_whole_dets
-
-                print_(f'\n{gt_class}:{seq_name} :: n_fp_nex_whole_dets : {n_fp_nex_whole_dets}')
-
-                det_csv_rows = []
-
-                fp_nex_whole_dets_iter = fp_nex_whole_dets
-                if show_pbar:
-                    fp_nex_whole_dets_iter = tqdm(
-                        fp_nex_whole_dets_iter, desc="fps_to_gt: fp_nex_whole_dets", ncols=100, position=0, leave=True)
-
-                for _det in fp_nex_whole_dets_iter:
-                    _det_xmin, _det_ymin, _det_xmax, _det_ymax = _det["bbox"]
-                    _det_class = _det["class"]
-
-                    assert _det_class == gt_class, \
-                        f"unexpected det_class {_det_class} while processing detections for {gt_class}"
-
-                    _det_file_id = _det["file_id"]
-                    _det_frame_height = _det["height"]
-                    _det_frame_width = _det["width"]
-                    _det_target_id = _det["target_id"]
-                    try:
-                        img_info = file_id_to_img_info[_det_file_id]
-                    except KeyError:
-                        rel_path = os.path.relpath(_det_file_id, json_out_dir).rstrip('.' + os.sep).replace(os.sep, '/')
-                        img_info = {
-                            'file_name': rel_path,
-                            'height': _det_frame_height,
-                            'width': _det_frame_width,
-                            'id': seq_name + '/' + os.path.basename(_det_file_id)
+                        _det_csv_row = {
+                            "filename": _det_file_id,
+                            "class": f"FP-{_det_class}",
+                            "xmin": _det_xmin,
+                            "xmax": _det_xmax,
+                            "ymin": _det_ymin,
+                            "ymax": _det_ymax,
+                            "target_id": _det_target_id,
+                            "width": _det_frame_width,
+                            "height": _det_frame_height,
                         }
-                        file_id_to_img_info[_det_file_id] = img_info
-                        json_dict['images'].append(img_info)
+                        _det_o_width = _det_xmax - _det_xmin
+                        _det_o_height = _det_ymax - _det_ymin
 
-                    assert _det_frame_height == img_info['height'], "_det_frame_height mismatch"
-                    assert _det_frame_width == img_info['width'], "_det_frame_width mismatch"
+                        _det_class_id = json_category_name_to_id[f"FP-{_det_class}"]
 
-                    _det_csv_row = {
-                        "filename": _det_file_id,
-                        "class": f"FP-{_det_class}",
-                        "xmin": _det_xmin,
-                        "xmax": _det_xmax,
-                        "ymin": _det_ymin,
-                        "ymax": _det_ymax,
-                        "target_id": _det_target_id,
-                        "width": _det_frame_width,
-                        "height": _det_frame_height,
-                    }
-                    _det_o_width = _det_xmax - _det_xmin
-                    _det_o_height = _det_ymax - _det_ymin
+                        _det_json_ann = {
+                            'image_id': img_info['id'],
+                            'id': bnd_id,
+                            'area': _det_o_width * _det_o_height,
+                            'bbox': [_det_xmin, _det_ymin, _det_o_width, _det_o_height],
+                            'label': f"FP-{_det_class}",
+                            'category_id': _det_class_id,
+                            'iscrowd': 0,
+                            'ignore': 0,
+                        }
+                        bnd_id += 1
 
-                    _det_class_id = json_category_name_to_id[f"FP-{_det_class}"]
+                        if enable_mask:
+                            mask_rle = _det["mask"]
+                            mask_h, mask_w = mask_rle['size']
+                            mask_counts = mask_rle['counts']
+                            _det_csv_row.update({
+                                "mask_h": mask_h,
+                                "mask_w": mask_w,
+                                "mask_counts": mask_counts,
+                            })
+                            mask_pts, bbox, is_multi = utils.mask_rle_to_pts(mask_rle)
+                            mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
+                            _det_json_ann.update({
+                                'segmentation': [mask_pts_flat, ],
+                                # 'mask_pts': mask_pts,
+                            })
 
-                    _det_json_ann = {
-                        'image_id': img_info['id'],
-                        'id': bnd_id,
-                        'area': _det_o_width * _det_o_height,
-                        'bbox': [_det_xmin, _det_ymin, _det_o_width, _det_o_height],
-                        'label': f"FP-{_det_class}",
-                        'category_id': _det_class_id,
-                        'iscrowd': 0,
-                        'ignore': 0,
-                    }
-                    bnd_id += 1
+                        det_csv_rows.append(_det_csv_row)
+                        json_dict['annotations'].append(_det_json_ann)
 
-                    if enable_mask:
-                        mask_rle = _det["mask"]
-                        mask_h, mask_w = mask_rle['size']
-                        mask_counts = mask_rle['counts']
-                        _det_csv_row.update({
-                            "mask_h": mask_h,
-                            "mask_w": mask_w,
-                            "mask_counts": mask_counts,
-                        })
-                        mask_pts, bbox, is_multi = utils.mask_rle_to_pts(mask_rle)
-                        mask_pts_flat = [float(item) for sublist in mask_pts for item in sublist]
-                        _det_json_ann.update({
-                            'segmentation': [mask_pts_flat, ],
-                            # 'mask_pts': mask_pts,
-                        })
+                    n_det_objs = len(det_csv_rows)
+                    print_(f'fps_to_gt: n_det_objs: {n_det_objs}\n')
+                    det_csv_rows.sort(key=lambda x: x['filename'])
 
-                    det_csv_rows.append(_det_csv_row)
-                    json_dict['annotations'].append(_det_json_ann)
+                    seq_name_to_csv_rows[seq_name] += det_csv_rows
 
-                n_det_objs = len(det_csv_rows)
-                print_(f'fps_to_gt: n_det_objs: {n_det_objs}\n')
-                det_csv_rows.sort(key=lambda x: x['filename'])
+                if save_vis:
+                    for cat, video_out in video_out_dict.items():
+                        if video_out is not None:
+                            video_out.release()
 
-                seq_name_to_csv_rows[seq_name] += det_csv_rows
+                if end_class:
+                    break
+
+                tp_class += [x for i, x in enumerate(tp) if fn_dets[i] == 0]
+                fp_class += [x for i, x in enumerate(fp) if fn_dets[i] == 0]
+                fp_dup_class += [x for i, x in enumerate(fp_dup) if fn_dets[i] == 0]
+                fp_nex_class += [x for i, x in enumerate(fp_nex) if fn_dets[i] == 0]
+                fp_nex_part_class += [x for i, x in enumerate(fp_nex_part) if fn_dets[i] == 0]
+                fp_nex_whole_class += [x for i, x in enumerate(fp_nex_whole) if fn_dets[i] == 0]
+                fp_cls_class += [x for i, x in enumerate(fp_cls) if fn_dets[i] == 0]
+
+                conf_class += [x for i, x in enumerate(conf) if fn_dets[i] == 0]
+
+        """postprocessing for each class"""
+        if True:
+            if show_pbar:
+                pbar.close()
 
             if save_vis:
-                for cat, video_out in video_out_dict.items():
+                for video_out in video_out_dict.values():
                     if video_out is not None:
                         video_out.release()
 
-            if end_class:
-                break
+            if save_sim_dets:
+                continue
 
-            tp_class += [x for i, x in enumerate(tp) if fn_dets[i] == 0]
-            fp_class += [x for i, x in enumerate(fp) if fn_dets[i] == 0]
-            fp_dup_class += [x for i, x in enumerate(fp_dup) if fn_dets[i] == 0]
-            fp_nex_class += [x for i, x in enumerate(fp_nex) if fn_dets[i] == 0]
-            fp_nex_part_class += [x for i, x in enumerate(fp_nex_part) if fn_dets[i] == 0]
-            fp_nex_whole_class += [x for i, x in enumerate(fp_nex_whole) if fn_dets[i] == 0]
-            fp_cls_class += [x for i, x in enumerate(fp_cls) if fn_dets[i] == 0]
+            """
+            # -------------------------------
+            # completed processing all sequences for one class
+            # -------------------------------
+            """
+            # print('Sorting by confidence')
+            sort_idx = np.argsort(conf_class)[::-1]
 
-            conf_class += [x for i, x in enumerate(conf) if fn_dets[i] == 0]
+            fp_class = [fp_class[i] for i in sort_idx]
+            fp_dup_class = [fp_dup_class[i] for i in sort_idx]
+            fp_nex_class = [fp_nex_class[i] for i in sort_idx]
+            fp_nex_part_class = [fp_nex_part_class[i] for i in sort_idx]
+            fp_nex_whole_class = [fp_nex_whole_class[i] for i in sort_idx]
+            fp_cls_class = [fp_cls_class[i] for i in sort_idx]
 
-        if show_pbar:
-            pbar.close()
+            tp_class = [tp_class[i] for i in sort_idx]
+            conf_class = [conf_class[i] for i in sort_idx]
 
-        if save_vis:
-            for video_out in video_out_dict.values():
-                if video_out is not None:
-                    video_out.release()
+            ap = _prec = _rec = _rec_prec = _score = 0
+            _class_auc_rec_prec = 0
 
-        if save_sim_dets:
-            continue
+            n_imgs = len(all_img_paths)
 
-        """
-        # -------------------------------
-        # completed processing all sequences for one class
-        # -------------------------------
-        """
-        # print('Sorting by confidence')
-        sort_idx = np.argsort(conf_class)[::-1]
+            if compute_rec_prec and n_score_thresholds > 1:
+                print_(
+                    f'\n{gt_class}: Computing recall and precision '
+                    f'over {n_score_thresholds} thresholds, '
+                    f'{n_imgs} images, '
+                    f'{n_class_gt} GTs, '
+                    f'{n_class_dets} dets'
+                )
 
-        fp_class = [fp_class[i] for i in sort_idx]
-        fp_dup_class = [fp_dup_class[i] for i in sort_idx]
-        fp_nex_class = [fp_nex_class[i] for i in sort_idx]
-        fp_nex_part_class = [fp_nex_part_class[i] for i in sort_idx]
-        fp_nex_whole_class = [fp_nex_whole_class[i] for i in sort_idx]
-        fp_cls_class = [fp_cls_class[i] for i in sort_idx]
+                if n_threads == 1:
+                    print_('Not using multi threading')
+                    _start_t = time.time()
+                    _rec_prec_list = []
+                    for __thresh_idx in range(n_score_thresholds):
+                        __temp = utils.compute_thresh_rec_prec(
+                            __thresh_idx,
+                            score_thresholds=score_thresholds,
+                            conf_class=conf_class,
+                            fp_class=fp_class,
+                            fp_dup_class=fp_dup_class,
+                            fp_nex_class=fp_nex_class,
+                            fp_cls_class=fp_cls_class,
+                            tp_class=tp_class,
+                            n_gt=n_class_gt,
+                        )
+                        _rec_prec_list.append(__temp)
+                else:
+                    if n_threads == 0:
+                        n_threads = multiprocessing.cpu_count()
 
-        tp_class = [tp_class[i] for i in sort_idx]
-        conf_class = [conf_class[i] for i in sort_idx]
+                    print_(f'Using {n_threads} threads')
 
-        ap = _prec = _rec = _rec_prec = _score = 0
-        _class_auc_rec_prec = 0
+                    _start_t = time.time()
+                    with closing(ThreadPool(n_threads)) as pool:
+                        _rec_prec_list = pool.map(functools.partial(
+                            utils.compute_thresh_rec_prec,
+                            score_thresholds=score_thresholds,
+                            conf_class=conf_class,
+                            fp_class=fp_class,
+                            fp_dup_class=fp_dup_class,
+                            fp_nex_class=fp_nex_class,
+                            fp_cls_class=fp_cls_class,
+                            tp_class=tp_class,
+                            n_gt=n_class_gt,
+                        ), range(n_score_thresholds))
 
-        n_imgs = len(all_img_paths)
+                rec_thresh_all[:, gt_class_idx] = [_rec_prec[0] for _rec_prec in _rec_prec_list]
+                prec_thresh_all[:, gt_class_idx] = [_rec_prec[1] for _rec_prec in _rec_prec_list]
+                tp_sum_thresh_all[:, gt_class_idx] = [_rec_prec[2] for _rec_prec in _rec_prec_list]
+                fp_sum_thresh_all[:, gt_class_idx] = [_rec_prec[3] for _rec_prec in _rec_prec_list]
+                fp_cls_sum_thresh_all[:, gt_class_idx] = [_rec_prec[4] for _rec_prec in _rec_prec_list]
+                fp_dup_thresh_all[:, gt_class_idx] = [_rec_prec[5] for _rec_prec in _rec_prec_list]
+                fp_nex_thresh_all[:, gt_class_idx] = [_rec_prec[6] for _rec_prec in _rec_prec_list]
 
-        if compute_rec_prec and n_score_thresholds > 1:
-            print_(
-                f'\n{gt_class}: Computing recall and precision '
-                f'over {n_score_thresholds} thresholds, '
-                f'{n_imgs} images, '
-                f'{n_class_gt} GTs, '
-                f'{n_class_dets} dets'
+                del _rec_prec_list
+
+                _end_t = time.time()
+                print_('\nTime taken: {:.4f}'.format(_end_t - _start_t))
+                # print()
+
+                tp_class_cum = tp_class.copy()
+                fp_class_cum = fp_class.copy()
+                # compute precision/recall
+                cumsum = 0
+                for det_idx, val in enumerate(fp_class_cum):
+                    # fp_class[det_idx] has the number of false positives encountered
+                    # if only the first det_idx + 1 detections are considered
+                    fp_class_cum[det_idx] += cumsum
+                    cumsum += val
+                cumsum = 0
+                for det_idx, val in enumerate(tp_class_cum):
+                    tp_class_cum[det_idx] += cumsum
+                    cumsum += val
+                # print('tp: ', tp)
+
+                # print('fp_class_cum: ', fp_class_cum)
+                # print('tp_class_cum: ', tp_class_cum)
+
+                rec = tp_class_cum[:]
+                for det_idx, val in enumerate(tp_class_cum):
+                    if tp_class_cum[det_idx] > 0 and n_class_gt > 0:
+                        rec[det_idx] = float(tp_class_cum[det_idx]) / n_class_gt
+                # print(rec)
+                prec = tp_class_cum[:]
+                for det_idx, val in enumerate(tp_class_cum):
+                    try:
+                        prec[det_idx] = float(tp_class_cum[det_idx]) / (fp_class_cum[det_idx] + tp_class_cum[det_idx])
+                    except ZeroDivisionError:
+                        prec[det_idx] = 0
+
+                # print(prec)
+
+                ap, mrec, mprec = utils.voc_ap(rec, prec)
+
+                if draw_plot:
+                    fig1 = plt.figure(figsize=(18, 9), dpi=80)
+                    plt.subplot(1, 2, 1)
+                    plt.plot(rec, prec, 'b-.')
+                    plt.fill_between(mrec, 0, mprec, alpha=0.2, edgecolor='r')
+
+                    # set window title
+                    fig1.canvas.set_window_title('AP ' + gt_class)
+                    # set plot title
+                    plt.title('class: ' + text)
+                    plt.grid(1)
+                    # plt.suptitle('This is a somewhat long figure title', fontsize=16)
+                    # set axis titles
+                    plt.xlabel('Recall')
+                    plt.ylabel('Precision')
+                    # optional - set axes
+                    axes = plt.gca()  # gca - get current axes
+                    axes.set_xlim([0.0, 1.0])
+                    axes.set_ylim([0.0, 1.05])  # .05 to give some extra space
+
+                    # fig2 = plt.figure()
+                    plt.subplot(1, 2, 2)
+                    plt.plot(conf_class, rec, 'r-')
+                    # plt.hold(1)
+                    plt.plot(conf_class, prec, 'g-')
+                    plt.title('Recall and Precision vs Confidence')
+                    # plt.hold(0)
+                    plt.grid(1)
+
+                    plt.legend(['Recall', 'Precision'])
+
+                    plt.xlabel('Confidence')
+                    plt.ylabel('Recall / Precision')
+
+                    axes = plt.gca()  # gca - get current axes
+                    axes.set_xlim([0.0, 1.0])
+                    axes.set_ylim([0.0, 1.0])  # .05 to give some extra space
+
+                    # Alternative option -> wait for button to be pressed
+                    # while not plt.waitforbuttonpress():
+                    #     pass
+
+                    # Alternative option -> normal display
+                    # plt.show()
+
+                    # save the plot
+                    plot_out_fname = utils.linux_path(plots_out_dir, gt_class + ".png")
+                    print_('Saving plot to: {}'.format(plot_out_fname))
+                    fig1.savefig(plot_out_fname)
+
+                    plt.close(fig1)
+
+                _rec_prec, _score, _txt = utils.get_intersection(rec, prec, conf_class, score_thresh,
+                                                                 "recall", "precision")
+
+                if draw_plot:
+                    out_text_class = _txt + '\n'
+
+                    out_text_class += '{}_rec_prec\n{}\n'.format(
+                        gt_class,
+                        pd.DataFrame(
+                            data=np.vstack((conf_class, rec * 100, prec * 100)).T,
+                            columns=['score_thresh', '{}_recall'.format(gt_class),
+                                     '{}_precision'.format(gt_class)]).to_csv(
+                            sep='\t', index=False),
+                    )
+                    out_text_class += '\n'
+
+                    # class_summary_path = out_fname.replace('.txt', '_class.md')
+                    class_summary_path = summary_path + '.{}'.format(gt_class)
+                    with open(class_summary_path, 'w') as out_file:
+                        out_file.write(out_text_class)
+                    print_('Saved {} result summary to {}'.format(gt_class, class_summary_path))
+
+                if tp_sum > 0 and n_class_gt > 0:
+                    _rec = float(tp_sum) / n_class_gt
+                else:
+                    _rec = 0
+                try:
+                    _prec = float(tp_sum) / (fp_sum + tp_sum)
+                except ZeroDivisionError:
+                    _prec = 0
+
+                wmAP += ap * gt_fraction_per_class[gt_class]
+                wm_prec += _prec * gt_fraction_per_class[gt_class]
+                wm_rec += _rec * gt_fraction_per_class[gt_class]
+                wm_rec_prec += _rec_prec * gt_fraction_per_class[gt_class]
+                wm_score += _score * gt_fraction_per_class[gt_class]
+
+                sum_AP += ap
+                sum_prec += _prec
+                sum_rec += _rec
+                sum_rec_prec += _rec_prec
+                sum_score += _score
+
+                """
+                ******************************
+                rec_prec
+                ******************************
+                """
+                _class_rec = rec_thresh_all[:, gt_class_idx] * 100
+                _class_prec = prec_thresh_all[:, gt_class_idx] * 100
+
+                csv_df = pd.DataFrame(
+                    data=np.vstack((score_thresholds, _class_rec, _class_prec)).T,
+                    columns=csv_columns_rec_prec)
+                out_fname_csv = utils.linux_path(misc_out_root_dir, f'{gt_class}-rec_prec.csv')
+                csv_df.to_csv(out_fname_csv, columns=csv_columns_rec_prec, index=False, sep='\t')
+
+                _class_auc_rec_prec = utils.norm_auc(_class_rec, _class_prec)
+
+            if gt_check:
+                all_class_gt = []
+                _iter = tqdm(gt_data_dict) if show_pbar else gt_data_dict
+
+                for k in _iter:
+
+                    if k in ["counter_per_class", 'ignored']:
+                        continue
+
+                    for m in gt_data_dict[k]:
+                        all_class_gt += [obj for obj in gt_data_dict[k][m] if obj['class'] == gt_class]
+
+                n_all_considered_gt = len(all_considered_gt)
+                # n_absolute_all_gt = len(absolute_all_gt)
+                # n_duplicate_gt = len(duplicate_gt)
+                n_all_class_gt = len(all_class_gt)
+
+                if n_all_considered_gt != n_all_class_gt:
+                    print(f'{gt_class} :: Mismatch between '
+                          f'n_all_considered_gt: {n_all_considered_gt} '
+                          f'and n_all_class_gt: {n_all_class_gt}, '
+                          )
+                    _iter = tqdm(all_class_gt) if show_pbar else all_class_gt
+                    skipped_gt = [obj for obj in _iter if obj not in all_considered_gt]
+                    n_skipped_gt = len(skipped_gt)
+                    print(f'n_skipped_gt: {n_skipped_gt}')
+
+                    # annoying_gt = [k for k in absolute_all_gt if k not in all_considered_gt]
+                    # n_annoying_gt = len(annoying_gt)
+
+                    # print('annoying_gt:')
+                    # pprint(annoying_gt)
+
+                    # print('duplicate_gt:')
+                    # pprint(duplicate_gt)
+
+                    # print('skipped_gt:\n{}'.format(pformat(skipped_gt)))
+                    print_('gt_counter_per_class:\n{}'.format(pformat(gt_counter_per_class)))
+
+                    raise AssertionError()
+
+                if n_total_gt != n_class_gt:
+                    print(
+                        f'Mismatch between n_total_gt: {n_total_gt} and '
+                        f'gt_counter_per_class[{gt_class}]: {gt_counter_per_class[gt_class]}'
+                    )
+                    seq_gt_data_list = []
+
+                    for file_id in seq_gt_data_dict.keys():
+                        seq_gt_data_list += seq_gt_data_dict[file_id]
+                        # for k in seq_gt_data_dict[file_id]:
+                        #     seq_gt_data_list.append(
+                        #         dict(k, **{'file_id': file_id})
+                        #     )
+
+                    if n_total_gt > n_class_gt:
+                        _iter = tqdm(all_gt_list) if show_pbar else all_gt_list
+                        missing_gt = [k for k in _iter if k not in seq_gt_data_list]
+                    else:
+                        _iter = tqdm(seq_gt_data_list) if show_pbar else seq_gt_data_list
+                        missing_gt = [k for k in _iter if k not in all_gt_list]
+
+                    n_missing_gt = len(missing_gt)
+                    print(f'n_missing_gt: {n_missing_gt}')
+
+                    raise AssertionError()
+
+                assert n_total_gt == tp_sum + fn_sum, \
+                    f'{gt_class} :: Mismatch between n_total_gt: {n_total_gt} and tp_sum+fn_sum: {tp_sum + fn_sum}, ' \
+                    f'n_used_gt: {n_used_gt}'
+
+                assert tp_sum + fn_sum == n_class_gt, f"mismatch between tp + fn {tp_sum + fn_sum} and gt {n_class_gt}"
+
+            assert fp_sum == fp_dup_sum + fp_nex_sum + fp_cls_sum, "fp_sum mismatch"
+            assert fn_sum == fn_det_sum + fn_cls_sum, "fn_sum mismatch"
+            assert n_class_gt == fn_sum + tp_sum, "n_class_gt mismatch"
+            assert fp_nex_sum == fp_nex_part_sum + fp_nex_whole_sum, "fp_nex_sum mismatch"
+
+            text = f"{gt_class:s}\t" \
+                   f"{ap * 100:.2f}\t" \
+                   f"{_prec * 100:.2f}\t{_rec * 100:.2f}\t{_rec_prec * 100:.2f}\t" \
+                   f"{_score * 100:.2f}" \
+                   f"\t{tp_sum:d}\t" \
+                   f"{fn_sum:d}\t{fn_det_sum:d}\t{fn_cls_sum:d}\t" \
+                   f"{fp_sum:d}\t{fp_dup_sum:d}\t{fp_nex_sum:d}\t{fp_cls_sum:d}\t" \
+                   f"{n_class_gt:d}\t{n_class_dets:d}"
+
+            if n_class_gt == 0:
+                assert fn_det_sum == 0, "fn_det_sum > 0 but n_class_gt is 0"
+                fnr_det = 0
+            else:
+                fnr_det = fn_det_sum / n_class_gt * 100
+
+            if n_class_dets == 0:
+                assert fp_cls_sum == 0, "fp_cls_sum > 0 but n_class_dets is 0"
+                assert fp_dup_sum == 0, "fp_dup_sum > 0 but n_class_dets is 0"
+                assert fp_nex_part_sum == 0, "fp_nex_part_sum > 0 but n_class_dets is 0"
+                assert fp_nex_whole_sum == 0, "fp_nex_whole_sum > 0 but n_class_dets is 0"
+                assert fp_nex_sum == 0, "fp_nex_sum > 0 but n_class_dets is 0"
+
+                fpr_cls = fpr_dup = fpr_nex = fpr_nex_part = fpr_nex_whole = 0
+            else:
+                fpr_cls = fp_cls_sum / n_class_dets * 100
+                fpr_dup = fp_dup_sum / n_class_dets * 100
+                fpr_nex = fp_nex_sum / n_class_dets * 100
+                fpr_nex_part = fp_nex_part_sum / n_class_dets * 100
+                fpr_nex_whole = fp_nex_whole_sum / n_class_dets * 100
+
+            eval_result_dict[gt_class] = {
+                'AP': ap * 100,
+                'Precision': _prec * 100,
+                'Recall': _rec * 100,
+                'R=P': _rec_prec * 100,
+                'Score': _score * 100,
+                'TP': tp_sum,
+
+                'FN': fn_sum,
+                'FN_CLS': fn_cls_sum,
+
+                'FN_DET': fn_det_sum,
+                'FNR_DET': fnr_det,
+
+                'FP': fp_sum,
+                'FP_CLS': fp_cls_sum,
+
+                'FP_DUP': fp_dup_sum,
+                'FP_NEX': fp_nex_sum,
+                'FP_NEX_PART': fp_nex_part_sum,
+                'FP_NEX_WHOLE': fp_nex_whole_sum,
+
+                'FPR_CLS': fpr_cls,
+                'FPR_DUP': fpr_dup,
+                'FPR_NEX': fpr_nex,
+                'FPR_NEX_PART': fpr_nex_part,
+                'FPR_NEX_WHOLE': fpr_nex_whole,
+
+                'GT': n_class_gt,
+                'DETS': n_class_dets,
+
+                'auc_rec_prec': _class_auc_rec_prec,
+            }
+            text_table.add_row(text.split('\t'))
+
+            cmb_summary_data[gt_class] = [ap * 100, _rec_prec * 100, _score * 100, gt_counter_per_class[gt_class]]
+
+            out_text += text + '\n'
+
+            tp_sum_overall += tp_sum
+
+            fp_sum_overall += fp_sum
+            fp_dup_sum_overall += fp_dup_sum
+            fp_nex_sum_overall += fp_nex_sum
+            fp_cls_sum_overall += fp_cls_sum
+
+            class_stats[gt_class_idx] = dict(
+                n_dets=n_class_dets,
+
+                n_gt=n_class_gt,
+
+                tp_class=np.array(tp_class, dtype=np.uint8),
+
+                fp_class=np.array(fp_class, dtype=np.uint8),
+                fp_dup_class=np.array(fp_dup_class, dtype=np.uint8),
+                fp_nex_class=np.array(fp_nex_class, dtype=np.uint8),
+                fp_nex_part_class=np.array(fp_nex_part_class, dtype=np.uint8),
+                fp_nex_whole_class=np.array(fp_nex_whole_class, dtype=np.uint8),
+                fp_cls_class=np.array(fp_cls_class, dtype=np.uint8),
+
+                conf_class=np.array(conf_class, dtype=np.float32),
+
+                tp_sum=tp_sum,
+
+                fp_sum=fp_sum,
+                fp_dup_sum=fp_dup_sum,
+                fp_nex_sum=fp_nex_sum,
+                fp_cls_sum=fp_cls_sum,
+
+                fn_sum=fn_sum,
+                fn_det_sum=fn_det_sum,
+                fn_cls_sum=fn_cls_sum,
             )
 
-            if n_threads == 1:
-                print_('Not using multi threading')
-                _start_t = time.time()
-                _rec_prec_list = []
-                for __thresh_idx in range(n_score_thresholds):
-                    __temp = utils.compute_thresh_rec_prec(
-                        __thresh_idx,
-                        score_thresholds=score_thresholds,
-                        conf_class=conf_class,
-                        fp_class=fp_class,
-                        fp_dup_class=fp_dup_class,
-                        fp_nex_class=fp_nex_class,
-                        fp_cls_class=fp_cls_class,
-                        tp_class=tp_class,
-                        n_gt=n_class_gt,
-                    )
-                    _rec_prec_list.append(__temp)
-            else:
-                if n_threads == 0:
-                    n_threads = multiprocessing.cpu_count()
-
-                print_(f'Using {n_threads} threads')
-
-                _start_t = time.time()
-                with closing(ThreadPool(n_threads)) as pool:
-                    _rec_prec_list = pool.map(functools.partial(
-                        utils.compute_thresh_rec_prec,
-                        score_thresholds=score_thresholds,
-                        conf_class=conf_class,
-                        fp_class=fp_class,
-                        fp_dup_class=fp_dup_class,
-                        fp_nex_class=fp_nex_class,
-                        fp_cls_class=fp_cls_class,
-                        tp_class=tp_class,
-                        n_gt=n_class_gt,
-                    ), range(n_score_thresholds))
-
-            rec_thresh_all[:, gt_class_idx] = [_rec_prec[0] for _rec_prec in _rec_prec_list]
-            prec_thresh_all[:, gt_class_idx] = [_rec_prec[1] for _rec_prec in _rec_prec_list]
-            tp_sum_thresh_all[:, gt_class_idx] = [_rec_prec[2] for _rec_prec in _rec_prec_list]
-            fp_sum_thresh_all[:, gt_class_idx] = [_rec_prec[3] for _rec_prec in _rec_prec_list]
-            fp_cls_sum_thresh_all[:, gt_class_idx] = [_rec_prec[4] for _rec_prec in _rec_prec_list]
-            fp_dup_thresh_all[:, gt_class_idx] = [_rec_prec[5] for _rec_prec in _rec_prec_list]
-            fp_nex_thresh_all[:, gt_class_idx] = [_rec_prec[6] for _rec_prec in _rec_prec_list]
-
-            del _rec_prec_list
-
-            _end_t = time.time()
-            print_('\nTime taken: {:.4f}'.format(_end_t - _start_t))
-            # print()
-
-            tp_class_cum = tp_class.copy()
-            fp_class_cum = fp_class.copy()
-            # compute precision/recall
-            cumsum = 0
-            for det_idx, val in enumerate(fp_class_cum):
-                # fp_class[det_idx] has the number of false positives encountered
-                # if only the first det_idx + 1 detections are considered
-                fp_class_cum[det_idx] += cumsum
-                cumsum += val
-            cumsum = 0
-            for det_idx, val in enumerate(tp_class_cum):
-                tp_class_cum[det_idx] += cumsum
-                cumsum += val
-            # print('tp: ', tp)
-
-            # print('fp_class_cum: ', fp_class_cum)
-            # print('tp_class_cum: ', tp_class_cum)
-
-            rec = tp_class_cum[:]
-            for det_idx, val in enumerate(tp_class_cum):
-                if tp_class_cum[det_idx] > 0 and n_class_gt > 0:
-                    rec[det_idx] = float(tp_class_cum[det_idx]) / n_class_gt
-            # print(rec)
-            prec = tp_class_cum[:]
-            for det_idx, val in enumerate(tp_class_cum):
-                try:
-                    prec[det_idx] = float(tp_class_cum[det_idx]) / (fp_class_cum[det_idx] + tp_class_cum[det_idx])
-                except ZeroDivisionError:
-                    prec[det_idx] = 0
-
-            # print(prec)
-
-            ap, mrec, mprec = utils.voc_ap(rec, prec)
-
-            if draw_plot:
-                fig1 = plt.figure(figsize=(18, 9), dpi=80)
-                plt.subplot(1, 2, 1)
-                plt.plot(rec, prec, 'b-.')
-                plt.fill_between(mrec, 0, mprec, alpha=0.2, edgecolor='r')
-
-                # set window title
-                fig1.canvas.set_window_title('AP ' + gt_class)
-                # set plot title
-                plt.title('class: ' + text)
-                plt.grid(1)
-                # plt.suptitle('This is a somewhat long figure title', fontsize=16)
-                # set axis titles
-                plt.xlabel('Recall')
-                plt.ylabel('Precision')
-                # optional - set axes
-                axes = plt.gca()  # gca - get current axes
-                axes.set_xlim([0.0, 1.0])
-                axes.set_ylim([0.0, 1.05])  # .05 to give some extra space
-
-                # fig2 = plt.figure()
-                plt.subplot(1, 2, 2)
-                plt.plot(conf_class, rec, 'r-')
-                # plt.hold(1)
-                plt.plot(conf_class, prec, 'g-')
-                plt.title('Recall and Precision vs Confidence')
-                # plt.hold(0)
-                plt.grid(1)
-
-                plt.legend(['Recall', 'Precision'])
-
-                plt.xlabel('Confidence')
-                plt.ylabel('Recall / Precision')
-
-                axes = plt.gca()  # gca - get current axes
-                axes.set_xlim([0.0, 1.0])
-                axes.set_ylim([0.0, 1.0])  # .05 to give some extra space
-
-                # Alternative option -> wait for button to be pressed
-                # while not plt.waitforbuttonpress():
-                #     pass
-
-                # Alternative option -> normal display
-                # plt.show()
-
-                # save the plot
-                plot_out_fname = utils.linux_path(plots_out_dir, gt_class + ".png")
-                print_('Saving plot to: {}'.format(plot_out_fname))
-                fig1.savefig(plot_out_fname)
-
-                plt.close(fig1)
-
-            _rec_prec, _score, _txt = utils.get_intersection(rec, prec, conf_class, score_thresh,
-                                                             "recall", "precision")
-
-            if draw_plot:
-                out_text_class = _txt + '\n'
-
-                out_text_class += '{}_rec_prec\n{}\n'.format(
-                    gt_class,
-                    pd.DataFrame(
-                        data=np.vstack((conf_class, rec * 100, prec * 100)).T,
-                        columns=['score_thresh', '{}_recall'.format(gt_class),
-                                 '{}_precision'.format(gt_class)]).to_csv(
-                        sep='\t', index=False),
-                )
-                out_text_class += '\n'
-
-                # class_summary_path = out_fname.replace('.txt', '_class.md')
-                class_summary_path = summary_path + '.{}'.format(gt_class)
-                with open(class_summary_path, 'w') as out_file:
-                    out_file.write(out_text_class)
-                print_('Saved {} result summary to {}'.format(gt_class, class_summary_path))
-
-            if tp_sum > 0 and n_class_gt > 0:
-                _rec = float(tp_sum) / n_class_gt
-            else:
-                _rec = 0
-            try:
-                _prec = float(tp_sum) / (fp_sum + tp_sum)
-            except ZeroDivisionError:
-                _prec = 0
-
-            wmAP += ap * gt_fraction_per_class[gt_class]
-            wm_prec += _prec * gt_fraction_per_class[gt_class]
-            wm_rec += _rec * gt_fraction_per_class[gt_class]
-            wm_rec_prec += _rec_prec * gt_fraction_per_class[gt_class]
-            wm_score += _score * gt_fraction_per_class[gt_class]
-
-            sum_AP += ap
-            sum_prec += _prec
-            sum_rec += _rec
-            sum_rec_prec += _rec_prec
-            sum_score += _score
-
-            """
-            ******************************
-            rec_prec
-            ******************************
-            """
-            _class_rec = rec_thresh_all[:, gt_class_idx] * 100
-            _class_prec = prec_thresh_all[:, gt_class_idx] * 100
-
-            csv_df = pd.DataFrame(
-                data=np.vstack((score_thresholds, _class_rec, _class_prec)).T,
-                columns=csv_columns_rec_prec)
-            out_fname_csv = utils.linux_path(misc_out_root_dir, f'{gt_class}-rec_prec.csv')
-            csv_df.to_csv(out_fname_csv, columns=csv_columns_rec_prec, index=False, sep='\t')
-
-            _class_auc_rec_prec = utils.norm_auc(_class_rec, _class_prec)
-
-        if gt_check:
-            all_class_gt = []
-            _iter = tqdm(gt_data_dict) if show_pbar else gt_data_dict
-
-            for k in _iter:
-
-                if k in ["counter_per_class", 'ignored']:
-                    continue
-
-                for m in gt_data_dict[k]:
-                    all_class_gt += [obj for obj in gt_data_dict[k][m] if obj['class'] == gt_class]
-
-            n_all_considered_gt = len(all_considered_gt)
-            # n_absolute_all_gt = len(absolute_all_gt)
-            # n_duplicate_gt = len(duplicate_gt)
-            n_all_class_gt = len(all_class_gt)
-
-            if n_all_considered_gt != n_all_class_gt:
-                print(f'{gt_class} :: Mismatch between '
-                      f'n_all_considered_gt: {n_all_considered_gt} '
-                      f'and n_all_class_gt: {n_all_class_gt}, '
-                      )
-                _iter = tqdm(all_class_gt) if show_pbar else all_class_gt
-                skipped_gt = [obj for obj in _iter if obj not in all_considered_gt]
-                n_skipped_gt = len(skipped_gt)
-                print(f'n_skipped_gt: {n_skipped_gt}')
-
-                # annoying_gt = [k for k in absolute_all_gt if k not in all_considered_gt]
-                # n_annoying_gt = len(annoying_gt)
-
-                # print('annoying_gt:')
-                # pprint(annoying_gt)
-
-                # print('duplicate_gt:')
-                # pprint(duplicate_gt)
-
-                # print('skipped_gt:\n{}'.format(pformat(skipped_gt)))
-                print_('gt_counter_per_class:\n{}'.format(pformat(gt_counter_per_class)))
-
-                raise AssertionError()
-
-            if n_total_gt != n_class_gt:
-                print(
-                    f'Mismatch between n_total_gt: {n_total_gt} and '
-                    f'gt_counter_per_class[{gt_class}]: {gt_counter_per_class[gt_class]}'
-                )
-                seq_gt_data_list = []
-
-                for file_id in seq_gt_data_dict.keys():
-                    seq_gt_data_list += seq_gt_data_dict[file_id]
-                    # for k in seq_gt_data_dict[file_id]:
-                    #     seq_gt_data_list.append(
-                    #         dict(k, **{'file_id': file_id})
-                    #     )
-
-                if n_total_gt > n_class_gt:
-                    _iter = tqdm(all_gt_list) if show_pbar else all_gt_list
-                    missing_gt = [k for k in _iter if k not in seq_gt_data_list]
-                else:
-                    _iter = tqdm(seq_gt_data_list) if show_pbar else seq_gt_data_list
-                    missing_gt = [k for k in _iter if k not in all_gt_list]
-
-                n_missing_gt = len(missing_gt)
-                print(f'n_missing_gt: {n_missing_gt}')
-
-                raise AssertionError()
-
-            assert n_total_gt == tp_sum + fn_sum, \
-                f'{gt_class} :: Mismatch between n_total_gt: {n_total_gt} and tp_sum+fn_sum: {tp_sum + fn_sum}, ' \
-                f'n_used_gt: {n_used_gt}'
-
-            assert tp_sum + fn_sum == n_class_gt, f"mismatch between tp + fn {tp_sum + fn_sum} and gt {n_class_gt}"
-
-        assert fp_sum == fp_dup_sum + fp_nex_sum + fp_cls_sum, "fp_sum mismatch"
-        assert fn_sum == fn_det_sum + fn_cls_sum, "fn_sum mismatch"
-        assert n_class_gt == fn_sum + tp_sum, "n_class_gt mismatch"
-        assert fp_nex_sum == fp_nex_part_sum + fp_nex_whole_sum, "fp_nex_sum mismatch"
-
-        text = f"{gt_class:s}\t" \
-               f"{ap * 100:.2f}\t" \
-               f"{_prec * 100:.2f}\t{_rec * 100:.2f}\t{_rec_prec * 100:.2f}\t" \
-               f"{_score * 100:.2f}" \
-               f"\t{tp_sum:d}\t" \
-               f"{fn_sum:d}\t{fn_det_sum:d}\t{fn_cls_sum:d}\t" \
-               f"{fp_sum:d}\t{fp_dup_sum:d}\t{fp_nex_sum:d}\t{fp_cls_sum:d}\t" \
-               f"{n_class_gt:d}\t{n_class_dets:d}"
-
-        if n_class_gt == 0:
-            assert fn_det_sum == 0, "fn_det_sum > 0 but n_class_gt is 0"
-            fnr_det = 0
-        else:
-            fnr_det = fn_det_sum / n_class_gt * 100
-
-        if n_class_dets == 0:
-            assert fp_cls_sum == 0, "fp_cls_sum > 0 but n_class_dets is 0"
-            assert fp_dup_sum == 0, "fp_dup_sum > 0 but n_class_dets is 0"
-            assert fp_nex_part_sum == 0, "fp_nex_part_sum > 0 but n_class_dets is 0"
-            assert fp_nex_whole_sum == 0, "fp_nex_whole_sum > 0 but n_class_dets is 0"
-            assert fp_nex_sum == 0, "fp_nex_sum > 0 but n_class_dets is 0"
-
-            fpr_cls = fpr_dup = fpr_nex = fpr_nex_part = fpr_nex_whole = 0
-        else:
-            fpr_cls = fp_cls_sum / n_class_dets * 100
-            fpr_dup = fp_dup_sum / n_class_dets * 100
-            fpr_nex = fp_nex_sum / n_class_dets * 100
-            fpr_nex_part = fp_nex_part_sum / n_class_dets * 100
-            fpr_nex_whole = fp_nex_whole_sum / n_class_dets * 100
-
-        eval_result_dict[gt_class] = {
-            'AP': ap * 100,
-            'Precision': _prec * 100,
-            'Recall': _rec * 100,
-            'R=P': _rec_prec * 100,
-            'Score': _score * 100,
-            'TP': tp_sum,
-
-            'FN': fn_sum,
-            'FN_CLS': fn_cls_sum,
-
-            'FN_DET': fn_det_sum,
-            'FNR_DET': fnr_det,
-
-            'FP': fp_sum,
-            'FP_CLS': fp_cls_sum,
-
-            'FP_DUP': fp_dup_sum,
-            'FP_NEX': fp_nex_sum,
-            'FP_NEX_PART': fp_nex_part_sum,
-            'FP_NEX_WHOLE': fp_nex_whole_sum,
-
-            'FPR_CLS': fpr_cls,
-            'FPR_DUP': fpr_dup,
-            'FPR_NEX': fpr_nex,
-            'FPR_NEX_PART': fpr_nex_part,
-            'FPR_NEX_WHOLE': fpr_nex_whole,
-
-            'GT': n_class_gt,
-            'DETS': n_class_dets,
-
-            'auc_rec_prec': _class_auc_rec_prec,
-        }
-        text_table.add_row(text.split('\t'))
-
-        cmb_summary_data[gt_class] = [ap * 100, _rec_prec * 100, _score * 100, gt_counter_per_class[gt_class]]
-
-        out_text += text + '\n'
-
-        tp_sum_overall += tp_sum
-
-        fp_sum_overall += fp_sum
-        fp_dup_sum_overall += fp_dup_sum
-        fp_nex_sum_overall += fp_nex_sum
-        fp_cls_sum_overall += fp_cls_sum
-
-        class_stats[gt_class_idx] = dict(
-            n_dets=n_class_dets,
-
-            n_gt=n_class_gt,
-
-            tp_class=np.array(tp_class, dtype=np.uint8),
-
-            fp_class=np.array(fp_class, dtype=np.uint8),
-            fp_dup_class=np.array(fp_dup_class, dtype=np.uint8),
-            fp_nex_class=np.array(fp_nex_class, dtype=np.uint8),
-            fp_nex_part_class=np.array(fp_nex_part_class, dtype=np.uint8),
-            fp_nex_whole_class=np.array(fp_nex_whole_class, dtype=np.uint8),
-            fp_cls_class=np.array(fp_cls_class, dtype=np.uint8),
-
-            conf_class=np.array(conf_class, dtype=np.float32),
-
-            tp_sum=tp_sum,
-
-            fp_sum=fp_sum,
-            fp_dup_sum=fp_dup_sum,
-            fp_nex_sum=fp_nex_sum,
-            fp_cls_sum=fp_cls_sum,
-
-            fn_sum=fn_sum,
-            fn_det_sum=fn_det_sum,
-            fn_cls_sum=fn_cls_sum,
-        )
-
-        fn_sum_overall += fn_sum
-        fn_det_sum_overall += fn_det_sum
-        fn_cls_sum_overall += fn_cls_sum
-
-        gt_overall += n_class_gt
-        dets_overall += n_class_dets
+            fn_sum_overall += fn_sum
+            fn_det_sum_overall += fn_det_sum
+            fn_cls_sum_overall += fn_cls_sum
+
+            gt_overall += n_class_gt
+            dets_overall += n_class_dets
 
     """**************************"""
     """**************************"""
