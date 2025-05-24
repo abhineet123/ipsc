@@ -1246,8 +1246,8 @@ def evaluate(
                     det_pkl_ = det_pkl
 
                     det_pkl_suffixes = []
-                    det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
                     det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
+                    det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
                     if det_pkl_suffixes:
                         det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
                         det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
