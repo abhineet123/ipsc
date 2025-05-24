@@ -1242,7 +1242,7 @@ def evaluate(
                     except KeyError:
                         raw_det_data_dict_ = nms_raw_det_data_dict[(vid_nms_thresh_, nms_thresh_)] = {}
                     raw_det_data_dict_[seq_path] = filtered_objs
-                print("debug")
+                # print("debug")
 
     """save pkl"""
     if True:
