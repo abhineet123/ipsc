@@ -90,7 +90,7 @@ python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:8_per_seq_random_len_2:gt-0:nms
 ### on-val-strd-1       @ len-2-fbb/lfn-->eval_p2s_vid-imgn
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-1:vnms:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1-vnms-25
 `dbg`
-python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-25:vnms-25:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1:dbg:vbs:conf-50
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-1:nms-1:vnms-1:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1:dbg:vbs:conf-50:ief
 <a id="batch_64___on_val_strd_1_len_2_fbb_lf_n_"></a>
 #### batch_64       @ on-val-strd-1/len-2-fbb/lfn-->eval_p2s_vid-imgn
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-1:vnms:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_64:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-strd-1-vnms-25-b64

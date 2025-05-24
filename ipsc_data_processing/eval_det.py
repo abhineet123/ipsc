@@ -4079,7 +4079,7 @@ def sweep(params: Params):
             params_.nms_thresh = 0
             params_.vid_nms_thresh = 0
             params_.load_det = False
-            params_.load_gt = False
+            # params_.load_gt = False
             params_.save_det_pkl = True
             params_.save_gt_pkl = True
             sweep_mode = {sweep_param: False for sweep_param in sweep_params}
