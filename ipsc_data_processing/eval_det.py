@@ -4092,9 +4092,9 @@ def sweep(params: Params):
                 params_.class_agnostic = 0
                 run(params_, sweep_mode)
 
-            # if class_agnostic:
-            #     params_.class_agnostic = 1
-            #     run(params_, sweep_mode)
+            if class_agnostic:
+                params_.class_agnostic = 1
+                run(params_, sweep_mode)
 
         params_ = copy.deepcopy(params)
         params_.batch_nms = False
