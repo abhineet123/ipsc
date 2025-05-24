@@ -259,9 +259,9 @@ class Params(paramparse.CFG):
 
     class Sweep:
         def __init__(self):
-            self.nms_thresh = [0,]
-            self.vid_nms_thresh = [0,]
-            self.det_nms = [0,]
+            self.nms_thresh = [0, ]
+            self.vid_nms_thresh = [0, ]
+            self.det_nms = [0, ]
 
 
 def evaluate(
@@ -634,7 +634,11 @@ def evaluate(
         filename_to_frame_index = {k[0]: int(k[1]) for k in filename_to_frame_map}
 
     """read gt and det"""
-    for seq_idx, (_gt_path, gt_seq_name) in enumerate(zip(gt_path_list, gt_seq_names, strict=True)):
+    read_iter = enumerate(zip(gt_path_list, gt_seq_names, strict=True))
+    if params.batch_nms and not params.verbose:
+        read_iter = tqdm(read_iter, total=len(gt_path_list))
+        
+    for seq_idx, (_gt_path, gt_seq_name) in read_iter:
 
         # if gt_loaded and det_loaded:
         #     break
@@ -4064,7 +4068,6 @@ def run(params: Params, sweep_mode: dict, *argv):
 
 
 def sweep(params: Params):
-
     sweep_params = list(vars(params.sweep).keys())
 
     params.sweep.nms_thresh = [int(k) for k in params.sweep.nms_thresh]
@@ -4089,10 +4092,12 @@ def sweep(params: Params):
             class_agnostic = params.class_agnostic
 
             if class_agnostic != 1:
+                print('performing batch NMS in multi-class mode')
                 params_.class_agnostic = 0
                 run(params_, sweep_mode)
 
             if class_agnostic:
+                print('performing batch NMS in class agnostic mode')
                 params_.class_agnostic = 1
                 run(params_, sweep_mode)
 
@@ -4117,11 +4122,11 @@ def sweep(params: Params):
 
     if params_.vid_stride:
         sweep_params.append('vid_stride')
-        setattr(params_.sweep, 'vid_stride',  params_.vid_stride)
+        setattr(params_.sweep, 'vid_stride', params_.vid_stride)
 
     if params_.class_agnostic == 2:
         sweep_params.append('class_agnostic')
-        setattr(params_.sweep, 'class_agnostic',  [0, 1])
+        setattr(params_.sweep, 'class_agnostic', [0, 1])
         # params_.class_agnostic = [0, 1]
 
     sweep_vals = []
