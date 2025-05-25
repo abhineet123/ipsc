@@ -674,6 +674,9 @@ def evaluate(
 
             all_img_paths += gt_img_paths
 
+        if gt_loaded and det_loaded:
+            continue
+
         print_(f'\n\nProcessing sequence {seq_idx + 1:d}/{n_seq:d}')
         print_(f'seq_path: {seq_path:s}')
 
@@ -877,7 +880,6 @@ def evaluate(
             all_img_paths += gt_img_paths
         """read det from csv"""
         if not det_loaded:
-            keep_obj_ids_dict = {}
             det_paths = all_seq_det_paths[seq_idx]
 
             if isinstance(det_paths, str):
@@ -889,7 +891,6 @@ def evaluate(
 
             seq_det_bboxes_list = []
             # seq_det_bboxes_dict = {}
-            nms_thresh_to_filtered_objs = {}
 
             from collections import defaultdict
             seq_det_file_to_bboxes = defaultdict(list)
@@ -1252,8 +1253,11 @@ def evaluate(
                     det_pkl_ = det_pkl
 
                     det_pkl_suffixes = []
-                    det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
-                    det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
+                    if len(params.sweep.nms_thresh) > 1 or params.sweep.nms_thresh[0] != 0:
+                        det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
+                    if len(params.sweep.vid_nms_thresh) > 1 or params.sweep.vid_nms_thresh[0] != 0:
+                        det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
+
                     if det_pkl_suffixes:
                         det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
                         det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
@@ -1382,6 +1386,7 @@ def evaluate(
 
             if params.show_vis:
                 seq_gt = gt_data_dict[seq_path]
+                _pause = 1
                 for file_path, gt_objs in seq_gt.items():
                     seq_name = os.path.basename(os.path.dirname(file_path))
                     img_name = os.path.basename(file_path)
@@ -1392,9 +1397,15 @@ def evaluate(
                     det_objs = [obj for obj in seq_det if obj['file_path'] == file_path]
                     img_det = utils.draw_objs(img, det_objs, title=f'{seq_name}-{img_name}-{len(det_objs)}',
                                               show_class=True, class_name_to_col=class_name_to_col)
+                    img_gt = utils.resize_ar(img_gt, width=1200, height=700)
+                    img_det = utils.resize_ar(img_det, width=1200, height=700)
                     cv2.imshow('img_gt', img_gt)
                     cv2.imshow('img_det', img_det)
-                    cv2.waitKey(0)
+                    k = cv2.waitKey(1 - _pause)
+                    if k == 32:
+                        _pause = 1 - _pause
+                    elif k == 27:
+                        exit(0)
 
     """set up for main processing"""
     if True:
