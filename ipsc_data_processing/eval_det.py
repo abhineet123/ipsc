@@ -3920,6 +3920,8 @@ def run(params: Params, gt_data_dict, det_data_dict, sweep_mode: dict, *argv):
         os.makedirs(out_root_dir, exist_ok=True)
 
         if params.iw:
+            assert not params.batch_nms, "batch_nms is not supported with iw"
+
             eval_dicts = {}
             img_end_ids = []
 
@@ -4020,7 +4022,7 @@ def run(params: Params, gt_data_dict, det_data_dict, sweep_mode: dict, *argv):
                 out_fname_csv = utils.linux_path(out_root_dir, f'{metric}-iw.csv')
                 metric_df.to_csv(out_fname_csv, index=False, sep='\t')
         else:
-            eval_dict = evaluate(
+            ret = evaluate(
                 params=params,
                 seq_paths=_seq_path_list,
                 gt_path_list=gt_path_list,
@@ -4037,9 +4039,10 @@ def run(params: Params, gt_data_dict, det_data_dict, sweep_mode: dict, *argv):
                 _gt_data_dict=gt_data_dict,
                 raw_det_data_dict=det_data_dict,
             )
-            if eval_dict is None:
-                return out_root_dir
+            if params.batch_nms:
+                return ret
 
+            eval_dict = ret
             for gt_class in gt_classes:
                 eval_ = eval_dict[gt_class]
                 for metric in max_tp_metrics:
