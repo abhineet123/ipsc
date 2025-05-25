@@ -1,5 +1,6 @@
 import os
 import sys
+import functools
 
 import glob
 import shutil
@@ -481,6 +482,10 @@ def evaluate(
 
         if _gt_data_dict is not None:
             gt_loaded = 1
+            if params.class_agnostic:
+                _gt_data_dict = _gt_data_dict['agn']
+            else:
+                _gt_data_dict = _gt_data_dict['mc']
             gt_data_dict = copy.deepcopy(_gt_data_dict)
         elif params.load_gt:
             """load GT data only if gt_pkl is explicitly provided"""
@@ -518,6 +523,12 @@ def evaluate(
                         gt_class_data_dict[obj['class']][_seq_path].append(obj)
 
         if raw_det_data_dict is not None:
+            if params.class_agnostic:
+                raw_det_data_dict = raw_det_data_dict['agn']
+            else:
+                raw_det_data_dict = raw_det_data_dict['mc']
+            if params.vid_nms_thresh > 0 or params.nms_thresh > 0:
+                raw_det_data_dict = raw_det_data_dict[(params.vid_nms_thresh, params.nms_thresh)]
             det_loaded = 1
         else:
             """det data pkl must exist if it is explicitly provided but it is loaded if it exists 
@@ -1249,24 +1260,25 @@ def evaluate(
     if True:
         if not det_loaded and params.save_det_pkl:
             if params.batch_nms:
-                for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_raw_det_data_dict.items():
-                    det_pkl_ = det_pkl
-
-                    det_pkl_suffixes = []
-                    if len(params.sweep.nms_thresh) > 1 or params.sweep.nms_thresh[0] != 0:
-                        det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
-                    if len(params.sweep.vid_nms_thresh) > 1 or params.sweep.vid_nms_thresh[0] != 0:
-                        det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
-
-                    if det_pkl_suffixes:
-                        det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
-                        det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
-
-                    det_pkl_dir = os.path.dirname(det_pkl_)
-                    os.makedirs(det_pkl_dir, exist_ok=True)
-                    print_(f'\nSaving detection data to {det_pkl_}')
-                    with open(det_pkl_, 'wb') as f:
-                        pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
+                pass
+                # for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_raw_det_data_dict.items():
+                #     det_pkl_ = det_pkl
+                #
+                #     det_pkl_suffixes = []
+                #     if len(params.sweep.nms_thresh) > 1 or params.sweep.nms_thresh[0] != 0:
+                #         det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
+                #     if len(params.sweep.vid_nms_thresh) > 1 or params.sweep.vid_nms_thresh[0] != 0:
+                #         det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
+                #
+                #     if det_pkl_suffixes:
+                #         det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
+                #         det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
+                #
+                #     det_pkl_dir = os.path.dirname(det_pkl_)
+                #     os.makedirs(det_pkl_dir, exist_ok=True)
+                #     print_(f'\nSaving detection data to {det_pkl_}')
+                #     with open(det_pkl_, 'wb') as f:
+                #         pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
             else:
                 print_(f'\nSaving detection data to {det_pkl}')
                 with open(det_pkl, 'wb') as f:
@@ -1285,7 +1297,7 @@ def evaluate(
             print_('Time taken: {} sec'.format(gt_end_t - gt_start_t))
 
         if params.batch_nms:
-            return None
+            return gt_data_dict, nms_raw_det_data_dict
 
     """detection post-proc - rearrange to have class-wise and sequence-wise lists of objects"""
     if True:
@@ -3501,7 +3513,7 @@ def dummy_print(*argv):
     pass
 
 
-def run(params: Params, sweep_mode: dict, *argv):
+def run(params: Params, gt_data_dict, det_data_dict, sweep_mode: dict, *argv):
     params = copy.deepcopy(params)
 
     if not params.verbose:
@@ -3943,6 +3955,8 @@ def run(params: Params, sweep_mode: dict, *argv):
                     fps_to_gt=params.fps_to_gt,
                     show_pbar=params.show_pbar,
                     vid_info=vid_info,
+                    _gt_data_dict=gt_data_dict,
+                    raw_det_data_dict=det_data_dict,
                 )
                 if img_eval_dict is None:
                     break
@@ -4006,8 +4020,6 @@ def run(params: Params, sweep_mode: dict, *argv):
                 out_fname_csv = utils.linux_path(out_root_dir, f'{metric}-iw.csv')
                 metric_df.to_csv(out_fname_csv, index=False, sep='\t')
         else:
-            # out_root_dir = utils.linux_path(f'results', f'{out_dir_name}', time_stamp)
-
             eval_dict = evaluate(
                 params=params,
                 seq_paths=_seq_path_list,
@@ -4022,6 +4034,8 @@ def run(params: Params, sweep_mode: dict, *argv):
                 fps_to_gt=params.fps_to_gt,
                 show_pbar=params.show_pbar,
                 vid_info=vid_info,
+                _gt_data_dict=gt_data_dict,
+                raw_det_data_dict=det_data_dict,
             )
             if eval_dict is None:
                 return out_root_dir
@@ -4055,9 +4069,13 @@ def sweep(params: Params):
     params.sweep.vid_nms_thresh = [int(k) for k in params.sweep.vid_nms_thresh]
 
     params_ = copy.deepcopy(params)
+    gt_data_dict = det_data_dict = None
 
     if params_.sweep.nms_thresh or params_.sweep.vid_nms_thresh:
         if not params.load_det:
+            gt_data_dict = {}
+            det_data_dict = {}
+
             """batch nms"""
             params_.batch_nms = True
             params_.nms_thresh = 0
@@ -4075,12 +4093,17 @@ def sweep(params: Params):
             if class_agnostic != 1:
                 print('performing batch NMS in multi-class mode')
                 params_.class_agnostic = 0
-                run(params_, sweep_mode)
+                gt_data_dict_, det_data_dict_ = run(params_, None, None, sweep_mode)
+
+                det_data_dict['mc'] = det_data_dict_
+                gt_data_dict['mc'] = gt_data_dict_
 
             if class_agnostic:
                 print('performing batch NMS in class agnostic mode')
                 params_.class_agnostic = 1
-                run(params_, sweep_mode)
+                gt_data_dict_, det_data_dict_ = run(params_, None, None, sweep_mode)
+                det_data_dict['agn'] = det_data_dict_
+                gt_data_dict['agn'] = gt_data_dict_
 
         params_ = copy.deepcopy(params)
         params_.batch_nms = False
@@ -4132,22 +4155,22 @@ def sweep(params: Params):
     n_proc = params_.n_proc
     # n_proc = min(n_proc, n_sweep_val_combos)
     print(f'testing over {n_sweep_val_combos} param combos')
-    if n_proc > 1:
-        import functools
 
+    func = functools.partial(run, params_, gt_data_dict, det_data_dict, sweep_mode)
+
+    if n_proc > 1:
         params_.show_pbar = False
 
         print(f'running in parallel over {n_proc} processes')
         # pool = multiprocessing.Pool(n_proc)
         pool = ThreadPool(n_proc)
-        func = functools.partial(run, params_, sweep_mode)
 
         out_root_dirs = pool.starmap(func, sweep_val_combos)
         print()
     else:
         out_root_dirs = []
         for sweep_val_combo in tqdm(sweep_val_combos, position=0, leave=True):
-            out_root_dir = run(params_, sweep_mode, *sweep_val_combo)
+            out_root_dir = func(*sweep_val_combo)
             out_root_dirs.append(out_root_dir)
 
     if params.save_vis or params.show_vis:
