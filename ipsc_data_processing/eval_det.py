@@ -527,8 +527,8 @@ def evaluate(
                 raw_det_data_dict = raw_det_data_dict['agn']
             else:
                 raw_det_data_dict = raw_det_data_dict['mc']
-            if params.vid_nms_thresh > 0 or params.nms_thresh > 0:
-                raw_det_data_dict = raw_det_data_dict[(params.vid_nms_thresh, params.nms_thresh)]
+            # if params.vid_nms_thresh > 0 or params.nms_thresh > 0:
+            raw_det_data_dict = raw_det_data_dict[(params.vid_nms_thresh, params.nms_thresh)]
             det_loaded = 1
         else:
             """det data pkl must exist if it is explicitly provided but it is loaded if it exists 
