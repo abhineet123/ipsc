@@ -139,6 +139,7 @@ class Params(paramparse.CFG):
         self.gt_pkl_suffix = []
         self.load_det = 0
         self.save_det_pkl = 0
+        self.del_det_pkl = 0
         self.det_pkl = ''
         self.quiet = False
 
@@ -544,6 +545,9 @@ def evaluate(
                 with lzma.open(det_pkl, 'rb') as f:
                     raw_det_data_dict = pickle.load(f)
                 det_loaded = 1
+                if params.del_det_pkl:
+                    print_(f'deleting detection pkl: {det_pkl}')
+                    os.remove(det_pkl)
             else:
                 raw_det_data_dict = {}
                 nms_raw_det_data_dict = {}
@@ -1261,7 +1265,8 @@ def evaluate(
     if True:
         if not det_loaded and params.save_det_pkl:
             if params.batch_nms:
-                for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_raw_det_data_dict.items():
+                nms_pkl_iter = tqdm(nms_raw_det_data_dict.items())
+                for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_pkl_iter:
                     det_pkl_ = det_pkl
 
                     det_pkl_suffixes = []
@@ -1276,6 +1281,8 @@ def evaluate(
 
                     det_pkl_dir = os.path.dirname(det_pkl_)
                     os.makedirs(det_pkl_dir, exist_ok=True)
+                    det_pkl_name = os.path.basename(det_pkl_)
+                    nms_pkl_iter.set_description(f'{det_pkl_name}')
                     print_(f'\nSaving detection data to {det_pkl_}')
                     with lzma.open(det_pkl_, 'wb') as f:
                         pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
@@ -4107,6 +4114,7 @@ def sweep(params: Params):
         params_ = copy.deepcopy(params)
         params_.batch_nms = False
         params_.load_det = True
+        params_.del_det_pkl = True
         params_.load_gt = True
         # params_.nms_thresh_ = params_.sweep.nms_thresh
         # params_.vid_nms_thresh_ = params_.sweep.vid_nms_thresh
