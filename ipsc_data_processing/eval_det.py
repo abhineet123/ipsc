@@ -11,6 +11,7 @@ import time
 import multiprocessing
 from multiprocessing.pool import ThreadPool
 import json
+import lzma
 
 import functools
 from datetime import datetime
@@ -430,13 +431,13 @@ def evaluate(
 
         det_pkl = params.det_pkl
         if not det_pkl:
-            det_pkl = "raw_det_data_dict.pkl"
+            det_pkl = "raw_det_data_dict.xz"
         det_pkl = utils.linux_path(det_pkl_dir, det_pkl)
 
         gt_pkl = params.gt_pkl
         gt_pkl_suffix = params.gt_pkl_suffix
         if not gt_pkl:
-            gt_pkl = f"{out_root_name}.pkl"
+            gt_pkl = f"{out_root_name}.xz"
 
         if gt_pkl_suffix:
             gt_pkl_suffix = '-'.join(gt_pkl_suffix)
@@ -482,10 +483,10 @@ def evaluate(
 
         if _gt_data_dict is not None:
             gt_loaded = 1
-            if params.class_agnostic:
-                _gt_data_dict = _gt_data_dict['agn']
-            else:
-                _gt_data_dict = _gt_data_dict['mc']
+            # if params.class_agnostic:
+            #     _gt_data_dict = _gt_data_dict['agn']
+            # else:
+            #     _gt_data_dict = _gt_data_dict['mc']
             gt_data_dict = copy.deepcopy(_gt_data_dict)
         elif params.load_gt:
             """load GT data only if gt_pkl is explicitly provided"""
@@ -497,7 +498,7 @@ def evaluate(
                 raise AssertionError(msg)
 
             print_(f'loading GT data from {gt_pkl}')
-            with open(gt_pkl, 'rb') as f:
+            with lzma.open(gt_pkl, 'rb') as f:
                 gt_data_dict = pickle.load(f)
 
             gt_loaded = 1
@@ -540,7 +541,7 @@ def evaluate(
                 assert os.path.isfile(det_pkl), f"nonexistent det_pkl: {det_pkl}"
 
                 print_(f'loading detection data from {det_pkl}')
-                with open(det_pkl, 'rb') as f:
+                with lzma.open(det_pkl, 'rb') as f:
                     raw_det_data_dict = pickle.load(f)
                 det_loaded = 1
             else:
@@ -1260,28 +1261,27 @@ def evaluate(
     if True:
         if not det_loaded and params.save_det_pkl:
             if params.batch_nms:
-                pass
-                # for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_raw_det_data_dict.items():
-                #     det_pkl_ = det_pkl
-                #
-                #     det_pkl_suffixes = []
-                #     if len(params.sweep.nms_thresh) > 1 or params.sweep.nms_thresh[0] != 0:
-                #         det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
-                #     if len(params.sweep.vid_nms_thresh) > 1 or params.sweep.vid_nms_thresh[0] != 0:
-                #         det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
-                #
-                #     if det_pkl_suffixes:
-                #         det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
-                #         det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
-                #
-                #     det_pkl_dir = os.path.dirname(det_pkl_)
-                #     os.makedirs(det_pkl_dir, exist_ok=True)
-                #     print_(f'\nSaving detection data to {det_pkl_}')
-                #     with open(det_pkl_, 'wb') as f:
-                #         pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
+                for (vid_nms_thresh_, nms_thresh_), raw_det_data_dict_ in nms_raw_det_data_dict.items():
+                    det_pkl_ = det_pkl
+
+                    det_pkl_suffixes = []
+                    if len(params.sweep.nms_thresh) > 1 or params.sweep.nms_thresh[0] != 0:
+                        det_pkl_suffixes.append(f'nms_{nms_thresh_:02d}')
+                    if len(params.sweep.vid_nms_thresh) > 1 or params.sweep.vid_nms_thresh[0] != 0:
+                        det_pkl_suffixes.append(f'vnms_{vid_nms_thresh_:02d}')
+
+                    if det_pkl_suffixes:
+                        det_pkl_dir_suffix = '-'.join(det_pkl_suffixes)
+                        det_pkl_ = utils.add_suffix_to_path(det_pkl_, det_pkl_dir_suffix)
+
+                    det_pkl_dir = os.path.dirname(det_pkl_)
+                    os.makedirs(det_pkl_dir, exist_ok=True)
+                    print_(f'\nSaving detection data to {det_pkl_}')
+                    with lzma.open(det_pkl_, 'wb') as f:
+                        pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
             else:
                 print_(f'\nSaving detection data to {det_pkl}')
-                with open(det_pkl, 'wb') as f:
+                with lzma.open(det_pkl, 'wb') as f:
                     pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
 
         if not gt_loaded:
@@ -1289,7 +1289,7 @@ def evaluate(
             os.makedirs(gt_pkl_dir, exist_ok=True)
 
             print_(f'\nSaving GT data to {gt_pkl}')
-            with open(gt_pkl, 'wb') as f:
+            with lzma.open(gt_pkl, 'wb') as f:
                 pickle.dump(gt_data_dict, f, pickle.HIGHEST_PROTOCOL)
 
         gt_end_t = time.time()
@@ -1297,7 +1297,9 @@ def evaluate(
             print_('Time taken: {} sec'.format(gt_end_t - gt_start_t))
 
         if params.batch_nms:
-            return gt_data_dict, nms_raw_det_data_dict
+            if params.save_det_pkl:
+                return None
+            return nms_raw_det_data_dict
 
     """detection post-proc - rearrange to have class-wise and sequence-wise lists of objects"""
     if True:
@@ -3513,7 +3515,7 @@ def dummy_print(*argv):
     pass
 
 
-def run(params: Params, gt_data_dict, det_data_dict, sweep_mode: dict, *argv):
+def run(params: Params, det_data_dict, sweep_mode: dict, *argv):
     params = copy.deepcopy(params)
 
     if not params.verbose:
@@ -3957,7 +3959,6 @@ def run(params: Params, gt_data_dict, det_data_dict, sweep_mode: dict, *argv):
                     fps_to_gt=params.fps_to_gt,
                     show_pbar=params.show_pbar,
                     vid_info=vid_info,
-                    _gt_data_dict=gt_data_dict,
                     raw_det_data_dict=det_data_dict,
                 )
                 if img_eval_dict is None:
@@ -4036,7 +4037,6 @@ def run(params: Params, gt_data_dict, det_data_dict, sweep_mode: dict, *argv):
                 fps_to_gt=params.fps_to_gt,
                 show_pbar=params.show_pbar,
                 vid_info=vid_info,
-                _gt_data_dict=gt_data_dict,
                 raw_det_data_dict=det_data_dict,
             )
             if params.batch_nms:
@@ -4072,12 +4072,11 @@ def sweep(params: Params):
     params.sweep.vid_nms_thresh = [int(k) for k in params.sweep.vid_nms_thresh]
 
     params_ = copy.deepcopy(params)
-    gt_data_dict = det_data_dict = None
+    det_data_dict = None
 
     if params_.sweep.nms_thresh or params_.sweep.vid_nms_thresh:
         if not params.load_det:
-            gt_data_dict = {}
-            det_data_dict = {}
+            # det_data_dict = {}
 
             """batch nms"""
             params_.batch_nms = True
@@ -4096,17 +4095,14 @@ def sweep(params: Params):
             if class_agnostic != 1:
                 print('performing batch NMS in multi-class mode')
                 params_.class_agnostic = 0
-                gt_data_dict_, det_data_dict_ = run(params_, None, None, sweep_mode)
-
-                det_data_dict['mc'] = det_data_dict_
-                gt_data_dict['mc'] = gt_data_dict_
+                run(params_, None, sweep_mode)
+                # det_data_dict['mc'] = det_data_dict_
 
             if class_agnostic:
                 print('performing batch NMS in class agnostic mode')
                 params_.class_agnostic = 1
-                gt_data_dict_, det_data_dict_ = run(params_, None, None, sweep_mode)
-                det_data_dict['agn'] = det_data_dict_
-                gt_data_dict['agn'] = gt_data_dict_
+                run(params_, None, sweep_mode)
+                # det_data_dict['agn'] = det_data_dict_
 
         params_ = copy.deepcopy(params)
         params_.batch_nms = False
@@ -4159,7 +4155,7 @@ def sweep(params: Params):
     # n_proc = min(n_proc, n_sweep_val_combos)
     print(f'testing over {n_sweep_val_combos} param combos')
 
-    func = functools.partial(run, params_, gt_data_dict, det_data_dict, sweep_mode)
+    func = functools.partial(run, params_, det_data_dict, sweep_mode)
 
     if n_proc > 1:
         params_.show_pbar = False
