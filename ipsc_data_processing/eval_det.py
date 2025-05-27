@@ -1282,7 +1282,7 @@ def evaluate(
                     det_pkl_dir = os.path.dirname(det_pkl_)
                     os.makedirs(det_pkl_dir, exist_ok=True)
                     det_pkl_name = os.path.basename(det_pkl_dir)
-                    nms_pkl_iter.set_description(f'{det_pkl_name}')
+                    nms_pkl_iter.set_description(f'saving det: {det_pkl_name}')
                     with lzma.open(det_pkl_, 'wb') as f:
                         pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
             else:
