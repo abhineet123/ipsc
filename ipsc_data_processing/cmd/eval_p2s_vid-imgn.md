@@ -137,9 +137,9 @@ python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:8_per_seq_random_len_2:gt-0:nms
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-1:vnms:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-cls_eq-strd-1 allow_empty_gt=1
 <a id="s5___strd_1_on_val_len_2_fbb_cls_eq_isc_lfn_"></a>
 ##### s5       @ strd-1/on-val/len-2-fbb-cls_eq-isc/lfn-->eval_p2s_vid-imgn
-python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-1:nms-s5:vnms-s5:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-cls_eq-strd-1-s5
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-s5:vnms-s5:agn-0:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-cls_eq-strd-1-s5:ief:del-1
 `dbg`
-python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-s5:vnms-s5:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-177311-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-cls_eq-strd-1-s5:seq-0_1:vbs:dbg:ief
+python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-s5:vnms-s5:agn-0:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-177311-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-cls_eq-strd-1-s5:seq-0_1:vbs-0:dbg:ief:dets-0
 <a id="strd_2___on_val_len_2_fbb_cls_eq_isc_lf_n_"></a>
 #### strd-2       @ on-val/len-2-fbb-cls_eq-isc/lfn-->eval_p2s_vid-imgn
 python3 eval_det.py cfg=p2s:vid,imagenet_vid:val:gt-0:nms-1:vstrd-2:agn:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imagenet_vid-len-2-val-fbb-cls_eq-strd-2 allow_empty_gt=1

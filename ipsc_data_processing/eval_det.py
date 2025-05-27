@@ -140,6 +140,7 @@ class Params(paramparse.CFG):
         self.load_det = 0
         self.save_det_pkl = 0
         self.del_det_pkl = 0
+        self.save_lzma = 0
         self.det_pkl = ''
         self.quiet = False
 
@@ -431,14 +432,19 @@ def evaluate(
             gt_pkl_dir = out_root_dir
 
         det_pkl = params.det_pkl
+        if params.save_lzma:
+            pkl_ext = 'xz'
+        else:
+            pkl_ext = 'pkl'
+
         if not det_pkl:
-            det_pkl = "raw_det_data_dict.xz"
+            det_pkl = f"raw_det_data_dict.{pkl_ext}"
         det_pkl = utils.linux_path(det_pkl_dir, det_pkl)
 
         gt_pkl = params.gt_pkl
         gt_pkl_suffix = params.gt_pkl_suffix
         if not gt_pkl:
-            gt_pkl = f"{out_root_name}.xz"
+            gt_pkl = f"{out_root_name}.{pkl_ext}"
 
         if gt_pkl_suffix:
             gt_pkl_suffix = '-'.join(gt_pkl_suffix)
@@ -499,8 +505,12 @@ def evaluate(
                 raise AssertionError(msg)
 
             print_(f'loading GT data from {gt_pkl}')
-            with lzma.open(gt_pkl, 'rb') as f:
-                gt_data_dict = pickle.load(f)
+            if params.save_lzma:
+                with lzma.open(gt_pkl, 'rb') as f:
+                    gt_data_dict = pickle.load(f)
+            else:
+                with open(gt_pkl, 'rb') as f:
+                    gt_data_dict = pickle.load(f)
 
             gt_loaded = 1
         else:
@@ -542,8 +552,13 @@ def evaluate(
                 assert os.path.isfile(det_pkl), f"nonexistent det_pkl: {det_pkl}"
 
                 print_(f'loading detection data from {det_pkl}')
-                with lzma.open(det_pkl, 'rb') as f:
-                    raw_det_data_dict = pickle.load(f)
+                if params.save_lzma:
+                    with lzma.open(det_pkl, 'rb') as f:
+                        raw_det_data_dict = pickle.load(f)
+                else:
+                    with open(det_pkl, 'rb') as f:
+                        raw_det_data_dict = pickle.load(f)
+
                 det_loaded = 1
                 if params.del_det_pkl:
                     print_(f'deleting detection pkl: {det_pkl}')
@@ -1283,20 +1298,34 @@ def evaluate(
                     os.makedirs(det_pkl_dir, exist_ok=True)
                     det_pkl_name = os.path.basename(det_pkl_dir)
                     nms_pkl_iter.set_description(f'saving det: {det_pkl_name}')
-                    with lzma.open(det_pkl_, 'wb') as f:
-                        pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
+                    if params.save_lzma:
+                        with lzma.open(det_pkl_, 'wb') as f:
+                            pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
+                    else:
+                        with open(det_pkl_, 'wb') as f:
+                            pickle.dump(raw_det_data_dict_, f, pickle.HIGHEST_PROTOCOL)
+
             else:
                 print_(f'\nSaving detection data to {det_pkl}')
-                with lzma.open(det_pkl, 'wb') as f:
-                    pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
+                if params.save_lzma:
+                    with lzma.open(det_pkl, 'wb') as f:
+                        pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
+                else:
+                    with open(det_pkl, 'wb') as f:
+                        pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
+
 
         if not gt_loaded:
             gt_data_dict['counter_per_class'] = gt_counter_per_class
             os.makedirs(gt_pkl_dir, exist_ok=True)
 
             print_(f'\nSaving GT data to {gt_pkl}')
-            with lzma.open(gt_pkl, 'wb') as f:
-                pickle.dump(gt_data_dict, f, pickle.HIGHEST_PROTOCOL)
+            if params.save_lzma:
+                with lzma.open(gt_pkl, 'wb') as f:
+                    pickle.dump(gt_data_dict, f, pickle.HIGHEST_PROTOCOL)
+            else:
+                with open(gt_pkl, 'wb') as f:
+                    pickle.dump(gt_data_dict, f, pickle.HIGHEST_PROTOCOL)
 
         gt_end_t = time.time()
         if not (gt_loaded and det_loaded):
@@ -4113,7 +4142,7 @@ def sweep(params: Params):
         params_ = copy.deepcopy(params)
         params_.batch_nms = False
         params_.load_det = True
-        params_.del_det_pkl = True
+        # params_.del_det_pkl = True
         params_.load_gt = True
         # params_.nms_thresh_ = params_.sweep.nms_thresh
         # params_.vid_nms_thresh_ = params_.sweep.vid_nms_thresh
