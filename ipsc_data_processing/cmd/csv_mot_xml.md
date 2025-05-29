@@ -59,20 +59,21 @@
     - [ipsc-5_class       @ csv_to_yolov5](#ipsc_5_class___csv_to_yolov_5_)
     - [ext_reorg_roi       @ csv_to_yolov5](#ext_reorg_roi___csv_to_yolov_5_)
 - [xml_to_csv](#xml_to_cs_v_)
-- [imagenet_vid](#imagenet_vi_d_)
-    - [train       @ imagenet_vid](#train___imagenet_vid_)
-    - [val       @ imagenet_vid](#val___imagenet_vid_)
-    - [det_only       @ imagenet_vid](#det_only___imagenet_vid_)
-    - [ipsc-5_class       @ imagenet_vid](#ipsc_5_class___imagenet_vid_)
-    - [ipsc-ext_reorg_roi       @ imagenet_vid](#ipsc_ext_reorg_roi___imagenet_vid_)
-        - [16_53       @ ipsc-ext_reorg_roi/imagenet_vid](#16_53___ipsc_ext_reorg_roi_imagenet_vi_d_)
-        - [38_53       @ ipsc-ext_reorg_roi/imagenet_vid](#38_53___ipsc_ext_reorg_roi_imagenet_vi_d_)
-        - [0_1       @ ipsc-ext_reorg_roi/imagenet_vid](#0_1___ipsc_ext_reorg_roi_imagenet_vi_d_)
-        - [0_4       @ ipsc-ext_reorg_roi/imagenet_vid](#0_4___ipsc_ext_reorg_roi_imagenet_vi_d_)
-        - [5_9       @ ipsc-ext_reorg_roi/imagenet_vid](#5_9___ipsc_ext_reorg_roi_imagenet_vi_d_)
-        - [0_15       @ ipsc-ext_reorg_roi/imagenet_vid](#0_15___ipsc_ext_reorg_roi_imagenet_vi_d_)
-        - [0_53       @ ipsc-ext_reorg_roi/imagenet_vid](#0_53___ipsc_ext_reorg_roi_imagenet_vi_d_)
-        - [54_126       @ ipsc-ext_reorg_roi/imagenet_vid](#54_126___ipsc_ext_reorg_roi_imagenet_vi_d_)
+    - [imagenet_vid       @ xml_to_csv](#imagenet_vid___xml_to_csv_)
+        - [train       @ imagenet_vid/xml_to_csv](#train___imagenet_vid_xml_to_cs_v_)
+        - [val       @ imagenet_vid/xml_to_csv](#val___imagenet_vid_xml_to_cs_v_)
+        - [det_only       @ imagenet_vid/xml_to_csv](#det_only___imagenet_vid_xml_to_cs_v_)
+        - [det_val       @ imagenet_vid/xml_to_csv](#det_val___imagenet_vid_xml_to_cs_v_)
+    - [ipsc-5_class       @ xml_to_csv](#ipsc_5_class___xml_to_csv_)
+    - [ipsc-ext_reorg_roi       @ xml_to_csv](#ipsc_ext_reorg_roi___xml_to_csv_)
+        - [16_53       @ ipsc-ext_reorg_roi/xml_to_csv](#16_53___ipsc_ext_reorg_roi_xml_to_cs_v_)
+        - [38_53       @ ipsc-ext_reorg_roi/xml_to_csv](#38_53___ipsc_ext_reorg_roi_xml_to_cs_v_)
+        - [0_1       @ ipsc-ext_reorg_roi/xml_to_csv](#0_1___ipsc_ext_reorg_roi_xml_to_cs_v_)
+        - [0_4       @ ipsc-ext_reorg_roi/xml_to_csv](#0_4___ipsc_ext_reorg_roi_xml_to_cs_v_)
+        - [5_9       @ ipsc-ext_reorg_roi/xml_to_csv](#5_9___ipsc_ext_reorg_roi_xml_to_cs_v_)
+        - [0_15       @ ipsc-ext_reorg_roi/xml_to_csv](#0_15___ipsc_ext_reorg_roi_xml_to_cs_v_)
+        - [0_53       @ ipsc-ext_reorg_roi/xml_to_csv](#0_53___ipsc_ext_reorg_roi_xml_to_cs_v_)
+        - [54_126       @ ipsc-ext_reorg_roi/xml_to_csv](#54_126___ipsc_ext_reorg_roi_xml_to_cs_v_)
 
 <!-- /MarkdownTOC -->
 
@@ -334,47 +335,50 @@ python csv_to_yolov5.py root_dir=/data/ipsc/well3/images class_names_path=lists/
 
 <a id="xml_to_cs_v_"></a>
 # xml_to_csv
-<a id="imagenet_vi_d_"></a>
-# imagenet_vid
-<a id="train___imagenet_vid_"></a>
-## train       @ imagenet_vid-->csv_mot_xml
+<a id="imagenet_vid___xml_to_csv_"></a>
+## imagenet_vid       @ xml_to_csv-->csv_mot_xml
+<a id="train___imagenet_vid_xml_to_cs_v_"></a>
+### train       @ imagenet_vid/xml_to_csv-->csv_mot_xml
 python xml_to_csv.py cfg=imagenet_vid
-<a id="val___imagenet_vid_"></a>
-## val       @ imagenet_vid-->csv_mot_xml
+<a id="val___imagenet_vid_xml_to_cs_v_"></a>
+### val       @ imagenet_vid/xml_to_csv-->csv_mot_xml
 python xml_to_csv.py cfg=imagenet_vid:val
-<a id="det_only___imagenet_vid_"></a>
-## det_only       @ imagenet_vid-->csv_mot_xml
+<a id="det_only___imagenet_vid_xml_to_cs_v_"></a>
+### det_only       @ imagenet_vid/xml_to_csv-->csv_mot_xml
 python xml_to_csv.py cfg=imagenet_vid:det_only
+<a id="det_val___imagenet_vid_xml_to_cs_v_"></a>
+### det_val       @ imagenet_vid/xml_to_csv-->csv_mot_xml
+python xml_to_csv.py cfg=imagenet_vid:det_val
 
 
-<a id="ipsc_5_class___imagenet_vid_"></a>
-## ipsc-5_class       @ imagenet_vid-->csv_mot_xml
+<a id="ipsc_5_class___xml_to_csv_"></a>
+## ipsc-5_class       @ xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:5_class
 
-<a id="ipsc_ext_reorg_roi___imagenet_vid_"></a>
-## ipsc-ext_reorg_roi       @ imagenet_vid-->csv_mot_xml
+<a id="ipsc_ext_reorg_roi___xml_to_csv_"></a>
+## ipsc-ext_reorg_roi       @ xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc
-<a id="16_53___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 16_53       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="16_53___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 16_53       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:16_53
-<a id="38_53___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 38_53       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="38_53___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 38_53       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:38_53
-<a id="0_1___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 0_1       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="0_1___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 0_1       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:0_1
-<a id="0_4___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 0_4       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="0_4___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 0_4       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:0_4
-<a id="5_9___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 5_9       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="5_9___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 5_9       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:5_9
-<a id="0_15___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 0_15       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="0_15___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 0_15       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:0_15
-<a id="0_53___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 0_53       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="0_53___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 0_53       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:0_53
-<a id="54_126___ipsc_ext_reorg_roi_imagenet_vi_d_"></a>
-### 54_126       @ ipsc-ext_reorg_roi/imagenet_vid-->csv_mot_xml
+<a id="54_126___ipsc_ext_reorg_roi_xml_to_cs_v_"></a>
+### 54_126       @ ipsc-ext_reorg_roi/xml_to_csv-->csv_mot_xml
 python3 xml_to_csv.py cfg=ipsc:54_126
