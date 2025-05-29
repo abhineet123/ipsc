@@ -5,6 +5,7 @@
         - [8_per_seq_random       @ train/imagenet_vid](#8_per_seq_random___train_imagenet_vid_)
     - [validation       @ imagenet_vid](#validation___imagenet_vid_)
         - [16_per_seq_random       @ validation/imagenet_vid](#16_per_seq_random___validation_imagenet_vi_d_)
+    - [det_all       @ imagenet_vid](#det_all___imagenet_vid_)
     - [det       @ imagenet_vid](#det___imagenet_vid_)
         - [sampled_eq       @ det/imagenet_vid](#sampled_eq___det_imagenet_vid_)
         - [8_per_seq_random       @ det/imagenet_vid](#8_per_seq_random___det_imagenet_vid_)
@@ -128,6 +129,10 @@ python xml_to_coco.py cfg=imagenet_vid:validation
 <a id="16_per_seq_random___validation_imagenet_vi_d_"></a>
 ### 16_per_seq_random       @ validation/imagenet_vid-->xml_to_coco
 python xml_to_coco.py cfg=imagenet_vid:validation:16_per_seq_random
+
+<a id="det_all___imagenet_vid_"></a>
+## det_all       @ imagenet_vid-->xml_to_coco
+python xml_to_coco.py cfg=imagenet_vid:det_all
 
 <a id="det___imagenet_vid_"></a>
 ## det       @ imagenet_vid-->xml_to_coco
