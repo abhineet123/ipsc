@@ -11,6 +11,7 @@
         - [ratio_1_10_random       @ vid_det/imgn](#ratio_1_10_random___vid_det_imgn_)
     - [vid_det_all       @ imgn](#vid_det_all___imgn_)
         - [sampled_eq       @ vid_det_all/imgn](#sampled_eq___vid_det_all_imgn_)
+        - [ratio_1_10_random       @ vid_det_all/imgn](#ratio_1_10_random___vid_det_all_imgn_)
     - [det_all       @ imgn](#det_all___imgn_)
     - [det_       @ imgn](#det___imgn_)
         - [del       @ det_/imgn](#del___det__img_n_)
@@ -152,7 +153,9 @@ python xml_to_coco.py cfg=imgn:vid_det_all
 <a id="sampled_eq___vid_det_all_imgn_"></a>
 ### sampled_eq       @ vid_det_all/imgn-->xml_to_coco
 python xml_to_coco.py cfg=imgn:vid_det_all:sampled_eq:add
-
+<a id="ratio_1_10_random___vid_det_all_imgn_"></a>
+### ratio_1_10_random       @ vid_det_all/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_det_all:ratio_1_10_random:add
 
 <a id="det_all___imgn_"></a>
 ## det_all       @ imgn-->xml_to_coco
