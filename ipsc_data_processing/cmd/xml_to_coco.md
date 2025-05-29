@@ -1,19 +1,21 @@
 <!-- MarkdownTOC -->
 
-- [imagenet_vid](#imagenet_vi_d_)
-    - [train       @ imagenet_vid](#train___imagenet_vid_)
-        - [8_per_seq_random       @ train/imagenet_vid](#8_per_seq_random___train_imagenet_vid_)
-    - [validation       @ imagenet_vid](#validation___imagenet_vid_)
-        - [16_per_seq_random       @ validation/imagenet_vid](#16_per_seq_random___validation_imagenet_vi_d_)
-    - [det_all       @ imagenet_vid](#det_all___imagenet_vid_)
-    - [det       @ imagenet_vid](#det___imagenet_vid_)
-        - [sampled_eq       @ det/imagenet_vid](#sampled_eq___det_imagenet_vid_)
-        - [8_per_seq_random       @ det/imagenet_vid](#8_per_seq_random___det_imagenet_vid_)
-        - [ratio_1_10_random       @ det/imagenet_vid](#ratio_1_10_random___det_imagenet_vid_)
-    - [det_only       @ imagenet_vid](#det_only___imagenet_vid_)
-        - [del       @ det_only/imagenet_vid](#del___det_only_imagenet_vi_d_)
-    - [det_val       @ imagenet_vid](#det_val___imagenet_vid_)
-        - [del       @ det_val/imagenet_vid](#del___det_val_imagenet_vid_)
+- [imgn](#img_n_)
+    - [vid       @ imgn](#vid___imgn_)
+        - [8_per_seq_random       @ vid/imgn](#8_per_seq_random___vid_imgn_)
+    - [vid_val       @ imgn](#vid_val___imgn_)
+        - [16_per_seq_random       @ vid_val/imgn](#16_per_seq_random___vid_val_imgn_)
+    - [vid_det       @ imgn](#vid_det___imgn_)
+        - [sampled_eq       @ vid_det/imgn](#sampled_eq___vid_det_imgn_)
+        - [8_per_seq_random       @ vid_det/imgn](#8_per_seq_random___vid_det_imgn_)
+        - [ratio_1_10_random       @ vid_det/imgn](#ratio_1_10_random___vid_det_imgn_)
+    - [vid_det_all       @ imgn](#vid_det_all___imgn_)
+        - [sampled_eq       @ vid_det_all/imgn](#sampled_eq___vid_det_all_imgn_)
+    - [det_all       @ imgn](#det_all___imgn_)
+    - [det_       @ imgn](#det___imgn_)
+        - [del       @ det_/imgn](#del___det__img_n_)
+    - [det_val       @ imgn](#det_val___imgn_)
+        - [del       @ det_val/imgn](#del___det_val_imgn_)
 - [detrac](#detra_c_)
     - [0_59       @ detrac](#0_59___detrac_)
         - [100_per_seq_random       @ 0_59/detrac](#100_per_seq_random___0_59_detra_c_)
@@ -114,52 +116,60 @@
 
 <!-- /MarkdownTOC -->
 
-<a id="imagenet_vi_d_"></a>
-# imagenet_vid
-<a id="train___imagenet_vid_"></a>
-## train       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid
-<a id="8_per_seq_random___train_imagenet_vid_"></a>
-### 8_per_seq_random       @ train/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:8_per_seq_random
+<a id="img_n_"></a>
+# imgn
+<a id="vid___imgn_"></a>
+## vid       @ imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid
+<a id="8_per_seq_random___vid_imgn_"></a>
+### 8_per_seq_random       @ vid/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid:8_per_seq_random
 
-<a id="validation___imagenet_vid_"></a>
-## validation       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:validation
-<a id="16_per_seq_random___validation_imagenet_vi_d_"></a>
-### 16_per_seq_random       @ validation/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:validation:16_per_seq_random
+<a id="vid_val___imgn_"></a>
+## vid_val       @ imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_val
+<a id="16_per_seq_random___vid_val_imgn_"></a>
+### 16_per_seq_random       @ vid_val/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_val:16_per_seq_random
 
-<a id="det_all___imagenet_vid_"></a>
-## det_all       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det_all
 
-<a id="det___imagenet_vid_"></a>
-## det       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det
-<a id="sampled_eq___det_imagenet_vid_"></a>
-### sampled_eq       @ det/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det:sampled_eq:add
-<a id="8_per_seq_random___det_imagenet_vid_"></a>
-### 8_per_seq_random       @ det/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det:8_per_seq_random:add
-<a id="ratio_1_10_random___det_imagenet_vid_"></a>
-### ratio_1_10_random       @ det/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det:ratio_1_10_random:add
+<a id="vid_det___imgn_"></a>
+## vid_det       @ imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_det
+<a id="sampled_eq___vid_det_imgn_"></a>
+### sampled_eq       @ vid_det/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_det:sampled_eq:add
+<a id="8_per_seq_random___vid_det_imgn_"></a>
+### 8_per_seq_random       @ vid_det/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_det:8_per_seq_random:add
+<a id="ratio_1_10_random___vid_det_imgn_"></a>
+### ratio_1_10_random       @ vid_det/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_det:ratio_1_10_random:add
 
-<a id="det_only___imagenet_vid_"></a>
-## det_only       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det_only
-<a id="del___det_only_imagenet_vi_d_"></a>
-### del       @ det_only/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det_only:del-xml
+<a id="vid_det_all___imgn_"></a>
+## vid_det_all       @ imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_det_all
+<a id="sampled_eq___vid_det_all_imgn_"></a>
+### sampled_eq       @ vid_det_all/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:vid_det_all:sampled_eq:add
 
-<a id="det_val___imagenet_vid_"></a>
-## det_val       @ imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det_val
-<a id="del___det_val_imagenet_vid_"></a>
-### del       @ det_val/imagenet_vid-->xml_to_coco
-python xml_to_coco.py cfg=imagenet_vid:det_val:del-xml
+
+<a id="det_all___imgn_"></a>
+## det_all       @ imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:det_all
+<a id="det___imgn_"></a>
+## det_       @ imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:det_only
+<a id="del___det__img_n_"></a>
+### del       @ det_/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:det_only:del-xml
+
+<a id="det_val___imgn_"></a>
+## det_val       @ imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:det_val
+<a id="del___det_val_imgn_"></a>
+### del       @ det_val/imgn-->xml_to_coco
+python xml_to_coco.py cfg=imgn:det_val:del-xml
 
 <a id="detra_c_"></a>
 # detrac

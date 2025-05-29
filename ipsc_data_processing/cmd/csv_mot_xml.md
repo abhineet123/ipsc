@@ -59,11 +59,11 @@
     - [ipsc-5_class       @ csv_to_yolov5](#ipsc_5_class___csv_to_yolov_5_)
     - [ext_reorg_roi       @ csv_to_yolov5](#ext_reorg_roi___csv_to_yolov_5_)
 - [xml_to_csv](#xml_to_cs_v_)
-    - [imagenet_vid       @ xml_to_csv](#imagenet_vid___xml_to_csv_)
-        - [train       @ imagenet_vid/xml_to_csv](#train___imagenet_vid_xml_to_cs_v_)
-        - [val       @ imagenet_vid/xml_to_csv](#val___imagenet_vid_xml_to_cs_v_)
-        - [det_only       @ imagenet_vid/xml_to_csv](#det_only___imagenet_vid_xml_to_cs_v_)
-        - [det_val       @ imagenet_vid/xml_to_csv](#det_val___imagenet_vid_xml_to_cs_v_)
+    - [imgn       @ xml_to_csv](#imgn___xml_to_csv_)
+        - [vid       @ imgn/xml_to_csv](#vid___imgn_xml_to_cs_v_)
+        - [vid_val       @ imgn/xml_to_csv](#vid_val___imgn_xml_to_cs_v_)
+        - [det       @ imgn/xml_to_csv](#det___imgn_xml_to_cs_v_)
+        - [det_val       @ imgn/xml_to_csv](#det_val___imgn_xml_to_cs_v_)
     - [ipsc-5_class       @ xml_to_csv](#ipsc_5_class___xml_to_csv_)
     - [ipsc-ext_reorg_roi       @ xml_to_csv](#ipsc_ext_reorg_roi___xml_to_csv_)
         - [16_53       @ ipsc-ext_reorg_roi/xml_to_csv](#16_53___ipsc_ext_reorg_roi_xml_to_cs_v_)
@@ -335,20 +335,20 @@ python csv_to_yolov5.py root_dir=/data/ipsc/well3/images class_names_path=lists/
 
 <a id="xml_to_cs_v_"></a>
 # xml_to_csv
-<a id="imagenet_vid___xml_to_csv_"></a>
-## imagenet_vid       @ xml_to_csv-->csv_mot_xml
-<a id="train___imagenet_vid_xml_to_cs_v_"></a>
-### train       @ imagenet_vid/xml_to_csv-->csv_mot_xml
-python xml_to_csv.py cfg=imagenet_vid
-<a id="val___imagenet_vid_xml_to_cs_v_"></a>
-### val       @ imagenet_vid/xml_to_csv-->csv_mot_xml
-python xml_to_csv.py cfg=imagenet_vid:val
-<a id="det_only___imagenet_vid_xml_to_cs_v_"></a>
-### det_only       @ imagenet_vid/xml_to_csv-->csv_mot_xml
-python xml_to_csv.py cfg=imagenet_vid:det_only
-<a id="det_val___imagenet_vid_xml_to_cs_v_"></a>
-### det_val       @ imagenet_vid/xml_to_csv-->csv_mot_xml
-python xml_to_csv.py cfg=imagenet_vid:det_val
+<a id="imgn___xml_to_csv_"></a>
+## imgn       @ xml_to_csv-->csv_mot_xml
+<a id="vid___imgn_xml_to_cs_v_"></a>
+### vid       @ imgn/xml_to_csv-->csv_mot_xml
+python xml_to_csv.py cfg=imgn:vid
+<a id="vid_val___imgn_xml_to_cs_v_"></a>
+### vid_val       @ imgn/xml_to_csv-->csv_mot_xml
+python xml_to_csv.py cfg=imgn:vid_val
+<a id="det___imgn_xml_to_cs_v_"></a>
+### det       @ imgn/xml_to_csv-->csv_mot_xml
+python xml_to_csv.py cfg=imgn:det
+<a id="det_val___imgn_xml_to_cs_v_"></a>
+### det_val       @ imgn/xml_to_csv-->csv_mot_xml
+python xml_to_csv.py cfg=imgn:det_val
 
 
 <a id="ipsc_5_class___xml_to_csv_"></a>
