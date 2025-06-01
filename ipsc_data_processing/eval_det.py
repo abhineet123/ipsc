@@ -239,7 +239,7 @@ class Params(paramparse.CFG):
         self.class_agnostic = 0
         self.det_nms = 0
 
-        self.batch_nms = 0
+        self.batch_nms = 1
         self.nms_thresh = 0
         self.vid_nms_thresh = 0
 
@@ -4109,12 +4109,11 @@ def sweep(params: Params):
     params_ = copy.deepcopy(params)
     det_data_dict = None
 
-    if params_.sweep.nms_thresh or params_.sweep.vid_nms_thresh:
+    if params_.batch_nms and (params_.sweep.nms_thresh or params_.sweep.vid_nms_thresh):
         if not params.load_det:
             # det_data_dict = {}
 
             """batch nms"""
-            params_.batch_nms = True
             params_.nms_thresh = 0
             params_.vid_nms_thresh = 0
             params_.load_det = False

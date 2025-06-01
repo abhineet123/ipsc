@@ -1,9 +1,14 @@
 <!-- MarkdownTOC -->
 
+- [vit_l-640       @ p2s](#vit_l_640___p2_s_)
+    - [vid_det_all-aug-fbb       @ vit_l-640](#vid_det_all_aug_fbb___vit_l_64_0_)
+        - [train-ratio_1_10_random       @ vid_det_all-aug-fbb/vit_l-640](#train_ratio_1_10_random___vid_det_all_aug_fbb_vit_l_64_0_)
+        - [val-16_per_seq_random       @ vid_det_all-aug-fbb/vit_l-640](#val_16_per_seq_random___vid_det_all_aug_fbb_vit_l_64_0_)
 - [vit_b-640       @ p2s](#vit_b_640___p2_s_)
     - [vid_det-aug-fbb       @ vit_b-640](#vid_det_aug_fbb___vit_b_64_0_)
         - [train-ratio_1_10_random       @ vid_det-aug-fbb/vit_b-640](#train_ratio_1_10_random___vid_det_aug_fbb_vit_b_64_0_)
         - [val-16_per_seq_random       @ vid_det-aug-fbb/vit_b-640](#val_16_per_seq_random___vid_det_aug_fbb_vit_b_64_0_)
+        - [val       @ vid_det-aug-fbb/vit_b-640](#val___vid_det_aug_fbb_vit_b_64_0_)
 - [resnet-640       @ p2s](#resnet_640___p2_s_)
     - [vid-aug-fbb       @ resnet-640](#vid_aug_fbb___resnet_640_)
         - [train-8_per_seq_random       @ vid-aug-fbb/resnet-640](#train_8_per_seq_random___vid_aug_fbb_resnet_640_)
@@ -22,9 +27,23 @@
         - [val-16_per_seq_random       @ vid_det-aug-isc/resnet-640](#val_16_per_seq_random___vid_det_aug_isc_resnet_640_)
     - [vid_det_all-aug-fbb       @ resnet-640](#vid_det_all_aug_fbb___resnet_640_)
         - [train-ratio_1_10_random       @ vid_det_all-aug-fbb/resnet-640](#train_ratio_1_10_random___vid_det_all_aug_fbb_resnet_640_)
+            - [batch_16       @ train-ratio_1_10_random/vid_det_all-aug-fbb/resnet-640](#batch_16___train_ratio_1_10_random_vid_det_all_aug_fbb_resnet_640_)
         - [val-16_per_seq_random       @ vid_det_all-aug-fbb/resnet-640](#val_16_per_seq_random___vid_det_all_aug_fbb_resnet_640_)
+            - [batch_16       @ val-16_per_seq_random/vid_det_all-aug-fbb/resnet-640](#batch_16___val_16_per_seq_random_vid_det_all_aug_fbb_resnet_640_)
 
 <!-- /MarkdownTOC -->
+
+<a id="vit_l_640___p2_s_"></a>
+# vit_l-640       @ p2s-->eval_det_p2s
+<a id="vid_det_all_aug_fbb___vit_l_64_0_"></a>
+## vid_det_all-aug-fbb       @ vit_l-640-->eval_p2s-imgn
+<a id="train_ratio_1_10_random___vid_det_all_aug_fbb_vit_l_64_0_"></a>
+### train-ratio_1_10_random       @ vid_det_all-aug-fbb/vit_l-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_det_all:ratio_1_10_random:nms-s5:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid_det-sampled_eq-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_det-ratio_1_10_random/csv-batch_32:_out_-p2s-vit_b-imgn-vid_det-train-ratio_1_10_random-aug-fbb
+<a id="val_16_per_seq_random___vid_det_all_aug_fbb_vit_l_64_0_"></a>
+### val-16_per_seq_random       @ vid_det_all-aug-fbb/vit_l-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_val:16_per_seq_random:nms-s5:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid_det-sampled_eq-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_val-16_per_seq_random/csv-batch_16:_out_-p2s-vit_b-imgn-vid_det-val-16_per_seq_random-aug-fbb
+
 <a id="vit_b_640___p2_s_"></a>
 # vit_b-640       @ p2s-->eval_det_p2s
 <a id="vid_det_aug_fbb___vit_b_64_0_"></a>
@@ -35,6 +54,9 @@ python3 eval_det.py cfg=p2s,imgn:vid_det:ratio_1_10_random:nms-s5:gt-0:del-1:agn
 <a id="val_16_per_seq_random___vid_det_aug_fbb_vit_b_64_0_"></a>
 ### val-16_per_seq_random       @ vid_det-aug-fbb/vit_b-640-->eval_p2s-imgn
 python3 eval_det.py cfg=p2s,imgn:vid_val:16_per_seq_random:nms-s5:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid_det-sampled_eq-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_val-16_per_seq_random/csv-batch_16:_out_-p2s-vit_b-imgn-vid_det-val-16_per_seq_random-aug-fbb
+<a id="val___vid_det_aug_fbb_vit_b_64_0_"></a>
+### val       @ vid_det-aug-fbb/vit_b-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_val:nms-s5:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid_det-sampled_eq-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_val-16_per_seq_random/csv-batch_16:_out_-p2s-vit_b-imgn-vid_det-val-aug-fbb
 
 <a id="resnet_640___p2_s_"></a>
 # resnet-640       @ p2s-->eval_det_p2s
@@ -90,7 +112,14 @@ python3 eval_det.py cfg=p2s,imgn:vid_val:16_per_seq_random:nms-1:gt-0:agn:proc-1
 <a id="train_ratio_1_10_random___vid_det_all_aug_fbb_resnet_640_"></a>
 ### train-ratio_1_10_random       @ vid_det_all-aug-fbb/resnet-640-->eval_p2s-imgn
 python3 eval_det.py cfg=p2s,imgn:vid_det_all:ratio_1_10_random:nms-1:gt-0:agn:proc-1:_in_-resnet_640_imagenet_vid_det_all-sampled_eq-batch_384-jtr-res_1440-fbb-zeg/ckpt-__var__-imagenet_vid_det_all-ratio_1_10_random/csv-batch_32:_out_-p2s-imgn-vid_det_all-train-ratio_1_10_random-aug-fbb
+<a id="batch_16___train_ratio_1_10_random_vid_det_all_aug_fbb_resnet_640_"></a>
+#### batch_16       @ train-ratio_1_10_random/vid_det_all-aug-fbb/resnet-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_det_all:ratio_1_10_random:nms-1:gt-0:agn:proc-1:_in_-resnet_640_imagenet_vid_det_all-sampled_eq-batch_384-jtr-res_1440-fbb-zeg/ckpt-__var__-imagenet_vid_det_all-ratio_1_10_random/csv-batch_16:_out_-p2s-imgn-vid_det_all-train-ratio_1_10_random-aug-fbb
 <a id="val_16_per_seq_random___vid_det_all_aug_fbb_resnet_640_"></a>
 ### val-16_per_seq_random       @ vid_det_all-aug-fbb/resnet-640-->eval_p2s-imgn
-python3 eval_det.py cfg=p2s,imgn:vid_val:16_per_seq_random:nms-1:gt-0:agn:proc-1:_in_-resnet_640_imagenet_vid_det_all-sampled_eq-batch_384-jtr-res_1440-fbb-zeg/ckpt-__var__-imagenet_vid_val-16_per_seq_random/csv-batch_32:_out_-p2s-imgn-vid_det_all-val-16_per_seq_random-aug-fbb
+python3 eval_det.py cfg=p2s,imgn:vid_val:16_per_seq_random:nms-1:del-1:gt-0:agn:proc-1:_in_-resnet_640_imagenet_vid_det_all-sampled_eq-batch_384-jtr-res_1440-fbb-zeg/ckpt-__var__-imagenet_vid_val-16_per_seq_random/csv-batch_16:_out_-p2s-imgn-vid_det_all-val-16_per_seq_random-aug-fbb
+<a id="batch_16___val_16_per_seq_random_vid_det_all_aug_fbb_resnet_640_"></a>
+#### batch_16       @ val-16_per_seq_random/vid_det_all-aug-fbb/resnet-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_val:16_per_seq_random:nms-1:del-1:gt-0:agn:proc-1:_in_-resnet_640_imagenet_vid_det_all-sampled_eq-batch_384-jtr-res_1440-fbb-zeg/ckpt-__var__-imagenet_vid_val-16_per_seq_random/csv-batch_16:_out_-p2s-imgn-vid_det_all-val-16_per_seq_random-aug-fbb
+
 
