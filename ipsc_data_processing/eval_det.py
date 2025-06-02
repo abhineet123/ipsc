@@ -1114,7 +1114,9 @@ def evaluate(
                         if params.conf_thresh > 0 and confidence < params.conf_thresh:
                             continue
 
-                        if det_class not in gt_classes:
+                        try:
+                            det_class_id = gt_classes.index(det_class)
+                        except ValueError:
                             msg = f'{det_seq_name}: {det_filename} :: invalid det_class: {det_class}'
                             if ignore_invalid_class:
                                 # print(msg)
@@ -1142,6 +1144,7 @@ def evaluate(
                             assert video_id >= 0, "vid_det csv must have valid video_id"
 
                         bbox_dict = {
+                            "class_id": det_class_id,
                             "class": det_class,
                             "width": det_img_w,
                             "height": det_img_h,

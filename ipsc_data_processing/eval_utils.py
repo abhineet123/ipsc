@@ -1555,7 +1555,7 @@ def perform_nms_fast(objs, enable_mask, iou_threshold):
     sort_index = np.flip(obj_conf_arr.argsort())
 
     boxes = np.asarray([obj['bbox'] for obj in objs])
-    categories = np.asarray([obj['class'] for obj in objs])
+    categories = np.asarray([obj['class_id'] for obj in objs])
 
     n_objs = len(objs)
 
