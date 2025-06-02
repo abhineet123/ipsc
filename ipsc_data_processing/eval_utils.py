@@ -1530,6 +1530,59 @@ def perform_batch_nms(objs, enable_mask, nms_thresh_all, vid_nms_thresh_all, dup
     return thresh_to_filtered_objs
 
 
+def box_iou_batch(
+        boxes_a: np.ndarray, boxes_b: np.ndarray
+) -> np.ndarray:
+    def box_area(box):
+        return (box[2] - box[0]) * (box[3] - box[1])
+
+    area_a = box_area(boxes_a.T)
+    area_b = box_area(boxes_b.T)
+
+    top_left = np.maximum(boxes_a[:, None, :2], boxes_b[:, :2])
+    bottom_right = np.minimum(boxes_a[:, None, 2:], boxes_b[:, 2:])
+
+    area_inter = np.prod(
+        np.clip(bottom_right - top_left, a_min=0, a_max=None), 2)
+
+    return area_inter / (area_a[:, None] + area_b - area_inter)
+
+
+def perform_nms_fast(objs, enable_mask, iou_threshold):
+    assert not enable_mask, "fast nms does not support mask IOU"
+
+    obj_conf_arr = np.asarray([obj['confidence'] for obj in objs])
+    sort_index = np.flip(obj_conf_arr.argsort())
+
+    boxes = np.asarray([obj['bbox'] for obj in objs])
+    categories = np.asarray([obj['class'] for obj in objs])
+
+    n_objs = len(objs)
+
+    boxes = boxes[sort_index]
+    categories = categories[sort_index]
+
+    ious = box_iou_batch(boxes, boxes)
+    ious = ious - np.eye(n_objs)
+
+    keep = np.ones(n_objs, dtype=bool)
+
+    for index, (iou, category) in enumerate(zip(ious, categories,  strict=True)):
+        if not keep[index]:
+            continue
+
+        condition = (iou > iou_threshold) & (categories == category)
+        keep = keep & ~condition
+
+    keep = keep[sort_index.argsort()]
+    n_del = 0
+    for (obj, keep_) in enumerate(zip(objs, keep, strict=True)):
+        if not keep_:
+            obj['to_delete'] = 1
+            n_del += 1
+    return n_del
+
+
 def perform_nms(objs, enable_mask, nms_thresh, vid_nms_thresh, dup):
     pred_obj_pairs = list(itertools.combinations(objs, 2))
 
@@ -1634,12 +1687,14 @@ def add_suffix_to_path(src_path, suffix):
     dst_path = linux_path(src_dir, suffix, src_name)
     return dst_path
 
+
 def add_suffix_to_dir(src_path, suffix, sep='_'):
     # abs_src_path = os.path.abspath(src_path)
     src_dir = os.path.dirname(src_path)
     src_name = os.path.basename(src_path)
     dst_path = linux_path(src_dir + sep + suffix, src_name)
     return dst_path
+
 
 def add_suffix(src_path, suffix, dst_ext='', sep='_'):
     # abs_src_path = os.path.abspath(src_path)

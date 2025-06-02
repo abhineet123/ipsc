@@ -227,9 +227,10 @@ class Params(paramparse.CFG):
         self.show_pbar = True
 
         self.monitor_scale = 1.5
+        self.fast_nms = 0
         self.dup_nms = 0
         self.debug = 0
-        self.ckpt_iter = ''
+        self.ckpt_i1ter = ''
         self.filter_ignored = 0
         self.ignore_ioa_thresh = 0.25
         self.conf_thresh = 0
@@ -1220,13 +1221,17 @@ def evaluate(
                         for (vid_nms_thresh_, nms_thresh_), filtered_objs in nms_thresh_to_filtered_objs.items():
                             seq_nms_filtered_bboxes_list[(vid_nms_thresh_, nms_thresh_)] += filtered_objs
                     else:
-                        n_del, n_pairs, n_vid_pairs = utils.perform_nms(
-                            _bbox_info,
-                            enable_mask=params.enable_mask,
-                            nms_thresh=params.nms_thresh,
-                            vid_nms_thresh=params.vid_nms_thresh,
-                            dup=params.dup_nms,
-                        )
+                        if params.fast_nms:
+                            assert not params.vid_nms_thresh, "fast nms does not support separate video nms"
+                            n_del = utils.perform_nms_fast(_bbox_info, params.enable_mask, params.nms_thresh)
+                        else:
+                            n_del, n_pairs, n_vid_pairs = utils.perform_nms(
+                                _bbox_info,
+                                enable_mask=params.enable_mask,
+                                nms_thresh=params.nms_thresh,
+                                vid_nms_thresh=params.vid_nms_thresh,
+                                dup=params.dup_nms,
+                            )
                         # seq_bbox_ids_to_delete += img_bbox_ids_to_delete
                         del_bboxes += n_del
                         n_bboxes = len(_bbox_info)
@@ -1239,8 +1244,10 @@ def evaluate(
                                             f"del: {utils.num_to_words(del_bboxes)} / "
                                             f"{utils.num_to_words(total_bboxes)} "
                                             f"({del_pc:.2f}%) "
-                                            f"boxes: {utils.num_to_words(n_bboxes)},{utils.num_to_words(n_pairs)},"
-                                            f"{utils.num_to_words(n_vid_pairs)}")
+                                            f"boxes: {utils.num_to_words(n_bboxes)},"
+                                            # f"{utils.num_to_words(n_pairs)},"
+                                            # f"{utils.num_to_words(n_vid_pairs)}"
+                                            )
                             nms_pbar.set_description(nms_pbar_msg)
 
                 # n_bbox_ids_to_delete = len(bbox_ids_to_delete)

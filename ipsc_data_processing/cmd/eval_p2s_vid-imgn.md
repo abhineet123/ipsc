@@ -29,6 +29,7 @@
             - [strd-1       @ on-val/len-2-fbb-cls_eq-isc/lfn](#strd_1___on_val_len_2_fbb_cls_eq_isc_lf_n_)
                 - [s5       @ strd-1/on-val/len-2-fbb-cls_eq-isc/lfn](#s5___strd_1_on_val_len_2_fbb_cls_eq_isc_lfn_)
                 - [s5-bnms0       @ strd-1/on-val/len-2-fbb-cls_eq-isc/lfn](#s5_bnms0___strd_1_on_val_len_2_fbb_cls_eq_isc_lfn_)
+                - [s5-fnms       @ strd-1/on-val/len-2-fbb-cls_eq-isc/lfn](#s5_fnms___strd_1_on_val_len_2_fbb_cls_eq_isc_lfn_)
             - [strd-2       @ on-val/len-2-fbb-cls_eq-isc/lfn](#strd_2___on_val_len_2_fbb_cls_eq_isc_lf_n_)
     - [len-2-fbb-aug       @ lfn](#len_2_fbb_aug___lf_n_)
         - [on-train-4_per_seq_random_len_2       @ len-2-fbb-aug/lfn](#on_train_4_per_seq_random_len_2___len_2_fbb_aug_lf_n_)
@@ -147,7 +148,10 @@ python3 eval_det.py cfg=p2s:vid,imgn:vid_val:gt-0:nms-s5:vnms-s5:agn-0:show-0:pr
 
 <a id="s5_bnms0___strd_1_on_val_len_2_fbb_cls_eq_isc_lfn_"></a>
 ##### s5-bnms0       @ strd-1/on-val/len-2-fbb-cls_eq-isc/lfn-->eval_p2s_vid-imgn
-python3 eval_det.py cfg=p2s:vid,imgn:vid_val:gt-1:nms-s5:vnms-s5:agn-0:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imgn-vid-len-2-val-fbb-cls_eq-strd-1-s5-bnms0:bnms0
+python3 eval_det.py cfg=p2s:vid,imgn:vid_val:gt-1:nms-s5:vnms-s5:agn-0:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imgn-vid-len-2-val-fbb-cls_eq-s
+<a id="s5_fnms___strd_1_on_val_len_2_fbb_cls_eq_isc_lfn_"></a>
+##### s5-fnms       @ strd-1/on-val/len-2-fbb-cls_eq-isc/lfn-->eval_p2s_vid-imgn
+python3 eval_det.py cfg=p2s:vid,imgn:vid_val:gt-1:nms-s5:agn-0:show-0:proc-1:_in_-resnet_640_imagenet_vid-length-2-stride-1-batch_256-fbb-cls_eq-lfn-self2-0/ckpt-__var__-imagenet_vid_val-length-2-stride-1/csv-batch_32:_out_-p2s-lfn-imgn-vid-len-2-val-fbb-cls_eq-strd-1-s5-fnms:fnms
 
 <a id="strd_2___on_val_len_2_fbb_cls_eq_isc_lf_n_"></a>
 #### strd-2       @ on-val/len-2-fbb-cls_eq-isc/lfn-->eval_p2s_vid-imgn
