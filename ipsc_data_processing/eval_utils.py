@@ -1550,7 +1550,8 @@ def box_iou_batch(
 
 def perform_nms_fast(objs, enable_mask, iou_threshold):
     assert not enable_mask, "fast nms does not support mask IOU"
-
+    iou_threshold /= 100.
+    
     obj_conf_arr = np.asarray([obj['confidence'] for obj in objs])
     sort_index = np.flip(obj_conf_arr.argsort())
 
