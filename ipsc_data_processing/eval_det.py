@@ -230,7 +230,7 @@ class Params(paramparse.CFG):
         self.fast_nms = 0
         self.dup_nms = 0
         self.debug = 0
-        self.ckpt_i1ter = ''
+        self.ckpt_iter = ''
         self.filter_ignored = 0
         self.ignore_ioa_thresh = 0.25
         self.conf_thresh = 0
