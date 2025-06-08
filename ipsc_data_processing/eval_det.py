@@ -240,7 +240,7 @@ class Params(paramparse.CFG):
         self.class_agnostic = 0
         self.det_nms = 0
 
-        self.batch_nms = 1
+        self.batch_nms = 0
         self.nms_thresh = 0
         self.vid_nms_thresh = 0
 
@@ -1323,7 +1323,6 @@ def evaluate(
                 else:
                     with open(det_pkl, 'wb') as f:
                         pickle.dump(raw_det_data_dict, f, pickle.HIGHEST_PROTOCOL)
-
 
         if not gt_loaded:
             gt_data_dict['counter_per_class'] = gt_counter_per_class

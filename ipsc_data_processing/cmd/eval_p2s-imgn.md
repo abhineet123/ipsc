@@ -10,6 +10,10 @@
         - [val-16_per_seq_random       @ vid_det-aug-fbb/vit_b-640](#val_16_per_seq_random___vid_det_aug_fbb_vit_b_64_0_)
         - [val       @ vid_det-aug-fbb/vit_b-640](#val___vid_det_aug_fbb_vit_b_64_0_)
             - [bnms0       @ val/vid_det-aug-fbb/vit_b-640](#bnms0___val_vid_det_aug_fbb_vit_b_64_0_)
+            - [fnms       @ val/vid_det-aug-fbb/vit_b-640](#fnms___val_vid_det_aug_fbb_vit_b_64_0_)
+    - [vid-aug-fbb       @ vit_b-640](#vid_aug_fbb___vit_b_64_0_)
+        - [train-ratio_1_10_random       @ vid-aug-fbb/vit_b-640](#train_ratio_1_10_random___vid_aug_fbb_vit_b_64_0_)
+        - [val-16_per_seq_random       @ vid-aug-fbb/vit_b-640](#val_16_per_seq_random___vid_aug_fbb_vit_b_64_0_)
 - [resnet-640       @ p2s](#resnet_640___p2_s_)
     - [vid-aug-fbb       @ resnet-640](#vid_aug_fbb___resnet_640_)
         - [train-8_per_seq_random       @ vid-aug-fbb/resnet-640](#train_8_per_seq_random___vid_aug_fbb_resnet_640_)
@@ -61,6 +65,18 @@ python3 eval_det.py cfg=p2s,imgn:vid_val:nms-s10:gt-0:del-1:agn:proc-1:_in_-vit_
 <a id="bnms0___val_vid_det_aug_fbb_vit_b_64_0_"></a>
 #### bnms0       @ val/vid_det-aug-fbb/vit_b-640-->eval_p2s-imgn
 python3 eval_det.py cfg=p2s,imgn:vid_val:nms-s10:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid_det-sampled_eq-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_val/csv-batch_32:_out_-p2s-vit_b-imgn-vid_det-val-aug-fbb-bnms0:bnms0
+<a id="fnms___val_vid_det_aug_fbb_vit_b_64_0_"></a>
+#### fnms       @ val/vid_det-aug-fbb/vit_b-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_val:nms-s10:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid_det-sampled_eq-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_val/csv-batch_32:_out_-p2s-vit_b-imgn-vid_det-val-aug-fbb-fnms:fnms
+
+<a id="vid_aug_fbb___vit_b_64_0_"></a>
+## vid-aug-fbb       @ vit_b-640-->eval_p2s-imgn
+<a id="train_ratio_1_10_random___vid_aug_fbb_vit_b_64_0_"></a>
+### train-ratio_1_10_random       @ vid-aug-fbb/vit_b-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_det:ratio_1_10_random:nms-s5:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid-8_per_seq_random/csv-batch_32:_out_-p2s-vit_b-imgn-vid-train-8_per_seq_random-aug-fbb
+<a id="val_16_per_seq_random___vid_aug_fbb_vit_b_64_0_"></a>
+### val-16_per_seq_random       @ vid-aug-fbb/vit_b-640-->eval_p2s-imgn
+python3 eval_det.py cfg=p2s,imgn:vid_val:16_per_seq_random:nms-s5:gt-0:del-1:agn:proc-1:_in_-vit_b_640_imagenet_vid-batch_40-jtr-res_1440-fbb-self2-0/ckpt-__var__-imagenet_vid_val-16_per_seq_random/csv-batch_16:_out_-p2s-vit_b-imgn-vid-val-16_per_seq_random-aug-fbb
 
 
 <a id="resnet_640___p2_s_"></a>
