@@ -1031,6 +1031,7 @@ def run(params: Params):
     if auto_class_cols:
         class_cols = []
         class_cols_rgb = task_utils.get_cols_rgb(n_classes)
+
         for class_col_rgb in class_cols_rgb:
             r, g, b = class_col_rgb
             col_name = f'{b}_{g}_{r}'
