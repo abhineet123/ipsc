@@ -2,6 +2,7 @@
 
 <!-- MarkdownTOC -->
 
+- [swap](#swa_p_)
 - [init](#ini_t_)
 - [flags](#flags_)
 - [persistence](#persistence_)
@@ -131,6 +132,19 @@
 
 <!-- /MarkdownTOC -->
 
+<a id="swa_p_"></a>
+# swap
+dd if=/dev/zero of=/home/abhineet/swapfile64.img bs=1024 count=64M
+mkswap /home/abhineet/swapfile64.img
+
+sudo nano /etc/fstab
+
+Add this line at the end:
+/home/abhineet/swapfile64.img swap swap sw 0 0
+
+sudo swapon /home/abhineet/swapfile64.img
+(this command will need to be run again on each reboot)
+
 <a id="ini_t_"></a>
 # init
 sudo apt-get purge unattended-upgrades
@@ -150,14 +164,6 @@ sudo nvidia-smi -pm 1
 
 <a id="power_limit_"></a>
 # power_limit
-sudo nvidia-smi -i 0 -pl 350
-sudo nvidia-smi -i 0 -pl 300
-sudo nvidia-smi -i 0 -pl 250
-sudo nvidia-smi -i 0 -pl 200
-sudo nvidia-smi -i 1 -pl 100
-sudo nvidia-smi -i 1 -pl 120
-sudo nvidia-smi -i 2 -pl 120
-
 sudo nvidia-smi -i 0,1 -pl 100
 sudo nvidia-smi -i 0,1 -pl 150
 sudo nvidia-smi -i 0,1 -pl 200
@@ -167,7 +173,17 @@ sudo nvidia-smi -i 0,1 -pl 350
 
 sudo nvidia-smi -i 0,1,2 -pl 150
 sudo nvidia-smi -i 0,1,2 -pl 170
+sudo nvidia-smi -i 0,1,2 -pl 175
 sudo nvidia-smi -i 0,1,2 -pl 200
+
+sudo nvidia-smi -i 0 -pl 350
+sudo nvidia-smi -i 0 -pl 300
+sudo nvidia-smi -i 0 -pl 250
+sudo nvidia-smi -i 0 -pl 200
+sudo nvidia-smi -i 1 -pl 100
+sudo nvidia-smi -i 1 -pl 120
+sudo nvidia-smi -i 1 -pl 150
+sudo nvidia-smi -i 2 -pl 120
 
 watch nvidia-smi
 
