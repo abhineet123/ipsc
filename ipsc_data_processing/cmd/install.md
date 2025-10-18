@@ -1,5 +1,3 @@
-<!-- No Heading Fix -->
-
 <!-- MarkdownTOC -->
 
 - [swap](#swa_p_)
@@ -7,63 +5,63 @@
 - [flags](#flags_)
 - [persistence](#persistence_)
 - [power_limit](#power_limit_)
-  - [pc](#p_c_)
+  - [pc       @ power_limit](#pc___power_limi_t_)
 - [sudo_no_pwd](#sudo_no_pwd_)
 - [ssh](#ssh_)
 - [nomachine](#nomachine_)
 - [docker](#docke_r_)
-  - [nvidia-container-toolkit](#nvidia_container_toolki_t_)
+  - [nvidia-container-toolkit       @ docker](#nvidia_container_toolkit___docker_)
 - [install nvidia drivers](#install_nvidia_driver_s_)
-  - [418_for_cuda_10.1](#418_for_cuda_10_1_)
-  - [410_for_cuda_10.0](#410_for_cuda_10_0_)
-  - [396_for_cuda_9](#396_for_cuda_9_)
-  - [20.04](#20_04_)
-    - [470_for_cuda_11](#470_for_cuda_11_)
-    - [others](#other_s_)
+  - [418_for_cuda_10.1       @ install_nvidia_drivers](#418_for_cuda_10_1___install_nvidia_drivers_)
+  - [410_for_cuda_10.0       @ install_nvidia_drivers](#410_for_cuda_10_0___install_nvidia_drivers_)
+  - [396_for_cuda_9       @ install_nvidia_drivers](#396_for_cuda_9___install_nvidia_drivers_)
+  - [20.04       @ install_nvidia_drivers](#20_04___install_nvidia_drivers_)
+    - [470_for_cuda_11       @ 20.04/install_nvidia_drivers](#470_for_cuda_11___20_04_install_nvidia_drivers_)
+    - [others       @ 20.04/install_nvidia_drivers](#others___20_04_install_nvidia_drivers_)
 - [cuda](#cud_a_)
-  - [bugs](#bug_s_)
-  - [CUDA 12.2:](#cuda_12_2__)
-    - [all       @ tensorflow/install](#all___tensorflow_install_)
-      - [12.2       @ all/tensorflow/install](#12_2___all_tensorflow_install_)
-      - [12.3       @ all/tensorflow/install](#12_3___all_tensorflow_install_)
-  - [cuda-12.3](#cuda_12_3_)
-  - [cudnn-deb](#cudnn_deb_)
+  - [bugs       @ cuda](#bugs___cuda_)
+  - [CUDA_12.2:       @ cuda](#cuda_12_2____cuda_)
+    - [all       @ CUDA_12.2:/cuda](#all___cuda_12_2__cud_a_)
+      - [12.2       @ all/CUDA_12.2:/cuda](#12_2___all_cuda_12_2__cud_a_)
+      - [12.3       @ all/CUDA_12.2:/cuda](#12_3___all_cuda_12_2__cud_a_)
+  - [cuda-12.3       @ cuda](#cuda_12_3___cuda_)
+  - [cudnn-deb       @ cuda](#cudnn_deb___cuda_)
 - [disks](#disks_)
 - [tmux](#tmu_x_)
 - [git](#git_)
 - [protobuf compiler](#protobuf_compiler_)
 - [misc packages](#misc_packages_)
-  - [18.04](#18_04_)
+  - [18.04       @ misc_packages](#18_04___misc_package_s_)
 - [update pip](#update_pi_p_)
-  - [18.04](#18_04__1)
-  - [all](#all_)
+  - [18.04       @ update_pip](#18_04___update_pip_)
+  - [all       @ update_pip](#all___update_pip_)
 - [setup python 3](#setup_python_3_)
-  - [20.04](#20_04__1)
-    - [python_3.6](#python_3__6_)
-    - [python_3.8](#python_3__8_)
-    - [python_3.10](#python_3_10_)
-      - [fix corruption when upgrading 18.04 to 20.04](#fix_corruption_when_upgrading_18_04_to_20_0_4_)
-  - [install_core_library](#install_core_librar_y_)
-      - [python_3.6](#python_3__6__1)
-    - [Ubuntu_14.04](#ubuntu_14_0_4_)
-  - [install_packages](#install_package_s_)
-    - [linux](#linux_)
-    - [all](#all__1)
-      - [pycocotools](#pycocotools_)
-      - [lapsolver](#lapsolver_)
-      - [paramiko_issue](#paramiko_issu_e_)
-    - [windows](#windows_)
-      - [AES](#aes_)
-      - [x32](#x32_)
-  - [ffmpeg](#ffmpe_g_)
-  - [pytorch_and_vis_tools](#pytorch_and_vis_tools_)
-    - [gpu](#gpu_)
-      - [grs / ubuntu 18.04 / cuda11](#grs___ubuntu_18_04___cuda11_)
-    - [latest](#lates_t_)
-    - [v1.0](#v1__0_)
-      - [linux_python3.8/cuda_10.0](#linux_python3_8_cuda_10_0_)
-      - [linux_python3.6/cuda_10.0](#linux_python3_6_cuda_10_0_)
-        - [apex](#ape_x_)
+  - [20.04       @ setup_python_3](#20_04___setup_python_3_)
+    - [python_3.6       @ 20.04/setup_python_3](#python_3_6___20_04_setup_python_3_)
+    - [python_3.8       @ 20.04/setup_python_3](#python_3_8___20_04_setup_python_3_)
+    - [python_3.10       @ 20.04/setup_python_3](#python_3_10___20_04_setup_python_3_)
+      - [fix_corruption_when_upgrading_18.04_to_20.04       @ python_3.10/20.04/setup_python_3](#fix_corruption_when_upgrading_18_04_to_20_04___python_3_10_20_04_setup_python_3_)
+  - [install_core_library       @ setup_python_3](#install_core_library___setup_python_3_)
+      - [python_3.6       @ install_core_library/setup_python_3](#python_3_6___install_core_library_setup_python_3_)
+    - [Ubuntu_14.04       @ install_core_library/setup_python_3](#ubuntu_14_04___install_core_library_setup_python_3_)
+  - [install_packages       @ setup_python_3](#install_packages___setup_python_3_)
+    - [linux       @ install_packages/setup_python_3](#linux___install_packages_setup_python_3_)
+    - [all       @ install_packages/setup_python_3](#all___install_packages_setup_python_3_)
+      - [pycocotools       @ all/install_packages/setup_python_3](#pycocotools___all_install_packages_setup_python_3_)
+      - [lapsolver       @ all/install_packages/setup_python_3](#lapsolver___all_install_packages_setup_python_3_)
+      - [paramiko_issue       @ all/install_packages/setup_python_3](#paramiko_issue___all_install_packages_setup_python_3_)
+    - [windows       @ install_packages/setup_python_3](#windows___install_packages_setup_python_3_)
+      - [AES       @ windows/install_packages/setup_python_3](#aes___windows_install_packages_setup_python_3_)
+      - [x32       @ windows/install_packages/setup_python_3](#x32___windows_install_packages_setup_python_3_)
+  - [ffmpeg       @ setup_python_3](#ffmpeg___setup_python_3_)
+  - [pytorch_and_vis_tools       @ setup_python_3](#pytorch_and_vis_tools___setup_python_3_)
+    - [gpu       @ pytorch_and_vis_tools/setup_python_3](#gpu___pytorch_and_vis_tools_setup_python_3_)
+      - [grs_/_ubuntu_18.04_/_cuda11       @ gpu/pytorch_and_vis_tools/setup_python_3](#grs___ubuntu_18_04___cuda11___gpu_pytorch_and_vis_tools_setup_python_3_)
+    - [latest       @ pytorch_and_vis_tools/setup_python_3](#latest___pytorch_and_vis_tools_setup_python_3_)
+    - [v1.0       @ pytorch_and_vis_tools/setup_python_3](#v1_0___pytorch_and_vis_tools_setup_python_3_)
+      - [linux_python3.8/cuda_10.0       @ v1.0/pytorch_and_vis_tools/setup_python_3](#linux_python3_8_cuda_10_0___v1_0_pytorch_and_vis_tools_setup_python_3_)
+      - [linux_python3.6/cuda_10.0       @ v1.0/pytorch_and_vis_tools/setup_python_3](#linux_python3_6_cuda_10_0___v1_0_pytorch_and_vis_tools_setup_python_3_)
+        - [apex       @ linux_python3.6/cuda_10.0/v1.0/pytorch_and_vis_tools/setup_python_3](#apex___linux_python3_6_cuda_10_0_v1_0_pytorch_and_vis_tools_setup_python_3_)
     - [windows_python3.7/cuda_10.0       @ pytorch_and_vis_tools/setup_python_3](#windows_python3_7_cuda_10_0___pytorch_and_vis_tools_setup_python_3_)
   - [opencv       @ setup_python_3](#opencv___setup_python_3_)
     - [4.5.4.60       @ opencv/setup_python_3](#4_5_4_60___opencv_setup_python_3_)
@@ -187,8 +185,8 @@ sudo nvidia-smi -i 2 -pl 120
 
 watch nvidia-smi
 
-<a id="p_c_"></a>
-## pc
+<a id="pc___power_limi_t_"></a>
+## pc       @ power_limit-->install
 nvidia-smi -i 0 -pl 300
 nvidia-smi -i 1,2 -pl 100
 
@@ -231,8 +229,8 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-<a id="nvidia_container_toolki_t_"></a>
-## nvidia-container-toolkit
+<a id="nvidia_container_toolkit___docker_"></a>
+## nvidia-container-toolkit       @ docker-->install
 https://stackoverflow.com/questions/25185405/using-gpu-from-a-docker-container/58432877#58432877
 ```
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
@@ -304,34 +302,34 @@ sudo apt-get update
 ubuntu-drivers devices
 ```
 
-<a id="418_for_cuda_10_1_"></a>
-## 418_for_cuda_10.1 
+<a id="418_for_cuda_10_1___install_nvidia_drivers_"></a>
+## 418_for_cuda_10.1       @ install_nvidia_drivers-->install
 ```
 sudo apt-get install nvidia-418
 ```
-<a id="410_for_cuda_10_0_"></a>
-## 410_for_cuda_10.0
+<a id="410_for_cuda_10_0___install_nvidia_drivers_"></a>
+## 410_for_cuda_10.0       @ install_nvidia_drivers-->install
 
 ```
 sudo apt-get install nvidia-410
 ```
 
-<a id="396_for_cuda_9_"></a>
-## 396_for_cuda_9  
+<a id="396_for_cuda_9___install_nvidia_drivers_"></a>
+## 396_for_cuda_9       @ install_nvidia_drivers-->install
 ```
 sudo apt-get install nvidia-396
 ```
 
-<a id="20_04_"></a>
-## 20.04 
+<a id="20_04___install_nvidia_drivers_"></a>
+## 20.04       @ install_nvidia_drivers-->install
 
-<a id="470_for_cuda_11_"></a>
-### 470_for_cuda_11 
+<a id="470_for_cuda_11___20_04_install_nvidia_drivers_"></a>
+### 470_for_cuda_11       @ 20.04/install_nvidia_drivers-->install
 ```
 sudo apt install nvidia-driver-470
 ```
-<a id="other_s_"></a>
-### others
+<a id="others___20_04_install_nvidia_drivers_"></a>
+### others       @ 20.04/install_nvidia_drivers-->install
 ```
 sudo apt install nvidia-driver-510
 sudo apt install nvidia-driver-515
@@ -354,8 +352,8 @@ sudo shutdown -r now
 nvcc --version
 /usr/local/cuda/bin/nvcc --version
 
-<a id="bug_s_"></a>
-## bugs
+<a id="bugs___cuda_"></a>
+## bugs       @ cuda-->install
 `CUDA stops working after waking up from suspend`
 https://askubuntu.com/questions/1228423/how-do-i-fix-cuda-breaking-after-suspend
 
@@ -370,8 +368,8 @@ no need to enable the suspend service in the newest drivers
 sudo systemctl enable nvidia-suspend.service
 
 <a id="cuda_12_4__"></a>
-<a id="cuda_12_2__"></a>
-## CUDA 12.2:
+<a id="cuda_12_2____cuda_"></a>
+## CUDA_12.2:       @ cuda-->install
 `from p2s`
 https://developer.nvidia.com/cuda-12-2-2-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=deb_local
 ```
@@ -387,8 +385,8 @@ sudo apt-get remove cuda-12-2
 
 ```
 
-<a id="all___tensorflow_install_"></a>
-### all       @ tensorflow/install-->p2s_setup
+<a id="all___cuda_12_2__cud_a_"></a>
+### all       @ CUDA_12.2:/cuda-->install
 download cudnn tar from
 https://developer.nvidia.com/rdp/cudnn-download
 ```
@@ -398,14 +396,14 @@ and extract into cuda-12.2/targets/ folder
 ```
 tar xvf cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
 ```
-<a id="12_2___all_tensorflow_install_"></a>
-#### 12.2       @ all/tensorflow/install-->p2s_setup
+<a id="12_2___all_cuda_12_2__cud_a_"></a>
+#### 12.2       @ all/CUDA_12.2:/cuda-->install
 ```
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.2/targets/x86_64-linux/lib/
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.2/targets/x86_64-linux/include/
 ```
-<a id="12_3___all_tensorflow_install_"></a>
-#### 12.3       @ all/tensorflow/install-->p2s_setup
+<a id="12_3___all_cuda_12_2__cud_a_"></a>
+#### 12.3       @ all/CUDA_12.2:/cuda-->install
 ```
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.3/targets/x86_64-linux/lib/
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.3/targets/x86_64-linux/include/
@@ -420,8 +418,9 @@ export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.2
 ```
 
 
-<a id="cuda_12_3_"></a>
-## cuda-12.3
+<a id="cuda_12_3___cuda_"></a>
+## cuda-12.3       @ cuda-->install
+```
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
 sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
 wget https://developer.download.nvidia.com/compute/cuda/12.3.2/local_installers/cuda-repo-ubuntu2204-12-3-local_12.3.2-545.23.08-1_amd64.deb
@@ -433,9 +432,9 @@ sudo apt-get -y install cuda-toolkit-12-3
 export LD_LIBRARY_PATH=/usr/local/cuda-12.3/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
 export PATH=$PATH:/usr/local/cuda-12.3/bin
 export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.3
-
-<a id="cudnn_deb_"></a>
-## cudnn-deb
+```
+<a id="cudnn_deb___cuda_"></a>
+## cudnn-deb       @ cuda-->install
 `does not work`
 https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local
 
@@ -474,15 +473,15 @@ apt-get install libsnappy-dev
 apt-get install liblmdb-dev
 sudo apt-get install libatlas-base-dev
 
-<a id="18_04_"></a>
-## 18.04 
+<a id="18_04___misc_package_s_"></a>
+## 18.04       @ misc_packages-->install
 sudo apt install caffe-cuda
 
 <a id="update_pi_p_"></a>
 # update pip
 
-<a id="18_04__1"></a>
-## 18.04 
+<a id="18_04___update_pip_"></a>
+## 18.04       @ update_pip-->install
 ```
 sudo apt-get install python3-distutils
 sudo apt-get install python3-apt
@@ -492,8 +491,8 @@ sudo apt-get install python3.6-distutils
 sudo apt install python3-testresources
 ```
 
-<a id="all_"></a>
-## all 
+<a id="all___update_pip_"></a>
+## all       @ update_pip-->install
 
 ```
 wget https://bootstrap.pypa.io/get-pip.py
@@ -511,8 +510,8 @@ python -m pip install --upgrade pip
 <a id="setup_python_3_"></a>
 # setup python 3
 
-<a id="20_04__1"></a>
-## 20.04
+<a id="20_04___setup_python_3_"></a>
+## 20.04       @ setup_python_3-->install
 
 ```
 ln -sf /usr/bin/python3.6 /usr/bin/python3
@@ -526,8 +525,8 @@ sudo update-alternatives --config python3
 
 ```
 
-<a id="python_3__6_"></a>
-### python_3.6 
+<a id="python_3_6___20_04_setup_python_3_"></a>
+### python_3.6       @ 20.04/setup_python_3-->install
 ```
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
@@ -536,8 +535,8 @@ sudo apt-get install python3.6-dev
 sudo apt-get install python3.6-tk
 ```
 
-<a id="python_3__8_"></a>
-### python_3.8
+<a id="python_3_8___20_04_setup_python_3_"></a>
+### python_3.8       @ 20.04/setup_python_3-->install
 ```
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
@@ -546,37 +545,37 @@ sudo apt-get install python3.8-dev
 sudo apt-get remove python3.8-dev
 sudo apt-get install python3.8-tk
 ```
-<a id="python_3_10_"></a>
-### python_3.10
+<a id="python_3_10___20_04_setup_python_3_"></a>
+### python_3.10       @ 20.04/setup_python_3-->install
 ```
 sudo apt-get install python3.10-dev
 sudo apt-get remove python3.10-dev
 sudo apt-get install python3.10-tk
 ```
 
-<a id="fix_corruption_when_upgrading_18_04_to_20_0_4_"></a>
-#### fix corruption when upgrading 18.04 to 20.04
+<a id="fix_corruption_when_upgrading_18_04_to_20_04___python_3_10_20_04_setup_python_3_"></a>
+#### fix_corruption_when_upgrading_18.04_to_20.04       @ python_3.10/20.04/setup_python_3-->install
 https://stackoverflow.com/questions/61627422/upgrade-ubuntu-18-04-to-20-04-but-packages-remain-bionic1
 
 apt-cache showpkg python3.8
 
 sudo apt install libpython3.8:amd64=3.8.2-1ubuntu1 libpython3.8-dev:amd64=3.8.2-1ubuntu1 libpython3.8-minimal:amd64=3.8.2-1ubuntu1 libpython3.8-stdlib:amd64=3.8.2-1ubuntu1 python3.8=3.8.2-1ubuntu1 python3.8-minimal=3.8.2-1ubuntu1
 
-<a id="install_core_librar_y_"></a>
-## install_core_library 
+<a id="install_core_library___setup_python_3_"></a>
+## install_core_library       @ setup_python_3-->install
 
 ```
 sudo apt-get install python3-dev
 ```
 
-<a id="python_3__6__1"></a>
-#### python_3.6  
+<a id="python_3_6___install_core_library_setup_python_3_"></a>
+#### python_3.6       @ install_core_library/setup_python_3-->install
 ```
 sudo apt-get install python3.6-dev
 ```
 
-<a id="ubuntu_14_0_4_"></a>
-### Ubuntu_14.04
+<a id="ubuntu_14_04___install_core_library_setup_python_3_"></a>
+### Ubuntu_14.04       @ install_core_library/setup_python_3-->install
 On Ubuntu 14.04, running the above command usually installs python 3.4.3 which is too old to run the labeling tool and some of the batch scripts.
 Following commands should be used to install python 3.5 instead:
 
@@ -586,11 +585,11 @@ sudo apt-get update
 sudo apt-get install python3.5
 ```
 
-<a id="install_package_s_"></a>
-## install_packages 
+<a id="install_packages___setup_python_3_"></a>
+## install_packages       @ setup_python_3-->install
 
-<a id="linux_"></a>
-### linux  
+<a id="linux___install_packages_setup_python_3_"></a>
+### linux       @ install_packages/setup_python_3-->install
 
 ```
 apt-get install -y python3-tk
@@ -603,8 +602,8 @@ cd /usr/lib/python3/dist-packages
 sudo ln -s apt_pkg.cpython-36m-x86_64-linux-gnu.so
 
 ```
-<a id="all__1"></a>
-### all 
+<a id="all___install_packages_setup_python_3_"></a>
+### all       @ install_packages/setup_python_3-->install
 ```
 python3 -m pip install cython numpy scipy 
 
@@ -614,8 +613,8 @@ python3 -m pip install pyqt5
 python3 -m pip install -U Pillow
 
 ```
-<a id="pycocotools_"></a>
-#### pycocotools
+<a id="pycocotools___all_install_packages_setup_python_3_"></a>
+#### pycocotools       @ all/install_packages/setup_python_3-->install
 
 __pycocotools/_mask.c:4:10: fatal error: Python.h: No such file or directory__
 
@@ -626,8 +625,8 @@ pip install cython
 pip install pycocotools
 ```
 
-<a id="lapsolver_"></a>
-#### lapsolver  
+<a id="lapsolver___all_install_packages_setup_python_3_"></a>
+#### lapsolver       @ all/install_packages/setup_python_3-->install
 __install_cmake__
 ```
 apt install cmake
@@ -656,8 +655,8 @@ sudo apt install python3-pil
 
 and running the python36 -m pip command again
 
-<a id="paramiko_issu_e_"></a>
-#### paramiko_issue
+<a id="paramiko_issue___all_install_packages_setup_python_3_"></a>
+#### paramiko_issue       @ all/install_packages/setup_python_3-->install
 
 AttributeError: cffi library '_sodium' has no function, constant or global variable named 'crypto_aead_chacha20poly1305_ietf_keybytes'
 
@@ -665,8 +664,8 @@ AttributeError: cffi library '_sodium' has no function, constant or global varia
 python36 -m pip install --upgrade PyNaCl
 ```
 
-<a id="windows_"></a>
-### windows
+<a id="windows___install_packages_setup_python_3_"></a>
+### windows       @ install_packages/setup_python_3-->install
 __vcredist__
 ```
 https://aka.ms/vs/16/release/vc_redist.x64.exe
@@ -676,8 +675,8 @@ https://aka.ms/vs/16/release/vc_redist.x64.exe
 python3 -m pip install pywin32 pywinauto pyautogui pyexcel pyexcel-ods3 winrt openpyxl
 
 ```
-<a id="aes_"></a>
-#### AES
+<a id="aes___windows_install_packages_setup_python_3_"></a>
+#### AES       @ windows/install_packages/setup_python_3-->install
 __Build Tools for Visual Studio 2019__
 ```
 https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019
@@ -686,8 +685,8 @@ https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019
 ```
 python36 -m pip install pycryptodomex --no-binary :all:
 ```
-<a id="x32_"></a>
-#### x32  
+<a id="x32___windows_install_packages_setup_python_3_"></a>
+#### x32       @ windows/install_packages/setup_python_3-->install
 ```
 python3x32 -m pip install cython numpy scipy 
 python3x32 -m pip install scikit-learn scikit-image pandas matplotlib screeninfo imageio pillow imutils prettytable color_transfer lxml tabulate tqdm paramiko xlwt contextlib2 paramparse psutil keyboard mouse Pillow mss dictances packaging jpeg4py lapsolver xgboost pyperclip portalocker
@@ -703,19 +702,19 @@ python3x32 get-pip.py
 ```
 
 
-<a id="ffmpe_g_"></a>
-## ffmpeg 
+<a id="ffmpeg___setup_python_3_"></a>
+## ffmpeg       @ setup_python_3-->install
 ```
 sudo apt update
 sudo apt install ffmpeg
 ```
 
 
-<a id="pytorch_and_vis_tools_"></a>
-## pytorch_and_vis_tools 
+<a id="pytorch_and_vis_tools___setup_python_3_"></a>
+## pytorch_and_vis_tools       @ setup_python_3-->install
 
-<a id="gpu_"></a>
-### gpu 
+<a id="gpu___pytorch_and_vis_tools_setup_python_3_"></a>
+### gpu       @ pytorch_and_vis_tools/setup_python_3-->install
 ```
 python3 -m pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio===0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
 
@@ -723,15 +722,15 @@ python3 -m pip install torch==1.12.1+cu117 -f https://download.pytorch.org/whl/t
 
 ```
 
-<a id="grs___ubuntu_18_04___cuda11_"></a>
-#### grs / ubuntu 18.04 / cuda11
+<a id="grs___ubuntu_18_04___cuda11___gpu_pytorch_and_vis_tools_setup_python_3_"></a>
+#### grs_/_ubuntu_18.04_/_cuda11       @ gpu/pytorch_and_vis_tools/setup_python_3-->install
 
 ```
 python3 -m pip install torch==1.10.2+cu113 torchvision==0.11.3+cu113 torchaudio===0.10.2+cu113 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-<a id="lates_t_"></a>
-### latest
+<a id="latest___pytorch_and_vis_tools_setup_python_3_"></a>
+### latest       @ pytorch_and_vis_tools/setup_python_3-->install
 
 ```
 python36 -m pip install torch torchvision tensorboardX visdom pytorch-ignite
@@ -743,8 +742,8 @@ python2 -m pip install torch torchvision tensorboardX visdom pytorch-ignite
 
 ```
 
-<a id="v1__0_"></a>
-### v1.0 
+<a id="v1_0___pytorch_and_vis_tools_setup_python_3_"></a>
+### v1.0       @ pytorch_and_vis_tools/setup_python_3-->install
 
 versions > 1.0.0 have compatibility issues with yolo 3 causing NaN loss
 
@@ -758,8 +757,8 @@ python2 -m pip install torch torchvision tensorboardX visdom
 ```
 
 
-<a id="linux_python3_8_cuda_10_0_"></a>
-#### linux_python3.8/cuda_10.0 
+<a id="linux_python3_8_cuda_10_0___v1_0_pytorch_and_vis_tools_setup_python_3_"></a>
+#### linux_python3.8/cuda_10.0       @ v1.0/pytorch_and_vis_tools/setup_python_3-->install
 ```
 
 python36 -m pip install -U https://download.pytorch.org/whl/cu100/torch-1.0.0-cp38-cp38m-linux_x86_64.whl
@@ -768,15 +767,15 @@ python36 -m pip install packaging tensorboardX visdom pytorch-ignite pytorch-lig
 
 ```
 
-<a id="linux_python3_6_cuda_10_0_"></a>
-#### linux_python3.6/cuda_10.0  
+<a id="linux_python3_6_cuda_10_0___v1_0_pytorch_and_vis_tools_setup_python_3_"></a>
+#### linux_python3.6/cuda_10.0       @ v1.0/pytorch_and_vis_tools/setup_python_3-->install
 ```
 python36 -m pip install https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
 python36 -m pip install https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl
 ```
 
-<a id="ape_x_"></a>
-##### apex 
+<a id="apex___linux_python3_6_cuda_10_0_v1_0_pytorch_and_vis_tools_setup_python_3_"></a>
+##### apex       @ linux_python3.6/cuda_10.0/v1.0/pytorch_and_vis_tools/setup_python_3-->install
 ```
 git clone https://www.github.com/nvidia/apex
 cd apex
