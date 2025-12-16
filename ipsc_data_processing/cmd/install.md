@@ -112,6 +112,8 @@
     - [linux       @ install_opencv_from_source/optional](#linux___install_opencv_from_source_optiona_l_)
       - [3.4.5       @ linux/install_opencv_from_source/optional](#3_4_5___linux_install_opencv_from_source_optiona_l_)
       - [3.4.1       @ linux/install_opencv_from_source/optional](#3_4_1___linux_install_opencv_from_source_optiona_l_)
+      - [cuda       @ linux/install_opencv_from_source/optional](#cuda___linux_install_opencv_from_source_optiona_l_)
+      - [no_cuda       @ linux/install_opencv_from_source/optional](#no_cuda___linux_install_opencv_from_source_optiona_l_)
       - [2.4.13.6       @ linux/install_opencv_from_source/optional](#2_4_13_6___linux_install_opencv_from_source_optiona_l_)
       - [compile_and_install       @ linux/install_opencv_from_source/optional](#compile_and_install___linux_install_opencv_from_source_optiona_l_)
   - [setup_point_grey_ethernet_camera       @ optional](#setup_point_grey_ethernet_camera___optional_)
@@ -164,6 +166,10 @@ sudo nvidia-smi -pm 1
 # power_limit
 sudo nvidia-smi -i 0,1 -pl 100
 sudo nvidia-smi -i 0,1 -pl 150
+sudo nvidia-smi -i 0,1 -pl 160
+sudo nvidia-smi -i 0,1 -pl 170
+sudo nvidia-smi -i 0,1 -pl 175
+sudo nvidia-smi -i 0,1 -pl 180
 sudo nvidia-smi -i 0,1 -pl 200
 sudo nvidia-smi -i 0,1 -pl 250
 sudo nvidia-smi -i 0,1 -pl 300
@@ -174,14 +180,17 @@ sudo nvidia-smi -i 0,1,2 -pl 170
 sudo nvidia-smi -i 0,1,2 -pl 175
 sudo nvidia-smi -i 0,1,2 -pl 200
 
-sudo nvidia-smi -i 0 -pl 350
-sudo nvidia-smi -i 0 -pl 300
-sudo nvidia-smi -i 0 -pl 250
-sudo nvidia-smi -i 0 -pl 200
 sudo nvidia-smi -i 1 -pl 100
 sudo nvidia-smi -i 1 -pl 120
-sudo nvidia-smi -i 1 -pl 150
 sudo nvidia-smi -i 2 -pl 120
+sudo nvidia-smi -i 0 -pl 100
+sudo nvidia-smi -i 0 -pl 150
+sudo nvidia-smi -i 0 -pl 180
+sudo nvidia-smi -i 1 -pl 150
+sudo nvidia-smi -i 0 -pl 200
+sudo nvidia-smi -i 0 -pl 250
+sudo nvidia-smi -i 0 -pl 300
+sudo nvidia-smi -i 0 -pl 350
 
 watch nvidia-smi
 
@@ -496,6 +505,8 @@ sudo apt install python3-testresources
 
 ```
 wget https://bootstrap.pypa.io/get-pip.py
+
+wget https://bootstrap.pypa.io/pip/3.7/get-pip.py
 
 python3 get-pip.py
 python36 get-pip.py
@@ -1209,6 +1220,11 @@ in `OpenCVConfig.cmake`.
 <a id="linux___install_opencv_from_source_optiona_l_"></a>
 ### linux       @ install_opencv_from_source/optional-->install
 
+add this at the top of CMakeLists.txt to avoid errors originating from C++17
+```
+set (CMAKE_CXX_STANDARD 11)
+```
+
 from ~
 
 ```
@@ -1322,6 +1338,11 @@ mkdir build
 
 cd build
 
+```
+
+<a id="cuda___linux_install_opencv_from_source_optiona_l_"></a>
+#### cuda       @ linux/install_opencv_from_source/optional-->install
+```
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D INSTALL_C_EXAMPLES=ON \
@@ -1333,13 +1354,27 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D BUILD_opencv_cudacodec=OFF \
       -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.1/modules \
       -D CUDA_ARCH_BIN=8.6 \
-      -D WITH_CUDA=ON ..   
-
+      -D WITH_CUDA=ON .. 
+```
+<a id="no_cuda___linux_install_opencv_from_source_optiona_l_"></a>
+#### no_cuda       @ linux/install_opencv_from_source/optional-->install
+```
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+      -D CMAKE_INSTALL_PREFIX=/usr/local \
+      -D INSTALL_C_EXAMPLES=ON \
+      -D INSTALL_PYTHON_EXAMPLES=ON \
+      -D WITH_TBB=ON \
+      -D WITH_V4L=ON \
+      -D WITH_QT=OFF \
+      -D WITH_OPENGL=ON \
+      -D BUILD_opencv_cudacodec=OFF \
+      -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.1/modules \
+      -D CUDA_ARCH_BIN=8.6 \
+      -D WITH_CUDA=OFF ..   
 ```
 
 <a id="2_4_13_6___linux_install_opencv_from_source_optiona_l_"></a>
 #### 2.4.13.6       @ linux/install_opencv_from_source/optional-->install
-
 something weird and anoying in MDP causes segfault when compiled with 3.4.5
 
 ```
@@ -1357,9 +1392,9 @@ rm 2.4.13.6.zip
 
 cd opencv-2.4.13.6
 
-mkdir build
+mkdir build && cd build
 
-cd build
+
 
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -1380,6 +1415,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 
 ```
 make -j16
+make -j12
 sudo make install
 
 sudo make uninstall
