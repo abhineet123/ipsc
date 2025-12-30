@@ -1220,14 +1220,17 @@ in `OpenCVConfig.cmake`.
 <a id="linux___install_opencv_from_source_optiona_l_"></a>
 ### linux       @ install_opencv_from_source/optional-->install
 
-add this at the top of CMakeLists.txt to avoid errors originating from C++17
+add one of these at the top of CMakeLists.txt to avoid errors originating from too new C++ versions
+
 ```
+set (CMAKE_CXX_STANDARD 98)
 set (CMAKE_CXX_STANDARD 11)
-```
-
-from ~
+set (CMAKE_CXX_STANDARD 14)
 
 ```
+
+```
+cd ~
 sudo apt-get install dos2unix
 
 dos2unix acamp_code/install_cv_345.sh
@@ -1296,9 +1299,9 @@ rm 3.4.5.zip
 
 cd opencv-3.4.5
 
-mkdir build
+mkdir build && cd build
 
-cd build
+
 
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -1334,9 +1337,7 @@ rm 3.4.1.zip
 
 cd opencv-3.4.1
 
-mkdir build
-
-cd build
+mkdir build && cd build
 
 ```
 

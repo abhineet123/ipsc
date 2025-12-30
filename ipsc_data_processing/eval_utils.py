@@ -1568,7 +1568,7 @@ def perform_nms_fast(objs, enable_mask, iou_threshold):
 
     keep = np.ones(n_objs, dtype=bool)
 
-    for index, (iou, category) in enumerate(zip(ious, categories,  strict=True)):
+    for index, (iou, category) in enumerate(zip(ious, categories, strict=True)):
         if not keep[index]:
             continue
 
@@ -2893,6 +2893,13 @@ def get_iou(bb_det, bb_gt, xywh=False):
 #
 #         return mask_pts
 #
+
+def map_class_ids(labels_img, class_ids_map):
+    class_ids = np.unique(labels_img, return_inverse=False)
+    out_img = np.zeros_like(labels_img)
+    for class_id in class_ids:
+        out_img[labels_img == class_id] = class_ids_map[class_id]
+    return out_img
 
 
 def mask_img_to_rle_coco(binary_mask):
