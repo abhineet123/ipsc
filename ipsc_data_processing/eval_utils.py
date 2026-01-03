@@ -2893,6 +2893,17 @@ def get_iou(bb_det, bb_gt, xywh=False):
 #
 #         return mask_pts
 #
+def get_class_ids_map(class_ids):
+    max_class_id = max(class_ids)
+    class_ids_map = {class_id: i for i, class_id in enumerate(class_ids)}
+    for class_id in range(max_class_id):
+        """map all missing class IDs to background"""
+        try:
+            _ = class_ids_map[class_id]
+        except KeyError:
+            class_ids_map[class_id] = 0
+    return class_ids_map
+
 
 def map_class_ids(labels_img, class_ids_map):
     class_ids = np.unique(labels_img, return_inverse=False)
