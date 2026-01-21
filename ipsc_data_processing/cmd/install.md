@@ -33,6 +33,7 @@
 - [misc packages](#misc_packages_)
   - [18.04       @ misc_packages](#18_04___misc_package_s_)
 - [update pip](#update_pi_p_)
+  - [24.04       @ update_pip](#24_04___update_pip_)
   - [18.04       @ update_pip](#18_04___update_pip_)
   - [all       @ update_pip](#all___update_pip_)
 - [setup python 3](#setup_python_3_)
@@ -272,9 +273,6 @@ sudo reboot
 
 https://askubuntu.com/questions/841876/how-to-disable-nouveau-kernel-driver
 
-
-According to the NVIDIA developer zone: 
-
 Create a file
 
 ```
@@ -489,6 +487,16 @@ sudo apt install caffe-cuda
 <a id="update_pi_p_"></a>
 # update pip
 
+<a id="24_04___update_pip_"></a>
+## 24.04       @ update_pip-->install
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.11
+sudo apt install python3.10
+
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.10
+
+
 <a id="18_04___update_pip_"></a>
 ## 18.04       @ update_pip-->install
 ```
@@ -514,6 +522,8 @@ python3.7 get-pip.py
 python3.9 get-pip.py
 python3.10 get-pip.py
 python3.11 get-pip.py
+python3.12 get-pip.py
+/usr/bin/python3 get-pip.py
 
 python -m pip install --upgrade pip
 ```

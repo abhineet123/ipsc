@@ -78,7 +78,7 @@ Trained models can be downloaded from [here](https://drive.google.com/drive/fold
      
 <a id="supplementary_material_"></a>
 # Supplementary material
-The supplementary PDF is available [here](https://drive.google.com/file/d/1YNm8N2B-0Cpu5y_MwUEz4iy3QNJAk897)
+The supplementary PDF is available [here](docs/ipsc_supplementary.pdf)
 
 <a id="visualization_s_"></a>
 ## Visualizations
