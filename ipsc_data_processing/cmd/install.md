@@ -391,6 +391,11 @@ sudo apt-get install cuda-12-2
 sudo apt-get remove cuda-12-2
 
 ```
+`nsight-systems-2023.2.3 : Depends: libtinfo5 but it is not installable`
+https://askubuntu.com/a/1493087
+sudo nano /etc/apt/sources.list
+deb http://old-releases.ubuntu.com/ubuntu/ lunar universe
+sudo apt update
 
 <a id="all___cuda_12_2__cud_a_"></a>
 ### all       @ CUDA_12.2:/cuda-->install
