@@ -21,6 +21,7 @@
 - [cuda](#cud_a_)
   - [bugs       @ cuda](#bugs___cuda_)
   - [CUDA_12.2:       @ cuda](#cuda_12_2____cuda_)
+    - [24.04       @ CUDA_12.2:/cuda](#24_04___cuda_12_2__cud_a_)
     - [all       @ CUDA_12.2:/cuda](#all___cuda_12_2__cud_a_)
       - [12.2       @ all/CUDA_12.2:/cuda](#12_2___all_cuda_12_2__cud_a_)
       - [12.3       @ all/CUDA_12.2:/cuda](#12_3___all_cuda_12_2__cud_a_)
@@ -185,6 +186,7 @@ sudo nvidia-smi -i 1 -pl 100
 sudo nvidia-smi -i 1 -pl 120
 sudo nvidia-smi -i 2 -pl 120
 sudo nvidia-smi -i 0 -pl 100
+sudo nvidia-smi -i 0 -pl 120
 sudo nvidia-smi -i 0 -pl 150
 sudo nvidia-smi -i 0 -pl 180
 sudo nvidia-smi -i 1 -pl 150
@@ -391,6 +393,8 @@ sudo apt-get install cuda-12-2
 sudo apt-get remove cuda-12-2
 
 ```
+<a id="24_04___cuda_12_2__cud_a_"></a>
+### 24.04       @ CUDA_12.2:/cuda-->install
 `nsight-systems-2023.2.3 : Depends: libtinfo5 but it is not installable`
 https://askubuntu.com/a/1493087
 sudo nano /etc/apt/sources.list
