@@ -9,6 +9,11 @@
 - [sudo_no_pwd](#sudo_no_pwd_)
 - [ssh](#ssh_)
 - [nomachine](#nomachine_)
+- [rustdesk self-host](#rustdesk_self_hos_t_)
+  - [docker       @ rustdesk_self-host](#docker___rustdesk_self_host_)
+  - [deb       @ rustdesk_self-host](#deb___rustdesk_self_host_)
+  - [client       @ rustdesk_self-host](#client___rustdesk_self_host_)
+    - [x99       @ client/rustdesk_self-host](#x99___client_rustdesk_self_hos_t_)
 - [docker](#docke_r_)
   - [nvidia-container-toolkit       @ docker](#nvidia_container_toolkit___docker_)
 - [install nvidia drivers](#install_nvidia_driver_s_)
@@ -223,6 +228,38 @@ sudo systemctl start ssh
 https://www.nomachine.com/getting-started-with-nomachine
 https://downloads.nomachine.com/linux/?id=1
 sudo dpkg -i nomachine_8.13.1_1_amd64.deb
+
+<a id="rustdesk_self_hos_t_"></a>
+# rustdesk self-host
+https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/install/
+
+sudo ufw allow 21114:21119/tcp
+sudo ufw allow 21116/udp
+sudo ufw enable
+sudo ufw disable
+
+<a id="docker___rustdesk_self_host_"></a>
+## docker       @ rustdesk_self-host-->install
+https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/docker/
+
+<a id="deb___rustdesk_self_host_"></a>
+## deb       @ rustdesk_self-host-->install
+https://github.com/rustdesk/rustdesk-server/releases/tag/1.1.15
+
+wget https://github.com/rustdesk/rustdesk-server/releases/download/1.1.15/rustdesk-server-hbbr_1.1.15_amd64.deb
+wget https://github.com/rustdesk/rustdesk-server/releases/download/1.1.15/rustdesk-server-hbbs_1.1.15_amd64.deb
+wget https://github.com/rustdesk/rustdesk-server/releases/download/1.1.15/rustdesk-server-utils_1.1.15_amd64.deb
+
+sudo dpkg -i rustdesk-server-hbbr_1.1.15_amd64.deb
+sudo dpkg -i rustdesk-server-hbbs_1.1.15_amd64.deb
+sudo dpkg -i rustdesk-server-utils_1.1.15_amd64.deb
+
+<a id="client___rustdesk_self_host_"></a>
+## client       @ rustdesk_self-host-->install
+https://rustdesk.com/docs/en/self-host/client-configuration/#2-manual-config
+<a id="x99___client_rustdesk_self_hos_t_"></a>
+### x99       @ client/rustdesk_self-host-->install
+./var/lib/rustdesk-server/id_ed25519.pub
 
 <a id="docke_r_"></a>
 # docker
