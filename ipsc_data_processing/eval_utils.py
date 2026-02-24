@@ -2905,6 +2905,13 @@ def get_class_ids_map(class_ids):
     return class_ids_map
 
 
+def unmap_class_ids(labels_img, class_ids_map):
+    out_img = np.zeros_like(labels_img)
+    for class_id in class_ids_map.keys():
+        out_img[labels_img == class_ids_map[class_id]] = class_id
+    return out_img
+
+
 def map_class_ids(labels_img, class_ids_map):
     class_ids = np.unique(labels_img, return_inverse=False)
     out_img = np.zeros_like(labels_img)
