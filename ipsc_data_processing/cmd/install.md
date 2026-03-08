@@ -26,11 +26,12 @@
 - [cuda](#cud_a_)
   - [bugs       @ cuda](#bugs___cuda_)
   - [CUDA_12.2:       @ cuda](#cuda_12_2____cuda_)
-    - [24.04       @ CUDA_12.2:/cuda](#24_04___cuda_12_2__cud_a_)
-    - [all       @ CUDA_12.2:/cuda](#all___cuda_12_2__cud_a_)
-      - [12.2       @ all/CUDA_12.2:/cuda](#12_2___all_cuda_12_2__cud_a_)
-      - [12.3       @ all/CUDA_12.2:/cuda](#12_3___all_cuda_12_2__cud_a_)
   - [cuda-12.3       @ cuda](#cuda_12_3___cuda_)
+    - [cuda-13.1       @ cuda-12.3/cuda](#cuda_13_1___cuda_12_3_cuda_)
+  - [24.04       @ cuda](#24_04___cuda_)
+    - [all       @ 24.04/cuda](#all___24_04_cuda_)
+      - [12.2       @ all/24.04/cuda](#12_2___all_24_04_cuda_)
+      - [12.3       @ all/24.04/cuda](#12_3___all_24_04_cuda_)
   - [cudnn-deb       @ cuda](#cudnn_deb___cuda_)
 - [disks](#disks_)
 - [tmux](#tmu_x_)
@@ -432,49 +433,9 @@ sudo apt-get install cuda-12-2
 sudo apt-get remove cuda-12-2
 
 ```
-<a id="24_04___cuda_12_2__cud_a_"></a>
-### 24.04       @ CUDA_12.2:/cuda-->install
-`nsight-systems-2023.2.3 : Depends: libtinfo5 but it is not installable`
-https://askubuntu.com/a/1493087
-sudo nano /etc/apt/sources.list
-deb http://old-releases.ubuntu.com/ubuntu/ lunar universe
-sudo apt update
-
-<a id="all___cuda_12_2__cud_a_"></a>
-### all       @ CUDA_12.2:/cuda-->install
-download cudnn tar from
-https://developer.nvidia.com/rdp/cudnn-download
-```
-wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
-```
-and extract into cuda-12.2/targets/ folder
-```
-tar xvf cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
-```
-<a id="12_2___all_cuda_12_2__cud_a_"></a>
-#### 12.2       @ all/CUDA_12.2:/cuda-->install
-```
-sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.2/targets/x86_64-linux/lib/
-sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.2/targets/x86_64-linux/include/
-```
-<a id="12_3___all_cuda_12_2__cud_a_"></a>
-#### 12.3       @ all/CUDA_12.2:/cuda-->install
-```
-sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.3/targets/x86_64-linux/lib/
-sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.3/targets/x86_64-linux/include/
-
-```
-
-add following environment variables to bashrc as well as the pycharm debug configuration window
-```
-export LD_LIBRARY_PATH=/usr/local/cuda-12.2/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
-export PATH=$PATH:/usr/local/cuda-12.2/bin
-export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.2
-```
-
-
 <a id="cuda_12_3___cuda_"></a>
 ## cuda-12.3       @ cuda-->install
+`needed for tensorflow 2.20`
 ```
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
 sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
@@ -488,6 +449,66 @@ export LD_LIBRARY_PATH=/usr/local/cuda-12.3/targets/x86_64-linux/lib:$LD_LIBRARY
 export PATH=$PATH:/usr/local/cuda-12.3/bin
 export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.3
 ```
+<a id="cuda_13_1___cuda_12_3_cuda_"></a>
+### cuda-13.1       @ cuda-12.3/cuda-->install
+`for ubuntu 24.04 / mint 22.3`
+https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_local
+```
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-ubuntu2404.pin
+sudo mv cuda-ubuntu2404.pin /etc/apt/preferences.d/cuda-repository-pin-600
+wget https://developer.download.nvidia.com/compute/cuda/13.1.1/local_installers/cuda-repo-ubuntu2404-13-1-local_13.1.1-590.48.01-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu2404-13-1-local_13.1.1-590.48.01-1_amd64.deb
+sudo cp /var/cuda-repo-ubuntu2404-13-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cuda-toolkit-13-1
+
+wget https://developer.download.nvidia.com/compute/cudnn/9.19.1/local_installers/cudnn-local-repo-ubuntu2404-9.19.1_1.0-1_amd64.deb
+sudo dpkg -i cudnn-local-repo-ubuntu2404-9.19.1_1.0-1_amd64.deb
+sudo cp /var/cudnn-local-repo-ubuntu2404-9.19.1/cudnn-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cudnn9-cuda-13
+
+```
+<a id="24_04___cuda_"></a>
+## 24.04       @ cuda-->install
+`nsight-systems-2023.2.3 : Depends: libtinfo5 but it is not installable`
+https://askubuntu.com/a/1493087
+sudo nano /etc/apt/sources.list
+deb http://old-releases.ubuntu.com/ubuntu/ lunar universe
+sudo apt update
+
+<a id="all___24_04_cuda_"></a>
+### all       @ 24.04/cuda-->install
+download cudnn tar from
+https://developer.nvidia.com/rdp/cudnn-download
+```
+wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
+```
+and extract into cuda/targets/ folder
+```
+tar xvf cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
+```
+<a id="12_2___all_24_04_cuda_"></a>
+#### 12.2       @ all/24.04/cuda-->install
+```
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.2/targets/x86_64-linux/lib/
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.2/targets/x86_64-linux/include/
+```
+<a id="12_3___all_24_04_cuda_"></a>
+#### 12.3       @ all/24.04/cuda-->install
+```
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.3/targets/x86_64-linux/lib/
+sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.3/targets/x86_64-linux/include/
+
+```
+
+add following environment variables to bashrc as well as the pycharm debug configuration window
+```
+export LD_LIBRARY_PATH=/usr/local/cuda-12.2/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
+export PATH=$PATH:/usr/local/cuda-12.2/bin
+export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.2
+```
+
 <a id="cudnn_deb___cuda_"></a>
 ## cudnn-deb       @ cuda-->install
 `does not work`
