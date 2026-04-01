@@ -27,11 +27,11 @@
   - [bugs       @ cuda](#bugs___cuda_)
   - [CUDA_12.2:       @ cuda](#cuda_12_2____cuda_)
   - [cuda-12.3       @ cuda](#cuda_12_3___cuda_)
-    - [cuda-13.1       @ cuda-12.3/cuda](#cuda_13_1___cuda_12_3_cuda_)
+  - [cuda-13.1       @ cuda](#cuda_13_1___cuda_)
   - [24.04       @ cuda](#24_04___cuda_)
-    - [all       @ 24.04/cuda](#all___24_04_cuda_)
-      - [12.2       @ all/24.04/cuda](#12_2___all_24_04_cuda_)
-      - [12.3       @ all/24.04/cuda](#12_3___all_24_04_cuda_)
+  - [cudnn       @ cuda](#cudnn___cuda_)
+    - [12.2       @ cudnn/cuda](#12_2___cudnn_cuda_)
+    - [12.3       @ cudnn/cuda](#12_3___cudnn_cuda_)
   - [cudnn-deb       @ cuda](#cudnn_deb___cuda_)
 - [disks](#disks_)
 - [tmux](#tmu_x_)
@@ -449,8 +449,8 @@ export LD_LIBRARY_PATH=/usr/local/cuda-12.3/targets/x86_64-linux/lib:$LD_LIBRARY
 export PATH=$PATH:/usr/local/cuda-12.3/bin
 export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-12.3
 ```
-<a id="cuda_13_1___cuda_12_3_cuda_"></a>
-### cuda-13.1       @ cuda-12.3/cuda-->install
+<a id="cuda_13_1___cuda_"></a>
+## cuda-13.1       @ cuda-->install
 `for ubuntu 24.04 / mint 22.3`
 https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_local
 ```
@@ -477,8 +477,8 @@ sudo nano /etc/apt/sources.list
 deb http://old-releases.ubuntu.com/ubuntu/ lunar universe
 sudo apt update
 
-<a id="all___24_04_cuda_"></a>
-### all       @ 24.04/cuda-->install
+<a id="cudnn___cuda_"></a>
+## cudnn       @ cuda-->install
 download cudnn tar from
 https://developer.nvidia.com/rdp/cudnn-download
 ```
@@ -488,14 +488,14 @@ and extract into cuda/targets/ folder
 ```
 tar xvf cudnn-linux-x86_64-8.9.7.29_cuda12-archive.tar.xz
 ```
-<a id="12_2___all_24_04_cuda_"></a>
-#### 12.2       @ all/24.04/cuda-->install
+<a id="12_2___cudnn_cuda_"></a>
+### 12.2       @ cudnn/cuda-->install
 ```
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.2/targets/x86_64-linux/lib/
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.2/targets/x86_64-linux/include/
 ```
-<a id="12_3___all_24_04_cuda_"></a>
-#### 12.3       @ all/24.04/cuda-->install
+<a id="12_3___cudnn_cuda_"></a>
+### 12.3       @ cudnn/cuda-->install
 ```
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/lib/* /usr/local/cuda-12.3/targets/x86_64-linux/lib/
 sudo mv cudnn-linux-x86_64-8.9.7.29_cuda12-archive/include/* /usr/local/cuda-12.3/targets/x86_64-linux/include/
@@ -594,7 +594,7 @@ python3.11 get-pip.py
 python3.12 get-pip.py
 /usr/bin/python3 get-pip.py
 
-python -m pip install --upgrade pip
+python3.10 -m pip install --upgrade pip
 ```
 
 <a id="setup_python_3_"></a>
