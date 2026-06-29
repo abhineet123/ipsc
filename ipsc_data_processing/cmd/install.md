@@ -18,9 +18,6 @@
   - [nvidia-container-toolkit       @ docker](#nvidia_container_toolkit___docker_)
 - [nvidia drivers](#nvidia_driver_s_)
   - [remove_noveau       @ nvidia_drivers](#remove_noveau___nvidia_drivers_)
-  - [debian       @ nvidia_drivers](#debian___nvidia_drivers_)
-    - [cuda-12.5       @ debian/nvidia_drivers](#cuda_12_5___debian_nvidia_driver_s_)
-      - [cudnn       @ cuda-12.5/debian/nvidia_drivers](#cudnn___cuda_12_5_debian_nvidia_driver_s_)
   - [ubuntu       @ nvidia_drivers](#ubuntu___nvidia_drivers_)
       - [418_for_cuda_10.1       @ ubuntu/nvidia_drivers](#418_for_cuda_10_1___ubuntu_nvidia_driver_s_)
       - [410_for_cuda_10.0       @ ubuntu/nvidia_drivers](#410_for_cuda_10_0___ubuntu_nvidia_driver_s_)
@@ -28,11 +25,19 @@
       - [20.04       @ ubuntu/nvidia_drivers](#20_04___ubuntu_nvidia_driver_s_)
       - [470_for_cuda_11       @ ubuntu/nvidia_drivers](#470_for_cuda_11___ubuntu_nvidia_driver_s_)
       - [others       @ ubuntu/nvidia_drivers](#others___ubuntu_nvidia_driver_s_)
+  - [debian       @ nvidia_drivers](#debian___nvidia_drivers_)
+    - [cuda-13.2       @ debian/nvidia_drivers](#cuda_13_2___debian_nvidia_driver_s_)
+    - [cuda-12.5       @ debian/nvidia_drivers](#cuda_12_5___debian_nvidia_driver_s_)
+    - [cudnn       @ debian/nvidia_drivers](#cudnn___debian_nvidia_driver_s_)
+      - [apt       @ cudnn/debian/nvidia_drivers](#apt___cudnn_debian_nvidia_driver_s_)
+      - [tar       @ cudnn/debian/nvidia_drivers](#tar___cudnn_debian_nvidia_driver_s_)
 - [cuda](#cud_a_)
   - [bugs       @ cuda](#bugs___cuda_)
-  - [CUDA_12.2:       @ cuda](#cuda_12_2____cuda_)
+  - [cuda-12.2       @ cuda](#cuda_12_2___cuda_)
   - [cuda-12.3       @ cuda](#cuda_12_3___cuda_)
   - [cuda-13.1       @ cuda](#cuda_13_1___cuda_)
+    - [cudnn9       @ cuda-13.1/cuda](#cudnn9___cuda_13_1_cuda_)
+    - [venv       @ cuda-13.1/cuda](#venv___cuda_13_1_cuda_)
   - [24.04       @ cuda](#24_04___cuda_)
   - [cudnn       @ cuda](#cudnn___cuda_)
     - [12.2       @ cudnn/cuda](#12_2___cudnn_cuda_)
@@ -135,6 +140,7 @@
     - [python_wrappers       @ setup_point_grey_ethernet_camera/optional](#python_wrappers___setup_point_grey_ethernet_camera_optiona_l_)
   - [setting_up_detector_training       @ optional](#setting_up_detector_training___optional_)
 - [issues](#issue_s_)
+  - [x11_hangup       @ issues](#x11_hangup___issues_)
   - [broken_software_updates_in_16.04_due_to_python_35/36_mismatch       @ issues](#broken_software_updates_in_16_04_due_to_python_35_36_mismatch___issues_)
 - [gcc](#gcc_)
   - [6.3       @ gcc](#6_3___gc_c_)
@@ -142,6 +148,8 @@
 - [matlab engine](#matlab_engine_)
   - [mdp_mot_devkit       @ matlab_engine](#mdp_mot_devkit___matlab_engin_e_)
 - [vot_devkit       @ matlab_engine](#vot_devkit___matlab_engin_e_)
+- [obs](#obs_)
+  - [simplescreenrecorder       @ obs](#simplescreenrecorder___ob_s_)
 
 <!-- /MarkdownTOC -->
 
@@ -314,7 +322,6 @@ sudo apt-get remove --purge '^cuda-.*'
 messed up nvidia xorg, e.g. blank screen at login as if login bar is out of sight and nomachine not working correctly
 ```
 sudo mv /etc/X11/xorg.conf /etc/X11/xorg.conf.backup
-sudo reboot
 ```
 
 2. blacklist noveau drivers using instructions here:
@@ -346,40 +353,6 @@ sudo shutdown -r now
 
 sudo shutdown now
 ```
-<a id="debian___nvidia_drivers_"></a>
-## debian       @ nvidia_drivers-->install
-https://wiki.debian.org/NvidiaGraphicsDrivers
-```
-apt install nvidia-kernel-dkms nvidia-driver
-```
-<a id="cuda_12_5___debian_nvidia_driver_s_"></a>
-### cuda-12.5       @ debian/nvidia_drivers-->install
-https://developer.nvidia.com/cuda-12-5-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local
-
-https://medium.com/codex/install-nvidia-drivers-cuda-on-debian-12-bookworm-nvidia-smi-69d2980247c6
-
-
-```
-wget https://developer.download.nvidia.com/compute/cuda/12.5.0/local_installers/cuda-repo-debian12-12-5-local_12.5.0-555.42.02-1_amd64.deb
-sudo dpkg -i cuda-repo-debian12-12-5-local_12.5.0-555.42.02-1_amd64.deb
-sudo cp /var/cuda-repo-debian12-12-5-local/cuda-*-keyring.gpg /usr/share/keyrings/
-sudo add-apt-repository contrib
-sudo apt-get update
-sudo apt-get -y install cuda-toolkit-12-5
-sudo apt-get install -y cuda-drivers
-```
-<a id="cudnn___cuda_12_5_debian_nvidia_driver_s_"></a>
-#### cudnn       @ cuda-12.5/debian/nvidia_drivers-->install
-https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local&Configuration=Full
-
-```
-wget https://developer.download.nvidia.com/compute/cudnn/9.23.0/local_installers/cudnn-local-repo-debian12-9.23.0_1.0-1_amd64.deb
-sudo dpkg -i cudnn-local-repo-debian12-9.23.0_1.0-1_amd64.deb
-sudo cp /var/cudnn-local-repo-debian12-9.23.0/cudnn-*-keyring.gpg /usr/share/keyrings/
-sudo apt-get update
-sudo apt-get -y install cudnn9-cuda-12
-```
-
 <a id="ubuntu___nvidia_drivers_"></a>
 ## ubuntu       @ nvidia_drivers-->install
 __new system : might be better to directly install cuda which also installs driver__
@@ -427,11 +400,72 @@ sudo apt install nvidia-driver-545
 sudo apt install nvidia-driver-550
 sudo apt install nvidia-driver-555
 sudo apt install nvidia-driver-560
+sudo apt install nvidia-driver-580
 ```
 
 4. restart
 ```
 sudo shutdown -r now
+```
+
+<a id="debian___nvidia_drivers_"></a>
+## debian       @ nvidia_drivers-->install
+https://wiki.debian.org/NvidiaGraphicsDrivers
+```
+apt install nvidia-kernel-dkms nvidia-driver
+```
+<a id="cuda_13_2___debian_nvidia_driver_s_"></a>
+### cuda-13.2       @ debian/nvidia_drivers-->install
+https://developer.nvidia.com/cuda-13-2-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local
+
+```
+wget https://developer.download.nvidia.com/compute/cuda/13.2.0/local_installers/cuda-repo-debian12-13-2-local_13.2.0-595.45.04-1_amd64.deb
+sudo dpkg -i cuda-repo-debian12-13-2-local_13.2.0-595.45.04-1_amd64.deb
+sudo cp /var/cuda-repo-debian12-13-2-local/cuda-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cuda-toolkit-13-2
+
+```
+
+
+<a id="cuda_12_5___debian_nvidia_driver_s_"></a>
+### cuda-12.5       @ debian/nvidia_drivers-->install
+https://developer.nvidia.com/cuda-12-5-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local
+
+https://medium.com/codex/install-nvidia-drivers-cuda-on-debian-12-bookworm-nvidia-smi-69d2980247c6
+
+
+```
+wget https://developer.download.nvidia.com/compute/cuda/12.5.0/local_installers/cuda-repo-debian12-12-5-local_12.5.0-555.42.02-1_amd64.deb
+sudo dpkg -i cuda-repo-debian12-12-5-local_12.5.0-555.42.02-1_amd64.deb
+sudo cp /var/cuda-repo-debian12-12-5-local/cuda-*-keyring.gpg /usr/share/keyrings/
+sudo add-apt-repository contrib
+sudo apt-get update
+sudo apt-get -y install cuda-toolkit-12-5
+sudo apt-get install -y cuda-drivers
+```
+<a id="cudnn___debian_nvidia_driver_s_"></a>
+### cudnn       @ debian/nvidia_drivers-->install
+<a id="apt___cudnn_debian_nvidia_driver_s_"></a>
+#### apt       @ cudnn/debian/nvidia_drivers-->install
+`installing both cudnn9-cuda-12 and cudnn9-cuda-13 simultaneously not work - use tar method instead`
+https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=x86_64&Distribution=Debian&target_version=12&target_type=deb_local&Configuration=Full
+
+```
+wget https://developer.download.nvidia.com/compute/cudnn/9.23.0/local_installers/cudnn-local-repo-debian12-9.23.0_1.0-1_amd64.deb
+sudo dpkg -i cudnn-local-repo-debian12-9.23.0_1.0-1_amd64.deb
+sudo cp /var/cudnn-local-repo-debian12-9.23.0/cudnn-*-keyring.gpg /usr/share/keyrings/
+sudo apt-get update
+sudo apt-get -y install cudnn9-cuda-12
+sudo apt-get -y install cudnn9-cuda-13
+```
+<a id="tar___cudnn_debian_nvidia_driver_s_"></a>
+#### tar       @ cudnn/debian/nvidia_drivers-->install
+```
+wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-9.23.2.1_cuda13-archive.tar.xz
+tar xvf cudnn-linux-x86_64-9.23.2.1_cuda13-archive.tar.xz
+sudo mv cudnn-linux-x86_64-9.23.2.1_cuda13-archive/lib/* /usr/local/cuda-13.2/targets/x86_64-linux/lib/
+sudo mv cudnn-linux-x86_64-9.23.2.1_cuda13-archive/include/* /usr/local/cuda-13.2/targets/x86_64-linux/include/
 ```
 
 <a id="cud_a_"></a>
@@ -455,8 +489,8 @@ no need to enable the suspend service in the newest drivers
 sudo systemctl enable nvidia-suspend.service
 
 <a id="cuda_12_4__"></a>
-<a id="cuda_12_2____cuda_"></a>
-## CUDA_12.2:       @ cuda-->install
+<a id="cuda_12_2___cuda_"></a>
+## cuda-12.2       @ cuda-->install
 `from p2s`
 https://developer.nvidia.com/cuda-12-2-2-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=deb_local
 ```
@@ -499,13 +533,24 @@ sudo dpkg -i cuda-repo-ubuntu2404-13-1-local_13.1.1-590.48.01-1_amd64.deb
 sudo cp /var/cuda-repo-ubuntu2404-13-1-local/cuda-*-keyring.gpg /usr/share/keyrings/
 sudo apt-get update
 sudo apt-get -y install cuda-toolkit-13-1
+```
 
+<a id="cudnn9___cuda_13_1_cuda_"></a>
+### cudnn9       @ cuda-13.1/cuda-->install
+```
 wget https://developer.download.nvidia.com/compute/cudnn/9.19.1/local_installers/cudnn-local-repo-ubuntu2404-9.19.1_1.0-1_amd64.deb
 sudo dpkg -i cudnn-local-repo-ubuntu2404-9.19.1_1.0-1_amd64.deb
 sudo cp /var/cudnn-local-repo-ubuntu2404-9.19.1/cudnn-*-keyring.gpg /usr/share/keyrings/
 sudo apt-get update
 sudo apt-get -y install cudnn9-cuda-13
-
+```
+<a id="venv___cuda_13_1_cuda_"></a>
+### venv       @ cuda-13.1/cuda-->install
+add at the end of  `$VIRTUAL_ENV/bin/activate `
+```
+export LD_LIBRARY_PATH=/usr/local/cuda-13.1/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
+export PATH=/usr/local/cuda-13.1/bin:$PATH
+export XLA_FLAGS=--xla_gpu_cuda_data_dir=/usr/local/cuda-13.1
 ```
 <a id="24_04___cuda_"></a>
 ## 24.04       @ cuda-->install
@@ -1605,6 +1650,11 @@ If this produces an error, follow the instructions under ```Manual protobuf-comp
 <a id="issue_s_"></a>
 # issues 
 
+<a id="x11_hangup___issues_"></a>
+## x11_hangup       @ issues-->install
+https://askubuntu.com/questions/1220/how-to-restart-x-window-server-from-command-line
+sudo systemctl restart display-manager
+
 <a id="broken_software_updates_in_16_04_due_to_python_35_36_mismatch___issues_"></a>
 ## broken_software_updates_in_16.04_due_to_python_35/36_mismatch       @ issues-->install
 
@@ -1719,6 +1769,24 @@ vot initialize vot2017 --workspace /data/vot2017
 vot initialize vot2018 --workspace /data/vot2018
 
 ```
+
+<a id="obs_"></a>
+# obs
+https://github.com/obsproject/obs-studio/wiki/install-instructions#linux
+
+```
+sudo apt install v4l2loopback-dkms
+sudo add-apt-repository ppa:obsproject/obs-studio
+sudo apt update
+sudo apt install obs-studio
+```
+<a id="simplescreenrecorder___ob_s_"></a>
+## simplescreenrecorder       @ obs-->install
+https://askubuntu.com/questions/237027/how-to-record-screen-and-internal-audio
+```
+sudo apt install simplescreenrecorder
+```
+
 
 
 
